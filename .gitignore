@@ -1,0 +1,14 @@
+# Binaries and generated code
+bin/
+obj/
+packages/
+
+# Visual Studio user files
+*.suo
+*.user
+
+# Visual Studio cache
+.vs/
+
+# Publish profiles
+*.pubxml
