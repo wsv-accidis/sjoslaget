@@ -10,5 +10,6 @@ packages/
 # Visual Studio cache
 .vs/
 
-# Publish profiles
+# Credentials
 *.pubxml
+Db.config
