@@ -17,9 +17,23 @@ namespace Accidis.Sjoslaget.WebService
 	{
 		public void Configuration(IAppBuilder app)
 		{
+			ConfigureAuth(app);
+			ConfigureApi(app);
+		}
+
+		static void ConfigureApi(IAppBuilder app)
+		{
+			HttpConfiguration config = new HttpConfiguration();
+			WebApiConfig.Register(config);
+			app.UseCors(CorsOptions.AllowAll);
+			app.UseWebApi(config);
+		}
+
+		static void ConfigureAuth(IAppBuilder app)
+		{
 			var oauthOptions = new OAuthAuthorizationServerOptions
 			{
-				AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(1),
+				AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
 				AccessTokenFormat = new JwtAccessTokenFormat(),
 				AllowInsecureHttp = true,
 				Provider = new OAuthProvider(),
@@ -33,13 +47,9 @@ namespace Accidis.Sjoslaget.WebService
 				IssuerSecurityTokenProviders = new[] {new SymmetricKeyIssuerSecurityTokenProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
 			};
 
+			app.CreatePerOwinContext<SjoslagetUserManager>(SjoslagetUserManager.Create);
 			app.UseOAuthAuthorizationServer(oauthOptions);
 			app.UseJwtBearerAuthentication(jwtOptions);
-
-			HttpConfiguration config = new HttpConfiguration();
-			WebApiConfig.Register(config);
-			app.UseCors(CorsOptions.AllowAll);
-			app.UseWebApi(config);
 		}
 	}
 }

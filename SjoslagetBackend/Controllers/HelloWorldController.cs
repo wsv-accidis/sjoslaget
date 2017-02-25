@@ -10,7 +10,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	{
 		public IHttpActionResult GetHello()
 		{
-			using(var connection = SqlDb.Open())
+			using(var connection = SjoslagetDb.Open())
 			{
 				Cruise[] queryResult = connection.Query<Cruise>("select top 1 * from Cruise where IsActive = @IsActive", new {IsActive = true}).ToArray();
 				if(!queryResult.Any())

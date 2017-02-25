@@ -3,7 +3,7 @@ using System.Web.Configuration;
 
 namespace Accidis.Sjoslaget.WebService.Db
 {
-	sealed class SqlDb
+	sealed class SjoslagetDb
 	{
 		public static SqlConnection Open()
 		{

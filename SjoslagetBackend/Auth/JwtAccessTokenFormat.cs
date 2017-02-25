@@ -6,8 +6,8 @@ namespace Accidis.Sjoslaget.WebService.Auth
 {
 	sealed class JwtAccessTokenFormat : ISecureDataFormat<AuthenticationTicket>
 	{
-		const string DigestAlgorithm = "http://www.w3.org/2001/04/xmlenc#sha512";
-		const string SignatureAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
+		const string DigestAlgorithm = "http://www.w3.org/2001/04/xmlenc#sha256";
+		const string SignatureAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
 
 		public string Protect(AuthenticationTicket data)
 		{

@@ -12,7 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpGet]
 		public IHttpActionResult Active()
 		{
-			using(var connection = SqlDb.Open())
+			using(var connection = SjoslagetDb.Open())
 			{
 				var activeCruise = Cruise.Active(connection);
 				if(null == activeCruise)
@@ -28,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpGet]
 		public IHttpActionResult All()
 		{
-			using(var connection = SqlDb.Open())
+			using(var connection = SjoslagetDb.Open())
 			{
 				var result = connection.Query<CabinType>("select * from [CabinType] order by [Order]");
 				return Ok(result);
@@ -39,7 +39,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public IHttpActionResult CreateOrUpdate(CruiseCabin cruiseCabin)
 		{
 			// TODO Authentication required
-			using(var connection = SqlDb.Open())
+			using(var connection = SjoslagetDb.Open())
 			{
 				var activeCruise = Cruise.Active(connection);
 				if(null == activeCruise)

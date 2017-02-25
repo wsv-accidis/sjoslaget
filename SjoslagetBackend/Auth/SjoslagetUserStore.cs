@@ -8,11 +8,11 @@ using Microsoft.AspNet.Identity;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
-	sealed class UserStore : IUserPasswordStore<User, Guid>, IUserSecurityStampStore<User, Guid>
+	sealed class SjoslagetUserStore : IUserPasswordStore<User, Guid>, IUserSecurityStampStore<User, Guid>
 	{
 		public Task CreateAsync(User user)
 		{
-			using(var db = SqlDb.Open())
+			using(var db = SjoslagetDb.Open())
 				db.Execute("insert into [User] ([UserName], [PasswordHash], [SecurityStamp]) values (@UserName, @PasswordHash, @SecurityStamp)",
 					new {UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp});
 
@@ -21,12 +21,12 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public static UserManager<User, Guid> CreateManager()
 		{
-			return new UserManager<User, Guid>(new UserStore());
+			return new UserManager<User, Guid>(new SjoslagetUserStore());
 		}
 
 		public Task DeleteAsync(User user)
 		{
-			using(var db = SqlDb.Open())
+			using(var db = SjoslagetDb.Open())
 				db.Execute("delete from [User] where [Id] = @Id", new {Id = user.Id});
 
 			return Task.CompletedTask;
@@ -38,7 +38,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public Task<User> FindByIdAsync(Guid userId)
 		{
-			using(var db = SqlDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var result = db.Query<User>("select * from [User] where [Id] = @Id", new {Id = userId});
 				return Task.FromResult(result.FirstOrDefault());
@@ -47,7 +47,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public Task<User> FindByNameAsync(string userName)
 		{
-			using(var db = SqlDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var result = db.Query<User>("select * from [User] where [UserName] = @UserName", new {UserName = userName});
 				return Task.FromResult(result.FirstOrDefault());
@@ -83,7 +83,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public Task UpdateAsync(User user)
 		{
-			using(var db = SqlDb.Open())
+			using(var db = SjoslagetDb.Open())
 				db.Execute("update [User] set [UserName] = @UserName, [PasswordHash] = @PasswordHash, SecurityStamp = @SecurityStamp where [Id] = @Id",
 					new {Id = user.Id, UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp});
 
