@@ -2,7 +2,7 @@
 
 namespace Accidis.Sjoslaget.WebService.Db
 {
-	internal static class SqlExceptionExtensions
+	static class SqlExceptionExtensions
 	{
 		public static bool IsForeignKeyViolation(this SqlException ex)
 		{

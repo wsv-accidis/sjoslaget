@@ -4,6 +4,8 @@ using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
@@ -17,14 +19,22 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			var oauthOptions = new OAuthAuthorizationServerOptions
 			{
-				AllowInsecureHttp = true,
-				TokenEndpointPath = new PathString("/token"),
 				AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(1),
-				Provider = new OAuthProvider()
+				AccessTokenFormat = new JwtAccessTokenFormat(),
+				AllowInsecureHttp = true,
+				Provider = new OAuthProvider(),
+				TokenEndpointPath = new PathString("/api/token"),
+			};
+
+			var jwtOptions = new JwtBearerAuthenticationOptions
+			{
+				AuthenticationMode = AuthenticationMode.Active,
+				AllowedAudiences = new[] {AuthConfig.Audience},
+				IssuerSecurityTokenProviders = new[] {new SymmetricKeyIssuerSecurityTokenProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
 			};
 
 			app.UseOAuthAuthorizationServer(oauthOptions);
-			app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+			app.UseJwtBearerAuthentication(jwtOptions);
 
 			HttpConfiguration config = new HttpConfiguration();
 			WebApiConfig.Register(config);

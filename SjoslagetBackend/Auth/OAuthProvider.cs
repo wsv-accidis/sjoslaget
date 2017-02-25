@@ -1,11 +1,10 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
 using Microsoft.Owin.Security.OAuth;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
-	public sealed class OAuthProvider : OAuthAuthorizationServerProvider
+	sealed class OAuthProvider : OAuthAuthorizationServerProvider
 	{
 		public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
 		{
@@ -19,16 +18,10 @@ namespace Accidis.Sjoslaget.WebService.Auth
 					context.SetError("invalid_grant", "The user name or password is incorrect.");
 					return;
 				}
+
+				var identity = await userManager.CreateIdentityAsync(user, context.Options.AuthenticationType);
+				context.Validated(identity);
 			}
-
-			var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-			identity.AddClaims(new[]
-			{
-				new Claim("sub", context.UserName),
-				new Claim("role", "user")
-			});
-
-			context.Validated(identity);
 		}
 
 		public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)

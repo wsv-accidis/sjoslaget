@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
-	public sealed class UserStore : IUserPasswordStore<User, Guid>, IUserSecurityStampStore<User, Guid>
+	sealed class UserStore : IUserPasswordStore<User, Guid>, IUserSecurityStampStore<User, Guid>
 	{
 		public Task CreateAsync(User user)
 		{

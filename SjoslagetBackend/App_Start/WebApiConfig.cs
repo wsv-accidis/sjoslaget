@@ -2,9 +2,9 @@
 
 namespace Accidis.Sjoslaget.WebService
 {
-	public static class WebApiConfig
+	static class WebApiConfig
 	{
-		private const string BookingReferencePattern = @"[0-9][A-Za-z0-9]{5}";
+		const string BookingReferencePattern = @"[0-9][A-Za-z0-9]{5}";
 
 		public static void Register(HttpConfiguration config)
 		{

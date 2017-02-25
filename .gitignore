@@ -12,4 +12,5 @@ packages/
 
 # Credentials
 *.pubxml
+Auth.config
 Db.config
