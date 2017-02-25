@@ -8,6 +8,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
+		[Authorize]
 		[HttpGet]
 		public IHttpActionResult Active()
 		{
@@ -50,7 +51,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 									   "using (select @CruiseId [CruiseId], @CabinTypeId [CabinTypeId]) SRC " +
 									   "on CC.[CruiseId] = SRC.CruiseId and CC.[CabinTypeId] = SRC.CabinTypeId " +
 									   "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +
-									   "when not matched then insert([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values(@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
+									   "when not matched then insert ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
 						new {CruiseId = activeCruise.Id, CabinTypeId = cruiseCabin.Id, Count = cruiseCabin.Count, PricePerPax = cruiseCabin.PricePerPax});
 				}
 				catch(SqlException ex)
