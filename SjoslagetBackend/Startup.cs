@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
+using Accidis.Sjoslaget.WebService.Models;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
@@ -19,6 +21,19 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			ConfigureAuth(app);
 			ConfigureApi(app);
+			Bootstrap();
+		}
+
+		static void Bootstrap()
+		{
+			Task.Run((Action) (async () =>
+			{
+				using(var userManager = SjoslagetUserManager.Create())
+				{
+					if(await userManager.Store.IsUserStoreEmptyAsync())
+						await userManager.CreateAsync(new User {UserName = AuthConfig.StartupAdminUser}, AuthConfig.StartupAdminPassword);
+				}
+			}));
 		}
 
 		static void ConfigureApi(IAppBuilder app)
@@ -47,7 +62,7 @@ namespace Accidis.Sjoslaget.WebService
 				IssuerSecurityTokenProviders = new[] {new SymmetricKeyIssuerSecurityTokenProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
 			};
 
-			app.CreatePerOwinContext<SjoslagetUserManager>(SjoslagetUserManager.Create);
+			app.CreatePerOwinContext(SjoslagetUserManager.Create);
 			app.UseOAuthAuthorizationServer(oauthOptions);
 			app.UseJwtBearerAuthentication(jwtOptions);
 		}

@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Dapper;
@@ -8,7 +9,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
-		[Authorize]
+		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
 		public IHttpActionResult Active()
 		{

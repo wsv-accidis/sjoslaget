@@ -146,6 +146,7 @@
     <Compile Include="Auth\AuthConfig.cs" />
     <Compile Include="Auth\JwtAccessTokenFormat.cs" />
     <Compile Include="Auth\OAuthProvider.cs" />
+    <Compile Include="Auth\Roles.cs" />
     <Compile Include="Auth\SjoslagetUserManager.cs" />
     <Compile Include="Auth\SjoslagetUserStore.cs" />
     <Compile Include="Controllers\CabinsController.cs" />

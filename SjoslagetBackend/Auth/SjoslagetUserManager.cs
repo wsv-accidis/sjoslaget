@@ -3,7 +3,6 @@ using System.Web;
 using Accidis.Sjoslaget.WebService.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
@@ -13,9 +12,27 @@ namespace Accidis.Sjoslaget.WebService.Auth
 		{
 		}
 
-		public static SjoslagetUserManager Create(IdentityFactoryOptions<SjoslagetUserManager> identityFactoryOptions, IOwinContext context)
+		public new SjoslagetUserStore Store => (SjoslagetUserStore) base.Store;
+
+		public static SjoslagetUserManager Create()
 		{
 			var manager = new SjoslagetUserManager();
+
+			manager.UserValidator = new UserValidator<User, Guid>(manager)
+			{
+				AllowOnlyAlphanumericUserNames = true,
+				RequireUniqueEmail = false
+			};
+
+			manager.PasswordValidator = new PasswordValidator
+			{
+				RequireDigit = false,
+				RequiredLength = 6,
+				RequireLowercase = false,
+				RequireNonLetterOrDigit = false,
+				RequireUppercase = false
+			};
+
 			return manager;
 		}
 	}
@@ -24,7 +41,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 	{
 		public static SjoslagetUserManager GetSjoslagetUserManager(this HttpContext context)
 		{
-			return context.GetOwinContext().GetUserManager<SjoslagetUserManager>();
+			return context.GetOwinContext().Get<SjoslagetUserManager>();
 		}
 	}
 }
