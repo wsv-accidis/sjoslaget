@@ -9,7 +9,13 @@ using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Owin;
+#if !DEBUG
+using Accidis.Sjoslaget.WebService.Db;
+#endif
 
 [assembly: OwinStartup(typeof(Startup))]
 
@@ -17,21 +23,30 @@ namespace Accidis.Sjoslaget.WebService
 {
 	public sealed class Startup
 	{
+		const string BookingReferencePattern = @"[0-9][A-Za-z0-9]{5}";
+
 		public void Configuration(IAppBuilder app)
 		{
+			ConfigureLogging();
+			var logger = LogManager.GetLogger(typeof(Startup).Name);
+			logger.Info("Starting up.");
+
 			ConfigureAuth(app);
 			ConfigureApi(app);
-			Bootstrap();
+			Bootstrap(logger);
 		}
 
-		static void Bootstrap()
+		static void Bootstrap(Logger logger)
 		{
 			Task.Run((Action) (async () =>
 			{
 				using(var userManager = SjoslagetUserManager.Create())
 				{
 					if(await userManager.Store.IsUserStoreEmptyAsync())
+					{
+						logger.Warn("Database is empty, creating default admin user.");
 						await userManager.CreateAsync(new User {UserName = AuthConfig.StartupAdminUser}, AuthConfig.StartupAdminPassword);
+					}
 				}
 			}));
 		}
@@ -39,7 +54,32 @@ namespace Accidis.Sjoslaget.WebService
 		static void ConfigureApi(IAppBuilder app)
 		{
 			HttpConfiguration config = new HttpConfiguration();
-			WebApiConfig.Register(config);
+			config.MapHttpAttributeRoutes();
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionIdApi",
+				routeTemplate: "api/{controller}/{action}/{reference}",
+				defaults: new {},
+				constraints: new {reference = BookingReferencePattern}
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerIdApi",
+				routeTemplate: "api/{controller}/{reference}",
+				defaults: new {},
+				constraints: new {reference = BookingReferencePattern}
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionApi",
+				routeTemplate: "api/{controller}/{action}"
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerSimpleApi",
+				routeTemplate: "api/{controller}"
+			);
+
 			app.UseCors(CorsOptions.AllowAll);
 			app.UseWebApi(config);
 		}
@@ -65,6 +105,42 @@ namespace Accidis.Sjoslaget.WebService
 			app.CreatePerOwinContext(SjoslagetUserManager.Create);
 			app.UseOAuthAuthorizationServer(oauthOptions);
 			app.UseJwtBearerAuthentication(jwtOptions);
+		}
+
+		static void ConfigureLogging()
+		{
+			var config = new LoggingConfiguration();
+
+#if DEBUG
+			var target = new DebuggerTarget {Name = "debug"};
+			config.AddTarget(target);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
+#else
+			var target = new DatabaseTarget
+			{
+				Name = "db",
+				ConnectionString = SjoslagetDb.ConnectionString,
+				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
+							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
+				Parameters =
+				{
+					new DatabaseParameterInfo("@Timestamp", "${date:universalTime=true}"),
+					new DatabaseParameterInfo("@Level", "${level}"),
+					new DatabaseParameterInfo("@Logger", "${logger}"),
+					new DatabaseParameterInfo("@Message", "${message}"),
+					new DatabaseParameterInfo("@Callsite", "${callsite}"),
+					new DatabaseParameterInfo("@Exception", "${exception:format=tostring:maxInnerExceptionLevel=2}"),
+					new DatabaseParameterInfo("@UserName", "${aspnet-User-Identity}"),
+					new DatabaseParameterInfo("@Method", "${aspnet-Request-Method}"),
+					new DatabaseParameterInfo("@Url", "${aspnet-Request:serverVariable=HTTP_URL}"),
+					new DatabaseParameterInfo("@RemoteAddress", "${aspnet-Request:serverVariable=REMOTE_ADDR}"),
+					new DatabaseParameterInfo("@LocalAddress", "${aspnet-Request:serverVariable=LOCAL_ADDR}")
+				}
+			};
+			config.AddTarget(target);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, target));
+#endif
+			LogManager.Configuration = config;
 		}
 	}
 }

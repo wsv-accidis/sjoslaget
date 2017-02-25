@@ -1,13 +1,13 @@
-﻿using System.Configuration;
+﻿using System.Web.Configuration;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
 	static class AuthConfig
 	{
-		public static string Audience => ConfigurationManager.AppSettings["audience"];
-		public static string AudienceSecret => ConfigurationManager.AppSettings["audienceSecret"];
-		public static string Issuer => ConfigurationManager.AppSettings["issuer"];
-		public static string StartupAdminUser => ConfigurationManager.AppSettings["startupAdminUser"];
-		public static string StartupAdminPassword => ConfigurationManager.AppSettings["startupAdminPassword"];
+		public static string Audience => WebConfigurationManager.AppSettings["audience"];
+		public static string AudienceSecret => WebConfigurationManager.AppSettings["audienceSecret"];
+		public static string Issuer => WebConfigurationManager.AppSettings["issuer"];
+		public static string StartupAdminUser => WebConfigurationManager.AppSettings["startupAdminUser"];
+		public static string StartupAdminPassword => WebConfigurationManager.AppSettings["startupAdminPassword"];
 	}
 }
