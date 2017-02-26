@@ -10,6 +10,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class UsersController : ApiController
 	{
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public async Task<IHttpActionResult> Create(User user)
 		{

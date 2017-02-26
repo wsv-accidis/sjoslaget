@@ -9,7 +9,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
-		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
 		public IHttpActionResult Active()
 		{
@@ -36,10 +35,10 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 		}
 
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public IHttpActionResult CreateOrUpdate(CruiseCabin cruiseCabin)
 		{
-			// TODO Authentication required
 			using(var connection = SjoslagetDb.Open())
 			{
 				var activeCruise = Cruise.Active(connection);

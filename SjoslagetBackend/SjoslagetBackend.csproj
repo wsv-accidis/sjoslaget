@@ -157,7 +157,6 @@
     <Compile Include="Auth\SjoslagetUserManager.cs" />
     <Compile Include="Auth\SjoslagetUserStore.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
-    <Compile Include="Controllers\HelloWorldController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\SjoslagetDb.cs" />
     <Compile Include="Db\SqlExceptionExtensions.cs" />
