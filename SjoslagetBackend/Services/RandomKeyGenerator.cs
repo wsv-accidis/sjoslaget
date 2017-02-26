@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Accidis.Sjoslaget.WebService.Services
 {
-	sealed class RandomKeyGenerator
+	public sealed class RandomKeyGenerator
 	{
 		const string Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		const string LettersAndNumbers = Letters + Numbers;

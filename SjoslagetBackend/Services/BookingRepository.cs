@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
@@ -10,12 +9,20 @@ using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
 {
-	sealed class BookingRepository
+	public sealed class BookingRepository
 	{
+		readonly RandomKeyGenerator _randomKeyGenerator;
+		readonly SjoslagetUserManager _userManager;
+
+		public BookingRepository(RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		{
+			_randomKeyGenerator = randomKeyGenerator;
+			_userManager = userManager;
+		}
+
 		public async Task<BookingResult> CreateAsync(Cruise cruise)
 		{
-			var keyGen = new RandomKeyGenerator();
-			var booking = new Booking {CruiseId = cruise.Id, Reference = keyGen.GenerateBookingReference()};
+			var booking = new Booking {CruiseId = cruise.Id, Reference = _randomKeyGenerator.GenerateBookingReference()};
 
 			using(SqlConnection db = SjoslagetDb.Open())
 			{
@@ -32,16 +39,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 					{
 						// in the unlikely event that a duplicate reference is generated, simply try again
 						if(ex.IsUniqueKeyViolation())
-							booking.Reference = keyGen.GenerateBookingReference();
+							booking.Reference = _randomKeyGenerator.GenerateBookingReference();
 						else
 							throw;
 					}
 				}
 			}
 
-			var userManager = HttpContext.Current.GetSjoslagetUserManager();
-			var password = keyGen.GeneratePinCode();
-			await userManager.CreateAsync(new User {UserName = booking.Reference, IsBooking = true}, password);
+			var password = _randomKeyGenerator.GeneratePinCode();
+			await _userManager.CreateAsync(new User {UserName = booking.Reference, IsBooking = true}, password);
 
 			return BookingResult.FromBooking(booking, password);
 		}

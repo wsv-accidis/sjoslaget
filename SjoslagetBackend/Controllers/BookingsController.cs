@@ -10,7 +10,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class BookingsController : ApiController
 	{
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
-		readonly BookingRepository _repository = new BookingRepository();
+		readonly BookingRepository _repository;
+
+		public BookingsController(BookingRepository bookingRepository)
+		{
+			_repository = bookingRepository;
+		}
 
 		[HttpPost]
 		public async Task<IHttpActionResult> Create()

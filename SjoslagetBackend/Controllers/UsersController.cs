@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
@@ -10,12 +9,18 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class UsersController : ApiController
 	{
+		readonly SjoslagetUserManager _userManager;
+
+		public UsersController(SjoslagetUserManager userManager)
+		{
+			_userManager = userManager;
+		}
+
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public async Task<IHttpActionResult> Create(User user)
 		{
-			var userManager = HttpContext.Current.GetSjoslagetUserManager();
-			IdentityResult result = await userManager.CreateAsync(user, user.Password);
+			IdentityResult result = await _userManager.CreateAsync(user, user.Password);
 
 			if(null == result)
 				return InternalServerError();

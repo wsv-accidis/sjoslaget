@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Web;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
-	sealed class SjoslagetUserManager : UserManager<User, Guid>
+	public sealed class SjoslagetUserManager : UserManager<User, Guid>
 	{
 		SjoslagetUserManager() : base(new SjoslagetUserStore())
 		{
 		}
 
-		public new SjoslagetUserStore Store => (SjoslagetUserStore) base.Store;
+		internal new SjoslagetUserStore Store => (SjoslagetUserStore) base.Store;
 
 		public static SjoslagetUserManager Create()
 		{
@@ -35,14 +33,6 @@ namespace Accidis.Sjoslaget.WebService.Auth
 			};
 
 			return manager;
-		}
-	}
-
-	static class SjoslagetUserManagerExtensions
-	{
-		public static SjoslagetUserManager GetSjoslagetUserManager(this HttpContext context)
-		{
-			return context.GetOwinContext().Get<SjoslagetUserManager>();
 		}
 	}
 }

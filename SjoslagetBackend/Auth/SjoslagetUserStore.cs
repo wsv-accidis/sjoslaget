@@ -17,11 +17,6 @@ namespace Accidis.Sjoslaget.WebService.Auth
 					new {UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp, IsBooking = user.IsBooking});
 		}
 
-		public static UserManager<User, Guid> CreateManager()
-		{
-			return new UserManager<User, Guid>(new SjoslagetUserStore());
-		}
-
 		public async Task DeleteAsync(User user)
 		{
 			using(var db = SjoslagetDb.Open())

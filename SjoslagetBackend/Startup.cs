@@ -5,6 +5,8 @@ using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using DryIoc;
+using DryIoc.WebApi;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
@@ -26,12 +28,11 @@ namespace Accidis.Sjoslaget.WebService
 	{
 		public void Configuration(IAppBuilder app)
 		{
-			ConfigureLogging();
-			var logger = LogManager.GetLogger(typeof(Startup).Name);
-			logger.Info("Starting up.");
-
-			ConfigureAuth(app);
-			ConfigureApi(app);
+			var logger = ConfigureLogging();
+			var config = CreateHttpConfiguration();
+			var container = ConfigureContainer(config);
+			ConfigureAuth(app, container);
+			ConfigureApp(app, config);
 			Bootstrap(logger);
 		}
 
@@ -50,47 +51,20 @@ namespace Accidis.Sjoslaget.WebService
 			}));
 		}
 
-		static void ConfigureApi(IAppBuilder app)
+		static void ConfigureApp(IAppBuilder app, HttpConfiguration config)
 		{
-			HttpConfiguration config = new HttpConfiguration();
-			config.MapHttpAttributeRoutes();
-
-			config.Routes.MapHttpRoute(
-				name: "ControllerActionIdApi",
-				routeTemplate: "api/{controller}/{action}/{reference}",
-				defaults: new {},
-				constraints: new {reference = BookingConfig.BookingReferencePattern}
-			);
-
-			config.Routes.MapHttpRoute(
-				name: "ControllerIdApi",
-				routeTemplate: "api/{controller}/{reference}",
-				defaults: new {},
-				constraints: new {reference = BookingConfig.BookingReferencePattern }
-			);
-
-			config.Routes.MapHttpRoute(
-				name: "ControllerActionApi",
-				routeTemplate: "api/{controller}/{action}"
-			);
-
-			config.Routes.MapHttpRoute(
-				name: "ControllerSimpleApi",
-				routeTemplate: "api/{controller}"
-			);
-
 			app.UseCors(CorsOptions.AllowAll);
 			app.UseWebApi(config);
 		}
 
-		static void ConfigureAuth(IAppBuilder app)
+		static void ConfigureAuth(IAppBuilder app, IContainer container)
 		{
 			var oauthOptions = new OAuthAuthorizationServerOptions
 			{
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
 				AccessTokenFormat = new JwtAccessTokenFormat(),
 				AllowInsecureHttp = true,
-				Provider = new OAuthProvider(),
+				Provider = container.Resolve<OAuthProvider>(),
 				TokenEndpointPath = new PathString("/api/token"),
 			};
 
@@ -106,7 +80,19 @@ namespace Accidis.Sjoslaget.WebService
 			app.UseJwtBearerAuthentication(jwtOptions);
 		}
 
-		static void ConfigureLogging()
+		static IContainer ConfigureContainer(HttpConfiguration config)
+		{
+			var container = new Container().WithWebApi(config);
+
+			container.Register<BookingRepository>();
+			container.Register<RandomKeyGenerator>();
+			container.UseInstance(SjoslagetUserManager.Create());
+			container.Register<OAuthProvider>();
+
+			return container;
+		}
+
+		static Logger ConfigureLogging()
 		{
 			var config = new LoggingConfiguration();
 
@@ -140,6 +126,42 @@ namespace Accidis.Sjoslaget.WebService
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, target));
 #endif
 			LogManager.Configuration = config;
+
+			var logger = LogManager.GetLogger(typeof(Startup).Name);
+			logger.Info("Starting up.");
+			return logger;
+		}
+
+		static HttpConfiguration CreateHttpConfiguration()
+		{
+			HttpConfiguration config = new HttpConfiguration();
+			config.MapHttpAttributeRoutes();
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionIdApi",
+				routeTemplate: "api/{controller}/{action}/{reference}",
+				defaults: new {},
+				constraints: new {reference = BookingConfig.BookingReferencePattern}
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerIdApi",
+				routeTemplate: "api/{controller}/{reference}",
+				defaults: new {},
+				constraints: new {reference = BookingConfig.BookingReferencePattern}
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionApi",
+				routeTemplate: "api/{controller}/{action}"
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "ControllerSimpleApi",
+				routeTemplate: "api/{controller}"
+			);
+
+			return config;
 		}
 	}
 }
