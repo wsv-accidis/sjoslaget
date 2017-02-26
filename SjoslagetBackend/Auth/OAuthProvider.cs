@@ -15,15 +15,16 @@ namespace Accidis.Sjoslaget.WebService.Auth
 			var userManager = HttpContext.Current.GetSjoslagetUserManager();
 			User user = await userManager.FindAsync(context.UserName, context.Password);
 
-			if(null == user)
+			if(null != user)
 			{
-				context.SetError("invalid_grant", "The user name or password is incorrect.");
-				return;
-			}
+				var identity = await userManager.CreateIdentityAsync(user, context.Options.AuthenticationType);
+				if(!user.IsBooking)
+					identity.AddClaim(new Claim(ClaimTypes.Role, Roles.Admin));
 
-			var identity = await userManager.CreateIdentityAsync(user, context.Options.AuthenticationType);
-			identity.AddClaim(new Claim(ClaimTypes.Role, Roles.Admin));
-			context.Validated(identity);
+				context.Validated(identity);
+			}
+			else
+				context.SetError("invalid_grant", "The user name or password is incorrect.");
 		}
 
 		public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)

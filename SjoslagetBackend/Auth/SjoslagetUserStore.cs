@@ -13,8 +13,8 @@ namespace Accidis.Sjoslaget.WebService.Auth
 		public async Task CreateAsync(User user)
 		{
 			using(var db = SjoslagetDb.Open())
-				await db.ExecuteAsync("insert into [User] ([UserName], [PasswordHash], [SecurityStamp]) values (@UserName, @PasswordHash, @SecurityStamp)",
-					new {UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp});
+				await db.ExecuteAsync("insert into [User] ([UserName], [PasswordHash], [SecurityStamp], [IsBooking]) values (@UserName, @PasswordHash, @SecurityStamp, @IsBooking)",
+					new {UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp, IsBooking = user.IsBooking});
 		}
 
 		public static UserManager<User, Guid> CreateManager()
@@ -89,8 +89,8 @@ namespace Accidis.Sjoslaget.WebService.Auth
 		public async Task UpdateAsync(User user)
 		{
 			using(var db = SjoslagetDb.Open())
-				await db.ExecuteAsync("update [User] set [UserName] = @UserName, [PasswordHash] = @PasswordHash, SecurityStamp = @SecurityStamp where [Id] = @Id",
-					new {Id = user.Id, UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp});
+				await db.ExecuteAsync("update [User] set [UserName] = @UserName, [PasswordHash] = @PasswordHash, SecurityStamp = @SecurityStamp, IsBooking = @IsBooking where [Id] = @Id",
+					new {Id = user.Id, UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp, IsBooking = user.IsBooking});
 		}
 	}
 }

@@ -156,16 +156,22 @@
     <Compile Include="Auth\Roles.cs" />
     <Compile Include="Auth\SjoslagetUserManager.cs" />
     <Compile Include="Auth\SjoslagetUserStore.cs" />
+    <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\SjoslagetDb.cs" />
     <Compile Include="Db\SqlExceptionExtensions.cs" />
+    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\BookingResult.cs" />
     <Compile Include="Models\CabinType.cs" />
     <Compile Include="Models\Cruise.cs" />
     <Compile Include="Models\CruiseCabin.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Services\BookingConfig.cs" />
+    <Compile Include="Services\RandomKeyGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

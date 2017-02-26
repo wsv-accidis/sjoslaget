@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.Sjoslaget.WebService.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -27,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 			manager.PasswordValidator = new PasswordValidator
 			{
 				RequireDigit = false,
-				RequiredLength = 6,
+				RequiredLength = BookingConfig.PinCodeLength,
 				RequireLowercase = false,
 				RequireNonLetterOrDigit = false,
 				RequireUppercase = false

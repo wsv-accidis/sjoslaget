@@ -12,13 +12,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpGet]
 		public IHttpActionResult Active()
 		{
-			using(var connection = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
-				var activeCruise = Cruise.Active(connection);
+				var activeCruise = Cruise.Active(db);
 				if(null == activeCruise)
 					return NotFound();
 
-				var result = connection.Query<CruiseCabin>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
+				var result = db.Query<CruiseCabin>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
 					new {Id = activeCruise.Id});
 
 				return Ok(result);
@@ -28,9 +28,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpGet]
 		public IHttpActionResult All()
 		{
-			using(var connection = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
-				var result = connection.Query<CabinType>("select * from [CabinType] order by [Order]");
+				var result = db.Query<CabinType>("select * from [CabinType] order by [Order]");
 				return Ok(result);
 			}
 		}
@@ -39,15 +39,15 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpPost]
 		public IHttpActionResult CreateOrUpdate(CruiseCabin cruiseCabin)
 		{
-			using(var connection = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
-				var activeCruise = Cruise.Active(connection);
+				var activeCruise = Cruise.Active(db);
 				if(null == activeCruise)
 					return NotFound();
 
 				try
 				{
-					connection.Execute("merge [CruiseCabin] CC " +
+					db.Execute("merge [CruiseCabin] CC " +
 									   "using (select @CruiseId [CruiseId], @CabinTypeId [CabinTypeId]) SRC " +
 									   "on CC.[CruiseId] = SRC.CruiseId and CC.[CabinTypeId] = SRC.CabinTypeId " +
 									   "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +

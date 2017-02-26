@@ -4,6 +4,7 @@ using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.Sjoslaget.WebService.Services;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
@@ -23,8 +24,6 @@ namespace Accidis.Sjoslaget.WebService
 {
 	public sealed class Startup
 	{
-		const string BookingReferencePattern = @"[0-9][A-Za-z0-9]{5}";
-
 		public void Configuration(IAppBuilder app)
 		{
 			ConfigureLogging();
@@ -60,14 +59,14 @@ namespace Accidis.Sjoslaget.WebService
 				name: "ControllerActionIdApi",
 				routeTemplate: "api/{controller}/{action}/{reference}",
 				defaults: new {},
-				constraints: new {reference = BookingReferencePattern}
+				constraints: new {reference = BookingConfig.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerIdApi",
 				routeTemplate: "api/{controller}/{reference}",
 				defaults: new {},
-				constraints: new {reference = BookingReferencePattern}
+				constraints: new {reference = BookingConfig.BookingReferencePattern }
 			);
 
 			config.Routes.MapHttpRoute(
