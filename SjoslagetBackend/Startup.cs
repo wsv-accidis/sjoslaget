@@ -16,6 +16,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using Owin;
+
 #if !DEBUG
 using Accidis.Sjoslaget.WebService.Db;
 #endif
@@ -75,7 +76,6 @@ namespace Accidis.Sjoslaget.WebService
 				IssuerSecurityTokenProviders = new[] {new SymmetricKeyIssuerSecurityTokenProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
 			};
 
-			app.CreatePerOwinContext(SjoslagetUserManager.Create);
 			app.UseOAuthAuthorizationServer(oauthOptions);
 			app.UseJwtBearerAuthentication(jwtOptions);
 		}
@@ -85,8 +85,9 @@ namespace Accidis.Sjoslaget.WebService
 			var container = new Container().WithWebApi(config);
 
 			container.Register<BookingRepository>();
+			container.Register<CruiseRepository>();
 			container.Register<RandomKeyGenerator>();
-			container.UseInstance(SjoslagetUserManager.Create());
+			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
 			container.Register<OAuthProvider>();
 
 			return container;

@@ -1,24 +1,33 @@
 ﻿using System.Data.SqlClient;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.Sjoslaget.WebService.Services;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
-		[HttpGet]
-		public IHttpActionResult Active()
+		readonly CruiseRepository _cruiseRepository;
+
+		public CabinsController(CruiseRepository cruiseRepository)
 		{
+			_cruiseRepository = cruiseRepository;
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Active()
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
 			using(var db = SjoslagetDb.Open())
 			{
-				var activeCruise = Cruise.Active(db);
-				if(null == activeCruise)
-					return NotFound();
-
-				var result = db.Query<CruiseCabin>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
+				var result = await db.QueryAsync<CruiseCabin>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
 					new {Id = activeCruise.Id});
 
 				return Ok(result);
@@ -26,32 +35,32 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		[HttpGet]
-		public IHttpActionResult All()
+		public async Task<IHttpActionResult> All()
 		{
 			using(var db = SjoslagetDb.Open())
 			{
-				var result = db.Query<CabinType>("select * from [CabinType] order by [Order]");
+				var result = await db.QueryAsync<CabinType>("select * from [CabinType] order by [Order]");
 				return Ok(result);
 			}
 		}
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
-		public IHttpActionResult CreateOrUpdate(CruiseCabin cruiseCabin)
+		public async Task<IHttpActionResult> CreateOrUpdate(CruiseCabin cruiseCabin)
 		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
 			using(var db = SjoslagetDb.Open())
 			{
-				var activeCruise = Cruise.Active(db);
-				if(null == activeCruise)
-					return NotFound();
-
 				try
 				{
-					db.Execute("merge [CruiseCabin] CC " +
-									   "using (select @CruiseId [CruiseId], @CabinTypeId [CabinTypeId]) SRC " +
-									   "on CC.[CruiseId] = SRC.CruiseId and CC.[CabinTypeId] = SRC.CabinTypeId " +
-									   "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +
-									   "when not matched then insert ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
+					await db.ExecuteAsync("merge [CruiseCabin] CC " +
+										  "using (select @CruiseId [CruiseId], @CabinTypeId [CabinTypeId]) SRC " +
+										  "on CC.[CruiseId] = SRC.CruiseId and CC.[CabinTypeId] = SRC.CabinTypeId " +
+										  "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +
+										  "when not matched then insert ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
 						new {CruiseId = activeCruise.Id, CabinTypeId = cruiseCabin.Id, Count = cruiseCabin.Count, PricePerPax = cruiseCabin.PricePerPax});
 				}
 				catch(SqlException ex)

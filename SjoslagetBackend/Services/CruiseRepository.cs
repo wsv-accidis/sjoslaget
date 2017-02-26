@@ -1,0 +1,20 @@
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Accidis.Sjoslaget.WebService.Db;
+using Accidis.Sjoslaget.WebService.Models;
+using Dapper;
+
+namespace Accidis.Sjoslaget.WebService.Services
+{
+	public sealed class CruiseRepository
+	{
+		public async Task<Cruise> GetActiveAsync()
+		{
+			using(var db = SjoslagetDb.Open())
+			{
+				var result = await db.QueryAsync<Cruise>("select top 1 * from Cruise where IsActive = @IsActive", new {IsActive = true});
+				return result.FirstOrDefault();
+			}
+		}
+	}
+}
