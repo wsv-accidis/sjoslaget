@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accidis.Sjoslaget.Test.Db
 {
 	[TestClass]
+	[DeploymentItem("DbTest.config")]
 	public sealed class SjoslagetDbTest
 	{
 		[TestMethod]

@@ -2,6 +2,7 @@
 bin/
 obj/
 packages/
+TestResults/
 
 # Visual Studio user files
 *.suo
