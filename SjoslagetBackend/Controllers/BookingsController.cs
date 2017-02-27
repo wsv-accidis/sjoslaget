@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
@@ -19,13 +20,22 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IHttpActionResult> Create()
+		public async Task<IHttpActionResult> Create(BookingSource bookingSource)
 		{
 			Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
 			if(null == activeCruise)
 				return NotFound();
 
-			var result = await _bookingRepository.CreateAsync(activeCruise);
+			try
+			{
+				BookingSource.Validate(bookingSource);
+			}
+			catch(ArgumentException ex)
+			{
+				return BadRequest(ex.Message);
+			}
+
+			var result = await _bookingRepository.CreateAsync(activeCruise, bookingSource);
 
 			_log.Info("Created booking {0}.", result.Reference);
 			return Ok(result);

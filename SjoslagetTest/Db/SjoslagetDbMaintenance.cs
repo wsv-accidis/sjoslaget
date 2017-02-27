@@ -16,9 +16,9 @@ namespace Accidis.Sjoslaget.Test.Db
 		const string TestDbName = "db-jv3test";
 		const string TestDbSchema = "dbu-jv3test";
 
+		[Ignore]
 		[TestMethod]
 		[DeploymentItem(ScriptsFolder + @"\CreateDatabase.sql", ScriptsFolder), DeploymentItem(ScriptsFolder + @"\DropAllTables.sql", ScriptsFolder)]
-		[Ignore]
 		public void Maintenance_DropAndRecreateTestingDb()
 		{
 			/*

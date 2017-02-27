@@ -85,6 +85,7 @@ namespace Accidis.Sjoslaget.WebService
 			var container = new Container().WithWebApi(config);
 
 			container.Register<BookingRepository>();
+			container.Register<CabinTypeRepository>();
 			container.Register<CruiseRepository>();
 			container.Register<RandomKeyGenerator>();
 			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);

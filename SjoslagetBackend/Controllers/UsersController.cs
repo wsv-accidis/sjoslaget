@@ -20,7 +20,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpPost]
 		public async Task<IHttpActionResult> Create(User user)
 		{
-			IdentityResult result = await _userManager.CreateAsync(user, user.Password);
+			IdentityResult result = await _userManager.CreateAsync(new User {UserName = user.UserName}, user.Password);
 
 			if(null == result)
 				return InternalServerError();

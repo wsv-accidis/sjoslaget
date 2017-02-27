@@ -5,9 +5,9 @@ using Microsoft.AspNet.Identity;
 
 namespace Accidis.Sjoslaget.WebService.Auth
 {
-	public sealed class SjoslagetUserManager : UserManager<User, Guid>
+	public class SjoslagetUserManager : UserManager<User, Guid>
 	{
-		SjoslagetUserManager() : base(new SjoslagetUserStore())
+		public SjoslagetUserManager() : base(new SjoslagetUserStore())
 		{
 		}
 

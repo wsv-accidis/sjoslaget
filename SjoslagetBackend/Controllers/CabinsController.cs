@@ -11,10 +11,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
+		readonly CabinTypeRepository _cabinTypeRepository;
 		readonly CruiseRepository _cruiseRepository;
 
-		public CabinsController(CruiseRepository cruiseRepository)
+		public CabinsController(CabinTypeRepository cabinTypeRepository, CruiseRepository cruiseRepository)
 		{
+			_cabinTypeRepository = cabinTypeRepository;
 			_cruiseRepository = cruiseRepository;
 		}
 
@@ -27,7 +29,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = SjoslagetDb.Open())
 			{
-				var result = await db.QueryAsync<CruiseCabin>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
+				var result = await db.QueryAsync<CruiseCabinResult>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
 					new {Id = activeCruise.Id});
 
 				return Ok(result);
@@ -37,16 +39,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> All()
 		{
-			using(var db = SjoslagetDb.Open())
-			{
-				var result = await db.QueryAsync<CabinType>("select * from [CabinType] order by [Order]");
-				return Ok(result);
-			}
+			return Ok(await _cabinTypeRepository.GetAllAsync());
 		}
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
-		public async Task<IHttpActionResult> CreateOrUpdate(CruiseCabin cruiseCabin)
+		public async Task<IHttpActionResult> CreateOrUpdate(CruiseCabinSource cruiseCabin)
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
 			if(null == activeCruise)
@@ -61,7 +59,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 										  "on CC.[CruiseId] = SRC.CruiseId and CC.[CabinTypeId] = SRC.CabinTypeId " +
 										  "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +
 										  "when not matched then insert ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
-						new {CruiseId = activeCruise.Id, CabinTypeId = cruiseCabin.Id, Count = cruiseCabin.Count, PricePerPax = cruiseCabin.PricePerPax});
+						new {CruiseId = activeCruise.Id, CabinTypeId = cruiseCabin.TypeId, Count = cruiseCabin.Count, PricePerPax = cruiseCabin.PricePerPax});
 				}
 				catch(SqlException ex)
 				{
