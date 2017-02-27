@@ -14,3 +14,4 @@ packages/
 *.pubxml
 Auth.config
 Db.config
+DbTest.config
