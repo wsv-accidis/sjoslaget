@@ -75,10 +75,17 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList)
 		{
+			Dictionary<Guid, CabinType> typeDict = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
 			Dictionary<Guid, CruiseCabinAvailability> availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruiseId)).ToDictionary(c => c.CabinTypeId, c => c);
 
 			foreach(BookingSource.Cabin cabinSource in sourceList)
 			{
+				CabinType type;
+				if(!typeDict.TryGetValue(cabinSource.TypeId, out type))
+					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an existing type.");
+				if(cabinSource.Pax.Count > type.Capacity)
+					throw new BookingException($"Cabin of type \"{cabinSource.TypeId}\" is overbooked, capacity is {type.Capacity}, got {cabinSource.Pax.Count} pax.");
+
 				CruiseCabinAvailability availability;
 				if(!availabilityDict.TryGetValue(cabinSource.TypeId, out availability))
 					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an active type.");

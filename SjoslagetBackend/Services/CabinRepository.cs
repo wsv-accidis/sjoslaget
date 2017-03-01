@@ -26,11 +26,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 		public async Task<CabinType[]> GetAllAsync()
 		{
 			using(var db = SjoslagetDb.Open())
-			{
-				var result = await db.QueryAsync<CabinType>("select * from [CabinType] order by [Order]");
-				return result.ToArray();
-			}
+				return await GetAllAsync(db);
 		}
+
+		public async Task<CabinType[]> GetAllAsync(SqlConnection db)
+		{
+			var result = await db.QueryAsync<CabinType>("select * from [CabinType] order by [Order]");
+			return result.ToArray();
+		}
+
 
 		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(SqlConnection db, Guid cruiseId)
 		{

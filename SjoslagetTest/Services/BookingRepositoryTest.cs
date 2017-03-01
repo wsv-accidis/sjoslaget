@@ -20,40 +20,38 @@ namespace Accidis.Sjoslaget.Test.Services
 		static readonly SjoslagetDbTestConfig Config = SjoslagetDbTestConfig.Default;
 
 		[TestMethod]
-		public async Task GivenBookingSourceWithErrors_WhenDataIsPartiallyCorrect_ShouldNotCreateAnyBooking()
+		public async Task GivenBookingSource_WhenCabinHasTooFewPax_ShouldCreateBooking()
 		{
-			var source = new BookingSource
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(3)));
+
+			var result = await CreateBookingFromSource(source);
+			Assert.IsNotNull(result.Reference);
+		}
+
+		[TestMethod]
+		public async Task GivenBookingSource_WhenCabinHasTooManyPax_ShouldNotCreateBooking()
+		{
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(5)));
+
+			bool failed = false;
+			try
 			{
-				FirstName = "Felaktig",
-				LastName = "Felaktigsson",
-				Email = "test@sjoslaget.se",
-				PhoneNo = "0000-123 456",
-				Cabins = new List<BookingSource.Cabin>
-				{
-					new BookingSource.Cabin
-					{
-						TypeId = SjoslagetDbExtensions.CabinTypeId,
-						Pax = new List<BookingSource.Pax>
-						{
-							new BookingSource.Pax {FirstName = "This", LastName = "cabin"},
-							new BookingSource.Pax {FirstName = "should", LastName = "not"},
-							new BookingSource.Pax {FirstName = "be", LastName = "created"},
-							new BookingSource.Pax {FirstName = "although", LastName = "it's correct."}
-						}
-					},
-					new BookingSource.Cabin
-					{
-						TypeId = Guid.NewGuid(), // this will not be a valid cabin type
-						Pax = new List<BookingSource.Pax>
-						{
-							new BookingSource.Pax {FirstName = "This", LastName = "cabin"},
-							new BookingSource.Pax {FirstName = "has", LastName = "an"},
-							new BookingSource.Pax {FirstName = "invalid", LastName = "cabintype"},
-							new BookingSource.Pax {FirstName = "for", LastName = "sure!"}
-						}
-					}
-				}
-			};
+				await CreateBookingFromSource(source);
+			}
+			catch(BookingException)
+			{
+				failed = true;
+			}
+			Assert.IsTrue(failed, "Creating an invalid booking should have failed.");
+		}
+
+		[TestMethod]
+		public async Task GivenBookingSource_WhenDataIsPartiallyCorrect_ShouldNotCreateBooking()
+		{
+			var source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)),
+				GetCabinForTest(Guid.NewGuid(), GetMultiplePaxForTest(4)) // this will not be a valid cabin type
+			);
 
 			bool failed = false;
 			try
@@ -73,34 +71,24 @@ namespace Accidis.Sjoslaget.Test.Services
 				int numberOfCabins = await db.ExecuteScalarAsync<int>("select count(*) from [BookingCabin]");
 				Assert.AreEqual(0, numberOfCabins, "There should not be any booked cabins in the database.");
 				int numberOfPax = await db.ExecuteScalarAsync<int>("select count(*) from [BookingPax]");
-				Assert.AreEqual(0, numberOfPax, "There should not be any booked ´passengers in the database.");
+				Assert.AreEqual(0, numberOfPax, "There should not be any booked passengers in the database.");
 			}
+		}
+
+		[TestMethod]
+		public async Task GivenBookingSource_WhenDataIsValid_ShouldCreateBooking()
+		{
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+
+			var result = await CreateBookingFromSource(source);
+			Assert.IsNotNull(result.Reference);
+			Assert.IsNotNull(result.Password);
 		}
 
 		[TestMethod]
 		public async Task GivenMultipleConcurrentBookings_ShouldNotExceedAvailableCabins()
 		{
-			var source = new BookingSource
-			{
-				FirstName = "Wilhelm",
-				LastName = "Svenselius",
-				Email = "test@sjoslaget.se",
-				PhoneNo = "0000-123 456",
-				Cabins = new List<BookingSource.Cabin>
-				{
-					new BookingSource.Cabin
-					{
-						TypeId = SjoslagetDbExtensions.CabinTypeId,
-						Pax = new List<BookingSource.Pax>
-						{
-							new BookingSource.Pax {FirstName = "Ett", LastName = "Ettson"},
-							new BookingSource.Pax {FirstName = "Två", LastName = "Tvåson"},
-							new BookingSource.Pax {FirstName = "Tre", LastName = "Treson"},
-							new BookingSource.Pax {FirstName = "Fyr", LastName = "Fyrson"}
-						}
-					}
-				}
-			};
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
 
 			var userManagerMock = new Mock<SjoslagetUserManager>();
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
@@ -134,36 +122,6 @@ namespace Accidis.Sjoslaget.Test.Services
 			}
 		}
 
-		[TestMethod]
-		public async Task GivenValidBookingSource_ShouldCreateBooking()
-		{
-			var source = new BookingSource
-			{
-				FirstName = "Wilhelm",
-				LastName = "Svenselius",
-				Email = "test@sjoslaget.se",
-				PhoneNo = "0000-123 456",
-				Cabins = new List<BookingSource.Cabin>
-				{
-					new BookingSource.Cabin
-					{
-						TypeId = SjoslagetDbExtensions.CabinTypeId,
-						Pax = new List<BookingSource.Pax>
-						{
-							new BookingSource.Pax {FirstName = "Ett", LastName = "Ettson"},
-							new BookingSource.Pax {FirstName = "Två", LastName = "Tvåson"},
-							new BookingSource.Pax {FirstName = "Tre", LastName = "Treson"},
-							new BookingSource.Pax {FirstName = "Fyr", LastName = "Fyrson"}
-						}
-					}
-				}
-			};
-
-			var result = await CreateBookingFromSource(source);
-			Assert.IsNotNull(result.Reference);
-			Assert.IsNotNull(result.Password);
-		}
-
 		[TestInitialize]
 		public void Initialize()
 		{
@@ -176,8 +134,45 @@ namespace Accidis.Sjoslaget.Test.Services
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
 			var sut = new BookingRepository(new CabinRepository(), new RandomKeyGenerator(), userManagerMock.Object);
-			var result = await sut.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			return await sut.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+		}
+
+		static BookingSource GetBookingForTest(params BookingSource.Cabin[] cabins)
+		{
+			return new BookingSource
+			{
+				FirstName = "Testförnamn",
+				LastName = "Testefternamn",
+				Email = "test@sjoslaget.se",
+				PhoneNo = "0000-123 456",
+				Cabins = new List<BookingSource.Cabin>(cabins)
+			};
+		}
+
+		static BookingSource.Cabin GetCabinForTest(Guid cabinTypeId, params BookingSource.Pax[] pax)
+		{
+			return new BookingSource.Cabin
+			{
+				TypeId = cabinTypeId,
+				Pax = new List<BookingSource.Pax>(pax)
+			};
+		}
+
+		static BookingSource.Pax[] GetMultiplePaxForTest(int count)
+		{
+			var result = new BookingSource.Pax[count];
+			for(int i = 0; i < count; i++)
+				result[i] = GetPaxForTest();
 			return result;
+		}
+
+		static BookingSource.Pax GetPaxForTest(string firstName = "Testpax", string lastName = "Paxtest")
+		{
+			return new BookingSource.Pax
+			{
+				FirstName = firstName,
+				LastName = lastName
+			};
 		}
 	}
 }
