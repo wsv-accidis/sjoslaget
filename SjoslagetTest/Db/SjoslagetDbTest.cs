@@ -16,7 +16,6 @@ namespace Accidis.Sjoslaget.Test.Db
 			try
 			{
 				db = SjoslagetDb.Open();
-				db.Open();
 				Assert.AreEqual(ConnectionState.Open, db.State);
 			}
 			finally

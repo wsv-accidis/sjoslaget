@@ -28,17 +28,25 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			try
 			{
-				BookingSource.Validate(bookingSource);
+				var result = await _bookingRepository.CreateAsync(activeCruise.Id, bookingSource);
+				_log.Info("Created booking {0}.", result.Reference);
+				return Ok(result);
 			}
-			catch(ArgumentException ex)
+			catch(AvailabilityException ex)
 			{
+				_log.Info(ex, "Lack of availability prevented a booking from being created.");
+				return Conflict();
+			}
+			catch(BookingException ex)
+			{
+				_log.Warn(ex, "A validation error occurred while creating the booking.");
 				return BadRequest(ex.Message);
 			}
-
-			var result = await _bookingRepository.CreateAsync(activeCruise, bookingSource);
-
-			_log.Info("Created booking {0}.", result.Reference);
-			return Ok(result);
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while creating the booking.");
+				throw;
+			}
 		}
 	}
 }

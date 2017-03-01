@@ -11,12 +11,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class CabinsController : ApiController
 	{
-		readonly CabinTypeRepository _cabinTypeRepository;
+		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
 
-		public CabinsController(CabinTypeRepository cabinTypeRepository, CruiseRepository cruiseRepository)
+		public CabinsController(CabinRepository cabinRepository, CruiseRepository cruiseRepository)
 		{
-			_cabinTypeRepository = cabinTypeRepository;
+			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
 		}
 
@@ -27,19 +27,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = SjoslagetDb.Open())
-			{
-				var result = await db.QueryAsync<CruiseCabinResult>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
-					new {Id = activeCruise.Id});
-
-				return Ok(result);
-			}
+			return Ok(await _cabinRepository.GetActiveAsync(activeCruise.Id));
 		}
 
 		[HttpGet]
 		public async Task<IHttpActionResult> All()
 		{
-			return Ok(await _cabinTypeRepository.GetAllAsync());
+			return Ok(await _cabinRepository.GetAllAsync());
 		}
 
 		[Authorize(Roles = Roles.Admin)]

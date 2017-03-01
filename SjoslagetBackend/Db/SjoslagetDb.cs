@@ -9,7 +9,9 @@ namespace Accidis.Sjoslaget.WebService.Db
 
 		public static SqlConnection Open()
 		{
-			return new SqlConnection(ConnectionString);
+			var connection = new SqlConnection(ConnectionString);
+			connection.Open();
+			return connection;
 		}
 	}
 }

@@ -131,6 +131,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
@@ -168,20 +169,24 @@
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\SjoslagetDb.cs" />
+    <Compile Include="Db\SqlConnectionExtensions.cs" />
     <Compile Include="Db\SqlExceptionExtensions.cs" />
+    <Compile Include="Models\AvailabilityException.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingCabin.cs" />
+    <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
     <Compile Include="Models\BookingSource.cs" />
     <Compile Include="Models\CabinType.cs" />
     <Compile Include="Models\Cruise.cs" />
-    <Compile Include="Models\CruiseCabinResult.cs" />
+    <Compile Include="Models\CruiseCabinAvailability.cs" />
+    <Compile Include="Models\CruiseCabinWithType.cs" />
     <Compile Include="Models\CruiseCabinSource.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />
-    <Compile Include="Services\CabinTypeRepository.cs" />
+    <Compile Include="Services\CabinRepository.cs" />
     <Compile Include="Services\CruiseRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Services\BookingConfig.cs" />

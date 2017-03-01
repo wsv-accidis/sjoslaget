@@ -22,9 +22,9 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public void Validate()
 		{
 			if(string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(PhoneNo))
-				throw new ArgumentException("One or more required values is missing from the booking.");
+				throw new BookingException("One or more required values is missing from the booking.");
 			if(null == Cabins || !Cabins.Any())
-				throw new ArgumentException("List of cabins is empty.");
+				throw new BookingException("List of cabins is empty.");
 			foreach(Cabin cabin in Cabins)
 				cabin.Validate();
 		}
@@ -37,9 +37,9 @@ namespace Accidis.Sjoslaget.WebService.Models
 			public void Validate()
 			{
 				if(Guid.Empty.Equals(TypeId))
-					throw new ArgumentException("Cabin type is not specified.");
+					throw new BookingException("Cabin type is not specified.");
 				if(null == Pax || !Pax.Any())
-					throw new ArgumentException("List of pax is empty.");
+					throw new BookingException("List of pax is empty.");
 				foreach(Pax pax in Pax)
 					pax.Validate();
 			}
@@ -53,7 +53,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 			public void Validate()
 			{
 				if(string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
-					throw new ArgumentException();
+					throw new BookingException("One or more required values are missing from a passenger.");
 			}
 		}
 	}

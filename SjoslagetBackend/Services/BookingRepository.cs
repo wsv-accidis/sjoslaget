@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
@@ -12,33 +13,40 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class BookingRepository
 	{
+		const string LockResource = "Booking";
+		const int LockTimeout = 10000;
+
+		readonly CabinRepository _cabinRepository;
 		readonly RandomKeyGenerator _randomKeyGenerator;
 		readonly SjoslagetUserManager _userManager;
 
-		public BookingRepository(RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		public BookingRepository(CabinRepository cabinRepository, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
 		{
+			_cabinRepository = cabinRepository;
 			_randomKeyGenerator = randomKeyGenerator;
 			_userManager = userManager;
 		}
 
-		public async Task<BookingResult> CreateAsync(Cruise cruise, BookingSource source)
+		public async Task<BookingResult> CreateAsync(Guid cruiseId, BookingSource source)
 		{
-			var booking = Booking.FromSource(source, cruise.Id, _randomKeyGenerator.GenerateBookingReference());
+			BookingSource.Validate(source);
+			var booking = Booking.FromSource(source, cruiseId, _randomKeyGenerator.GenerateBookingReference());
 
-			using(SqlConnection db = SjoslagetDb.Open())
+			/*
+			 * Start a low-isolation transaction just to give us rollback capability in case something fails in the middle of 
+			 * the booking. Then acquire a lock (which is automagically tied to the transaction scope) to prevent multiple bookings
+			 * being written at once and potentially overcommitting our available cabins.
+			 */
+			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
+			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
+			using(var db = SjoslagetDb.Open())
 			{
-				//SqlTransaction tran = null;
-				try
-				{
-					//tran = db.BeginTransaction();
+				await db.GetAppLockAsync(LockResource, LockTimeout);
+				await CheckAvailability(db, cruiseId, source.Cabins);
+				await CreateBooking(db, booking);
+				await CreateCabins(db, booking, source.Cabins);
 
-					await CreateBooking(db, booking);
-					await CreateCabins(db, booking, source.Cabins);
-				}
-				finally
-				{
-					//tran?.Rollback();
-				}
+				tran.Complete();
 			}
 
 			var password = _randomKeyGenerator.GeneratePinCode();
@@ -49,7 +57,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<Booking> FindByIdAsync(Guid id)
 		{
-			using(SqlConnection db = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var result = await db.QueryAsync<Booking>("select * from [Booking] where [Id] = @Id", new {Id = id});
 				return result.FirstOrDefault();
@@ -58,10 +66,26 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<Booking> FindByReferenceAsync(string reference)
 		{
-			using(SqlConnection db = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new {Reference = reference});
 				return result.FirstOrDefault();
+			}
+		}
+
+		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList)
+		{
+			Dictionary<Guid, CruiseCabinAvailability> availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruiseId)).ToDictionary(c => c.CabinTypeId, c => c);
+
+			foreach(BookingSource.Cabin cabinSource in sourceList)
+			{
+				CruiseCabinAvailability availability;
+				if(!availabilityDict.TryGetValue(cabinSource.TypeId, out availability))
+					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an active type.");
+
+				availability.Available--;
+				if(availability.Available < 0)
+					throw new AvailabilityException($"No more cabins of type \"{cabinSource.TypeId}\" are available on this cruise.");
 			}
 		}
 
@@ -95,8 +119,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			foreach(BookingSource.Cabin cabinSource in sourceList)
 			{
 				var cabin = BookingCabin.FromSource(cabinSource, booking.Id);
-				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [BookingCabin] ([BookingId], [CabinTypeId], [Order]) output inserted.[Id] values (@BookingId, @CabinTypeId, @Order)",
-					new {BookingId = booking.Id, CabinTypeId = cabin.CabinTypeId, Order = idx++});
+				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [BookingCabin] ([CruiseId], [BookingId], [CabinTypeId], [Order]) output inserted.[Id] values (@CruiseId, @BookingId, @CabinTypeId, @Order)",
+					new {CruiseId = booking.CruiseId, BookingId = booking.Id, CabinTypeId = cabin.CabinTypeId, Order = idx++});
 
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
 				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [FirstName], [LastName]) values (@BookingCabinId, @FirstName, @LastName)",
