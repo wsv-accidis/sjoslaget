@@ -1,17 +1,24 @@
-<h1>My First AngularDart App</h1>
+<h1>Please sign in</h1>
 
-<material-input #myInput
-                label="Your name"
+<material-input #username
+                label="Booking reference"
                 floatingLabel
                 autoFocus>
 </material-input>
 
-<material-button raised 
-                 (trigger)="myDialog.open()"
+<material-input #password
+                label="PIN"
+                type="Password"
+                floatingLabel>
+</material-input>
+
+<material-button raised
+                 (trigger)="myDialog.authenticate()"
                  class="blue">
     Say Hello
 </material-button>
 
 <hello-dialog #myDialog
-             [name]="myInput.inputText">
+              [username]="username.inputText"
+              [password]="password.inputText">
 </hello-dialog>

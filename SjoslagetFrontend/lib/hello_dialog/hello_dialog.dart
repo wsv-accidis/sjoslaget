@@ -1,8 +1,11 @@
 // Copyright (c) 2017, wilhe. All rights reserved. Use of this source code
+
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
 import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
 
 @Component(
   selector: 'hello-dialog',
@@ -16,13 +19,25 @@ class HelloDialog {
   @ViewChild('wrappingModal')
   ModalComponent wrappingModal;
 
-  /// Name of user.
   @Input()
-  String name = "";
+  String username = "";
+
+  @Input()
+  String password = "";
+
+  final authorizationEndpoint = Uri.parse("http://localhost:60949/api/token");
+
+  Future<oauth2.Client> getClient(String username, String password) async {
+    return await oauth2.resourceOwnerPasswordGrant(authorizationEndpoint, username, password);
+  }
+
+  Future<Null> authenticate() async {
+    oauth2.Client client = await getClient(username, password);
+    open();
+  }
 
   /// Opens the dialog.
-  void open([String name]) {
-    if (name != null) this.name = name;
+  void open() {
     wrappingModal.open();
   }
 }
