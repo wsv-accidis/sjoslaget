@@ -1,24 +1,3 @@
-<h1>Please sign in</h1>
-
-<material-input #username
-                label="Booking reference"
-                floatingLabel
-                autoFocus>
-</material-input>
-
-<material-input #password
-                label="PIN"
-                type="Password"
-                floatingLabel>
-</material-input>
-
-<material-button raised
-                 (trigger)="myDialog.authenticate()"
-                 class="blue">
-    Say Hello
-</material-button>
-
-<hello-dialog #myDialog
-              [username]="username.inputText"
-              [password]="password.inputText">
-</hello-dialog>
+<h1>Sjöslaget</h1>
+<a [routerLink]="['LogIn']">Log in</a>
+<router-outlet></router-outlet>
