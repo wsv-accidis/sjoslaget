@@ -1,5 +1,5 @@
-name: SjoslagetFrontend
-description: A web app that uses AngularDart Components
+name: Sjoslaget
+description: Front-end for the new Sjoslaget.se web site.
 version: 0.0.1
 environment:
   sdk: '>=1.19.0 <2.0.0'
