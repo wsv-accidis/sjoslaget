@@ -25,7 +25,7 @@ class HelloDialog {
   @Input()
   String password = "";
 
-  final authorizationEndpoint = Uri.parse("http://localhost:60949/api/token");
+  final authorizationEndpoint = Uri.parse("/api/token");
 
   Future<oauth2.Client> getClient(String username, String password) async {
     return await oauth2.resourceOwnerPasswordGrant(authorizationEndpoint, username, password);
