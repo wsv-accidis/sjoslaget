@@ -2,42 +2,42 @@
 }
 
 .logo {
-    position: absolute;
-    left: 30px;
-    top: 50px;
-    z-index: 1;
+	position: absolute;
+	left: 30px;
+	top: 50px;
+	z-index: 1;
 }
 
 .splash {
-    position: absolute;
-    left: 0;
-    top: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 
 .column {
-    position: relative;
-    left: 380px;
-    top: 0;
-    width: 498px;
+	position: relative;
+	left: 380px;
+	top: 0;
+	width: 498px;
 }
 
 .menu {
-    background: url(gfx/Menu.png) no-repeat;
-    height: 48px;
-    padding-top: 25px;
-    padding-left: 3px;
-    white-space: nowrap;
+	background: url(gfx/Menu.png) no-repeat;
+	height: 48px;
+	padding-top: 25px;
+	padding-left: 3px;
+	white-space: nowrap;
 }
 
 .menu img {
-    border: 0;
+	border: 0;
 }
 
 .content {
-    background: white;
-    padding: 0 12px;
-    border-left: 3px solid black;
-    border-right: 3px solid black;
-    border-bottom: 1px solid black;
-    min-height: 700px;
+	background: white;
+	padding: 0 12px;
+	border-left: 3px solid black;
+	border-right: 3px solid black;
+	border-bottom: 1px solid black;
+	min-height: 700px;
 }

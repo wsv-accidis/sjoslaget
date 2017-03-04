@@ -1,24 +1,24 @@
 <h1>Please sign in</h1>
 
 <material-input #username
-                label="Booking reference"
-                floatingLabel
-                autoFocus>
+				label="Booking reference"
+				floatingLabel
+				autoFocus>
 </material-input>
 
 <material-input #password
-                label="PIN"
-                type="Password"
-                floatingLabel>
+				label="PIN"
+				type="Password"
+				floatingLabel>
 </material-input>
 
 <material-button raised
-                 (trigger)="myDialog.authenticate()"
-                 class="blue">
-    Say Hello
+				 (trigger)="myDialog.authenticate()"
+				 class="blue">
+	Say Hello
 </material-button>
 
 <hello-dialog #myDialog
-              [username]="username.inputText"
-              [password]="password.inputText">
+			  [username]="username.inputText"
+			  [password]="password.inputText">
 </hello-dialog>

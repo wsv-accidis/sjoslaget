@@ -6,9 +6,9 @@ import 'package:angular2/platform/common.dart';
 import 'package:Sjoslaget/app_component.dart';
 
 void main() {
-  bootstrap(AppComponent, [
-    ROUTER_PROVIDERS,
-    provide(APP_BASE_HREF, useValue: '/'),
-    //const Provider(LocationStrategy, useClass: HashLocationStrategy)
-  ]);
+	bootstrap(AppComponent, [
+		ROUTER_PROVIDERS,
+		provide(APP_BASE_HREF, useValue: '/'),
+		//const Provider(LocationStrategy, useClass: HashLocationStrategy)
+	]);
 }
