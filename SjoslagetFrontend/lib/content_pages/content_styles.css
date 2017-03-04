@@ -1,0 +1,19 @@
+h1.headline {
+    color: #0F75BC;
+    font-family: 'Carter One', Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+iframe {
+    border: 0;
+    margin-left: -10px;
+    width: 487px;
+}
+iframe.facebook-box {
+    height: 80px;
+}
+iframe.twitter-box {
+    height: 800px;
+}
