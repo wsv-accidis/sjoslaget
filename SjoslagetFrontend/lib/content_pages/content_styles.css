@@ -13,6 +13,38 @@ h2 {
 	font-size: 18px;
 }
 
+table {
+	width: 100%;
+}
+
+th {
+	text-align: left;
+}
+
+td {
+	vertical-align: top;
+}
+
+td.border {
+	border-left: 1px solid #608BA8;
+	border-top: 1px solid #608BA8;
+}
+
+img {
+	border: 1px solid darkgray;
+	box-shadow: 2px 2px 4px darkgray;
+}
+
+img.spinner {
+	border: 0;
+	box-shadow: none;
+	display: block;
+	height: 80px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 80px;
+}
+
 iframe {
 	border: 0;
 	margin-left: -10px;

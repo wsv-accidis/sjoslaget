@@ -1,0 +1,13 @@
+import 'package:angular2/core.dart';
+
+@Component(
+	selector: 'spinner-widget',
+	styleUrls: const ['spinner_widget.css'],
+	template: '''
+	<div class="spinner-container">
+		<div class="spinner-circle0"></div>
+		<div class="spinner-circle1"></div>
+	</div>'''
+)
+class SpinnerWidget {
+}

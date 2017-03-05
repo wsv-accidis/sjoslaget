@@ -1,7 +1,59 @@
 <h1>Priser</h1>
 
-<ul>
-	<li *ngFor="let cabin of cabins">
-		{{cabin.name}}
-	</li>
-</ul>
+<p>
+	Biljettens pris beror på vilken slags hytt du vill bo i, i övrigt är det ingen skillnad.
+	Rejäl lunchbuffé på måndagen ingår i alla biljetter!
+</p>
+
+<table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
+	<tr>
+		<th></th>
+		<th>Pris/person</th>
+		<th>Beskrivning</th>
+	</tr>
+	<tr *ngFor="let cabin of cabins">
+		<td class="border">
+			{{cabin.name}}
+		</td>
+		<td class="border">
+			{{cabin.pricePerPax}} kr
+		</td>
+		<td class="border">
+			{{cabin.description}}
+		</td>
+	</tr>
+</table>
+<spinner-widget *ngIf="null == cabins"></spinner-widget>
+
+<p>
+	Ni betalar alltid för hela hytter så priserna ovan gäller under förutsättning att hytten är full.
+	Om pris per person exempelvis är 600 kr, och hytten rymmer fyra personer, så betalar ni 2 400 kr
+	oavsett hur många som bor i hytten.
+</p>
+
+<img src="gfx/HyttA2.jpg" alt="A2-hytt" title="A2-hytt">
+
+<p>
+	Skillnaden mellan hytterna är främst antalet sängar och om det finns fönster. E-hytterna
+	är något billigare eftersom de ligger på platser där det kan bullra mer, t ex under nattklubben.
+	F-hytterna är vanliga hytter (motsvarande A-hytter) som är sammankopplade parvis med en dörr
+	som går att stänga. Hur stora de är framgår av namnet, t ex F4+2 betyder en fyrbäddshytt
+	ihop med en tvåbäddshytt.
+</p>
+
+<img src="gfx/HyttDeluxe.jpg" alt="DeLuxe-hytt" title="DeLuxe-hytt">
+
+<p>
+	A2pre och DeLuxe har dubbelsängar som sitter ihop. DeLuxe har dessutom en minibar laddad med några
+	öl, vin och läsk som ingår i biljettpriset.
+</p>
+
+<p>
+	Oftast är det E-hytterna, A2pre och DeLuxe som går åt först när bokningen öppnar. Var ute i god tid
+	om du vill boka dem!
+</p>
+
+<p>
+	Mer info om hytterna finns på <a href="http://www.tallinksilja.se/sv/galaxy#tabs-content-7">Tallink Siljas hemsida</a>.
+	Sviterna går inte att boka på Sjöslaget.
+</p>
