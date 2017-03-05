@@ -2,7 +2,7 @@ import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
 import 'login_page/login_page.dart';
-import 'content_pages/start_page.dart';
+import 'content_pages/content_pages.dart';
 
 @Component(
 	selector: 'sjoslaget-app',
@@ -12,6 +12,7 @@ import 'content_pages/start_page.dart';
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),
+	const Route(path: '/historik', name: 'History', component: HistoryPage),
 	const Route(path: '/login', name: 'LogIn', component: LoginPage)
 ])
 class AppComponent {

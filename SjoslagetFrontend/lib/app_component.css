@@ -33,6 +33,20 @@
 	border: 0;
 }
 
+.menu a {
+	color: white;
+	display: block;
+	float: left;
+	font-family: 'Carter One', Helvetica, Arial, sans-serif;
+	margin-left: 18px;
+	margin-top: 7px;
+	text-decoration: none;
+}
+
+.menu a:hover {
+	text-shadow: 2px 2px 4px white;
+}
+
 .content {
 	background: white;
 	padding: 0 12px;
