@@ -1,13 +1,16 @@
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
-import 'login_page/login_page.dart';
+import 'client/client_factory.dart';
+import 'client/cruise_repository.dart';
 import 'content_pages/content_pages.dart';
+import 'login_page/login_page.dart';
 
 @Component(
 	selector: 'sjoslaget-app',
 	styleUrls: const ['app_component.css'],
 	templateUrl: 'app_component.html',
+	providers: const [ClientFactory, CruiseRepository],
 	directives: const [ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
