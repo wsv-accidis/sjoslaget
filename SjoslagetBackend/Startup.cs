@@ -64,7 +64,9 @@ namespace Accidis.Sjoslaget.WebService
 			{
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
 				AccessTokenFormat = new JwtAccessTokenFormat(),
+#if DEBUG
 				AllowInsecureHttp = true,
+#endif
 				Provider = container.Resolve<OAuthProvider>(),
 				TokenEndpointPath = new PathString("/api/token"),
 			};
