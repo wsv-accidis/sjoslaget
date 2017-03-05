@@ -10,7 +10,9 @@
 	Logga in här för att visa eller ändra din bokning.
 </p>
 
-<form #loginForm="ngForm">
+<form #loginForm="ngForm" (submit)="logIn()">
+	<input type="submit" class="hidden-submit"/>
+
 	<material-input [(ngModel)]="bookingRef"
 					ngControl="bookingRef"
 					autoFocus
@@ -31,7 +33,7 @@
 					type="password">
 	</material-input>
 
-	<material-button (trigger)="authenticate()"
+	<material-button (trigger)="logIn()"
 					 [disabled]="!loginForm.form.valid"
 					 class="control-blue"
 					 raised>
@@ -40,5 +42,10 @@
 </form>
 
 <div *ngIf="isLoggedIn">
-	Du är inloggad.
+	Du är inloggad som {{ loggedInUser }}. <a href="javascript:" (click)="logOut()">Logga ut</a> när du är klar.
 </div>
+
+<modal-dialog #loginFailedDialog
+			  title="Inloggningen misslyckades"
+			  message="Kontrollera att du skrev rätt bokningsreferens och PIN-kod.">
+</modal-dialog>

@@ -15,3 +15,10 @@ div.loading {
 	padding: 5vw;
 	margin: 0 auto;
 }
+
+input.hidden-submit {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+}
