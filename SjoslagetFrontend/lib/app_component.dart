@@ -12,8 +12,10 @@ import 'content_pages/content_pages.dart';
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),
-	const Route(path: '/historik', name: 'History', component: HistoryPage),
-	const Route(path: '/login', name: 'LogIn', component: LoginPage)
+	const Route(path: '/sjoslaget', name: 'About', component: AboutPage),
+	const Route(path: '/priser', name: 'Pricing', component: PricingPage),
+	const Route(path: '/bokning', name: 'Booking', component: LoginPage),
+	const Route(path: '/historik', name: 'History', component: HistoryPage)
 ])
 class AppComponent {
 }
