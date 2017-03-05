@@ -1,0 +1,44 @@
+<h1>Bokning</h1>
+
+<p>
+	Bokningen är stängd.
+</p>
+
+<h2>Din bokning</h2>
+
+<p style="margin-bottom: 5px;">
+	Logga in här för att visa eller ändra din bokning.
+</p>
+
+<form #loginForm="ngForm">
+	<material-input [(ngModel)]="bookingRef"
+					ngControl="bookingRef"
+					autoFocus
+					floatingLabel
+					label="Bokningsreferens"
+					required
+					requiredErrorMsg="Ange bokningsreferens."
+					style="margin-right: 20px">
+	</material-input>
+
+	<material-input [(ngModel)]="pinCode"
+					ngControl="pinCode"
+					floatingLabel
+					label="PIN-kod"
+					required
+					requiredErrorMsg="Ange PIN-kod."
+					style="width: 120px; margin-right: 20px"
+					type="password">
+	</material-input>
+
+	<material-button (trigger)="authenticate()"
+					 [disabled]="!loginForm.form.valid"
+					 class="control-blue"
+					 raised>
+		Logga in
+	</material-button>
+</form>
+
+<div *ngIf="isLoggedIn">
+	Du är inloggad.
+</div>

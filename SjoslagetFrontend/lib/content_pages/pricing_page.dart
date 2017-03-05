@@ -22,7 +22,7 @@ class PricingPage implements OnInit {
 	PricingPage(this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
-		final client = await _clientFactory.createClient();
+		final client = await _clientFactory.getClient();
 		cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 	}
 }
