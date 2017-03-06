@@ -1,9 +1,14 @@
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
+import 'content_pages/about_component.dart';
+import 'content_pages/booking_page.dart';
+import 'content_pages/contact_page.dart';
+import 'content_pages/not_found_page.dart';
+import 'content_pages/pricing_page.dart';
+import 'content_pages/start_page.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
-import 'content_pages/content_pages.dart';
 
 @Component(
 	selector: 'sjoslaget-app',
@@ -14,10 +19,11 @@ import 'content_pages/content_pages.dart';
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),
-	const Route(path: '/sjoslaget', name: 'About', component: AboutPage),
-	const Route(path: '/priser', name: 'Pricing', component: PricingPage),
+	const Route(path: '/allt-om/...', name: 'About', component: AboutComponent),
 	const Route(path: '/bokning', name: 'Booking', component: BookingPage),
-	const Route(path: '/historik', name: 'History', component: HistoryPage)
+	const Route(path: '/contact', name: 'Contact', component: ContactPage),
+	const Route(path: '/priser', name: 'Pricing', component: PricingPage),
+	const Route(path: '/**', name: 'NotFound', component: NotFoundPage)
 ])
 class AppComponent {
 }

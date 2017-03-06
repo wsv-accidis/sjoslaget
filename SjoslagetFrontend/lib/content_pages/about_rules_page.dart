@@ -1,9 +1,9 @@
 import 'package:angular2/core.dart';
 
 @Component(
-	selector: 'history-page',
+	selector: 'about-rules-page',
 	styleUrls: const ['content_styles.css'],
-	templateUrl: 'history_page.html'
+	templateUrl: 'about_rules_page.html'
 )
-class HistoryPage {
+class AboutRulesPage {
 }

@@ -1,3 +1,12 @@
+a, a:visited {
+	color: #0068A5;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
 h1, h2 {
 	color: #0F75BC;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
@@ -45,11 +54,6 @@ img.spinner {
 	width: 80px;
 }
 
-.control-blue {
-	background-color: #0F75BC;
-	color: white;
-}
-
 iframe {
 	border: 0;
 	margin-left: -10px;
@@ -62,6 +66,17 @@ iframe.facebook-box {
 
 iframe.twitter-box {
 	height: 800px;
+}
+
+glyph {
+	color: #0F75BC;
+	padding-top: 4px;
+	vertical-align: text-bottom;
+}
+
+.control-blue {
+	background-color: #0F75BC;
+	color: white;
 }
 
 #booking_ref_field {

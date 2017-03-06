@@ -10,7 +10,7 @@ void main() {
 	bootstrap(AppComponent, [
 		ROUTER_PROVIDERS,
 		provide(APP_BASE_HREF, useValue: '/'),
-		provide(SJOSLAGET_API_ROOT, useValue: '//test.sjoslaget.se/api')
-		//const Provider(LocationStrategy, useClass: HashLocationStrategy)
+		provide(SJOSLAGET_API_ROOT, useValue: 'https://test.sjoslaget.se/api'),
+//		const Provider(LocationStrategy, useClass: HashLocationStrategy)
 	]);
 }

@@ -1,9 +1,9 @@
 import 'package:angular2/core.dart';
 
 @Component(
-	selector: 'about-page',
+	selector: 'history-page',
 	styleUrls: const ['content_styles.css'],
-	templateUrl: 'about_page.html'
+	templateUrl: 'contact_page.html'
 )
-class AboutPage {
+class ContactPage {
 }
