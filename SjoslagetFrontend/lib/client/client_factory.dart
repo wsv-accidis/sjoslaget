@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:html';
+import 'dart:html' show window;
 
 import 'package:angular2/core.dart';
 import 'package:http/http.dart' as http;
@@ -9,9 +9,9 @@ import 'package:corsac_jwt/corsac_jwt.dart';
 
 @Injectable()
 class ClientFactory {
-	static const ROLE_KEY = 'role';
-	static const TOKEN_KEY = 'jwt';
-	static const UNIQUE_NAME_KEY = 'unique_name';
+	static const ROLE_KEY = 'client_role';
+	static const TOKEN_KEY = 'client_jwt';
+	static const UNIQUE_NAME_KEY = 'client_name';
 
 	final String _apiRoot;
 

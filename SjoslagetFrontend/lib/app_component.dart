@@ -9,12 +9,13 @@ import 'content_pages/pricing_page.dart';
 import 'content_pages/start_page.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
+import 'client/session_storage_cache.dart';
 
 @Component(
 	selector: 'sjoslaget-app',
 	styleUrls: const ['app_component.css'],
 	templateUrl: 'app_component.html',
-	providers: const [ClientFactory, CruiseRepository],
+	providers: const [ClientFactory, CruiseRepository, SessionStorageCache],
 	directives: const [ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
