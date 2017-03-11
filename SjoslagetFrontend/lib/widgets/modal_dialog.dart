@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
 
 @Component(
 	selector: 'modal-dialog',

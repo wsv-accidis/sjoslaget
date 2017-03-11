@@ -1,6 +1,6 @@
 import 'package:angular2/core.dart';
 
-import '../booking_pages/booking_login_component.dart';
+import '../booking/booking_login_component.dart';
 
 @Component(
 	selector: 'booking-page',

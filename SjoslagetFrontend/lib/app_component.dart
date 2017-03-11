@@ -1,12 +1,12 @@
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
-import 'content_pages/about_component.dart';
-import 'content_pages/booking_page.dart';
-import 'content_pages/contact_page.dart';
-import 'content_pages/not_found_page.dart';
-import 'content_pages/pricing_page.dart';
-import 'content_pages/start_page.dart';
+import 'content/about_component.dart';
+import 'content/booking_page.dart';
+import 'content/contact_page.dart';
+import 'content/not_found_page.dart';
+import 'content/pricing_page.dart';
+import 'content/start_page.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
 import 'client/session_storage_cache.dart';
