@@ -1,5 +1,52 @@
 <form #bookingForm="ngForm" (submit)="startBooking()">
 	<input type="submit" class="hidden-submit"/>
 
+	<div>
+		<material-input [(ngModel)]="firstName"
+						ngControl="firstName"
+						floatingLabel
+						label="Förnamn"
+						required
+						requiredErrorMsg="Ange förnamn."
+						style="width: 150px; margin-right: 20px">
+		</material-input>
 
+		<material-input [(ngModel)]="lastName"
+						ngControl="lastName"
+						floatingLabel
+						label="Efternamn"
+						required
+						requiredErrorMsg="Ange efternamn."
+						style="width: 150px">
+		</material-input>
+	</div>
+	<div>
+		<material-input [(ngModel)]="phoneNo"
+						ngControl="phoneNo"
+						floatingLabel
+						label="Telefonnummer"
+						required
+						requiredErrorMsg="Ange telefonnummer."
+						style="width: 150px; margin-right: 20px"
+						type="tel">
+		</material-input>
+
+		<material-input [(ngModel)]="email"
+						ngControl="email"
+						floatingLabel
+						label="E-postadress"
+						required
+						requiredErrorMsg="Ange e-postadress."
+						style="width: 250px"
+						tel="email">
+		</material-input>
+	</div>
+	<div>
+		<material-checkbox [(ngModel)]="acceptToc"
+						   ngControl="acceptTog"
+						   style="font-size: smaller">
+			Jag godkänner att de personuppgifter jag anger under bokningsprocessen får lagras och användas av Sjöslaget och dess samarbetspartners.
+			Jag godkänner inte att några personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Sjöslaget att göra.
+		</material-checkbox>
+	</div>
 </form>
