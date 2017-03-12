@@ -15,8 +15,15 @@ class BookingDetailsComponent {
 	String email;
 	String lunch;
 	bool acceptToc;
+	Function onSubmitListener;
 
 	void submitDetails() {
+		if (null != onSubmitListener) {
+			onSubmitListener(this);
+		}
+	}
 
+	void setOnSubmitListener(Function fun) {
+		onSubmitListener = fun;
 	}
 }
