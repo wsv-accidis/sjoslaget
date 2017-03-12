@@ -13,5 +13,10 @@ class BookingDetailsComponent {
 	String lastName;
 	String phoneNo;
 	String email;
+	String lunch;
 	bool acceptToc;
+
+	void submitDetails() {
+
+	}
 }
