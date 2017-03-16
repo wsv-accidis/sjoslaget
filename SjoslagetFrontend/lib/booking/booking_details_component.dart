@@ -9,21 +9,22 @@ import 'package:angular2_components/angular2_components.dart';
 	providers: const [materialProviders]
 )
 class BookingDetailsComponent {
+	Function _onSubmitListener;
+
 	String firstName;
 	String lastName;
 	String phoneNo;
 	String email;
 	String lunch;
 	bool acceptToc;
-	Function onSubmitListener;
 
 	void submitDetails() {
-		if (null != onSubmitListener) {
-			onSubmitListener(this);
+		if (null != _onSubmitListener) {
+			_onSubmitListener(this);
 		}
 	}
 
 	void setOnSubmitListener(Function fun) {
-		onSubmitListener = fun;
+		_onSubmitListener = fun;
 	}
 }

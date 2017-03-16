@@ -16,10 +16,10 @@ import '../booking/booking_login_component.dart';
 	directives: const [BookingDetailsComponent, BookingLoginComponent, ROUTER_DIRECTIVES]
 )
 class BookingPage implements OnInit {
+	final Router _router;
+
 	@ViewChild('bookingDetails')
 	BookingDetailsComponent bookingDetails;
-
-	final Router _router;
 
 	BookingPage(this._router);
 

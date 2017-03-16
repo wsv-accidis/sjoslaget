@@ -22,7 +22,6 @@ class BookingLoginComponent {
 	String pinCode;
 
 	bool get isLoggedIn => _clientFactory.hasCredentials;
-
 	String get loggedInUser => _clientFactory.authenticatedUser;
 
 	BookingLoginComponent(this._clientFactory);

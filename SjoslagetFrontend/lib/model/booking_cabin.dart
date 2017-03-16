@@ -1,0 +1,3 @@
+class BookingCabin {
+	String cabinTypeId;
+}

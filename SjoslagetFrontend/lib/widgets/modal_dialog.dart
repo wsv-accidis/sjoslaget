@@ -20,4 +20,8 @@ class ModalDialog {
 	void open() {
 		wrappingModal.open();
 	}
+
+	void close() {
+		wrappingModal.close();
+	}
 }

@@ -1,6 +1,25 @@
 <h1>
-	Din bokning
+	Hej, {{ firstName }}!
 </h1>
+
+<p>
+	Här lägger du till dina hytter och deltagare!
+</p>
+
+<div *ngFor="let cabin of bookingCabins">
+	{{ cabin.cabinTypeId }}
+</div>
+
+<h3>Lägg till hytt</h3>
+
+<div>
+	<material-button *ngFor="let cabin of cabins"
+					 (trigger)="addCabin(cabin.id)"
+					 class="control-blue"
+					 raised>
+		{{ cabin.name }} (64)
+	</material-button>
+</div>
 
 <p>
 	Hej!
