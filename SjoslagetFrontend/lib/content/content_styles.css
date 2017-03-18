@@ -97,6 +97,11 @@ glyph {
 	color: white;
 }
 
+.control-red {
+	background-color: darkred;
+	color: white;
+}
+
 #booking_ref_field {
 	width: 100px;
 }

@@ -1,0 +1,56 @@
+table {
+	margin-bottom: 20px;
+	max-width: 1100px;
+}
+
+td.cabin-name-cell {
+	width: 90px;
+	font-family: 'Carter One', Helvetica, Arial, sans-serif;
+	font-size: 18px;
+}
+
+a.cabin-delete {
+	text-decoration: none !important;
+}
+
+a.cabin-delete glyph {
+	color: darkred;
+}
+
+material-input {
+	padding: 0;
+	margin-bottom: -8px;
+}
+
+material-input.name-field {
+	width: 150px;
+}
+
+material-input.dob-field {
+	width: 110px;
+}
+
+material-input.nationality-field {
+	width: 100px;
+}
+
+material-input.years-field {
+	width: 80px;
+}
+
+material-radio {
+	margin: 0;
+}
+
+td.gender-field-cell {
+	white-space: nowrap;
+	width: 160px;
+}
+
+td.gender-field-cell img {
+	border: 0;
+	box-shadow: none;
+	margin-left: -4px;
+	margin-right: 6px;
+	vertical-align: middle;
+}

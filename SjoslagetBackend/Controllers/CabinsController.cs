@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
@@ -34,6 +35,17 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> All()
 		{
 			return Ok(await _cabinRepository.GetAllAsync());
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Availability()
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			CruiseCabinAvailability[] availabilities = await _cabinRepository.GetAvailabilityAsync(activeCruise.Id);
+			return Ok(availabilities.ToDictionary(a => a.CabinTypeId, a => a.Available));
 		}
 
 		[Authorize(Roles = Roles.Admin)]

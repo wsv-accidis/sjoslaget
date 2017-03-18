@@ -35,6 +35,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return result.ToArray();
 		}
 
+		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(Guid cruiseId)
+		{
+			using(var db = SjoslagetDb.Open())
+				return await GetAvailabilityAsync(db, cruiseId);
+		}
 
 		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(SqlConnection db, Guid cruiseId)
 		{

@@ -3,24 +3,128 @@
 </h1>
 
 <p>
-	Här lägger du till dina hytter och deltagare!
+	Lägg till hytter och fyll i <strong>Förening</strong> (mästeri/skola), <strong>Förnamn</strong>, <strong>Efternamn</strong>, <strong>Kön</strong>,
+	<strong>Födelsedatum</strong>, <strong>Nationalitet</strong> och antal <strong>Åkta år</strong> (sjöslag) på alla deltagare.
+	Du kan inte boka tomma hytter men du får lämna tomma platser. Det är dock inte tillåtet att boka hytter med falska uppgifter för att "reservera" dem till senare behov.
 </p>
 
-<div *ngFor="let cabin of bookingCabins">
-	{{ cabin.cabinTypeId }}
-</div>
+<p>
+	Om du lämnar <strong>Förening</strong> tomt så kopieras första radens värde, så om alla tillhör samma förening
+	behöver du bara fylla i det på första raden. Om du lämnar <strong>Nationalitet</strong> tomt antas Sverige (SE).
+	Använd annars <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">denna tabell</a>
+	för nationalitet. Om du lämnar <strong>Åkta år</strong> tomt antas noll.
+</p>
+
+<form #bookingForm="ngForm">
+	<div *ngFor="let cabin of bookingCabins; let c = index">
+		<table cellpadding="0" cellspacing="0" border="0">
+			<tr *ngFor="let pax of cabin.pax; let p = index">
+				<td *ngIf="0 == p" class="cabin-name-cell" [attr.rowspan]="cabin.capacity">
+					{{ cabin.name }}<br/>
+					<a class="cabin-delete" href="javascript:" (click)="deleteCabin(c)" title="Ta bort hytten">
+						<glyph icon="clear"></glyph>
+					</a>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.group"
+									ngControl="group"
+									class="name-field"
+									label="Förening">
+					</material-input>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.firstName"
+									ngControl="firstName"
+									class="name-field"
+									label="Förnamn">
+					</material-input>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.lastName"
+									ngControl="lastName"
+									class="name-field"
+									label="Efternamn">
+					</material-input>
+				</td>
+				<td class="gender-field-cell">
+					<material-radio-group [(ngModel)]="pax.gender"
+										  ngControl="gender">
+						<material-radio value="m" style="font-weight: bolder" title="Man">
+							<img src="gfx/symbol_m.png">
+						</material-radio>
+						<material-radio value="f" style="font-weight: bolder" title="Kvinna">
+							<img src="gfx/symbol_f.png">
+						</material-radio>
+						<material-radio value="x" title="Annat">
+							<img src="gfx/symbol_x.png">
+						</material-radio>
+					</material-radio-group>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.dob"
+									ngControl="dob"
+									class="dob-field"
+									label="ÅÅMMDD"
+									type="number">
+					</material-input>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.nationality"
+									ngControl="nationality"
+									class="nationality-field"
+									label="Nationalitet">
+					</material-input>
+				</td>
+				<td>
+					<material-input [(ngModel)]="pax.years"
+									ngControl="years"
+									class="years-field"
+									label="Åkta år"
+									type="number">
+					</material-input>
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
 
 <h3>Lägg till hytt</h3>
 
-<div>
-	<material-button *ngFor="let cabin of cabins"
-					 (trigger)="addCabin(cabin.id)"
+<div *ngIf="isLoaded">
+	<material-button *ngFor="let cabin of cruiseCabins"
 					 class="control-blue"
-					 raised>
-		{{ cabin.name }} (64)
+					 [disabled]="!hasAvailability(cabin.id)"
+					 raised
+					 (trigger)="addCabin(cabin.id)">
+		{{ cabin.name }} ({{ getAvailability(cabin.id) }})
 	</material-button>
 </div>
+<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
+
+<p class="super-important">
+	Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
+	kommer du inte att kunna spara bokningen. Om din bokning är stor så är det bästa att lägga till ett par hytter åt gången och spara ofta.
+	Börja med de hytter som det inte finns så många av.
+</p>
+
+<h3>Spara bokningen</h3>
 
 <p>
-	Hej!
+	<strong>Spara</strong> bokningen, när du har gjort klart en eller några hytter. <strong>Skriv upp</strong> den bokningsreferens och
+	PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
+	Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
 </p>
+
+<div style="margin-bottom: 50px">
+	<material-button class="control-blue"
+					 [disabled]="!bookingForm.valid"
+					 raised>
+		Spara bokningen
+	</material-button>
+
+	<material-button class="control-red"
+					 [disabled]="!isSaved || !bookingForm.valid"
+					 raised>
+		Jag är helt klar med bokningen, ta mig härifrån
+	</material-button>
+</div>

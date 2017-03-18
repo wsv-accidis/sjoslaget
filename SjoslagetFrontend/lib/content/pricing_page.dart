@@ -4,7 +4,7 @@ import 'package:angular2/core.dart';
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
-import '../model/cruise_dabin.dart';
+import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
