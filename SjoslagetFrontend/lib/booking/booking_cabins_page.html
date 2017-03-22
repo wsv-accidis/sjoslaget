@@ -17,7 +17,7 @@
 
 <form #bookingForm="ngForm">
 	<div *ngFor="let cabin of bookingCabins; let c = index">
-		<table cellpadding="0" cellspacing="0" border="0">
+		<table cellpadding="0" cellspacing="0" border="0" [attr.data-idx]="c">
 			<tr *ngFor="let pax of cabin.pax; let p = index">
 				<td *ngIf="0 == p" class="cabin-name-cell" [attr.rowspan]="cabin.capacity">
 					{{ cabin.name }}<br/>
@@ -25,60 +25,73 @@
 						<glyph icon="clear"></glyph>
 					</a>
 				</td>
-				<td>
+				<td class="name-field-cell">
 					<material-input [(ngModel)]="pax.group"
-									ngControl="group"
-									class="name-field"
+									[class]="pax.hasGroupError ? 'error-marker' : ''"
+									[error]="pax.groupError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('group', c, p)"
 									label="Förening">
 					</material-input>
 				</td>
-				<td>
+				<td class="name-field-cell">
 					<material-input [(ngModel)]="pax.firstName"
-									ngControl="firstName"
-									class="name-field"
+									[class]="pax.hasFirstNameError ? 'error-marker' : ''"
+									[error]="pax.firstNameError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('firstName', c, p)"
 									label="Förnamn">
 					</material-input>
 				</td>
-				<td>
+				<td class="name-field-cell">
 					<material-input [(ngModel)]="pax.lastName"
-									ngControl="lastName"
-									class="name-field"
+									[class]="pax.hasLastNameError ? 'error-marker' : ''"
+									[error]="pax.lastNameError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('lastName', c, p)"
 									label="Efternamn">
 					</material-input>
 				</td>
 				<td class="gender-field-cell">
 					<material-radio-group [(ngModel)]="pax.gender"
-										  ngControl="gender">
-						<material-radio value="m" style="font-weight: bolder" title="Man">
-							<img src="gfx/symbol_m.png">
+										  [ngControl]="uniqueId('gender', c, p)">
+						<material-radio value="m" title="Man">
+							<img src="gfx/symbol_m.png" alt="Man">
 						</material-radio>
-						<material-radio value="f" style="font-weight: bolder" title="Kvinna">
-							<img src="gfx/symbol_f.png">
+						<material-radio value="f" title="Kvinna">
+							<img src="gfx/symbol_f.png" alt="Kvinna">
 						</material-radio>
-						<material-radio value="x" title="Annat">
-							<img src="gfx/symbol_x.png">
+						<material-radio value="x" title="Annat eller ospecifierat">
+							<span class="gender-other">Annat</span>
 						</material-radio>
 					</material-radio-group>
+					<div class="error-marker" *ngIf="pax.hasGenderError"></div>
 				</td>
-				<td>
+				<td class="dob-field-cell">
 					<material-input [(ngModel)]="pax.dob"
-									ngControl="dob"
-									class="dob-field"
+									[class]="pax.hasDobError ? 'error-marker' : ''"
+									[error]="pax.dobError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('dob', c, p)"
 									label="ÅÅMMDD"
 									type="number">
 					</material-input>
 				</td>
-				<td>
+				<td class="nationality-field-cell">
 					<material-input [(ngModel)]="pax.nationality"
-									ngControl="nationality"
-									class="nationality-field"
+									[class]="pax.hasNationalityError ? 'error-marker' : ''"
+									[error]="pax.nationalityError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('nationality', c, p)"
 									label="Nationalitet">
 					</material-input>
 				</td>
-				<td>
+				<td class="years-field-cell">
 					<material-input [(ngModel)]="pax.years"
-									ngControl="years"
-									class="years-field"
+									[class]="pax.hasYearsError ? 'error-marker' : ''"
+									[error]="pax.yearsError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('years', c, p)"
 									label="Åkta år"
 									type="number">
 					</material-input>
@@ -86,45 +99,45 @@
 			</tr>
 		</table>
 	</div>
+
+	<h3>Lägg till hytt</h3>
+
+	<div *ngIf="isLoaded">
+		<material-button *ngFor="let cabin of cruiseCabins"
+						 class="control-blue"
+						 [disabled]="!hasAvailability(cabin.id)"
+						 raised
+						 (trigger)="addCabin(cabin.id)">
+			{{ cabin.name }} ({{ getAvailability(cabin.id) }})
+		</material-button>
+	</div>
+	<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
+
+	<p class="super-important">
+		Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
+		kommer du inte att kunna spara bokningen. Om din bokning är stor så är det bästa att lägga till ett par hytter åt gången och spara ofta.
+		Börja med de hytter som det inte finns så många av.
+	</p>
+
+	<h3>Spara bokningen</h3>
+
+	<p>
+		<strong>Spara</strong> bokningen, när du har gjort klart en eller några hytter. <strong>Skriv upp</strong> den bokningsreferens och
+		PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
+		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
+	</p>
+
+	<div style="margin-bottom: 50px">
+		<material-button class="control-blue"
+						 [disabled]="isEmpty || !isValid"
+						 raised>
+			Spara bokningen
+		</material-button>
+
+		<material-button class="control-red"
+						 [disabled]="isEmpty || !isSaved || !isValid"
+						 raised>
+			Jag är helt klar med bokningen, ta mig härifrån
+		</material-button>
+	</div>
 </form>
-
-<h3>Lägg till hytt</h3>
-
-<div *ngIf="isLoaded">
-	<material-button *ngFor="let cabin of cruiseCabins"
-					 class="control-blue"
-					 [disabled]="!hasAvailability(cabin.id)"
-					 raised
-					 (trigger)="addCabin(cabin.id)">
-		{{ cabin.name }} ({{ getAvailability(cabin.id) }})
-	</material-button>
-</div>
-<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
-
-<p class="super-important">
-	Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
-	kommer du inte att kunna spara bokningen. Om din bokning är stor så är det bästa att lägga till ett par hytter åt gången och spara ofta.
-	Börja med de hytter som det inte finns så många av.
-</p>
-
-<h3>Spara bokningen</h3>
-
-<p>
-	<strong>Spara</strong> bokningen, när du har gjort klart en eller några hytter. <strong>Skriv upp</strong> den bokningsreferens och
-	PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
-	Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
-</p>
-
-<div style="margin-bottom: 50px">
-	<material-button class="control-blue"
-					 [disabled]="!bookingForm.valid"
-					 raised>
-		Spara bokningen
-	</material-button>
-
-	<material-button class="control-red"
-					 [disabled]="!isSaved || !bookingForm.valid"
-					 raised>
-		Jag är helt klar med bokningen, ta mig härifrån
-	</material-button>
-</div>

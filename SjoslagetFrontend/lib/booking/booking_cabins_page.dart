@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' show window;
+import 'dart:html' show Event, HtmlElement, window;
 
 import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
@@ -27,9 +27,13 @@ class BookingCabinsPage implements OnInit {
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 
+	bool get isEmpty => bookingCabins.isEmpty;
+
 	bool get isLoaded => null != availability && null != cruiseCabins;
 
 	bool get isSaved => false;
+
+	bool get isValid => bookingCabins.every((b) => b.isValid);
 
 	BookingCabinsPage(this._clientFactory, this._cruiseRepository);
 
@@ -49,7 +53,13 @@ class BookingCabinsPage implements OnInit {
 	void addCabin(String id) {
 		final cabin = getCruiseCabin(id);
 		final bookingCabin = new BookingCabinView(cabin);
+		if (bookingCabins.isEmpty) {
+			// First pax of the booking must have group set so it can be used as the default for everyone else
+			bookingCabin.pax[0].firstRow = true;
+		}
+
 		bookingCabins.add(bookingCabin);
+		bookingCabin.validate();
 	}
 
 	void deleteCabin(int idx) {
@@ -76,5 +86,24 @@ class BookingCabinsPage implements OnInit {
 
 	bool hasAvailability(String id) {
 		return getAvailability(id) > 0;
+	}
+
+	String uniqueId(String prefix, int cabin, int pax) {
+		final idx = (100 * cabin) + pax;
+		return prefix + '_' + idx.toString();
+	}
+
+	void validate(Event event) {
+		final bookingIdx = _findBookingIndex(event.target);
+		if (bookingIdx >= 0 && bookingIdx < bookingCabins.length) {
+			bookingCabins[bookingIdx].validate();
+		}
+	}
+
+	int _findBookingIndex(HtmlElement target) {
+		if (!target.dataset.containsKey("idx")) {
+			return null == target.parent ? -1 : _findBookingIndex(target.parent);
+		}
+		return int.parse(target.dataset["idx"]);
 	}
 }
