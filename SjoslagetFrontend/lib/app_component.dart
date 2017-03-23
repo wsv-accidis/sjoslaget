@@ -2,6 +2,7 @@ import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
 import 'booking/booking_component.dart';
+import 'booking/booking_validator.dart';
 import 'content/content_component.dart';
 
 import 'client/client_factory.dart';
@@ -13,7 +14,7 @@ import 'client/session_storage_cache.dart';
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	providers: const [ClientFactory, CruiseRepository, SessionStorageCache],
+	providers: const [BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
 	directives: const [ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [

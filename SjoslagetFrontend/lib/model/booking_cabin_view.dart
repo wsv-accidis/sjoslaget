@@ -20,9 +20,4 @@ class BookingCabinView {
 		// First row of every cabin is always required
 		pax[0].requiredRow = true;
 	}
-
-	bool validate() {
-		isValid = pax.where((p) => !p.validate()).isEmpty;
-		return isValid;
-	}
 }

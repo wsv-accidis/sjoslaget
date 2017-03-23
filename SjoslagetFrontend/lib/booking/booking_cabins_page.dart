@@ -6,6 +6,7 @@ import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
 
 import 'booking_component.dart';
+import 'booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
@@ -19,6 +20,7 @@ import '../model/cruise_cabin.dart';
 	providers: const [materialProviders]
 )
 class BookingCabinsPage implements OnInit {
+	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
@@ -35,7 +37,7 @@ class BookingCabinsPage implements OnInit {
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
 
-	BookingCabinsPage(this._clientFactory, this._cruiseRepository);
+	BookingCabinsPage(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
 		if (!window.sessionStorage.containsKey(BookingComponent.BOOKING)) {
@@ -59,11 +61,18 @@ class BookingCabinsPage implements OnInit {
 		}
 
 		bookingCabins.add(bookingCabin);
-		bookingCabin.validate();
+		_bookingValidator.validateCabin(bookingCabin);
 	}
 
 	void deleteCabin(int idx) {
 		bookingCabins.removeAt(idx);
+
+		if(0 == idx && bookingCabins.isNotEmpty) {
+			// Reapply the firstRow flag to the new first row if the old one was removed
+			final firstCabin = bookingCabins[0];
+			firstCabin.pax[0].firstRow = true;
+			_bookingValidator.validateCabin(firstCabin);
+		}
 	}
 
 	CruiseCabin getCruiseCabin(id) {
@@ -96,7 +105,7 @@ class BookingCabinsPage implements OnInit {
 	void validate(Event event) {
 		final bookingIdx = _findBookingIndex(event.target);
 		if (bookingIdx >= 0 && bookingIdx < bookingCabins.length) {
-			bookingCabins[bookingIdx].validate();
+			_bookingValidator.validateCabin(bookingCabins[bookingIdx]);
 		}
 	}
 
