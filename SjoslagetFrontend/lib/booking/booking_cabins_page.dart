@@ -10,6 +10,7 @@ import 'booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
+import '../model/booking_details.dart';
 import '../model/cruise_cabin.dart';
 
 @Component(
@@ -25,8 +26,8 @@ class BookingCabinsPage implements OnInit {
 	final CruiseRepository _cruiseRepository;
 
 	Map<String, int> availability;
-	String firstName;
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
+	BookingDetails bookingDetails;
 	List<CruiseCabin> cruiseCabins;
 
 	bool get isEmpty => bookingCabins.isEmpty;
@@ -44,12 +45,10 @@ class BookingCabinsPage implements OnInit {
 			return;
 		}
 
+		bookingDetails = new BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
 		final client = await _clientFactory.getClient();
 		cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		availability = await _cruiseRepository.getAvailability(client);
-
-		Map<String, String> booking = JSON.decode(window.sessionStorage[BookingComponent.BOOKING]);
-		firstName = booking[BookingComponent.FIRSTNAME];
 	}
 
 	void addCabin(String id) {

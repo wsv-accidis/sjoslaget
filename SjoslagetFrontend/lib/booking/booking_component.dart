@@ -14,9 +14,4 @@ import 'booking_cabins_page.dart';
 ])
 class BookingComponent {
 	static const BOOKING = 'booking';
-	static const EMAIL = 'email';
-	static const FIRSTNAME = 'firstName';
-	static const LASTNAME = 'lastName';
-	static const LUNCH = 'lunch';
-	static const PHONE_NO = 'phoneNo';
 }

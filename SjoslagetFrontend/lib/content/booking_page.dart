@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html' show window;
 
 import 'package:angular2/core.dart';
@@ -8,6 +7,7 @@ import 'package:angular2/router.dart';
 import '../booking/booking_component.dart';
 import '../booking/booking_details_component.dart';
 import '../booking/booking_login_component.dart';
+import '../model/booking_details.dart';
 
 @Component(
 	selector: 'booking-page',
@@ -28,14 +28,15 @@ class BookingPage implements OnInit {
 	}
 
 	void onSubmitBooking(BookingDetailsComponent details) {
-		window.sessionStorage[BookingComponent.BOOKING] = JSON.encode({
-			BookingComponent.FIRSTNAME: details.firstName,
-			BookingComponent.LASTNAME: details.lastName,
-			BookingComponent.PHONE_NO: details.phoneNo,
-			BookingComponent.EMAIL: details.email,
-			BookingComponent.LUNCH: details.lunch,
-		});
+		final bookingDetails = new BookingDetails(
+			details.firstName,
+			details.lastName,
+			details.phoneNo,
+			details.email,
+			details.lunch
+		);
 
+		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
 		_router.navigate(['../../MyBooking/EditCabins']);
 	}
 }
