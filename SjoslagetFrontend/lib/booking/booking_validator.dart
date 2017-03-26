@@ -7,9 +7,9 @@ import '../model/booking_pax_view.dart';
 
 @Injectable()
 class BookingValidator {
-	final _dobRegExp = new RegExp(r"^\d{6}$");
-	final _nationalityRegExp = new RegExp(r"^[a-zA-Z]{2}$");
-	final _yearsRegExp = new RegExp(r"\d+");
+	final _dobRegExp = new RegExp(r'^\d{6}$');
+	final _nationalityRegExp = new RegExp(r'^[a-zA-Z]{2}$');
+	final _yearsRegExp = new RegExp(r'\d+');
 
 	bool validateCabin(BookingCabinView cabin) {
 		cabin.isValid = cabin.pax
@@ -26,39 +26,39 @@ class BookingValidator {
 		}
 
 		if (pax.firstRow && isBlank(pax.group)) {
-			pax.groupError = "Ange förening.";
+			pax.groupError = 'Ange förening.';
 		} else {
 			pax.groupError = null;
 		}
 
 		if (isBlank(pax.firstName)) {
-			pax.firstNameError = "Ange förnamn.";
+			pax.firstNameError = 'Ange förnamn.';
 		} else {
 			pax.firstNameError = null;
 		}
 
 		if (isBlank(pax.lastName)) {
-			pax.lastNameError = "Ange efternamn.";
+			pax.lastNameError = 'Ange efternamn.';
 		} else {
 			pax.lastNameError = null;
 		}
 
 		if (isBlank(pax.dob)) {
-			pax.dobError = "Ange födelsedatum.";
+			pax.dobError = 'Ange födelsedatum.';
 		} else if (!_isValidDate(pax.dob)) {
-			pax.dobError = "Ange ett giltigt datum.";
+			pax.dobError = 'Ange ett giltigt datum.';
 		} else {
 			pax.dobError = null;
 		}
 
 		if (!isBlank(pax.nationality) && !_nationalityRegExp.hasMatch(pax.nationality)) {
-			pax.nationalityError = "Ange en landskod från listan.";
+			pax.nationalityError = 'Ange en landskod från listan.';
 		} else {
 			pax.nationalityError = null;
 		}
 
 		if (!isBlank(pax.years) && !_yearsRegExp.hasMatch(pax.years)) {
-			pax.yearsError = "Ange siffror.";
+			pax.yearsError = 'Ange siffror.';
 		} else {
 			pax.yearsError = null;
 		}

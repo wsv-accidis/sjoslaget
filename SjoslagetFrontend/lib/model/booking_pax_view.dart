@@ -21,7 +21,7 @@ class BookingPaxView {
 
 	BookingPaxView() {
 		// TODO: Would be better not to set default gender but material-radio is not sending a checkedChange event if unset
-		gender = "m";
+		gender = 'm';
 	}
 
 	bool get hasError => hasGroupError || hasFirstNameError || hasLastNameError || hasGenderError || hasDobError || hasNationalityError || hasYearsError;

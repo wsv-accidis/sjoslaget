@@ -3,6 +3,7 @@ import 'dart:html' show window;
 
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
+import 'package:quiver/strings.dart' as str show isNotEmpty;
 
 import '../booking/booking_component.dart';
 import '../booking/booking_details_component.dart';
@@ -21,9 +22,12 @@ class BookingPage implements OnInit {
 	@ViewChild('bookingDetails')
 	BookingDetailsComponent bookingDetails;
 
+	bool forceOpenBooking;
+
 	BookingPage(this._router);
 
 	Future<Null> ngOnInit() async {
+		forceOpenBooking = str.isNotEmpty(window.sessionStorage['forceOpenBooking']);
 		bookingDetails.setOnSubmitListener(onSubmitBooking);
 	}
 
@@ -37,6 +41,6 @@ class BookingPage implements OnInit {
 		);
 
 		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
-		_router.navigate(['../../MyBooking/EditCabins']);
+		_router.navigate(['/MyBooking/EditCabins']);
 	}
 }

@@ -67,4 +67,4 @@ class ClientFactory {
 	String get authenticatedUser => window.sessionStorage.containsKey(UNIQUE_NAME_KEY) ? window.sessionStorage[UNIQUE_NAME_KEY] : '';
 }
 
-const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken("sjoslagetApiRoot");
+const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken('sjoslagetApiRoot');

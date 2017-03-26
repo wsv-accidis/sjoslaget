@@ -5,6 +5,7 @@ import 'booking/booking_component.dart';
 import 'booking/booking_validator.dart';
 import 'content/content_component.dart';
 
+import 'client/booking_repository.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
 import 'client/session_storage_cache.dart';
@@ -14,7 +15,7 @@ import 'client/session_storage_cache.dart';
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	providers: const [BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
+	providers: const [BookingRepository, BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
 	directives: const [ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [

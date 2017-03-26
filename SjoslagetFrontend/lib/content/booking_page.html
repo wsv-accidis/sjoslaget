@@ -1,12 +1,17 @@
 <h1>Bokning</h1>
 
-<p style="margin-bottom: 3px">
-	Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="['About/Booking']">Hur man bokar</a> och se till att
-	du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
-	egna uppgifter som <strong>kontaktperson</strong>:
-</p>
+<div [attr.style]="!forceOpenBooking ? 'display: none' : ''">
+	<p style="margin-bottom: 3px">
+		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="['About/Booking']">Hur man bokar</a> och se till att
+		du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
+		egna uppgifter som <strong>kontaktperson</strong>:
+	</p>
 
-<booking-details #bookingDetails></booking-details>
+	<booking-details #bookingDetails></booking-details>
+</div>
+<p *ngIf="!forceOpenBooking">
+	Bokningen har inte öppnat ännu. Håll utkik!
+</p>
 
 <h1 style="margin-top: 20px">Ändra din bokning</h1>
 
@@ -15,3 +20,5 @@
 </p>
 
 <booking-login></booking-login>
+
+<div style="height: 30px"></div>

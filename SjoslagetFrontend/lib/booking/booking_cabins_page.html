@@ -127,17 +127,20 @@
 		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
 	</p>
 
-	<div style="margin-bottom: 50px">
+	<div style="margin-bottom: 50px" *ngIf="!isSaving">
 		<material-button class="control-blue"
-						 [disabled]="isEmpty || !isValid"
-						 raised>
+						 [disabled]="!canSave"
+						 raised
+						 (trigger)="saveBooking()">
 			Spara bokningen
 		</material-button>
 
 		<material-button class="control-red"
-						 [disabled]="isEmpty || !isSaved || !isValid"
+						 [disabled]="!canFinish"
 						 raised>
 			Jag är helt klar med bokningen, ta mig härifrån
 		</material-button>
 	</div>
+
+	<spinner-widget *ngIf="isSaving"></spinner-widget>
 </form>
