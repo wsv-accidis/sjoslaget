@@ -11,6 +11,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string LastName { get; set; }
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
+		public string Lunch { get; set; }
 
 		public static Booking FromSource(BookingSource source, Guid cruiseId, string reference)
 		{
@@ -21,7 +22,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 				FirstName = source.FirstName,
 				LastName = source.LastName,
 				Email = source.Email,
-				PhoneNo = source.PhoneNo
+				PhoneNo = source.PhoneNo,
+				Lunch = source.Lunch
 			};
 		}
 	}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Accidis.Sjoslaget.WebService.Models
 {
@@ -10,6 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string LastName { get; set; }
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
+		public string Lunch { get; set; }
 		public List<Cabin> Cabins { get; set; }
 
 		public static void Validate(BookingSource bookingSource)
@@ -21,12 +24,27 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public void Validate()
 		{
-			if(string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(PhoneNo))
-				throw new BookingException("One or more required values is missing from the booking.");
+			if(string.IsNullOrWhiteSpace(FirstName))
+				throw new BookingException("First name must be set.");
+			if(string.IsNullOrWhiteSpace(LastName))
+				throw new BookingException("Last name must be set.");
+			if(string.IsNullOrWhiteSpace(Email))
+				throw new BookingException("E-mail must be set.");
+			if(string.IsNullOrWhiteSpace(PhoneNo))
+				throw new BookingException("Phone number must be set.");
+			if(string.IsNullOrWhiteSpace(Lunch))
+				throw new BookingException("Lunch preference must be set.");
+
 			if(null == Cabins || !Cabins.Any())
-				throw new BookingException("List of cabins is empty.");
+				throw new BookingException("List of cabins must not be empty.");
+
+			bool isFirstCabin = true;
+			string defaultGroup = string.Empty;
 			foreach(Cabin cabin in Cabins)
-				cabin.Validate();
+			{
+				cabin.Validate(isFirstCabin, ref defaultGroup);
+				isFirstCabin = false;
+			}
 		}
 
 		public sealed class Cabin
@@ -34,26 +52,74 @@ namespace Accidis.Sjoslaget.WebService.Models
 			public Guid TypeId { get; set; }
 			public List<Pax> Pax { get; set; }
 
-			public void Validate()
+			public void Validate(bool isFirstCabin, ref string defaultGroup)
 			{
 				if(Guid.Empty.Equals(TypeId))
-					throw new BookingException("Cabin type is not specified.");
+					throw new BookingException("Cabin type must be specified.");
 				if(null == Pax || !Pax.Any())
-					throw new BookingException("List of pax is empty.");
-				foreach(Pax pax in Pax)
-					pax.Validate();
+					throw new BookingException("List of pax must not be empty.");
+
+				BookingSource.Pax.ValidateAndSetDefaults(Pax, isFirstCabin, ref defaultGroup);
 			}
 		}
 
 		public sealed class Pax
 		{
+			static string DefaultNationality = "se";
+			static string DobFormat = "yyMMdd";
+
+			public string Group { get; set; }
 			public string FirstName { get; set; }
 			public string LastName { get; set; }
+			public string Gender { get; set; }
+			public string Dob { get; set; }
+			public string Nationality { get; set; }
+			public int Years { get; set; }
 
-			public void Validate()
+			public static void ValidateAndSetDefaults(List<Pax> paxList, bool isFirstCabin, ref string defaultGroup)
 			{
-				if(string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
-					throw new BookingException("One or more required values are missing from a passenger.");
+				bool isFirstPax = isFirstCabin;
+				foreach(Pax pax in paxList)
+				{
+					if(isFirstPax)
+					{
+						if(String.IsNullOrWhiteSpace(pax.Group))
+							throw new BookingException("Group must be set for the first pax.");
+						defaultGroup = pax.Group;
+					}
+					else if(String.IsNullOrWhiteSpace(pax.Group))
+						pax.Group = defaultGroup;
+
+					isFirstPax = false;
+
+					if(String.IsNullOrWhiteSpace(pax.FirstName))
+						throw new BookingException("First name must be set.");
+					if(String.IsNullOrWhiteSpace(pax.LastName))
+						throw new BookingException("Last name must be set.");
+					if(!TryValidateDateOfBirth(pax.Dob))
+						throw new BookingException("Date of birth must be set and a valid date.");
+
+					if(String.IsNullOrWhiteSpace(pax.Nationality))
+						pax.Nationality = DefaultNationality;
+					else if(!TryValidateNationality(pax.Nationality))
+						throw new BookingException("Nationality must be a 2-letter ISO country code.");
+					else
+						pax.Nationality = pax.Nationality.ToLowerInvariant();
+
+					if(pax.Years < 0)
+						throw new BookingException("Years must be greater than or equal to zero.");
+				}
+			}
+
+			static bool TryValidateDateOfBirth(string dob)
+			{
+				DateTime ignored;
+				return !String.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DobFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out ignored);
+			}
+
+			static bool TryValidateNationality(string nationality)
+			{
+				return Regex.IsMatch(nationality, "^[a-z]{2}$", RegexOptions.IgnoreCase);
 			}
 		}
 	}

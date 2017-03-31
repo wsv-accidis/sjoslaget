@@ -103,8 +103,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				try
 				{
-					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo)",
-						new {CruiseId = booking.CruiseId, Reference = booking.Reference, FirstName = booking.FirstName, LastName = booking.LastName, Email = booking.Email, PhoneNo = booking.PhoneNo});
+					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch)",
+						new {CruiseId = booking.CruiseId, Reference = booking.Reference, FirstName = booking.FirstName, LastName = booking.LastName, Email = booking.Email, PhoneNo = booking.PhoneNo, Lunch = booking.Lunch});
 
 					createdBooking = true;
 					booking.Id = id;
@@ -130,8 +130,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 					new {CruiseId = booking.CruiseId, BookingId = booking.Id, CabinTypeId = cabin.CabinTypeId, Order = idx++});
 
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [FirstName], [LastName]) values (@BookingCabinId, @FirstName, @LastName)",
-					pax.Select(p => new {BookingCabinId = p.BookingCabinId, FirstName = p.FirstName, LastName = p.LastName}));
+				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years)",
+					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob, Nationality = p.Nationality, Years = p.Years}));
 			}
 		}
 	}
