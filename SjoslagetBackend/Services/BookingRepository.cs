@@ -131,7 +131,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
 				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years)",
-					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob, Nationality = p.Nationality, Years = p.Years}));
+					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = GenderConvert.ToString(p.Gender), Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years}));
 			}
 		}
 	}

@@ -145,6 +145,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				LastName = "Testefternamn",
 				Email = "test@sjoslaget.se",
 				PhoneNo = "0000-123 456",
+				Lunch = "15",
 				Cabins = new List<BookingSource.Cabin>(cabins)
 			};
 		}
@@ -166,12 +167,17 @@ namespace Accidis.Sjoslaget.Test.Services
 			return result;
 		}
 
-		static BookingSource.Pax GetPaxForTest(string firstName = "Testpax", string lastName = "Paxtest")
+		static BookingSource.Pax GetPaxForTest(string group = "Group", string firstName = "Testpax", string lastName = "Paxtest", string dob = "000101", string gender = "m", string nationality = "se", int years = 0)
 		{
 			return new BookingSource.Pax
 			{
+				Group = group,
 				FirstName = firstName,
-				LastName = lastName
+				LastName = lastName,
+				Dob = dob,
+				Gender = gender,
+				Nationality = nationality,
+				Years = years
 			};
 		}
 	}

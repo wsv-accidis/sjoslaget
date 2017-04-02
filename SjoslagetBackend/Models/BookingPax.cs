@@ -9,8 +9,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string Group { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public string Gender { get; set; }
-		public string Dob { get; set; }
+		public Gender Gender { get; set; }
+		public DateOfBirth Dob { get; set; }
 		public string Nationality { get; set; }
 		public int Years { get; set; }
 
@@ -22,8 +22,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 				Group = source.Group,
 				FirstName = source.FirstName,
 				LastName = source.LastName,
-				Gender = source.Gender,
-				Dob = source.Dob,
+				Gender = GenderConvert.FromString(source.Gender),
+				Dob = new DateOfBirth(source.Dob),
 				Nationality = source.Nationality,
 				Years = source.Years
 			};

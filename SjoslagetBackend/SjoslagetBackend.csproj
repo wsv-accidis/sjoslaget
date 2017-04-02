@@ -182,6 +182,8 @@
     <Compile Include="Models\CruiseCabinAvailability.cs" />
     <Compile Include="Models\CruiseCabinWithType.cs" />
     <Compile Include="Models\CruiseCabinSource.cs" />
+    <Compile Include="Models\DateOfBirth.cs" />
+    <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />

@@ -74,6 +74,7 @@
     <Compile Include="Db\SjoslagetDbMaintenance.cs" />
     <Compile Include="Db\SjoslagetDbTest.cs" />
     <Compile Include="Db\SjoslagetDbTestConfig.cs" />
+    <Compile Include="Model\DateOfBirthTest.cs" />
     <Compile Include="Services\BookingRepositoryTest.cs" />
     <Compile Include="Services\RandomKeyGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

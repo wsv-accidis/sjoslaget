@@ -96,7 +96,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 						throw new BookingException("First name must be set.");
 					if(String.IsNullOrWhiteSpace(pax.LastName))
 						throw new BookingException("Last name must be set.");
-					if(!TryValidateDateOfBirth(pax.Dob))
+					if(!DateOfBirth.IsValid(pax.Dob))
 						throw new BookingException("Date of birth must be set and a valid date.");
 
 					if(String.IsNullOrWhiteSpace(pax.Nationality))
@@ -109,12 +109,6 @@ namespace Accidis.Sjoslaget.WebService.Models
 					if(pax.Years < 0)
 						throw new BookingException("Years must be greater than or equal to zero.");
 				}
-			}
-
-			static bool TryValidateDateOfBirth(string dob)
-			{
-				DateTime ignored;
-				return !String.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DobFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out ignored);
 			}
 
 			static bool TryValidateNationality(string nationality)
