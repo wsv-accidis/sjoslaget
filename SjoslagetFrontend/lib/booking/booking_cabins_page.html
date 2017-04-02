@@ -127,6 +127,11 @@
 		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
 	</p>
 
+	<p *ngIf="isSaved">
+		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span> och din PIN-kod är <span class="booking-result">{{ bookingResult.password }}</span>.
+		Skriv ner dessa, du kommer att behöva dem senare.
+	</p>
+
 	<div style="margin-bottom: 50px" *ngIf="!isSaving">
 		<material-button class="control-blue"
 						 [disabled]="!canSave"
@@ -137,7 +142,8 @@
 
 		<material-button class="control-red"
 						 [disabled]="!canFinish"
-						 raised>
+						 raised
+						 (trigger)="finishBooking()">
 			Jag är helt klar med bokningen, ta mig härifrån
 		</material-button>
 	</div>

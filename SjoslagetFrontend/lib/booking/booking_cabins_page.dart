@@ -14,6 +14,7 @@ import '../client/cruise_repository.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
+import '../model/booking_result.dart';
 import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
@@ -34,7 +35,7 @@ class BookingCabinsPage implements OnInit {
 	Map<String, int> availability;
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	BookingDetails bookingDetails;
-	String bookingRef;
+	BookingResult bookingResult;
 	List<CruiseCabin> cruiseCabins;
 	bool isSaving = false;
 
@@ -46,7 +47,7 @@ class BookingCabinsPage implements OnInit {
 
 	bool get isLoaded => null != availability && null != cruiseCabins;
 
-	bool get isSaved => str.isNotEmpty(bookingRef);
+	bool get isSaved => null != bookingResult;
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
 
@@ -87,6 +88,12 @@ class BookingCabinsPage implements OnInit {
 		}
 	}
 
+	void finishBooking() {
+		_clientFactory.clear();
+		window.sessionStorage.remove(BookingComponent.BOOKING);
+		_router.navigate(['/Content/Booking']);
+	}
+
 	int getAvailability(String id) {
 		if (null == availability) {
 			return 0;
@@ -116,7 +123,7 @@ class BookingCabinsPage implements OnInit {
 		List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(bookingCabins);
 
 		final client = await _clientFactory.getClient();
-		await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
+		bookingResult = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
 
 		isSaving = false;
 	}

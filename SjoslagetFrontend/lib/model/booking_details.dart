@@ -18,6 +18,11 @@ class BookingDetails {
 
 	BookingDetails(this.firstName, this.lastName, this.phoneNo, this.email, this.lunch);
 
+	factory BookingDetails.fromJson(String json) {
+		final Map<String, dynamic> map = JSON.decode(json);
+		return new BookingDetails(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[LUNCH]);
+	}
+
 	String toJson([List<BookingCabin> cabins = null]) {
 		final cabinsMap = null == cabins ? null : cabins.map((c) => c.toMap()).toList(growable: false);
 		return JSON.encode({
@@ -30,12 +35,4 @@ class BookingDetails {
 		});
 	}
 
-	BookingDetails.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		firstName = map[FIRSTNAME];
-		lastName = map[LASTNAME];
-		phoneNo = map[PHONE_NO];
-		email = map[EMAIL];
-		lunch = map[LUNCH];
-	}
 }

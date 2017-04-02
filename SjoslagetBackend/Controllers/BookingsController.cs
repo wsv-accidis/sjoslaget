@@ -28,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			try
 			{
-				var result = await _bookingRepository.CreateAsync(activeCruise.Id, bookingSource);
+				BookingResult result = await _bookingRepository.CreateAsync(activeCruise.Id, bookingSource);
 				_log.Info("Created booking {0}.", result.Reference);
 				return Ok(result);
 			}
