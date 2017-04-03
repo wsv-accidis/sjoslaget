@@ -10,7 +10,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public DateOfBirth(string s)
 		{
-			_date = DateTime.ParseExact(s, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None);
+			_date = DateTime.ParseExact(s, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite);
 		}
 
 		public int Age => AgeOn(DateTime.Now);
@@ -28,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public static bool IsValid(string dob)
 		{
 			DateTime ignored;
-			return !String.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out ignored);
+			return !String.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, out ignored);
 		}
 
 		public override string ToString()

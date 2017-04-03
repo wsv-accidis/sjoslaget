@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -8,6 +7,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 {
 	public sealed class BookingSource
 	{
+		public string Reference { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
@@ -19,10 +19,20 @@ namespace Accidis.Sjoslaget.WebService.Models
 		{
 			if(null == bookingSource)
 				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
-			bookingSource.Validate();
+
+			bookingSource.ValidateDetails();
+			bookingSource.ValidateCabins();
 		}
 
-		public void Validate()
+		public static void ValidateCabins(BookingSource bookingSource)
+		{
+			if (null == bookingSource)
+				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
+
+			bookingSource.ValidateCabins();
+		}
+
+		public void ValidateDetails()
 		{
 			if(string.IsNullOrWhiteSpace(FirstName))
 				throw new BookingException("First name must be set.");
@@ -34,7 +44,10 @@ namespace Accidis.Sjoslaget.WebService.Models
 				throw new BookingException("Phone number must be set.");
 			if(string.IsNullOrWhiteSpace(Lunch))
 				throw new BookingException("Lunch preference must be set.");
+		}
 
+		void ValidateCabins()
+		{
 			if(null == Cabins || !Cabins.Any())
 				throw new BookingException("List of cabins must not be empty.");
 
@@ -66,7 +79,6 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public sealed class Pax
 		{
 			static string DefaultNationality = "se";
-			static string DobFormat = "yyMMdd";
 
 			public string Group { get; set; }
 			public string FirstName { get; set; }

@@ -33,5 +33,17 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			return Ok();
 		}
+
+		[Authorize]
+		[HttpGet]
+		[Route("api/whoami")]
+		public IHttpActionResult WhoAmI()
+		{
+			string userName = AuthContext.UserName;
+			if(String.IsNullOrEmpty(userName))
+				throw new InvalidOperationException("Request is authorized, but username was null or empty.");
+
+			return Ok(new {UserName = userName});
+		}
 	}
 }

@@ -67,10 +67,58 @@ namespace Accidis.Sjoslaget.WebService.Services
 		public async Task<Booking> FindByReferenceAsync(string reference)
 		{
 			using(var db = SjoslagetDb.Open())
+				return await FindByReferenceAsync(db, reference);
+		}
+
+		public async Task<Booking> FindByReferenceAsync(SqlConnection db, string reference)
+		{
+			var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new {Reference = reference});
+			return result.FirstOrDefault();
+		}
+
+		public async Task<BookingCabinWithPax[]> GetCabinsForBookingAsync(Booking booking)
+		{
+			using(var db = SjoslagetDb.Open())
 			{
-				var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new {Reference = reference});
-				return result.FirstOrDefault();
+				var result = await db.QueryAsync<BookingCabinWithPax>("select * from [BookingCabin] where [BookingId] = @BookingId order by [Order]",
+					new {BookingId = booking.Id});
+
+				BookingCabinWithPax[] bookingCabins = result.ToArray();
+				foreach(BookingCabinWithPax cabin in bookingCabins)
+				{
+					var pax = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingCabinId] = @BookingCabinId",
+						new {BookingCabinId = cabin.Id});
+					cabin.Pax.AddRange(pax);
+				}
+
+				return bookingCabins;
 			}
+		}
+
+		public async Task<BookingResult> UpdateAsync(Guid cruiseId, BookingSource source)
+		{
+			BookingSource.ValidateCabins(source);
+			Booking booking;
+
+			// See CreateAsync regarding the use of transaction + applock here.
+			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
+			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
+			using(var db = SjoslagetDb.Open())
+			{
+				await db.GetAppLockAsync(LockResource, LockTimeout);
+
+				booking = await FindByReferenceAsync(db, source.Reference);
+				if(null == booking || booking.CruiseId != cruiseId)
+					throw new BookingException($"Booking with reference {source.Reference} not found or not in active cruise.");
+
+				await DeleteCabins(db, booking);
+				await CheckAvailability(db, cruiseId, source.Cabins);
+				await CreateCabins(db, booking, source.Cabins);
+
+				tran.Complete();
+			}
+
+			return BookingResult.FromBooking(booking, null);
 		}
 
 		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList)
@@ -131,8 +179,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
 				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years)",
-					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = GenderConvert.ToString(p.Gender), Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years}));
+					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years}));
 			}
+		}
+
+		async Task DeleteCabins(SqlConnection db, Booking booking)
+		{
+			await db.ExecuteAsync("delete from [BookingCabin] where [BookingId] = @BookingId", new {BookingId = booking.Id});
 		}
 	}
 }

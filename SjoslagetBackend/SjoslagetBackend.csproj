@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\AuthConfig.cs" />
+    <Compile Include="Auth\AuthContext.cs" />
     <Compile Include="Auth\JwtAccessTokenFormat.cs" />
     <Compile Include="Auth\OAuthProvider.cs" />
     <Compile Include="Auth\Roles.cs" />
@@ -167,12 +168,15 @@
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Db\DateOfBirthTypeHandler.cs" />
+    <Compile Include="Db\GenderTypeHandler.cs" />
     <Compile Include="Db\SjoslagetDb.cs" />
     <Compile Include="Db\SqlConnectionExtensions.cs" />
     <Compile Include="Db\SqlExceptionExtensions.cs" />
     <Compile Include="Models\AvailabilityException.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingCabin.cs" />
+    <Compile Include="Models\BookingCabinWithPax.cs" />
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />

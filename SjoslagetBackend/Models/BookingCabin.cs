@@ -2,7 +2,7 @@
 
 namespace Accidis.Sjoslaget.WebService.Models
 {
-	public sealed class BookingCabin
+	public class BookingCabin
 	{
 		public Guid Id { get; set; }
 		public Guid BookingId { get; set; }

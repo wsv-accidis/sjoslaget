@@ -22,7 +22,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 				Group = source.Group,
 				FirstName = source.FirstName,
 				LastName = source.LastName,
-				Gender = GenderConvert.FromString(source.Gender),
+				Gender = Gender.FromString(source.Gender),
 				Dob = new DateOfBirth(source.Dob),
 				Nationality = source.Nationality,
 				Years = source.Years

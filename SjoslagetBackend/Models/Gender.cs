@@ -2,18 +2,27 @@
 
 namespace Accidis.Sjoslaget.WebService.Models
 {
-	public enum Gender
+	public class Gender
 	{
-		Female,
-		Male,
-		Other
-	}
+		const string FemaleValue = "f";
+		const string MaleValue = "m";
+		const string OtherValue = "x";
 
-	static class GenderConvert
-	{
-		const string Female = "f";
-		const string Male = "m";
-		const string Other = "x";
+		public static readonly Gender Female = new Gender(FemaleValue);
+		public static readonly Gender Male = new Gender(MaleValue);
+		public static readonly Gender Other = new Gender(OtherValue);
+		readonly string _value;
+
+		Gender(string value)
+		{
+			_value = value;
+		}
+
+		public override bool Equals(object obj)
+		{
+			var other = obj as Gender;
+			return other != null && String.Equals(_value, other._value, StringComparison.Ordinal);
+		}
 
 		public static Gender FromString(string s)
 		{
@@ -22,30 +31,25 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 			switch(s.ToLowerInvariant())
 			{
-				case Male:
-					return Gender.Male;
-				case Female:
-					return Gender.Female;
-				case Other:
-					return Gender.Other;
+				case MaleValue:
+					return Male;
+				case FemaleValue:
+					return Female;
+				case OtherValue:
+					return Other;
 				default:
 					throw new ArgumentException("String does not describe a gender.", nameof(s));
 			}
 		}
 
-		public static string ToString(Gender g)
+		public override int GetHashCode()
 		{
-			switch(g)
-			{
-				case Gender.Male:
-					return Male;
-				case Gender.Female:
-					return Female;
-				case Gender.Other:
-					return Other;
-				default:
-					throw new ArgumentException("Enum value does not describe a gender.", nameof(g));
-			}
+			return _value?.GetHashCode() ?? 0;
+		}
+
+		public override string ToString()
+		{
+			return _value;
 		}
 	}
 }

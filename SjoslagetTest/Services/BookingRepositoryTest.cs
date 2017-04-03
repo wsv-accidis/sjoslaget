@@ -86,6 +86,118 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenUpdatedWithMoreCabins_ShouldAllowUpToMaximumCapacity()
+		{
+			Assert.AreEqual(10, Config.NumberOfCabins);			
+			var repository = GetBookingRepositoryForTest();
+
+			// First create a booking of 8/10 cabins
+			var eightOutOfTenCabins = new BookingSource.Cabin[8];
+			for(int i = 0; i < eightOutOfTenCabins.Length; i++)
+				eightOutOfTenCabins[i] = GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest());
+
+			var booking = GetBookingForTest(eightOutOfTenCabins);
+			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, booking);
+
+			// Now update it to 9/10 cabins
+			var nineOutOfTenCabins = new BookingSource.Cabin[9];
+			for(int i = 0; i < nineOutOfTenCabins.Length; i++)
+				nineOutOfTenCabins[i] = GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest());
+
+			booking = GetBookingForTest(nineOutOfTenCabins);
+			booking.Reference = result.Reference;
+			result = await repository.UpdateAsync(SjoslagetDbExtensions.CruiseId, booking);
+
+			var savedBooking = await repository.FindByReferenceAsync(result.Reference);
+			var cabins = await repository.GetCabinsForBookingAsync(savedBooking);
+			Assert.AreEqual(9, cabins.Length);
+		}
+
+		[TestMethod]
+		public async Task GivenExistingBooking_WhenUpdatedWithTooManyCabins_ShouldPreserveExistingBooking()
+		{
+			Assert.AreEqual(10, Config.NumberOfCabins);
+			var repository = GetBookingRepositoryForTest();
+
+			// First create a booking of 9/10 cabins
+			var nineOutOfTenCabins = new BookingSource.Cabin[9];
+			for(int i = 0; i < nineOutOfTenCabins.Length; i++)
+				nineOutOfTenCabins[i] = GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest());
+			var bookingThatFillsNineOutOfTenCabins = GetBookingForTest(nineOutOfTenCabins);
+			await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, bookingThatFillsNineOutOfTenCabins);
+
+			// Then create a booking for the 10th cabin
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Test1", lastName: "Test2")));
+			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+
+			var booking = await repository.FindByReferenceAsync(result.Reference);
+			var cabins = await repository.GetCabinsForBookingAsync(booking);
+			Assert.AreEqual(1, cabins.Length);
+
+			// Now try to update it with two bookings
+			source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest()),
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest())
+			);
+			source.Reference = result.Reference;
+
+			try
+			{
+				result = await repository.UpdateAsync(booking.CruiseId, source);
+				Assert.Fail("Update booking did not throw.");
+			}
+			catch(AvailabilityException)
+			{
+			}
+
+			// Check to make sure it is still there
+			booking = await repository.FindByReferenceAsync(result.Reference);
+			cabins = await repository.GetCabinsForBookingAsync(booking);
+			Assert.AreEqual(1, cabins.Length);
+
+			var pax = cabins[0].Pax[0];
+			Assert.AreEqual(pax.FirstName, "Test1");
+			Assert.AreEqual(pax.LastName, "Test2");
+		}
+
+		[TestMethod]
+		public async Task GivenExistingBooking_WhenUpdatedWithValidData_ShouldUpdateBooking()
+		{
+			var repository = GetBookingRepositoryForTest();
+
+			// Create a booking with one cabin
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
+			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+
+			var booking = await repository.FindByReferenceAsync(result.Reference);
+			var cabins = await repository.GetCabinsForBookingAsync(booking);
+			var pax = cabins[0].Pax[0];
+			Assert.AreEqual(pax.FirstName, "Förnamn1");
+			Assert.AreEqual(pax.LastName, "Efternamn1");
+
+			// Now update it to have two cabins
+			source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn2", lastName: "Efternamn2")),
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn3", lastName: "Efternamn3"))
+			);
+			source.Reference = result.Reference;
+
+			result = await repository.UpdateAsync(booking.CruiseId, source);
+			Assert.AreEqual(booking.Reference, result.Reference);
+
+			booking = await repository.FindByReferenceAsync(result.Reference);
+			cabins = await repository.GetCabinsForBookingAsync(booking);
+
+			pax = cabins[0].Pax[0];
+			Assert.AreEqual(pax.FirstName, "Förnamn2");
+			Assert.AreEqual(pax.LastName, "Efternamn2");
+
+			pax = cabins[1].Pax[0];
+			Assert.AreEqual(pax.FirstName, "Förnamn3");
+			Assert.AreEqual(pax.LastName, "Efternamn3");
+		}
+
+		[TestMethod]
 		public async Task GivenMultipleConcurrentBookings_ShouldNotExceedAvailableCabins()
 		{
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
@@ -128,13 +240,12 @@ namespace Accidis.Sjoslaget.Test.Services
 			SjoslagetDbExtensions.InitializeForTest();
 		}
 
-		static async Task<BookingResult> CreateBookingFromSource(BookingSource source)
+		static async Task<BookingResult> CreateBookingFromSource(BookingSource source, BookingRepository repository = null)
 		{
-			var userManagerMock = new Mock<SjoslagetUserManager>();
-			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
+			if(null == repository)
+				repository = GetBookingRepositoryForTest();
 
-			var sut = new BookingRepository(new CabinRepository(), new RandomKeyGenerator(), userManagerMock.Object);
-			return await sut.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			return await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
 		}
 
 		static BookingSource GetBookingForTest(params BookingSource.Cabin[] cabins)
@@ -148,6 +259,15 @@ namespace Accidis.Sjoslaget.Test.Services
 				Lunch = "15",
 				Cabins = new List<BookingSource.Cabin>(cabins)
 			};
+		}
+
+		static BookingRepository GetBookingRepositoryForTest()
+		{
+			var userManagerMock = new Mock<SjoslagetUserManager>();
+			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
+
+			var sut = new BookingRepository(new CabinRepository(), new RandomKeyGenerator(), userManagerMock.Object);
+			return sut;
 		}
 
 		static BookingSource.Cabin GetCabinForTest(Guid cabinTypeId, params BookingSource.Pax[] pax)
