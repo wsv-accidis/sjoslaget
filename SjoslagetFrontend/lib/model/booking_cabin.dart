@@ -20,6 +20,20 @@ class BookingCabin {
 
 	BookingCabin(this.id, this.cabinTypeId, this.pax);
 
+	factory BookingCabin.fromMap(Map<String, dynamic> map) {
+		List<BookingPax> pax = map[PAX].map((value) =>
+		new BookingPax(
+			value[GROUP],
+			value[FIRSTNAME],
+			value[LASTNAME],
+			value[GENDER],
+			value[DOB],
+			value[NATIONALITY],
+			value[YEARS])).toList(growable: false);
+
+		return new BookingCabin(map[ID], map[CABIN_TYPE_ID], pax);
+	}
+
 	Map<String, dynamic> toMap() {
 		return {
 			ID: id,

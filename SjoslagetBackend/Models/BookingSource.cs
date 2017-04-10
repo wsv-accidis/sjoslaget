@@ -15,6 +15,33 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string Lunch { get; set; }
 		public List<Cabin> Cabins { get; set; }
 
+		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins)
+		{
+			return new BookingSource
+			{
+				Reference = booking.Reference,
+				FirstName = booking.FirstName,
+				LastName = booking.LastName,
+				Email = booking.Email,
+				PhoneNo = booking.PhoneNo,
+				Lunch = booking.Lunch,
+				Cabins = cabins.Select(c => new Cabin
+				{
+					TypeId = c.CabinTypeId,
+					Pax = c.Pax.Select(p => new Pax
+					{
+						Group = p.Group,
+						FirstName = p.FirstName,
+						LastName = p.LastName,
+						Dob = p.Dob.ToString(),
+						Gender = p.Gender.ToString(),
+						Nationality = p.Nationality.ToUpperInvariant(),
+						Years = p.Years
+					}).ToList()
+				}).ToList()
+			};
+		}
+
 		public static void Validate(BookingSource bookingSource)
 		{
 			if(null == bookingSource)

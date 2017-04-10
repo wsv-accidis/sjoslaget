@@ -23,12 +23,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[HttpPost]
 		public async Task<IHttpActionResult> CreateOrUpdate(BookingSource bookingSource)
 		{
-			Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
-			if(null == activeCruise)
-				return NotFound();
-
 			try
 			{
+				Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
+				if(null == activeCruise)
+					return NotFound();
+
 				if(!String.IsNullOrEmpty(bookingSource.Reference))
 				{
 					if(!AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, bookingSource.Reference, StringComparison.InvariantCultureIgnoreCase))
@@ -58,6 +58,33 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while creating the booking.");
+				throw;
+			}
+		}
+
+		[Authorize]
+		[HttpGet]
+		public async Task<IHttpActionResult> Get(string reference)
+		{
+			try
+			{
+				if(!AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase))
+					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
+
+				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+				if(null == booking)
+					return NotFound();
+
+				Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
+				if(!AuthContext.IsAdmin && !booking.CruiseId.Equals(activeCruise?.Id))
+					return BadRequest("Request is unauthorized, or booking belongs to an inactive cruise.");
+
+				BookingCabinWithPax[] cabins = await _bookingRepository.GetCabinsForBookingAsync(booking);
+				return Ok(BookingSource.FromBooking(booking, cabins));
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while getting the booking with reference {reference}.");
 				throw;
 			}
 		}

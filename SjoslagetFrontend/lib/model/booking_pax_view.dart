@@ -1,5 +1,7 @@
 import 'package:quiver/strings.dart' as str show isBlank, isEmpty;
 
+import '../model/booking_pax.dart';
+
 class BookingPaxView {
 	String group;
 	String groupError;
@@ -22,6 +24,17 @@ class BookingPaxView {
 	BookingPaxView() {
 		// TODO: Would be better not to set default gender but material-radio is not sending a checkedChange event if unset
 		gender = 'm';
+	}
+
+	BookingPaxView.fromBookingPax(BookingPax pax) {
+		group = pax.group;
+		firstName = pax.firstName;
+		lastName = pax.lastName;
+		gender = pax.gender;
+		dob = pax.dob;
+		nationality = pax.nationality;
+		years = pax.years.toString();
+		clearErrors();
 	}
 
 	bool get hasError => hasGroupError || hasFirstNameError || hasLastNameError || hasGenderError || hasDobError || hasNationalityError || hasYearsError;
@@ -50,5 +63,21 @@ class BookingPaxView {
 		dobError = null;
 		nationalityError = null;
 		yearsError = null;
+	}
+
+	BookingPax toBookingPax() {
+		return new BookingPax(
+			group,
+			firstName,
+			lastName,
+			gender,
+			dob,
+			nationality,
+			_toInt(years));
+	}
+
+	static int _toInt(id) {
+		if (null == id) return 0;
+		return int.parse(id.toString());
 	}
 }

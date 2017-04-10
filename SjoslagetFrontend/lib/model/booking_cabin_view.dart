@@ -10,7 +10,7 @@ class BookingCabinView {
 	int capacity;
 	List<BookingPaxView> pax;
 
-	BookingCabinView(CruiseCabin cruiseCabin)
+	BookingCabinView.fromCruiseCabin(CruiseCabin cruiseCabin)
 		: id = cruiseCabin.id,
 			name = cruiseCabin.name,
 			capacity = cruiseCabin.capacity,
@@ -23,32 +23,27 @@ class BookingCabinView {
 		pax[0].requiredRow = true;
 	}
 
+	factory BookingCabinView.fromBookingCabin(BookingCabin bookingCabin, CruiseCabin cruiseCabin) {
+		final view = new BookingCabinView.fromCruiseCabin(cruiseCabin);
+		for (int i = 0; i < bookingCabin.pax.length && i < view.pax.length; i++) {
+			view.pax[i] = new BookingPaxView.fromBookingPax(bookingCabin.pax[i]);
+		}
+		return view;
+	}
+
+	static List<BookingCabinView> listOfBookingCabinToList(List<BookingCabin> bookingCabins, List<CruiseCabin> cruiseCabins) {
+		return bookingCabins.map((b) => new BookingCabinView.fromBookingCabin(b, _getCruiseCabin(b.cabinTypeId, cruiseCabins))).toList();
+	}
+
 	static List<BookingCabin> listToListOfBookingCabin(List<BookingCabinView> list) {
-		return list.map((b) => b.toBookingCabin()).toList(growable: false);
+		return list.map((b) => b._toBookingCabin()).toList(growable: false);
 	}
 
-	BookingCabin toBookingCabin() {
-		return new BookingCabin(
-			null,
-			id,
-			pax.map((p) => _toBookingPax(p)).toList(growable: false)
-		);
+	BookingCabin _toBookingCabin() {
+		return new BookingCabin(null, id, pax.map((p) => p.toBookingPax()).toList(growable: false));
 	}
 
-	static BookingPax _toBookingPax(BookingPaxView pax) {
-		return new BookingPax(
-			pax.group,
-			pax.firstName,
-			pax.lastName,
-			pax.gender,
-			pax.dob,
-			pax.nationality,
-			_toInt(pax.years)
-		);
-	}
-
-	static int _toInt(id) {
-		if (null == id) return 0;
-		return int.parse(id.toString());
+	static CruiseCabin _getCruiseCabin(String id, List<CruiseCabin> cruiseCabins) {
+		return cruiseCabins.firstWhere((c) => c.id == id);
 	}
 }

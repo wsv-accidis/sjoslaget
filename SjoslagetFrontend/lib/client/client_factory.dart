@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:html' show window;
 
 import 'package:angular2/core.dart';
+import 'package:corsac_jwt/corsac_jwt.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
-import 'package:corsac_jwt/corsac_jwt.dart';
+import 'package:quiver/strings.dart' show equalsIgnoreCase;
 
 @Injectable()
 class ClientFactory {
@@ -60,11 +61,13 @@ class ClientFactory {
 		return new BrowserClient();
 	}
 
-	bool get hasCredentials => window.sessionStorage.containsKey(TOKEN_KEY);
-
 	String get authenticatedRole => window.sessionStorage.containsKey(ROLE_KEY) ? window.sessionStorage[ROLE_KEY] : '';
 
 	String get authenticatedUser => window.sessionStorage.containsKey(UNIQUE_NAME_KEY) ? window.sessionStorage[UNIQUE_NAME_KEY] : '';
+
+	bool get hasCredentials => window.sessionStorage.containsKey(TOKEN_KEY);
+
+	bool get isAdmin => equalsIgnoreCase('admin', authenticatedRole);
 }
 
 const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken('sjoslagetApiRoot');

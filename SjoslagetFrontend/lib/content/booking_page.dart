@@ -37,7 +37,8 @@ class BookingPage implements OnInit {
 			details.lastName,
 			details.phoneNo,
 			details.email,
-			details.lunch
+			details.lunch,
+			null
 		);
 
 		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();

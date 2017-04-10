@@ -37,7 +37,7 @@ class CabinsComponent implements OnInit {
 
 	void addCabin(String id) {
 		final cabin = _getCruiseCabin(id);
-		final bookingCabin = new BookingCabinView(cabin);
+		final bookingCabin = new BookingCabinView.fromCruiseCabin(cabin);
 		if (bookingCabins.isEmpty) {
 			// First pax of the booking must have group set so it can be used as the default for everyone else
 			bookingCabin.pax[0].firstRow = true;
@@ -81,7 +81,7 @@ class CabinsComponent implements OnInit {
 		cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		availability = await _cruiseRepository.getAvailability(client);
 	}
-	
+
 	String uniqueId(String prefix, int cabin, int pax) {
 		final idx = (100 * cabin) + pax;
 		return prefix + '_' + idx.toString();
@@ -94,6 +94,10 @@ class CabinsComponent implements OnInit {
 		}
 	}
 
+	void validateAll() {
+		bookingCabins.forEach((b) => _bookingValidator.validateCabin(b));
+	}
+
 	int _findBookingIndex(HtmlElement target) {
 		if (!target.dataset.containsKey('idx')) {
 			return null == target.parent ? -1 : _findBookingIndex(target.parent);
@@ -101,7 +105,7 @@ class CabinsComponent implements OnInit {
 		return int.parse(target.dataset['idx']);
 	}
 
-	CruiseCabin _getCruiseCabin(id) {
+	CruiseCabin _getCruiseCabin(String id) {
 		return cruiseCabins.firstWhere((c) => c.id == id);
 	}
 }
