@@ -52,7 +52,7 @@ class BookingValidator {
 		}
 
 		if (!isBlank(pax.nationality) && !_nationalityRegExp.hasMatch(pax.nationality)) {
-			pax.nationalityError = 'Ange en landskod från listan.';
+			pax.nationalityError = 'Ange landskod (tomt för Sverige).';
 		} else {
 			pax.nationalityError = null;
 		}

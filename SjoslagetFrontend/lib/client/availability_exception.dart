@@ -1,0 +1,2 @@
+class AvailabilityException implements Exception {
+}

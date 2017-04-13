@@ -59,17 +59,21 @@ class CabinsComponent implements OnInit {
 	}
 
 	int getAvailability(String id) {
-		if (null == availability) {
-			return 0;
-		}
+		final int available = getTotalAvailability(id);
+		final int inBooking = getNumberOfCabinsInBooking(id);
+		return _max(0, available - inBooking);
+	}
 
-		final int inBooking = bookingCabins
+	int getNumberOfCabinsInBooking(String id) {
+		return bookingCabins
 			.where((b) => b.id == id)
 			.length;
-		if (!availability.containsKey(id))
-			return 0;
+	}
 
-		return availability[id] - inBooking;
+	int getTotalAvailability(String id) {
+		if (null == availability || !availability.containsKey(id))
+			return 0;
+		return availability[id];
 	}
 
 	bool hasAvailability(String id) {
@@ -79,6 +83,11 @@ class CabinsComponent implements OnInit {
 	Future<Null> ngOnInit() async {
 		final client = await _clientFactory.getClient();
 		cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
+		availability = await _cruiseRepository.getAvailability(client);
+	}
+
+	Future<Null> refreshAvailability() async {
+		final client = await _clientFactory.getClient();
 		availability = await _cruiseRepository.getAvailability(client);
 	}
 
@@ -107,5 +116,9 @@ class CabinsComponent implements OnInit {
 
 	CruiseCabin _getCruiseCabin(String id) {
 		return cruiseCabins.firstWhere((c) => c.id == id);
+	}
+
+	static int _max(int a, int b) {
+		return a > b ? a : b;
 	}
 }

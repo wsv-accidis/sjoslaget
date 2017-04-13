@@ -1,0 +1,2 @@
+class BookingException implements Exception {
+}

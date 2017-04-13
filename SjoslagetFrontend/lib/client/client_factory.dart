@@ -15,10 +15,12 @@ class ClientFactory {
 	static const UNIQUE_NAME_KEY = 'client_name';
 
 	final String _apiRoot;
+	oauth2.Client _clientInstance;
 
 	ClientFactory(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
 	Future<http.Client> authenticate(String username, String password) async {
+		_clear();
 		try {
 			final authEndpoint = Uri.parse(_apiRoot + '/token');
 			final client = await oauth2.resourceOwnerPasswordGrant(authEndpoint, username, password);
@@ -39,22 +41,23 @@ class ClientFactory {
 	}
 
 	void clear() {
-		window.sessionStorage.remove(ROLE_KEY);
-		window.sessionStorage.remove(TOKEN_KEY);
-		window.sessionStorage.remove(UNIQUE_NAME_KEY);
+		_clear();
 		print('Session state cleared.');
 	}
 
 	Future<http.Client> getClient() async {
 		try {
 			if (window.sessionStorage.containsKey(TOKEN_KEY)) {
+				if (null != _clientInstance)
+					return _clientInstance;
+
 				final credentials = new oauth2.Credentials.fromJson(window.sessionStorage[TOKEN_KEY]);
-				final client = new oauth2.Client(credentials);
+				_clientInstance = new oauth2.Client(credentials);
 				print('Using authenticated client.');
-				return client;
+				return _clientInstance;
 			}
 		} catch (ex) {
-			clear();
+			_clear();
 			print('Failed to load stored credentials due to an exception: ' + ex);
 		}
 
@@ -68,6 +71,13 @@ class ClientFactory {
 	bool get hasCredentials => window.sessionStorage.containsKey(TOKEN_KEY);
 
 	bool get isAdmin => equalsIgnoreCase('admin', authenticatedRole);
+
+	void _clear() {
+		_clientInstance = null;
+		window.sessionStorage.remove(ROLE_KEY);
+		window.sessionStorage.remove(TOKEN_KEY);
+		window.sessionStorage.remove(UNIQUE_NAME_KEY);
+	}
 }
 
 const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken('sjoslagetApiRoot');

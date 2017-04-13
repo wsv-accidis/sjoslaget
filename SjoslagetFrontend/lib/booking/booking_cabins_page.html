@@ -41,6 +41,10 @@
 		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
 	</p>
 
+	<p class="super-important booking-error" *ngIf="hasError">
+		{{ bookingError }}
+	</p>
+
 	<div style="margin-bottom: 50px" *ngIf="!isSaving">
 		<material-button class="control-blue"
 						 [disabled]="!canSave"

@@ -132,7 +132,7 @@ namespace Accidis.Sjoslaget.WebService
 			LogManager.Configuration = config;
 
 			var logger = LogManager.GetLogger(typeof(Startup).Name);
-			logger.Info("Starting up.");
+			logger.Debug("Starting up.");
 			return logger;
 		}
 
