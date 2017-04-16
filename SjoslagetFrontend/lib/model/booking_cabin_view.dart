@@ -9,12 +9,14 @@ class BookingCabinView {
 	String name;
 	int capacity;
 	List<BookingPaxView> pax;
+	int price;
 
 	BookingCabinView.fromCruiseCabin(CruiseCabin cruiseCabin)
 		: id = cruiseCabin.id,
 			name = cruiseCabin.name,
 			capacity = cruiseCabin.capacity,
-			pax = new List<BookingPaxView>(cruiseCabin.capacity) {
+			pax = new List<BookingPaxView>(cruiseCabin.capacity),
+			price = cruiseCabin.pricePerCabin {
 		for (int i = 0; i < capacity; i++) {
 			pax[i] = new BookingPaxView();
 		}

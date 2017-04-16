@@ -77,7 +77,9 @@ class BookingPaxView {
 	}
 
 	static int _toInt(id) {
-		if (null == id) return 0;
+		if (null == id)
+			return 0;
+
 		return int.parse(id.toString());
 	}
 }

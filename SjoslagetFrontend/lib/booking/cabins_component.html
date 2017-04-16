@@ -38,10 +38,10 @@
 				<material-radio-group [(ngModel)]="pax.gender"
 									  [ngControl]="uniqueId('gender', c, p)">
 					<material-radio value="m" title="Man">
-						<img src="gfx/symbol_m.png" alt="Man">
+						<img src="gfx/symbol_m.png" height="16" width="16" alt="Man">
 					</material-radio>
 					<material-radio value="f" title="Kvinna">
-						<img src="gfx/symbol_f.png" alt="Kvinna">
+						<img src="gfx/symbol_f.png" height="20" width="14" alt="Kvinna">
 					</material-radio>
 					<material-radio value="x" title="Annat eller ospecifierat">
 						<span class="gender-other">Annat</span>
@@ -80,6 +80,10 @@
 			</td>
 		</tr>
 	</table>
+</div>
+
+<div *ngIf="totalPrice > 0" class="booking-price">
+	Totalt pris <span>{{ totalPriceFormatted }}</span>
 </div>
 
 <h3>Lägg till hytt</h3>

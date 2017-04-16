@@ -3,6 +3,16 @@ table {
 	max-width: 1100px;
 }
 
+div.booking-price {
+	margin-right: 3px;
+	text-align: right;
+}
+
+div.booking-price span {
+	font-size: larger;
+	font-weight: bold;
+}
+
 a.cabin-delete {
 	text-decoration: none !important;
 }

@@ -9,6 +9,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/cruise_cabin.dart';
+import '../util/currency_formatter.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
@@ -33,6 +34,10 @@ class CabinsComponent implements OnInit {
 	bool get isLoaded => null != availability && null != cruiseCabins;
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
+
+	int get totalPrice => bookingCabins.fold(0, (sum, b) => sum + b.price);
+
+	String get totalPriceFormatted => CurrencyFormatter.formatIntAsSEK(totalPrice);
 
 	CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 
