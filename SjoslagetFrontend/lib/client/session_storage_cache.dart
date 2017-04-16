@@ -5,6 +5,8 @@ import 'package:angular2/core.dart';
 import 'package:http/http.dart';
 
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
+import 'http_status.dart';
+import 'io_exception.dart';
 
 @Injectable()
 class SessionStorageCache {
@@ -21,7 +23,14 @@ class SessionStorageCache {
 			// TODO: Implement cache timeouts
 			return window.sessionStorage[key];
 		} else {
-			final response = await client.get(_apiRoot + uri);
+			Response response;
+			try {
+				response = await client.get(_apiRoot + uri);
+			} catch (e) {
+				throw new IOException.fromException(e);
+			}
+
+			HttpStatus.throwIfNotSuccessful(response);
 			final body = response.body;
 			window.sessionStorage[key] = body;
 			return body;

@@ -87,7 +87,7 @@
 <div *ngIf="isLoaded">
 	<material-button *ngFor="let cabin of cruiseCabins"
 					 class="control-blue"
-					 [disabled]="!hasAvailability(cabin.id)"
+					 [disabled]="!hasAvailability(cabin.id) || disableAddCabins"
 					 raised
 					 (trigger)="addCabin(cabin.id)">
 		{{ cabin.name }} ({{ getAvailability(cabin.id) }})

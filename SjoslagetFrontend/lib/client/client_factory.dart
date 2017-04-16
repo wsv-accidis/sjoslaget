@@ -8,6 +8,8 @@ import 'package:http/browser_client.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:quiver/strings.dart' show equalsIgnoreCase;
 
+import 'io_exception.dart';
+
 @Injectable()
 class ClientFactory {
 	static const ROLE_KEY = 'client_role';
@@ -35,8 +37,7 @@ class ClientFactory {
 
 			return client;
 		} catch (e) {
-			print('Failed to authenticate due to an exception: ' + e.toString());
-			rethrow;
+			throw new IOException.fromException(e);
 		}
 	}
 
@@ -56,9 +57,9 @@ class ClientFactory {
 				print('Using authenticated client.');
 				return _clientInstance;
 			}
-		} catch (ex) {
+		} catch (e) {
 			_clear();
-			print('Failed to load stored credentials due to an exception: ' + ex);
+			print('Failed to load stored credentials due to an exception: ' + e);
 		}
 
 		return new BrowserClient();

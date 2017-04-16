@@ -26,6 +26,7 @@ class CabinsComponent implements OnInit {
 	Map<String, int> availability;
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
+	bool disableAddCabins;
 
 	bool get isEmpty => bookingCabins.isEmpty;
 
@@ -81,14 +82,24 @@ class CabinsComponent implements OnInit {
 	}
 
 	Future<Null> ngOnInit() async {
-		final client = await _clientFactory.getClient();
-		cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-		availability = await _cruiseRepository.getAvailability(client);
+		try {
+			final client = await _clientFactory.getClient();
+			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
+			availability = await _cruiseRepository.getAvailability(client);
+		} catch (e) {
+			print('Failed to get cabins or availability due to an exception: ' + e);
+			// Ignore this here - we will be stuck in the loading state until the user refreshes
+		}
 	}
 
 	Future<Null> refreshAvailability() async {
-		final client = await _clientFactory.getClient();
-		availability = await _cruiseRepository.getAvailability(client);
+		try {
+			final client = await _clientFactory.getClient();
+			availability = await _cruiseRepository.getAvailability(client);
+		} catch (e) {
+			print('Failed to refresh availability due to an exception: ' + e);
+			// Ignore this here, keep using old availability
+		}
 	}
 
 	String uniqueId(String prefix, int cabin, int pax) {

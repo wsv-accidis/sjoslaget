@@ -22,7 +22,12 @@ class PricingPage implements OnInit {
 	PricingPage(this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
-		final client = await _clientFactory.getClient();
-		cabins = await _cruiseRepository.getActiveCruiseCabins(client);
+		try {
+			final client = await _clientFactory.getClient();
+			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
+		} catch (e) {
+			print('Failed to load active cruise cabins: ' + e);
+			// Just ignore this here, we will be stuck in the loading state until the user refreshes
+		}
 	}
 }

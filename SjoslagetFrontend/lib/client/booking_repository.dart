@@ -7,6 +7,7 @@ import 'availability_exception.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import 'http_status.dart';
+import 'io_exception.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_details.dart';
 import '../model/booking_result.dart';
@@ -19,7 +20,14 @@ class BookingRepository {
 	BookingRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
 	Future<BookingSource> findBooking(Client client, String reference) async {
-		final response = await client.get(_apiRoot + '/bookings/' + reference);
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/bookings/' + reference);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
 		return new BookingSource.fromJson(response.body);
 	}
 
@@ -27,13 +35,21 @@ class BookingRepository {
 		final headers = new Map<String, String>();
 		headers['content-type'] = 'application/json';
 		final source = new BookingSource.fromDetails(details, cabins);
-		final response = await client.post(_apiRoot + '/bookings', headers: headers, body: source.toJson());
 
-		if(HttpStatus.OK == response.statusCode)
+		Response response;
+		try {
+			response = await client.post(_apiRoot + '/bookings', headers: headers, body: source.toJson());
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
 			return new BookingResult.fromJson(response.body);
-		else if(HttpStatus.CONFLICT == response.statusCode)
+		else if (HttpStatus.CONFLICT == response.statusCode)
 			throw new AvailabilityException();
-		else
+		else if (HttpStatus.BAD_REQUEST == response.statusCode)
 			throw new BookingException();
+		else
+			throw new IOException.fromResponse(response);
 	}
 }

@@ -41,12 +41,17 @@ class BookingCabinsPage implements OnInit {
 	String bookingError;
 	BookingResult bookingResult;
 	bool isSaving = false;
+	String loadingError;
 
 	bool get canFinish => !cabins.isEmpty && isSaved && cabins.isValid && !isSaving;
 
 	bool get canSave => !cabins.isEmpty && cabins.isValid && !isSaving;
 
-	bool get hasError => isNotEmpty(bookingError);
+	bool get hasBookingError => isNotEmpty(bookingError);
+
+	bool get hasLoadingError => isNotEmpty(loadingError);
+
+	bool get hasLoaded => null != bookingDetails;
 
 	bool get isExisting => isSaved && isEmpty(bookingResult.password);
 
@@ -67,9 +72,18 @@ class BookingCabinsPage implements OnInit {
 			 * Initialize from an existing booking which we have already authenticated for.
 			 */
 			final String reference = _clientFactory.authenticatedUser;
-			final client = await _clientFactory.getClient();
-			final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-			final BookingSource booking = await _bookingRepository.findBooking(client, reference);
+			List<CruiseCabin> cruiseCabins;
+			BookingSource booking;
+
+			try {
+				final client = await _clientFactory.getClient();
+				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
+				booking = await _bookingRepository.findBooking(client, reference);
+			} catch (e) {
+				loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta Sjöslaget.';
+				cabins.disableAddCabins = true;
+				return;
+			}
 
 			bookingResult = new BookingResult(reference, null);
 			bookingDetails = booking;
@@ -91,53 +105,92 @@ class BookingCabinsPage implements OnInit {
 	}
 
 	Future<Null> saveBooking() async {
-		isSaving = true;
-		bookingError = null;
-		cabins.refreshAvailability();
+		if (isSaving)
+			return;
 
-		final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
-		final client = await _clientFactory.getClient();
-		BookingResult result;
+		isSaving = true;
+		cabins.disableAddCabins = true;
+		bookingError = null;
+		window.sessionStorage.remove(BookingComponent.BOOKING);
 
 		try {
-			result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
-		} catch (e) {
-			if (e is AvailabilityException)
-				bookingError = _getAvailabilityError();
-			else if (e is BookingException)
-				bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
+			await cabins.refreshAvailability();
 
+			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
+			final client = await _clientFactory.getClient();
+			BookingResult result;
+
+			try {
+				result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
+			} catch (e) {
+				if (e is AvailabilityException) {
+					List<BookingCabin> savedCabins = null;
+					if (isSaved) {
+						// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
+						try {
+							final BookingSource lastSavedBooking = await _bookingRepository.findBooking(client, bookingResult.reference);
+							savedCabins = lastSavedBooking.cabins;
+						} catch (e) {
+							print('Failed to retrieve prior booking for checking availability: ' + e);
+						}
+					}
+					bookingError = _getAvailabilityError(savedCabins);
+				}
+				else if (e is BookingException) {
+					// Exception from backend, validation error (should not happen as we validate locally, but oh well)
+					bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
+				} else {
+					// Exception which is not coming from backend, potentially bad network
+					bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att du är ansluten till internet och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
+				}
+				return;
+			}
+
+			bookingResult = result;
+			bookingDetails.reference = result.reference;
+
+			if (!equalsIgnoreCase(_clientFactory.authenticatedUser, bookingResult.reference) && isNotEmpty(bookingResult.password)) {
+				try {
+					await _clientFactory.authenticate(bookingResult.reference, bookingResult.password);
+				} catch (e) {
+					// If we are here then saving succeeded but then logging in failed for some reason. Odd.
+					// Force-finish the booking so we don't end up in an unknown state.
+					print('Authentication failed after booking was successfully saved: ' + e);
+					finishBooking();
+				}
+			}
+		} finally {
+			cabins.disableAddCabins = false;
 			isSaving = false;
-			return;
 		}
-
-		bookingResult = result;
-		bookingDetails.reference = result.reference;
-
-		if (!equalsIgnoreCase(_clientFactory.authenticatedUser, bookingResult.reference) && isNotEmpty(bookingResult.password))
-			await _clientFactory.authenticate(bookingResult.reference, bookingResult.password);
-
-		isSaving = false;
 	}
 
-	String _getAvailabilityError() {
+	String _getAvailabilityError(List<BookingCabin> savedCabins) {
 		// Calling this depends on having refreshed availability first
 
 		String error = 'Det finns inte tillräckligt många lediga hytter för att spara din bokning.';
-		for(CruiseCabin cabin in cabins.cruiseCabins) {
+		for (CruiseCabin cabin in cabins.cruiseCabins) {
 			final int available = cabins.getTotalAvailability(cabin.id);
 			final int inBooking = cabins.getNumberOfCabinsInBooking(cabin.id);
+			final int inSavedBooking = _getNumberOfCabinsOfType(savedCabins, cabin.id);
 
-			// TODO Need to keep track of how many cabins we currently have, as well
-			// TODO Undo feature?
-			if(available < inBooking)
-				error += ' Du har $inBooking hytt(er) av typen ${cabin.name} i din bokning, men det finns $available kvar att boka.';
+			if (available < inBooking)
+				error += ' Du har $inBooking hytt(er) av typen ${cabin.name} i din bokning, men det finns ${available + inSavedBooking} kvar att boka.';
 		}
 
 		error += ' Ta bort hytter från din bokning eller byt till en annan typ och försök igen.';
-		if(isSaved)
+		if (isSaved)
 			error += ' Du har fortfarande kvar alla hytter som ingick i din senast sparade bokning.';
 
 		return error;
+	}
+
+	static int _getNumberOfCabinsOfType(List<BookingCabin> cabins, String id) {
+		if(null == cabins)
+			return 0;
+
+		return cabins
+			.where((b) => b.cabinTypeId == id)
+			.length;
 	}
 }
