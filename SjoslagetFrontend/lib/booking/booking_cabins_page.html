@@ -2,18 +2,38 @@
 	{{ null != bookingDetails ? 'Hej, ' + bookingDetails.firstName + '!' : 'Hej!' }}
 </h1>
 
-<p>
-	Lägg till hytter och fyll i <strong>Förening</strong> (mästeri/skola), <strong>Förnamn</strong>, <strong>Efternamn</strong>, <strong>Kön</strong>,
-	<strong>Födelsedatum</strong>, <strong>Nationalitet</strong> och antal <strong>Åkta år</strong> (sjöslag) på alla deltagare.
-	Du kan inte boka tomma hytter men du får lämna tomma platser. Det är dock inte tillåtet att boka hytter med falska uppgifter för att "reservera" dem till senare behov.
-</p>
+<div style="clear: both; height: 10px;"></div>
 
-<p>
-	Om du lämnar <strong>Förening</strong> tomt så kopieras första radens värde, så om alla tillhör samma förening
-	behöver du bara fylla i det på första raden. Om du lämnar <strong>Nationalitet</strong> tomt antas Sverige (SE).
-	Använd annars <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">denna tabell</a>
-	för nationalitet. Om du lämnar <strong>Åkta år</strong> tomt antas noll.
-</p>
+<material-expansionpanel flat="true"
+						 name="Instruktioner - så här bokar du (läs först!)"
+						 showSaveCancel="false">
+	<p style="margin-top: 0;">
+		Lägg till hytter och fyll i <strong>Förening</strong> (mästeri/skola), <strong>Förnamn</strong>, <strong>Efternamn</strong>, <strong>Kön</strong>,
+		<strong>Födelsedatum</strong>, <strong>Nationalitet</strong> och antal <strong>Åkta år</strong> (sjöslag) på alla deltagare.
+		Du kan inte boka tomma hytter men du får lämna tomma platser. Det är dock inte tillåtet att boka hytter med falska uppgifter för att "reservera" dem till senare behov.
+	</p>
+
+	<p>
+		Om du lämnar <strong>Förening</strong> tomt så kopieras första radens värde, så om alla tillhör samma förening
+		behöver du bara fylla i det på första raden. Om du lämnar <strong>Nationalitet</strong> tomt antas Sverige (SE).
+		Använd annars <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements">denna tabell</a>
+		för nationalitet. Om du lämnar <strong>Åkta år</strong> tomt antas noll.
+	</p>
+
+	<p>
+		<strong>Spara</strong> bokningen ofta, förslagsvis efter varje hytt. <strong>Skriv upp</strong> den bokningsreferens och
+		PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
+		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
+	</p>
+
+	<p class="super-important">
+		Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
+		kommer du inte att kunna spara bokningen innan du har tagit bort de hytter som tagit slut. Börja därför med att boka hytter av de
+		typer som det inte finns så många av, och <strong>spara ofta!</strong>
+	</p>
+</material-expansionpanel>
+
+<div style="clear: both; height: 20px;"></div>
 
 <p class="super-important loading-error" *ngIf="hasLoadingError">
 	{{ loadingError }}
@@ -24,19 +44,8 @@
 
 	<cabins-component #cabins></cabins-component>
 
-	<p class="super-important">
-		Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
-		kommer du inte att kunna spara bokningen. Om din bokning är stor så är det bästa att lägga till ett par hytter åt gången och spara ofta.
-		Börja med de hytter som det inte finns så många av.
-	</p>
 
 	<h3>Spara bokningen</h3>
-
-	<p>
-		<strong>Spara</strong> bokningen, när du har gjort klart en eller några hytter. <strong>Skriv upp</strong> den bokningsreferens och
-		PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
-		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
-	</p>
 
 	<p *ngIf="isNewlySaved">
 		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span> och din PIN-kod är <span class="booking-result">{{ bookingResult.password }}</span>.
