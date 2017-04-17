@@ -1,6 +1,7 @@
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
+import 'admin/admin_component.dart';
 import 'booking/booking_component.dart';
 import 'booking/booking_validator.dart';
 import 'content/content_component.dart';
@@ -19,6 +20,7 @@ import 'client/session_storage_cache.dart';
 	directives: const [ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
+	const Route(path: '/admin/...', name: 'Admin', component: AdminComponent),
 	const Route(path: '/bokning/...', name: 'MyBooking', component: BookingComponent),
 	const Route(path: '/...', name: 'Content', component: ContentComponent, useAsDefault: true)
 ])

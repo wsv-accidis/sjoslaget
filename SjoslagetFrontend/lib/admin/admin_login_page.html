@@ -1,0 +1,40 @@
+<h1>Logga in</h1>
+
+<p>
+	Logga in här för att administrera bokningar. Vilse? <a [routerLink]="['/Content/Start']">Gå tillbaka till startsidan.</a>
+</p>
+
+<form #loginForm="ngForm" (submit)="logIn()">
+	<input type="submit" class="hidden-submit"/>
+
+	<material-input [(ngModel)]="username"
+					ngControl="username"
+					floatingLabel
+					label="Användarnamn"
+					required
+					requiredErrorMsg="Ange användarnamn."
+					style="margin-right: 20px">
+	</material-input>
+
+	<material-input [(ngModel)]="password"
+					ngControl="password"
+					floatingLabel
+					label="Lösenord"
+					required
+					requiredErrorMsg="Ange lösenord."
+					style="width: 120px; margin-right: 20px"
+					type="password">
+	</material-input>
+
+	<material-button (trigger)="logIn()"
+					 [disabled]="!loginForm.valid"
+					 class="control-blue"
+					 raised>
+		Logga in
+	</material-button>
+</form>
+
+<modal-dialog #loginFailedDialog
+			  title="Inloggningen misslyckades"
+			  message="Kontrollera att du skrev rätt användarnamn och lösenord.">
+</modal-dialog>
