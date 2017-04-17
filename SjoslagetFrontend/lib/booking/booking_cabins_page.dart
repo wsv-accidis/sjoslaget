@@ -42,6 +42,7 @@ class BookingCabinsPage implements OnInit {
 	BookingResult bookingResult;
 	bool isSaving = false;
 	String loadingError;
+	bool isNewBooking;
 
 	bool get canFinish => !cabins.isEmpty && isSaved && cabins.isValid && !isSaving;
 
@@ -67,6 +68,7 @@ class BookingCabinsPage implements OnInit {
 			 * Initialize a new booking where the previously supplied details are in session storage.
 			 */
 			bookingDetails = new BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
+			isNewBooking = true;
 		} else if (_clientFactory.hasCredentials && !_clientFactory.isAdmin) {
 			/*
 			 * Initialize from an existing booking which we have already authenticated for.
@@ -89,6 +91,7 @@ class BookingCabinsPage implements OnInit {
 			bookingDetails = booking;
 			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
 			cabins.validateAll();
+			isNewBooking = false;
 		} else {
 			/*
 			 * Failure case, navigate out of here. User is an admin, or has no booking.

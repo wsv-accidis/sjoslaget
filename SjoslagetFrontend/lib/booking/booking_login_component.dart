@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:html' show window;
 
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 import 'package:angular2_components/angular2_components.dart';
 
+import 'booking_component.dart';
 import '../client/client_factory.dart';
 import '../widgets/modal_dialog.dart';
 
@@ -37,8 +39,11 @@ class BookingLoginComponent {
 			loginFailedDialog.open();
 		}
 
-		if (isLoggedIn)
+		if (isLoggedIn) {
+			// Ensure we do not have booking details in session storage before going into edit mode
+			window.sessionStorage.remove(BookingComponent.BOOKING);
 			_router.navigate(['/MyBooking/EditCabins']);
+		}
 	}
 
 	void logOut() {

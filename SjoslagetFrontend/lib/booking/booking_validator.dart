@@ -9,7 +9,7 @@ import '../model/booking_pax_view.dart';
 class BookingValidator {
 	final _dobRegExp = new RegExp(r'^\d{6}$');
 	final _nationalityRegExp = new RegExp(r'^[a-zA-Z]{2}$');
-	final _yearsRegExp = new RegExp(r'\d+');
+	final _yearsRegExp = new RegExp(r'^\d+$');
 
 	bool validateCabin(BookingCabinView cabin) {
 		cabin.isValid = cabin.pax
