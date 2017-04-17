@@ -86,6 +86,11 @@ class CabinsComponent implements OnInit {
 		return getAvailability(id) > 0;
 	}
 
+	void markCabinsAsSaved() {
+		for (BookingCabinView b in bookingCabins)
+			b.isSaved = true;
+	}
+
 	Future<Null> ngOnInit() async {
 		try {
 			final client = await _clientFactory.getClient();

@@ -5,6 +5,7 @@ import 'cruise_cabin.dart';
 
 class BookingCabinView {
 	String id;
+	bool isSaved;
 	bool isValid;
 	String name;
 	int capacity;
@@ -27,6 +28,7 @@ class BookingCabinView {
 
 	factory BookingCabinView.fromBookingCabin(BookingCabin bookingCabin, CruiseCabin cruiseCabin) {
 		final view = new BookingCabinView.fromCruiseCabin(cruiseCabin);
+		view.isSaved = true;
 		for (int i = 0; i < bookingCabin.pax.length && i < view.pax.length; i++) {
 			view.pax[i] = new BookingPaxView.fromBookingPax(bookingCabin.pax[i]);
 		}

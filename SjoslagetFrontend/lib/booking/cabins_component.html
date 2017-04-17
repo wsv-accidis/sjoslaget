@@ -1,7 +1,9 @@
 <div *ngFor="let cabin of bookingCabins; let c = index">
 	<table cellpadding="0" cellspacing="0" border="0" [attr.data-idx]="c">
 		<tr *ngFor="let pax of cabin.pax; let p = index">
-			<td *ngIf="0 == p" class="cabin-name-cell" [attr.rowspan]="cabin.capacity">
+			<td *ngIf="0 == p"
+				[attr.rowspan]="cabin.capacity"
+				[class]="cabin.isSaved ? 'cabin-name-cell cabin-saved' : 'cabin-name-cell'">
 				{{ cabin.name }}<br/>
 				<a class="cabin-delete" href="javascript:" (click)="deleteCabin(c)" title="Ta bort hytten">
 					<glyph icon="clear"></glyph>

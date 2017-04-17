@@ -27,6 +27,10 @@ td.cabin-name-cell {
 	font-size: 18px;
 }
 
+td.cabin-saved {
+	color: #0F75BC;
+}
+
 td.dob-field-cell {
 	width: 110px;
 	padding-right: 10px;

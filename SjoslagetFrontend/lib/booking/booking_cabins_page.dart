@@ -146,8 +146,13 @@ class BookingCabinsPage implements OnInit {
 				return;
 			}
 
+			// Ensure that if we save again the currently displayed password is not lost
+			if(null != bookingResult && isNotEmpty(bookingResult.password) && isEmpty(result.password))
+				result.password = bookingResult.password;
+
 			bookingResult = result;
 			bookingDetails.reference = result.reference;
+			cabins.markCabinsAsSaved();
 
 			if (!equalsIgnoreCase(_clientFactory.authenticatedUser, bookingResult.reference) && isNotEmpty(bookingResult.password)) {
 				try {
