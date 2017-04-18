@@ -1,0 +1,36 @@
+﻿Hej!
+
+Det här är en bekräftelse på att din bokning till Sjöslaget är mottagen.
+
+Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
+
+Ta vara på dessa! Du behöver bokningsreferensen för att hämta ut dina
+biljetter och tillsammans med PIN-koden för att komma åt din bokning.
+
+Gå till sjoslaget.se/bokning och mata in referens samt PIN-kod för att visa
+din bokning och se det totala beloppet att betala.
+
+Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
+Betala så snart som möjligt efter att du färdigställt din bokning.
+
+VIKTIGT: Du måste ange bokningsreferensen som meddelande till
+betalningsmottagaren när du gör inbetalningen, annars kan vi inte passa
+ihop din inbetalning med rätt bokning. För extra säkerhet kan du skriva
+in ditt namn i meddelandet också.
+
+Om du betalar flera bokningar samtidigt, ange samtliga bokningsnummer
+i meddelandet.
+
+Välkommen ombord!
+
+------------------------------------------------------------------------------
+
+Det här är ett automatiskt genererat meddelande som du får därför att den
+här e-postadressen har använts i en bokning till Sjöslaget. Det här är
+inte spam, någon (antagligen du) har bett om att få det här mailet skickat
+till den här e-postadressen.
+
+Om du inte har gjort någon bokning ber vi dig snarast kontakta
+oss på info@sjoslaget.se så att vi kan avhjälpa problemet.
+
+Besök sjoslaget.se för mer information om Sjöslaget.

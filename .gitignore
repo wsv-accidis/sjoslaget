@@ -16,3 +16,4 @@ TestResults/
 Auth.config
 Db.config
 DbTest.config
+Email.config

@@ -42,6 +42,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				{
 					BookingResult result = await _bookingRepository.CreateAsync(activeCruise.Id, bookingSource);
 					_log.Info("Created booking {0}.", result.Reference);
+
+					await SendBookingCreatedMailAsync(bookingSource, result);
 					return Ok(result);
 				}
 			}
@@ -86,6 +88,19 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				_log.Error(ex, $"An unexpected exception occurred while getting the booking with reference {reference}.");
 				throw;
+			}
+		}
+
+		async Task SendBookingCreatedMailAsync(BookingSource bookingSource, BookingResult result)
+		{
+			try
+			{
+				using(var emailSender = new EmailSender())
+					await emailSender.SendBookingCreatedMailAsync(bookingSource.Email, result.Reference, result.Password);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "Failed to send e-mail on created booking, although the booking was created without error.");
 			}
 		}
 	}
