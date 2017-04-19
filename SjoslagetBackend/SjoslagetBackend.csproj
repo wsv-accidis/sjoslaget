@@ -183,6 +183,7 @@
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingCabin.cs" />
     <Compile Include="Models\BookingCabinWithPax.cs" />
+    <Compile Include="Models\BookingDashboardItem.cs" />
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />

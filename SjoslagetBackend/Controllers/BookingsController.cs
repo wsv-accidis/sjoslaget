@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
+using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Dapper;
 using NLog;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
@@ -88,6 +91,28 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				_log.Error(ex, $"An unexpected exception occurred while getting the booking with reference {reference}.");
 				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> RecentlyUpdated(int limit = 20)
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			using(var db = SjoslagetDb.Open())
+			{
+				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [FirstName], [LastName], [Updated], " +
+																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
+																	  "(select count(*) from [BookingPax] BP where BP.[BookingCabinId] in (select[Id] from [BookingCabin] BC where BC.[BookingId] = B.[Id])) as NumberOfPax " +
+																	  "from [Booking] B where [CruiseId] = @CruiseId " +
+																	  "order by [Updated] desc",
+					new {CruiseId = activeCruise.Id, Limit = limit});
+
+				BookingDashboardItem[] result = items.ToArray();
+				return Ok(result);
 			}
 		}
 

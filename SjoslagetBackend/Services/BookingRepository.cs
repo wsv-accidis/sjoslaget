@@ -114,6 +114,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await DeleteCabins(db, booking);
 				await CheckAvailability(db, cruiseId, source.Cabins);
 				await CreateCabins(db, booking, source.Cabins);
+				await db.ExecuteAsync("update [Booking] set [Updated] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
 
 				tran.Complete();
 			}
