@@ -1,0 +1,27 @@
+div.admin-menu {
+	font-size: large;
+}
+
+h2.available-cabins-title {
+	margin-bottom: 8px;
+	margin-top: 20px;
+}
+
+table.available-cabins {
+	width: 65%;
+}
+
+h2.recently-updated-bookings-title {
+	margin-bottom: 8px;
+}
+
+table.recently-updated-bookings {
+	width: 65%;
+}
+
+table.recently-updated-bookings th, table.recently-updated-bookings td {
+	padding-bottom: 4px;
+	padding-right: 8px;
+	padding-top: 4px;
+	border-bottom: 1px solid silver;
+}

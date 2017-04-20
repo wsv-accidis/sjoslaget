@@ -1,1 +1,71 @@
-Hello, admin!
+<h1>
+	Administration
+</h1>
+
+<div class="admin-menu">
+	<glyph icon="exit_to_app"></glyph>
+	<a href="javascript:" (click)="logOut()">Logga ut</a>
+</div>
+
+<p>
+	Aktuell kryssning är Sjöslaget 2017 och bokningen är öppen. Välj ur menyn ovan eller se nedan för nyligen skapade eller
+	uppdaterade bokningar som behöver kontrolleras.
+</p>
+
+<h2 class="recently-updated-bookings-title">
+	Senaste bokningar
+</h2>
+
+<spinner-widget *ngIf="null == recentlyUpdatedBookings"></spinner-widget>
+
+<table cellpadding="0" cellspacing="0" border="0" class="recently-updated-bookings" *ngIf="null != recentlyUpdatedBookings">
+	<th>
+		Referens
+	</th>
+	<th>
+		Kontaktperson
+	</th>
+	<th>
+		Hytter
+	</th>
+	<th>
+		Deltagare
+	</th>
+	<th>
+		Uppdaterad
+	</th>
+	<tr *ngFor="let booking of recentlyUpdatedBookings; let p = index">
+		<td>
+			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+				{{ booking.reference }}
+			</a>
+		</td>
+		<td>
+			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+				{{ booking.firstName }} {{ booking.lastName }}
+			</a>
+		</td>
+		<td>
+			{{ booking.numberOfCabins }}
+		</td>
+		<td>
+			{{ booking.numberOfPax }}
+		</td>
+		<td>
+			{{ booking.sinceUpdated }}
+		</td>
+	</tr>
+</table>
+
+<h2 class="available-cabins-title">
+	Lediga hytter just nu
+</h2>
+
+<table cellpadding="0" cellspacing="0" border="0" class="available-cabins">
+	<th>
+		Typ
+	</th>
+	<th>
+		Lediga
+	</th>
+</table>
