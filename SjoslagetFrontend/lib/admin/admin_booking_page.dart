@@ -11,8 +11,8 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_dashboard_page.css'],
-	directives: const [materialDirectives, SpinnerWidget],
-	providers: const [materialProviders]
+	directives: const<dynamic>[materialDirectives, SpinnerWidget],
+	providers: const<dynamic>[materialProviders]
 )
 class AdminBookingPage implements OnInit {
 	final BookingRepository _bookingRepository;

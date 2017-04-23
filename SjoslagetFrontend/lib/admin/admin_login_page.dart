@@ -11,8 +11,8 @@ import '../widgets/modal_dialog.dart';
 	selector: 'admin-login-page',
 	styleUrls: const ['../content/content_styles.css'],
 	templateUrl: 'admin_login_page.html',
-	directives: const [ROUTER_DIRECTIVES, materialDirectives, ModalDialog],
-	providers: const [materialProviders]
+	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, ModalDialog],
+	providers: const<dynamic>[materialProviders]
 )
 class AdminLoginPage {
 	final ClientFactory _clientFactory;
@@ -37,7 +37,7 @@ class AdminLoginPage {
 			_clientFactory.clear();
 			loginFailedDialog.open();
 		} else {
-			_router.navigate(['/Admin/Dashboard']);
+			_router.navigate(<dynamic>['/Admin/Dashboard']);
 		}
 	}
 }

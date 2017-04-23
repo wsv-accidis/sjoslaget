@@ -4,8 +4,8 @@ import 'package:angular2_components/angular2_components.dart';
 @Component(
 	selector: 'modal-dialog',
 	templateUrl: 'modal_dialog.html',
-	directives: const [materialDirectives],
-	providers: const [materialProviders]
+	directives: const <dynamic>[materialDirectives],
+	providers: const <dynamic>[materialProviders]
 )
 class ModalDialog {
 	@ViewChild('wrappingModal')

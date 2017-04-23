@@ -5,7 +5,7 @@ import 'package:angular2/router.dart';
 	selector: 'about-booking-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'about_booking_page.html',
-	directives: const [ROUTER_DIRECTIVES]
+	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 class AboutBookingPage {
 }

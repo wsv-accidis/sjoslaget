@@ -16,8 +16,8 @@ import 'client/session_storage_cache.dart';
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	providers: const [BookingRepository, BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
-	directives: const [ROUTER_DIRECTIVES]
+	providers: const <dynamic>[BookingRepository, BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
+	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
 	const Route(path: '/admin/...', name: 'Admin', component: AdminComponent),

@@ -13,8 +13,8 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_dashboard_page.css'],
-	directives: const [ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
-	providers: const [materialProviders]
+	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
+	providers: const <dynamic>[materialProviders]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
 	final BookingRepository _bookingRepository;
@@ -28,12 +28,12 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 	void logOut() {
 		_clientFactory.clear();
-		_router.navigate(['/Content/Start']);
+		_router.navigate(<dynamic>['/Content/Start']);
 	}
 
 	Future<Null> ngOnInit() async {
 		if (!_clientFactory.isAdmin) {
-			_router.navigate(['/Admin/Login']);
+			_router.navigate(<dynamic>['/Admin/Login']);
 			return;
 		}
 

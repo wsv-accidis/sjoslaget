@@ -21,7 +21,7 @@ class BookingCabin {
 	BookingCabin(this.id, this.cabinTypeId, this.pax);
 
 	factory BookingCabin.fromMap(Map<String, dynamic> map) {
-		List<BookingPax> pax = map[PAX].map((value) =>
+		List<BookingPax> pax = map[PAX].map((Map<String, dynamic> value) =>
 		new BookingPax(
 			value[GROUP],
 			value[FIRSTNAME],
@@ -35,7 +35,7 @@ class BookingCabin {
 	}
 
 	Map<String, dynamic> toMap() {
-		return {
+		return <String, dynamic>{
 			ID: id,
 			CABIN_TYPE_ID: cabinTypeId,
 			PAX: pax.where((p) => str.isNotEmpty(p.firstName)).map((p) =>

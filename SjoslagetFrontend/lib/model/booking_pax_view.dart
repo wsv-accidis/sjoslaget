@@ -76,7 +76,7 @@ class BookingPaxView {
 			_toInt(years));
 	}
 
-	static int _toInt(id) {
+	static int _toInt(dynamic id) {
 		if (null == id)
 			return 0;
 

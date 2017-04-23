@@ -1,5 +1,4 @@
 import 'booking_cabin.dart';
-import 'booking_pax.dart';
 import 'booking_pax_view.dart';
 import 'cruise_cabin.dart';
 

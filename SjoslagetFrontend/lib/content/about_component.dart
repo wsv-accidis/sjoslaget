@@ -14,7 +14,7 @@ import 'about_start_page.dart';
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	directives: const [ROUTER_DIRECTIVES]
+	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
 	const Route(path: '/sjoslaget', name: 'Start', component: AboutStartPage, useAsDefault: true),

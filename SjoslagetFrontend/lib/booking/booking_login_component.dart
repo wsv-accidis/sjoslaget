@@ -12,8 +12,8 @@ import '../widgets/modal_dialog.dart';
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
-	directives: const [ROUTER_DIRECTIVES, materialDirectives, ModalDialog],
-	providers: const [materialProviders]
+	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, ModalDialog],
+	providers: const <dynamic>[materialProviders]
 )
 class BookingLoginComponent {
 	final ClientFactory _clientFactory;
@@ -42,7 +42,7 @@ class BookingLoginComponent {
 		if (isLoggedIn) {
 			// Ensure we do not have booking details in session storage before going into edit mode
 			window.sessionStorage.remove(BookingComponent.BOOKING);
-			_router.navigate(['/MyBooking/EditCabins']);
+			_router.navigate(<dynamic>['/MyBooking/EditCabins']);
 		}
 	}
 

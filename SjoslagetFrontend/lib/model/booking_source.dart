@@ -18,7 +18,7 @@ class BookingSource extends BookingDetails {
 
 	factory BookingSource.fromJson(String json) {
 		final Map<String, dynamic> map = JSON.decode(json);
-		final List<BookingCabin> cabins = map[CABINS].map((value) => new BookingCabin.fromMap(value)).toList(growable: false);
+		final List<BookingCabin> cabins = map[CABINS].map((Map<String, dynamic> value) => new BookingCabin.fromMap(value)).toList(growable: false);
 
 		return new BookingSource(
 			map[BookingDetails.FIRSTNAME],

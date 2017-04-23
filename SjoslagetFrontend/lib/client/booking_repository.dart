@@ -43,7 +43,7 @@ class BookingRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		return JSON.decode(response.body)
-			.map((value) => new BookingDashboardItem.fromMap(value))
+			.map((Map<String, dynamic> value) => new BookingDashboardItem.fromMap(value))
 			.toList();
 	}
 

@@ -20,7 +20,7 @@ class CruiseRepository {
 	Future<List<CruiseCabin>> getActiveCruiseCabins(Client client) async {
 		final body = await _cache.get(client, '/cabins/active');
 		return JSON.decode(body)
-			.map((value) => new CruiseCabin.fromMap(value))
+			.map((Map<String, dynamic> value) => new CruiseCabin.fromMap(value))
 			.toList();
 	}
 

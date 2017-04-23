@@ -14,7 +14,7 @@ import '../model/booking_details.dart';
 	selector: 'booking-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'booking_page.html',
-	directives: const [BookingDetailsComponent, BookingLoginComponent, ROUTER_DIRECTIVES]
+	directives: const <dynamic>[BookingDetailsComponent, BookingLoginComponent, ROUTER_DIRECTIVES]
 )
 class BookingPage implements OnInit {
 	final Router _router;
@@ -42,6 +42,6 @@ class BookingPage implements OnInit {
 		);
 
 		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
-		_router.navigate(['/MyBooking/EditCabins']);
+		_router.navigate(<dynamic>['/MyBooking/EditCabins']);
 	}
 }

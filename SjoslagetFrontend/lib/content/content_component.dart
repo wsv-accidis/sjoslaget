@@ -12,7 +12,7 @@ import 'start_page.dart';
 	selector: 'content-component',
 	styleUrls: const ['content_component.css'],
 	templateUrl: 'content_component.html',
-	directives: const [ROUTER_DIRECTIVES]
+	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),

@@ -20,7 +20,7 @@ class CruiseCabin {
 	factory CruiseCabin.fromMap(Map<String, dynamic> json) =>
 		new CruiseCabin(json[ID], json[NAME], json[DESCRIPTION], _toInt(json[CAPACITY]), _toInt(json[COUNT]), _toInt(json[PRICE_PER_PAX]));
 
-	static int _toInt(id) {
+	static int _toInt(dynamic id) {
 		if (id is int)
 			return id;
 		if (id is double)

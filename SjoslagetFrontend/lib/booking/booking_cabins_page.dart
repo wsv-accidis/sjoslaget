@@ -25,8 +25,8 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
 	styleUrls: const ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: const [materialDirectives, SpinnerWidget, CabinsComponent],
-	providers: const [materialProviders]
+	directives: const <dynamic>[materialDirectives, SpinnerWidget, CabinsComponent],
+	providers: const <dynamic>[materialProviders]
 )
 class BookingCabinsPage implements OnInit {
 	final BookingRepository _bookingRepository;
@@ -97,14 +97,14 @@ class BookingCabinsPage implements OnInit {
 			 * Failure case, navigate out of here. User is an admin, or has no booking.
 			 * TODO Handle the case where an admin tries to create a booking through the normal user interface.
 			 */
-			_router.navigate(['/Content/Booking']);
+			_router.navigate(<dynamic>['/Content/Booking']);
 		}
 	}
 
 	void finishBooking() {
 		_clientFactory.clear();
 		window.sessionStorage.remove(BookingComponent.BOOKING);
-		_router.navigate(['/Content/Booking']);
+		_router.navigate(<dynamic>['/Content/Booking']);
 	}
 
 	Future<Null> saveBooking() async {
@@ -150,7 +150,7 @@ class BookingCabinsPage implements OnInit {
 			}
 
 			// Ensure that if we save again the currently displayed password is not lost
-			if(null != bookingResult && isNotEmpty(bookingResult.password) && isEmpty(result.password))
+			if (null != bookingResult && isNotEmpty(bookingResult.password) && isEmpty(result.password))
 				result.password = bookingResult.password;
 
 			bookingResult = result;
@@ -194,7 +194,7 @@ class BookingCabinsPage implements OnInit {
 	}
 
 	static int _getNumberOfCabinsOfType(List<BookingCabin> cabins, String id) {
-		if(null == cabins)
+		if (null == cabins)
 			return 0;
 
 		return cabins

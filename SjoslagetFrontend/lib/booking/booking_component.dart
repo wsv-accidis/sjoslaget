@@ -7,7 +7,7 @@ import 'booking_cabins_page.dart';
 	selector: 'booking-component',
 	styleUrls: const ['booking_component.css'],
 	templateUrl: 'booking_component.html',
-	directives: const [ROUTER_DIRECTIVES]
+	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
 	const Route(path: '/hytter', name: 'EditCabins', component: BookingCabinsPage)

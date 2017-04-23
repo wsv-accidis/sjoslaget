@@ -5,8 +5,8 @@ import 'package:angular2_components/angular2_components.dart';
 	selector: 'booking-details',
 	templateUrl: 'booking_details_component.html',
 	styleUrls: const ['../content/content_styles.css'],
-	directives: const [materialDirectives],
-	providers: const [materialProviders]
+	directives: const <dynamic>[materialDirectives],
+	providers: const <dynamic>[materialProviders]
 )
 class BookingDetailsComponent {
 	Function _onSubmitListener;

@@ -16,8 +16,8 @@ import '../widgets/spinner_widget.dart';
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
 	styleUrls: const ['../content/content_styles.css', 'cabins_component.css'],
-	directives: const [materialDirectives, SpinnerWidget],
-	providers: const [materialProviders]
+	directives: const <dynamic>[materialDirectives, SpinnerWidget],
+	providers: const <dynamic>[materialProviders]
 )
 class CabinsComponent implements OnInit {
 	final BookingValidator _bookingValidator;

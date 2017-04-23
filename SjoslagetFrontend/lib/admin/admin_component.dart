@@ -10,7 +10,7 @@ import '../client/client_factory.dart';
 	selector: 'admin-component',
 	styleUrls: const ['../booking/booking_component.css'],
 	templateUrl: '../booking/booking_component.html',
-	directives: const [ROUTER_DIRECTIVES]
+	directives: const<dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Dashboard', component: AdminDashboardPage),
@@ -31,7 +31,7 @@ class AdminComponent implements OnInit {
 		 * thinking they are an admin, but they can't do anything since they lack the necessary access server side.
 		 */
 		if (!_clientFactory.isAdmin && !(_router.currentInstruction.component.componentType is AdminLoginPage)) {
-			_router.navigate(['/Admin/Login']);
+			_router.navigate(<dynamic>['/Admin/Login']);
 		}
 	}
 }

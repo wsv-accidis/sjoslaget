@@ -12,7 +12,7 @@ import 'about_rules_page.dart';
 	selector: 'about-start-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'about_start_page.html',
-	directives: const [
+	directives: const <dynamic>[
 		materialDirectives,
 		ROUTER_DIRECTIVES,
 		AboutBookingPage,
