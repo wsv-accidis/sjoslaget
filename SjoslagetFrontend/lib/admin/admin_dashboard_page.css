@@ -11,6 +11,10 @@ table.available-cabins {
 	width: 65%;
 }
 
+td.available-cabins-progress {
+	width: 80%;
+}
+
 h2.recently-updated-bookings-title {
 	margin-bottom: 8px;
 }
@@ -19,6 +23,7 @@ table.recently-updated-bookings {
 	width: 65%;
 }
 
+table.available-cabins th, table.available-cabins td,
 table.recently-updated-bookings th, table.recently-updated-bookings td {
 	padding-bottom: 4px;
 	padding-right: 8px;

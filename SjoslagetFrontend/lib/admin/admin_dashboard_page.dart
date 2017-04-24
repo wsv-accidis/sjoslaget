@@ -6,7 +6,9 @@ import 'package:angular2_components/angular2_components.dart';
 
 import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
+import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
+import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
@@ -19,12 +21,21 @@ import '../widgets/spinner_widget.dart';
 class AdminDashboardPage implements OnInit, OnDestroy {
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
+	final CruiseRepository _cruiseRepository;
 	final Router _router;
 	Timer _timer;
 
+	Map<String, int> availability;
+	List<CruiseCabin> cabins;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
 
-	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._router);
+	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
+
+	int getAvailability(String id) {
+		if (null == availability || !availability.containsKey(id))
+			return 0;
+		return availability[id];
+	}
 
 	void logOut() {
 		_clientFactory.clear();
@@ -39,6 +50,8 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 		try {
 			final client = await _clientFactory.getClient();
+			availability = await _cruiseRepository.getAvailability(client);
+			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);
 		} catch (e) {
 			print('Failed to load recently updated bookings: ' + e.toString());

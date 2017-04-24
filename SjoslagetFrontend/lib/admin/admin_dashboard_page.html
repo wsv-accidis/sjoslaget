@@ -62,10 +62,25 @@
 </h2>
 
 <table cellpadding="0" cellspacing="0" border="0" class="available-cabins">
-	<th>
-		Typ
-	</th>
-	<th>
-		Lediga
-	</th>
+	<tr>
+		<th>
+			Typ
+		</th>
+		<th>
+			Lediga
+		</th>
+		<th></th>
+	</tr>
+	<tr *ngFor="let cabin of cabins">
+		<td>
+			{{ cabin.name }}
+		</td>
+		<td>
+			{{ getAvailability(cabin.id) }}
+		</td>
+		<td class="available-cabins-progress">
+			<material-progress [activeProgress]="getAvailability(cabin.id)" [max]="cabin.count">
+			</material-progress>
+		</td>
+	</tr>
 </table>
