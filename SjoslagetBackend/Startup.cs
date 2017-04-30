@@ -92,6 +92,7 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<RandomKeyGenerator>();
 			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
 			container.Register<OAuthProvider>();
+			container.Register<PaymentRepository>();
 
 			return container;
 		}

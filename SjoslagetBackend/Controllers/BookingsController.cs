@@ -16,11 +16,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly BookingRepository _bookingRepository;
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
+		readonly PaymentRepository _paymentRepository;
 
-		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository)
+		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
 		{
 			_bookingRepository = bookingRepository;
 			_cruiseRepository = cruiseRepository;
+			_paymentRepository = paymentRepository;
 		}
 
 		[HttpPost]
@@ -85,7 +87,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					return BadRequest("Request is unauthorized, or booking belongs to an inactive cruise.");
 
 				BookingCabinWithPax[] cabins = await _bookingRepository.GetCabinsForBookingAsync(booking);
-				return Ok(BookingSource.FromBooking(booking, cabins));
+				PaymentSummary payment = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
+
+				return Ok(BookingSource.FromBooking(booking, cabins, payment));
 			}
 			catch(Exception ex)
 			{
@@ -114,6 +118,28 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				BookingDashboardItem[] result = items.ToArray();
 				return Ok(result);
 			}
+		}
+
+		[Authorize]
+		[HttpPost]
+		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
+		{
+			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+			if (null == booking)
+				return NotFound();
+
+			try
+			{
+				await _paymentRepository.CreateAsync(booking, payment.Amount);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while creating a paymenty for the booking with reference {reference}.");
+				throw;
+			}
+
+			var summary = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
+			return Ok(summary);
 		}
 
 		async Task SendBookingCreatedMailAsync(BookingSource bookingSource, BookingResult result)

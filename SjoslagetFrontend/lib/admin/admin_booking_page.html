@@ -1,0 +1,93 @@
+<h1>
+	Redigera bokning {{ null != booking ? booking.reference : '' }}
+</h1>
+
+<p>
+	Här redigerar du bokningen och registrerar när betalningar har kommit in. Tänk på att kontaktpersonen också kan redigera bokningen efter att
+	den skapats, men du kan låsa en bokning för att hindra flera ändringar.
+</p>
+
+<div style="clear: both; height: 10px;"></div>
+
+<form #bookingForm="ngForm">
+	<cabins-component #cabins></cabins-component>
+
+	<h2 style="margin-top: 30px; margin-bottom: 5px">Kontaktperson</h2>
+
+	<div *ngIf="hasLoaded" style="margin-left: 5px">
+		<material-input [(ngModel)]="booking.firstName"
+						ngControl="firstName"
+						floatingLabel
+						label="Förnamn"
+						required
+						requiredErrorMsg="Ange förnamn."
+						style="width: 150px; margin-right: 20px">
+		</material-input>
+
+		<material-input [(ngModel)]="booking.lastName"
+						ngControl="lastName"
+						floatingLabel
+						label="Efternamn"
+						required
+						requiredErrorMsg="Ange efternamn."
+						style="width: 150px; margin-right: 20px">
+		</material-input>
+		<material-input [(ngModel)]="booking.phoneNo"
+						ngControl="phoneNo"
+						floatingLabel
+						label="Telefonnummer"
+						required
+						requiredErrorMsg="Ange telefonnummer."
+						pattern="[0-9()+\- ]+"
+						style="width: 150px; margin-right: 20px"
+						type="tel">
+		</material-input>
+
+		<material-input [(ngModel)]="booking.email"
+						ngControl="email"
+						floatingLabel
+						label="E-postadress"
+						required
+						requiredErrorMsg="Ange e-postadress."
+						pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
+						style="width: 250px"
+						tel="email">
+		</material-input>
+
+		<span style="margin-left: 20px; margin-right: 10px">
+			Önskad sittning
+		</span>
+
+		<material-radio-group [(ngModel)]="booking.lunch"
+							  ngControl="lunch">
+			<material-radio value="11"
+							style="margin-left: 0">
+				11:00
+			</material-radio>
+			<material-radio [checked]="true"
+							value="13">
+				13:00
+			</material-radio>
+			<material-radio value="15">
+				15:00
+			</material-radio>
+		</material-radio-group>
+	</div>
+	<spinner-widget *ngIf="!hasLoaded"></spinner-widget>
+
+	<material-button class="control-blue"
+					 [disabled]="!canSave"
+					 raised
+					 (trigger)="saveBooking()">
+		Spara bokningen
+	</material-button>
+</form>
+
+<h2>
+	Hantera betalningar
+</h2>
+
+<p>
+	Här registrerar du inkomna betalningar för den här bokningen. Korrigeringar kan göras genom att ange negativa belopp.
+</p>
+

@@ -14,8 +14,9 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string PhoneNo { get; set; }
 		public string Lunch { get; set; }
 		public List<Cabin> Cabins { get; set; }
+		public PaymentSummary Payment { get; set; }
 
-		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins)
+		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins, PaymentSummary payment)
 		{
 			return new BookingSource
 			{
@@ -38,7 +39,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 						Nationality = p.Nationality.ToUpperInvariant(),
 						Years = p.Years
 					}).ToList()
-				}).ToList()
+				}).ToList(),
+				Payment = payment
 			};
 		}
 
@@ -53,7 +55,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public static void ValidateCabins(BookingSource bookingSource)
 		{
-			if (null == bookingSource)
+			if(null == bookingSource)
 				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
 
 			bookingSource.ValidateCabins();

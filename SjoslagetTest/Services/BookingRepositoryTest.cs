@@ -88,7 +88,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public async Task GivenExistingBooking_WhenUpdatedWithMoreCabins_ShouldAllowUpToMaximumCapacity()
 		{
-			Assert.AreEqual(10, Config.NumberOfCabins);			
+			Assert.AreEqual(10, Config.NumberOfCabins);
 			var repository = GetBookingRepositoryForTest();
 
 			// First create a booking of 8/10 cabins
@@ -200,17 +200,13 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public async Task GivenMultipleConcurrentBookings_ShouldNotExceedAvailableCabins()
 		{
+			var repository = GetBookingRepositoryForTest();
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
-
-			var userManagerMock = new Mock<SjoslagetUserManager>();
-			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
-
-			var sut = new BookingRepository(new CabinRepository(), new RandomKeyGenerator(), userManagerMock.Object);
 			var tasks = new List<Task>();
 
 			const int overload = 10;
 			for(int i = 0; i < Config.NumberOfCabins + overload; i++)
-				tasks.Add(sut.CreateAsync(SjoslagetDbExtensions.CruiseId, source));
+				tasks.Add(repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source));
 
 			var combinedTask = Task.WhenAll(tasks);
 			try
@@ -238,6 +234,16 @@ namespace Accidis.Sjoslaget.Test.Services
 		public void Initialize()
 		{
 			SjoslagetDbExtensions.InitializeForTest();
+		}
+
+		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync()
+		{
+			var repository = GetBookingRepositoryForTest();
+
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
+			BookingResult result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+
+			return await repository.FindByReferenceAsync(result.Reference);
 		}
 
 		static async Task<BookingResult> CreateBookingFromSource(BookingSource source, BookingRepository repository = null)
