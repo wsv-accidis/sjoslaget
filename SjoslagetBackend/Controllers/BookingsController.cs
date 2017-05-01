@@ -98,6 +98,29 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 		}
 
+		[Authorize]
+		[HttpPost]
+		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
+		{
+			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+			if(null == booking)
+				return NotFound();
+
+			try
+			{
+				if(payment.Amount > 0)
+					await _paymentRepository.CreateAsync(booking, payment.Amount);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while creating a paymenty for the booking with reference {reference}.");
+				throw;
+			}
+
+			var summary = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
+			return Ok(summary);
+		}
+
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
 		public async Task<IHttpActionResult> RecentlyUpdated(int limit = 20)
@@ -118,28 +141,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				BookingDashboardItem[] result = items.ToArray();
 				return Ok(result);
 			}
-		}
-
-		[Authorize]
-		[HttpPost]
-		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
-		{
-			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
-			if (null == booking)
-				return NotFound();
-
-			try
-			{
-				await _paymentRepository.CreateAsync(booking, payment.Amount);
-			}
-			catch(Exception ex)
-			{
-				_log.Error(ex, $"An unexpected exception occurred while creating a paymenty for the booking with reference {reference}.");
-				throw;
-			}
-
-			var summary = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
-			return Ok(summary);
 		}
 
 		async Task SendBookingCreatedMailAsync(BookingSource bookingSource, BookingResult result)

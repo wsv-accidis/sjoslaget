@@ -3,6 +3,7 @@ import 'dart:html' show Event, HtmlElement;
 
 import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
+import 'package:decimal/decimal.dart';
 
 import 'booking_validator.dart';
 import '../client/client_factory.dart';
@@ -24,10 +25,17 @@ class CabinsComponent implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
+	Decimal amountPaid;
 	Map<String, int> availability;
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins;
+
+	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
+
+	bool get hasPayment => null != amountPaid && amountPaid.ceilToDouble() > 0.0;
+
+	bool get hasPrice => price > 0;
 
 	bool get isEmpty => bookingCabins.isEmpty;
 
@@ -35,9 +43,16 @@ class CabinsComponent implements OnInit {
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
 
-	int get totalPrice => bookingCabins.fold(0, (sum, b) => sum + b.price);
+	int get price => bookingCabins.fold(0, (sum, b) => sum + b.price);
 
-	String get totalPriceFormatted => CurrencyFormatter.formatIntAsSEK(totalPrice);
+	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
+
+	Decimal get remainingPrice {
+		final priceAsDec = new Decimal.fromInt(price);
+		return hasPayment ? priceAsDec - amountPaid : priceAsDec;
+	}
+
+	String get remainingPriceFormatted => CurrencyFormatter.formatDecimalAsSEK(remainingPrice);
 
 	CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 
@@ -97,7 +112,7 @@ class CabinsComponent implements OnInit {
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
-			print('Failed to get cabins or availability due to an exception: ' + e);
+			print('Failed to get cabins or availability due to an exception: ' + e.toString());
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
 		}
 	}
@@ -107,7 +122,7 @@ class CabinsComponent implements OnInit {
 			final client = await _clientFactory.getClient();
 			availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
-			print('Failed to refresh availability due to an exception: ' + e);
+			print('Failed to refresh availability due to an exception: ' + e.toString());
 			// Ignore this here, keep using old availability
 		}
 	}

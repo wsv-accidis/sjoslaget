@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:angular2/core.dart';
+import 'package:decimal/decimal.dart';
 import 'package:http/http.dart';
 
 import 'availability_exception.dart';
@@ -14,6 +15,7 @@ import '../model/booking_dashboard_item.dart';
 import '../model/booking_details.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
+import '../model/payment_summary.dart';
 
 @Injectable()
 class BookingRepository {
@@ -47,9 +49,25 @@ class BookingRepository {
 			.toList();
 	}
 
+	Future<PaymentSummary> registerPayment(Client client, String reference, Decimal amount) async {
+		final headers = _createJsonHeaders();
+		final source = JSON.encode({PaymentSummary.AMOUNT: amount.toDouble()});
+
+		Response response;
+		try {
+			response = await client.post(_apiRoot + '/bookings/pay/' + reference, headers: headers, body: source);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
+			return new PaymentSummary.fromJson(response.body);
+		else
+			throw new IOException.fromResponse(response);
+	}
+
 	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins) async {
-		final headers = new Map<String, String>();
-		headers['content-type'] = 'application/json';
+		final headers = _createJsonHeaders();
 		final source = new BookingSource.fromDetails(details, cabins);
 
 		Response response;
@@ -67,5 +85,11 @@ class BookingRepository {
 			throw new BookingException();
 		else
 			throw new IOException.fromResponse(response);
+	}
+
+	static Map<String, String> _createJsonHeaders() {
+		final headers = new Map<String, String>();
+		headers['content-type'] = 'application/json';
+		return headers;
 	}
 }

@@ -82,6 +82,7 @@ class BookingCabinsPage implements OnInit {
 				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 				booking = await _bookingRepository.findBooking(client, reference);
 			} catch (e) {
+				print('Failed to get cabins or booking due to an exception: ' + e.toString());
 				loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta Sjöslaget.';
 				cabins.disableAddCabins = true;
 				return;
@@ -134,7 +135,7 @@ class BookingCabinsPage implements OnInit {
 							final BookingSource lastSavedBooking = await _bookingRepository.findBooking(client, bookingResult.reference);
 							savedCabins = lastSavedBooking.cabins;
 						} catch (e) {
-							print('Failed to retrieve prior booking for checking availability: ' + e);
+							print('Failed to retrieve prior booking for checking availability: ' + e.toString());
 						}
 					}
 					bookingError = _getAvailabilityError(savedCabins);
@@ -146,6 +147,7 @@ class BookingCabinsPage implements OnInit {
 					// Exception which is not coming from backend, potentially bad network
 					bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att du är ansluten till internet och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
 				}
+				print('Failed to save booking: ' + e.toString());
 				return;
 			}
 
@@ -163,7 +165,7 @@ class BookingCabinsPage implements OnInit {
 				} catch (e) {
 					// If we are here then saving succeeded but then logging in failed for some reason. Odd.
 					// Force-finish the booking so we don't end up in an unknown state.
-					print('Authentication failed after booking was successfully saved: ' + e);
+					print('Authentication failed after booking was successfully saved: ' + e.toString());
 					finishBooking();
 				}
 			}

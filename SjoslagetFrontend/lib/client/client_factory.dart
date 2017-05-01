@@ -59,7 +59,7 @@ class ClientFactory {
 			}
 		} catch (e) {
 			_clear();
-			print('Failed to load stored credentials due to an exception: ' + e);
+			print('Failed to load stored credentials due to an exception: ' + e.toString());
 		}
 
 		return new BrowserClient();

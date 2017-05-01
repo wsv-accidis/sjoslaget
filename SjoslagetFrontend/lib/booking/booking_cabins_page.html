@@ -45,7 +45,6 @@
 
 	<cabins-component #cabins></cabins-component>
 
-
 	<h3>Spara bokningen</h3>
 
 	<p *ngIf="isNewlySaved">
@@ -57,7 +56,7 @@
 		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
 	</p>
 
-	<p class="super-important booking-error" *ngIf="hasBookingError">
+	<p class="super-important" *ngIf="hasBookingError">
 		{{ bookingError }}
 	</p>
 

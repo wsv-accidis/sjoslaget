@@ -26,7 +26,7 @@ class PricingPage implements OnInit {
 			final client = await _clientFactory.getClient();
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		} catch (e) {
-			print('Failed to load active cruise cabins: ' + e);
+			print('Failed to load active cruise cabins: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}

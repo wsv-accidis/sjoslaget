@@ -84,11 +84,15 @@
 	</table>
 </div>
 
-<div *ngIf="totalPrice > 0" class="booking-price">
-	Totalt pris <span>{{ totalPriceFormatted }}</span>
+<div *ngIf="price > 0" class="booking-price">
+	Totalt pris <span>{{ priceFormatted }}</span>
+</div>
+<div *ngIf="hasPayment" class="booking-price">
+	Betalat <span>{{ amountPaidFormatted }}</span><br />
+	Kvar att betala <span>{{ remainingPriceFormatted }}</span>
 </div>
 
-<h2>Lägg till hytt</h2>
+<h2 style="margin-top: 0">Lägg till hytt</h2>
 
 <div *ngIf="isLoaded">
 	<material-button *ngFor="let cabin of cruiseCabins"

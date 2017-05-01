@@ -60,8 +60,8 @@
 
 		<material-radio-group [(ngModel)]="booking.lunch"
 							  ngControl="lunch">
-			<material-radio value="11"
-							style="margin-left: 0">
+			<material-radio style="margin-left: 0"
+							value="11">
 				11:00
 			</material-radio>
 			<material-radio [checked]="true"
@@ -76,18 +76,56 @@
 	<spinner-widget *ngIf="!hasLoaded"></spinner-widget>
 
 	<material-button class="control-blue"
-					 [disabled]="!canSave"
+					 [disabled]="!canSaveCabins || !bookingForm.valid"
 					 raised
 					 (trigger)="saveBooking()">
 		Spara bokningen
 	</material-button>
+
+	<material-button class="control-red"
+					 raised>
+		Lås bokningen
+	</material-button>
 </form>
 
-<h2>
-	Hantera betalningar
+<h2 style="margin-top: 30px">
+	Betalningar
 </h2>
 
-<p>
-	Här registrerar du inkomna betalningar för den här bokningen. Korrigeringar kan göras genom att ange negativa belopp.
+<p class="booking-payments">
+	Här registrerar du inkomna betalningar för den här bokningen. Korrigeringar och återbetalningar kan göras genom att ange negativa belopp.
 </p>
 
+<p class="booking-payments">
+	Bokningens totala pris är <span>{{ cabins.priceFormatted }}</span> och totalt <span>{{ cabins.amountPaidFormatted }}</span> har betalats in.
+	Det återstår att betala <span>{{ cabins.remainingPriceFormatted }}</span>.
+</p>
+
+<form #paymentForm="ngForm">
+	Betalning
+
+	<material-input [(ngModel)]="payment"
+					ngControl="payment"
+					floatingLabel
+					label="Belopp"
+					required
+					requiredErrorMsg="Ange belopp."
+					pattern="[0-9(),\.\-]+"
+					style="width: 60px; margin-left: 20px; margin-right: 20px"
+					type="number">
+	</material-input>
+
+	kr
+
+	<material-button class="control-blue"
+					 [disabled]="!paymentForm.valid || isSaving"
+					 raised
+					 style="margin-left: 20px"
+					 (trigger)="registerPayment()">
+		Registrera betalning
+	</material-button>
+
+	<p class="super-important" *ngIf="hasPaymentError">
+		{{ paymentError }}
+	</p>
+</form>

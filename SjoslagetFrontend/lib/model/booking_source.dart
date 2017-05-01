@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'booking_cabin.dart';
 import 'booking_details.dart';
+import 'payment_summary.dart';
 
 class BookingSource extends BookingDetails {
 	static const CABINS = 'Cabins';
+	static const PAYMENT = 'Payment';
 
 	List<BookingCabin> cabins;
+	PaymentSummary payment;
 
-	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.cabins)
+	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.cabins, this.payment)
 		: super(firstName, lastName, phoneNo, email, lunch, reference) {
 	}
 
@@ -27,7 +30,8 @@ class BookingSource extends BookingDetails {
 			map[BookingDetails.EMAIL],
 			map[BookingDetails.LUNCH],
 			map[BookingDetails.REFERENCE],
-			cabins
+			cabins,
+			new PaymentSummary.fromMap(map[PAYMENT])
 		);
 	}
 

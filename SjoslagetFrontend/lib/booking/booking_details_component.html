@@ -50,8 +50,8 @@
 		Om vi får välja, äter vi helst lunch klockan...<br/>
 		<material-radio-group [(ngModel)]="lunch"
 							  ngControl="lunch">
-			<material-radio value="11"
-							style="margin-left: 0">
+			<material-radio style="margin-left: 0"
+							value="11">
 				11:00
 			</material-radio>
 			<material-radio [checked]="true"
@@ -72,10 +72,10 @@
 		</material-checkbox>
 	</div>
 	<div style="margin-top: 10px">
-		<material-button (trigger)="submitDetails()"
-						 [disabled]="!bookingForm.valid || !acceptToc"
+		<material-button [disabled]="!bookingForm.valid || !acceptToc"
 						 class="control-blue"
-						 raised>
+						 raised
+						 (trigger)="submitDetails()">
 			Jag har fyllt i allt rätt, ta mig till hytterna!
 		</material-button>
 	</div>
