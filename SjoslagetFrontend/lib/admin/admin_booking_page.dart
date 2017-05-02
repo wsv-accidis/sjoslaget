@@ -46,6 +46,10 @@ class AdminBookingPage implements OnInit {
 
 	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams);
 
+	void lockBooking() {
+		cabins.readOnly = !cabins.readOnly;
+	}
+
 	Future<Null> ngOnInit() async {
 		final String reference = _routeParams.get('ref');
 

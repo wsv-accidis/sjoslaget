@@ -1,106 +1,174 @@
-<div *ngFor="let cabin of bookingCabins; let c = index">
-	<table cellpadding="0" cellspacing="0" border="0" [attr.data-idx]="c">
-		<tr *ngFor="let pax of cabin.pax; let p = index">
-			<td *ngIf="0 == p"
-				[attr.rowspan]="cabin.capacity"
-				[class]="cabin.isSaved ? 'cabin-name-cell cabin-saved' : 'cabin-name-cell'">
-				{{ cabin.name }}<br/>
-				<a class="cabin-delete" href="javascript:" (click)="deleteCabin(c)" title="Ta bort hytten">
-					<glyph icon="clear"></glyph>
-				</a>
+<div *ngIf="readOnly">
+	<table cellpadding="0" cellspacing="0" border="0" class="cabins-readonly">
+		<thead>
+		<tr>
+			<th class="cabin-name-cell"></th>
+			<th class="name-field-cell">
+				Förening
+			</th>
+			<th class="name-field-cell">
+				Förnamn
+			</th>
+			<th class="name-field-cell">
+				Efternamn
+			</th>
+			<th class="gender-field-cell">
+				Kön
+			</th>
+			<th class="dob-field-cell">
+				Födelsedatum
+			</th>
+			<th class="nationality-field-cell">
+				Nationalitet
+			</th>
+			<th class="years-field-cell">
+				Åkta år
+			</th>
+		</tr>
+		</thead>
+		<tbody *ngFor="let cabin of bookingCabins">
+		<tr *ngFor="let pax of cabin.paxNotEmpty; let p = index">
+			<td *ngIf="0 == p" [attr.rowspan]="cabin.count" class="cabin-name-cell cabin-saved">
+				{{ cabin.name }}
 			</td>
 			<td class="name-field-cell">
-				<material-input [(ngModel)]="pax.group"
-								[class]="pax.hasGroupError ? 'error-marker' : ''"
-								[error]="pax.groupError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('group', c, p)"
-								label="Förening">
-				</material-input>
+				{{ pax.group }}
 			</td>
 			<td class="name-field-cell">
-				<material-input [(ngModel)]="pax.firstName"
-								[class]="pax.hasFirstNameError ? 'error-marker' : ''"
-								[error]="pax.firstNameError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('firstName', c, p)"
-								label="Förnamn">
-				</material-input>
+				{{ pax.firstName }}
 			</td>
 			<td class="name-field-cell">
-				<material-input [(ngModel)]="pax.lastName"
-								[class]="pax.hasLastNameError ? 'error-marker' : ''"
-								[error]="pax.lastNameError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('lastName', c, p)"
-								label="Efternamn">
-				</material-input>
+				{{ pax.lastName }}
 			</td>
-			<td class="gender-field-cell">
-				<material-radio-group [(ngModel)]="pax.gender"
-									  [ngControl]="uniqueId('gender', c, p)">
-					<material-radio value="m" title="Man">
-						<img src="gfx/symbol_m.png" height="16" width="16" alt="Man">
-					</material-radio>
-					<material-radio value="f" title="Kvinna">
-						<img src="gfx/symbol_f.png" height="20" width="14" alt="Kvinna">
-					</material-radio>
-					<material-radio value="x" title="Annat eller ospecifierat">
-						<span class="gender-other">Annat</span>
-					</material-radio>
-				</material-radio-group>
-				<div class="error-marker" *ngIf="pax.hasGenderError"></div>
+			<td class="gender-field-cell-readonly">
+				<img *ngIf="'m' == pax.gender" src="gfx/symbol_m.png" height="16" width="16" alt="Man">
+				<img *ngIf="'f' == pax.gender" src="gfx/symbol_f.png" height="20" width="14" alt="Kvinna">
+				<span *ngIf="'x' == pax.gender" class="gender-other">Annat</span>
 			</td>
 			<td class="dob-field-cell">
-				<material-input [(ngModel)]="pax.dob"
-								[class]="pax.hasDobError ? 'error-marker' : ''"
-								[error]="pax.dobError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('dob', c, p)"
-								label="ÅÅMMDD"
-								type="number">
-				</material-input>
+				{{ pax.dob }}
 			</td>
 			<td class="nationality-field-cell">
-				<material-input [(ngModel)]="pax.nationality"
-								[class]="pax.hasNationalityError ? 'error-marker' : ''"
-								[error]="pax.nationalityError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('nationality', c, p)"
-								label="Nationalitet">
-				</material-input>
+				{{ pax.nationality }}
 			</td>
 			<td class="years-field-cell">
-				<material-input [(ngModel)]="pax.years"
-								[class]="pax.hasYearsError ? 'error-marker' : ''"
-								[error]="pax.yearsError"
-								(keyup)="validate($event)"
-								[ngControl]="uniqueId('years', c, p)"
-								label="Åkta år"
-								type="number">
-				</material-input>
+				{{ pax.years }}
 			</td>
 		</tr>
+		</tbody>
 	</table>
+</div>
+
+<div *ngIf="!readOnly">
+	<div *ngFor="let cabin of bookingCabins; let c = index">
+		<table cellpadding="0" cellspacing="0" border="0" [attr.data-idx]="c">
+			<tr *ngFor="let pax of cabin.pax; let p = index">
+				<td *ngIf="0 == p"
+					[attr.rowspan]="cabin.capacity"
+					[class]="cabin.isSaved ? 'cabin-name-cell cabin-saved' : 'cabin-name-cell'">
+					{{ cabin.name }}<br/>
+					<a class="cabin-delete"
+					   (click)="deleteCabin(c)"
+					   href="javascript:"
+					   title="Ta bort hytten">
+						<glyph icon="clear"></glyph>
+					</a>
+				</td>
+				<td class="name-field-cell">
+					<material-input [(ngModel)]="pax.group"
+									[class]="pax.hasGroupError ? 'error-marker' : ''"
+									[error]="pax.groupError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('group', c, p)"
+									label="Förening">
+					</material-input>
+				</td>
+				<td class="name-field-cell">
+					<material-input [(ngModel)]="pax.firstName"
+									[class]="pax.hasFirstNameError ? 'error-marker' : ''"
+									[error]="pax.firstNameError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('firstName', c, p)"
+									label="Förnamn">
+					</material-input>
+				</td>
+				<td class="name-field-cell">
+					<material-input [(ngModel)]="pax.lastName"
+									[class]="pax.hasLastNameError ? 'error-marker' : ''"
+									[error]="pax.lastNameError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('lastName', c, p)"
+									label="Efternamn">
+					</material-input>
+				</td>
+				<td class="gender-field-cell">
+					<material-radio-group [(ngModel)]="pax.gender"
+										  [ngControl]="uniqueId('gender', c, p)">
+						<material-radio value="m" title="Man">
+							<img src="gfx/symbol_m.png" height="16" width="16" alt="Man">
+						</material-radio>
+						<material-radio value="f" title="Kvinna">
+							<img src="gfx/symbol_f.png" height="20" width="14" alt="Kvinna">
+						</material-radio>
+						<material-radio value="x" title="Annat eller ospecifierat">
+							<span class="gender-other">Annat</span>
+						</material-radio>
+					</material-radio-group>
+					<div class="error-marker" *ngIf="pax.hasGenderError"></div>
+				</td>
+				<td class="dob-field-cell">
+					<material-input [(ngModel)]="pax.dob"
+									[class]="pax.hasDobError ? 'error-marker' : ''"
+									[error]="pax.dobError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('dob', c, p)"
+									label="ÅÅMMDD"
+									type="number">
+					</material-input>
+				</td>
+				<td class="nationality-field-cell">
+					<material-input [(ngModel)]="pax.nationality"
+									[class]="pax.hasNationalityError ? 'error-marker' : ''"
+									[error]="pax.nationalityError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('nationality', c, p)"
+									label="Nationalitet">
+					</material-input>
+				</td>
+				<td class="years-field-cell">
+					<material-input [(ngModel)]="pax.years"
+									[class]="pax.hasYearsError ? 'error-marker' : ''"
+									[error]="pax.yearsError"
+									(keyup)="validate($event)"
+									[ngControl]="uniqueId('years', c, p)"
+									label="Åkta år"
+									type="number">
+					</material-input>
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>
 
 <div *ngIf="price > 0" class="booking-price">
 	Totalt pris <span>{{ priceFormatted }}</span>
 </div>
 <div *ngIf="hasPayment" class="booking-price">
-	Betalat <span>{{ amountPaidFormatted }}</span><br />
+	Betalat <span>{{ amountPaidFormatted }}</span><br/>
 	Kvar att betala <span>{{ remainingPriceFormatted }}</span>
 </div>
 
-<h2 style="margin-top: 0">Lägg till hytt</h2>
+<div *ngIf="!readOnly">
+	<h2 style="margin-top: 0">Lägg till hytt</h2>
 
-<div *ngIf="isLoaded">
-	<material-button *ngFor="let cabin of cruiseCabins"
-					 class="control-blue"
-					 [disabled]="!hasAvailability(cabin.id) || disableAddCabins"
-					 raised
-					 (trigger)="addCabin(cabin.id)">
-		{{ cabin.name }} ({{ getAvailability(cabin.id) }})
-	</material-button>
+	<div *ngIf="isLoaded">
+		<material-button *ngFor="let cabin of cruiseCabins"
+						 class="control-blue"
+						 [disabled]="!hasAvailability(cabin.id) || disableAddCabins"
+						 raised
+						 (trigger)="addCabin(cabin.id)">
+			{{ cabin.name }} ({{ getAvailability(cabin.id) }})
+		</material-button>
+	</div>
+	<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
 </div>
-<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>

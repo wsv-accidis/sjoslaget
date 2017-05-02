@@ -11,6 +11,10 @@ class BookingCabinView {
 	List<BookingPaxView> pax;
 	int price;
 
+	int get count => paxNotEmpty.length;
+
+	Iterable<BookingPaxView> get paxNotEmpty => pax.where((p) => !p.isEmpty);
+
 	BookingCabinView.fromCruiseCabin(CruiseCabin cruiseCabin)
 		: id = cruiseCabin.id,
 			name = cruiseCabin.name,

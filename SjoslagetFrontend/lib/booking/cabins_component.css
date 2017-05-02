@@ -21,17 +21,32 @@ a.cabin-delete glyph {
 	color: darkred;
 }
 
-td.cabin-name-cell {
-	width: 90px;
+td.cabin-name-cell, th.cabin-name-cell {
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
 	font-size: 18px;
+	vertical-align: top !important;
+	width: 90px;
 }
 
 td.cabin-saved {
 	color: #0F75BC;
 }
 
-td.dob-field-cell {
+table.cabins-readonly td, table.cabins-readonly th {
+	padding-bottom: 4px;
+	padding-top: 4px;
+	vertical-align: middle;
+}
+
+table.cabins-readonly th {
+	color: #0F75BC;
+}
+
+table.cabins-readonly tbody {
+	padding-bottom: 10px;
+}
+
+td.dob-field-cell, th.dob-field-cell {
 	width: 110px;
 	padding-right: 10px;
 }
@@ -47,10 +62,19 @@ td.gender-field-cell {
 	width: 165px;
 }
 
+table.cabins-readonly th.gender-field-cell, table.cabins-readonly th.gender-field-cell {
+	width: 100px;
+}
+
 td.gender-field-cell span.gender-other {
 	font-size: x-small;
 	font-weight: bold;
 	margin-left: -4px;
+}
+
+td.gender-field-cell-readonly span.gender-other {
+	font-size: small;
+	font-weight: bold;
 }
 
 td.gender-field-cell img {
@@ -61,17 +85,23 @@ td.gender-field-cell img {
 	vertical-align: middle;
 }
 
-td.name-field-cell {
+td.gender-field-cell-readonly img {
+	border: 0;
+	box-shadow: none;
+	vertical-align: middle;
+}
+
+td.name-field-cell, th.name-field-cell {
 	width: 150px;
 	padding-right: 10px;
 }
 
-td.nationality-field-cell {
+td.nationality-field-cell, th.nationality-field-cell {
 	width: 100px;
 	padding-right: 10px;
 }
 
-td.years-field-cell {
+td.years-field-cell, th.years-field-cell {
 	width: 80px;
 }
 

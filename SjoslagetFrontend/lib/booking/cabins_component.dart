@@ -30,6 +30,7 @@ class CabinsComponent implements OnInit {
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins;
+	bool readOnly;
 
 	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
 
