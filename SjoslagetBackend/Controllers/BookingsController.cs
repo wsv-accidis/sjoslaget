@@ -99,6 +99,28 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		[Authorize]
+		[HttpPut]
+		public async Task<IHttpActionResult> Lock(string reference)
+		{
+			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+			if (null == booking)
+				return NotFound();
+
+			try
+			{
+				booking.IsLocked = !booking.IsLocked;
+				await _bookingRepository.UpdateMetadataAsync(booking);
+
+				return Ok(IsLockedResult.FromBooking(booking));
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while locking/unlocking the booking with reference {reference}.");
+				throw;
+			}
+		}
+
+		[Authorize]
 		[HttpPost]
 		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
 		{

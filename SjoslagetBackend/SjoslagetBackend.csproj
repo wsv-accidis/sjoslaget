@@ -185,6 +185,7 @@
     <Compile Include="Models\BookingCabinWithPax.cs" />
     <Compile Include="Models\BookingDashboardItem.cs" />
     <Compile Include="Models\BookingException.cs" />
+    <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
     <Compile Include="Models\BookingSource.cs" />

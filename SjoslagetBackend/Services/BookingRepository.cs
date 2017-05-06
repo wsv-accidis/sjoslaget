@@ -122,6 +122,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return BookingResult.FromBooking(booking, null);
 		}
 
+		public async Task UpdateMetadataAsync(Booking booking)
+		{
+			using(var db = SjoslagetDb.Open())
+			{
+				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id",
+					new {Id = booking.Id, IsLocked = booking.IsLocked});
+			}
+		}
+
 		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList)
 		{
 			Dictionary<Guid, CabinType> typeDict = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
