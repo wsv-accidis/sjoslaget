@@ -173,6 +173,7 @@
     </Compile>
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
+    <Compile Include="Controllers\CruiseController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />

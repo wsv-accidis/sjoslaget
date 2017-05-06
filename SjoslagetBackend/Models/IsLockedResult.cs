@@ -6,10 +6,12 @@
 
 		public static IsLockedResult FromBooking(Booking booking)
 		{
-			return new IsLockedResult
-			{
-				IsLocked = booking.IsLocked
-			};
+			return new IsLockedResult {IsLocked = booking.IsLocked};
+		}
+
+		public static IsLockedResult FromCruise(Cruise cruise)
+		{
+			return new IsLockedResult {IsLocked = cruise.IsLocked};
 		}
 	}
 }

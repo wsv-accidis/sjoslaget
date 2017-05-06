@@ -30,5 +30,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 				return result.FirstOrDefault();
 			}
 		}
+
+		public async Task UpdateMetadataAsync(Cruise cruise)
+		{
+			using(var db = SjoslagetDb.Open())
+			{
+				await db.ExecuteAsync("update [Cruise] set [IsActive] = @IsActive, [IsLocked] = @IsLocked where [Id] = @Id",
+					new {Id = cruise.Id, IsActive = cruise.IsActive, IsLocked = cruise.IsLocked});
+			}
+		}
 	}
 }
