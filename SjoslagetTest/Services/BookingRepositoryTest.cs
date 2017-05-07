@@ -86,6 +86,27 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenItIsLocked_ShouldFailToUpdate()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var booking = await GetNewlyCreatedBookingForTestAsync(repository);
+
+			booking.IsLocked = true;
+			await repository.UpdateMetadataAsync(booking);
+
+			var updateSource = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
+			updateSource.Reference = booking.Reference;
+			try
+			{
+				await repository.UpdateAsync(SjoslagetDbExtensions.CruiseId, updateSource);
+				Assert.Fail("Update booking did not throw.");
+			}
+			catch(BookingException)
+			{
+			}
+		}
+
+		[TestMethod]
 		public async Task GivenExistingBooking_WhenUpdatedWithMoreCabins_ShouldAllowUpToMaximumCapacity()
 		{
 			Assert.AreEqual(10, Config.NumberOfCabins);
@@ -238,8 +259,11 @@ namespace Accidis.Sjoslaget.Test.Services
 
 		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync()
 		{
-			var repository = GetBookingRepositoryForTest();
+			return await GetNewlyCreatedBookingForTestAsync(GetBookingRepositoryForTest());
+		}
 
+		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync(BookingRepository repository)
+		{
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
 			BookingResult result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
 

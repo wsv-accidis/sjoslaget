@@ -95,7 +95,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		public async Task<BookingResult> UpdateAsync(Guid cruiseId, BookingSource source)
+		public async Task<BookingResult> UpdateAsync(Guid cruiseId, BookingSource source, bool allowUpdateIfLocked = false)
 		{
 			BookingSource.ValidateCabins(source);
 			Booking booking;
@@ -110,6 +110,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				booking = await FindByReferenceAsync(db, source.Reference);
 				if(null == booking || booking.CruiseId != cruiseId)
 					throw new BookingException($"Booking with reference {source.Reference} not found or not in active cruise.");
+				if(booking.IsLocked && !allowUpdateIfLocked)
+					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
 				await DeleteCabins(db, booking);
 				await CheckAvailability(db, cruiseId, source.Cabins);
@@ -126,8 +128,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			using(var db = SjoslagetDb.Open())
 			{
-				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id",
-					new {Id = booking.Id, IsLocked = booking.IsLocked});
+				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [IsLocked] = @IsLocked where [Id] = @Id",
+					new {Id = booking.Id, Discount = @booking.Discount, IsLocked = booking.IsLocked});
 			}
 		}
 

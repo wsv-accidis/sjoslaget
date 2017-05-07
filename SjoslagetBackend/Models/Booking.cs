@@ -12,6 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string Lunch { get; set; }
+		public int Discount { get; set; }
 		public bool IsLocked { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }

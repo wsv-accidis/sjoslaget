@@ -39,7 +39,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					if(!AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, bookingSource.Reference, StringComparison.InvariantCultureIgnoreCase))
 						return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
 
-					BookingResult result = await _bookingRepository.UpdateAsync(activeCruise.Id, bookingSource);
+					BookingResult result = await _bookingRepository.UpdateAsync(activeCruise.Id, bookingSource, allowUpdateIfLocked: AuthContext.IsAdmin);
 					_log.Info("Updated booking {0}.", result.Reference);
 					return Ok(result);
 				}
@@ -65,6 +65,31 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while creating the booking.");
+				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpPost]
+		public async Task<IHttpActionResult> Discount(string reference, PaymentSource discount)
+		{
+			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
+			if(null == booking)
+				return NotFound();
+
+			try
+			{
+				int amount = Convert.ToInt32(discount.Amount);
+				amount = Math.Max(Math.Min(amount, 100), 0);
+				booking.Discount = amount;
+
+				await _bookingRepository.UpdateMetadataAsync(booking);
+
+				return Ok();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while updating the discount for the booking with reference {reference}.");
 				throw;
 			}
 		}
@@ -98,12 +123,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 		}
 
-		[Authorize]
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPut]
 		public async Task<IHttpActionResult> Lock(string reference)
 		{
-			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
-			if (null == booking)
+			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
+			if(null == booking)
 				return NotFound();
 
 			try
@@ -120,11 +145,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 		}
 
-		[Authorize]
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
 		{
-			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
 			if(null == booking)
 				return NotFound();
 
@@ -176,6 +201,19 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				_log.Error(ex, "Failed to send e-mail on created booking, although the booking was created without error.");
 			}
+		}
+
+		async Task<Booking> TryFindBookingInActiveCruiseByReference(string reference)
+		{
+			Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return null;
+
+			Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+			if(null == booking || booking.CruiseId != activeCruise.Id)
+				return null;
+
+			return booking;
 		}
 	}
 }

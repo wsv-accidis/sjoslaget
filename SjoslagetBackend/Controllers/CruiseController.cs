@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using NLog;
@@ -27,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			return Ok(cruise);
 		}
 
-		[Authorize]
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPut]
 		public async Task<IHttpActionResult> Lock()
 		{
