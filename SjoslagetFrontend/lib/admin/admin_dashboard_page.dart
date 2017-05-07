@@ -8,6 +8,7 @@ import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
+import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
@@ -27,6 +28,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 	Map<String, int> availability;
 	List<CruiseCabin> cabins;
+	Cruise cruise;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
 
 	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
@@ -50,6 +52,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 		try {
 			final client = await _clientFactory.getClient();
+			cruise = await _cruiseRepository.getActiveCruise(client);
 			availability = await _cruiseRepository.getAvailability(client);
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);

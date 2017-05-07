@@ -6,12 +6,16 @@ import 'payment_summary.dart';
 
 class BookingSource extends BookingDetails {
 	static const CABINS = 'Cabins';
+	static const DISCOUNT = 'Discount';
+	static const IS_LOCKED = 'IsLocked';
 	static const PAYMENT = 'Payment';
 
 	List<BookingCabin> cabins;
+	int discount;
+	bool isLocked;
 	PaymentSummary payment;
 
-	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.cabins, this.payment)
+	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.discount, this.isLocked, this.cabins, this.payment)
 		: super(firstName, lastName, phoneNo, email, lunch, reference) {
 	}
 
@@ -30,6 +34,8 @@ class BookingSource extends BookingDetails {
 			map[BookingDetails.EMAIL],
 			map[BookingDetails.LUNCH],
 			map[BookingDetails.REFERENCE],
+			map[DISCOUNT],
+			map[IS_LOCKED],
 			cabins,
 			new PaymentSummary.fromMap(map[PAYMENT])
 		);

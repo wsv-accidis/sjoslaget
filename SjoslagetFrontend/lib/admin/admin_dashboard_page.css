@@ -30,3 +30,7 @@ table.recently-updated-bookings th, table.recently-updated-bookings td {
 	padding-top: 4px;
 	border-bottom: 1px solid silver;
 }
+
+p span {
+	font-weight: bold;
+}

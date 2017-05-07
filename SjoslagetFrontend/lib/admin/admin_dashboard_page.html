@@ -8,8 +8,8 @@
 </div>
 
 <p>
-	Aktuell kryssning är Sjöslaget 2017 och bokningen är öppen. Välj ur menyn ovan eller se nedan för nyligen skapade eller
-	uppdaterade bokningar som behöver kontrolleras.
+	Aktuell kryssning är <span>{{ null != cruise ? cruise.name : '(Laddar...)' }}</span> och bokningen är <span>{{ null != cruise && cruise.isLocked ? 'stängd' : 'öppen' }}</span>.
+	Välj ur menyn ovan eller se nedan för nyligen skapade eller	uppdaterade bokningar som behöver kontrolleras.
 </p>
 
 <h2 class="recently-updated-bookings-title">
@@ -84,3 +84,5 @@
 		</td>
 	</tr>
 </table>
+
+<div style="clear: both; height: 20px"></div>
