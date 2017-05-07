@@ -15,6 +15,10 @@ td.available-cabins-progress {
 	width: 80%;
 }
 
+h2.cruise-title {
+	margin-top: 20px;
+}
+
 h2.recently-updated-bookings-title {
 	margin-bottom: 8px;
 }

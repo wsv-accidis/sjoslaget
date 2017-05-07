@@ -1,17 +1,104 @@
 <h1>Bokning</h1>
 
-<div [attr.style]="!forceOpenBooking ? 'display: none' : ''">
+<div *ngIf="!isCruiseLocked">
 	<p style="margin-bottom: 3px">
 		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="['About/Booking']">Hur man bokar</a> och se till att
 		du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
 		egna uppgifter som <strong>kontaktperson</strong>:
 	</p>
 
-	<booking-details #bookingDetails></booking-details>
+	<form #bookingForm="ngForm" (submit)="submitDetails()">
+		<input type="submit" class="hidden-submit"/>
+
+		<div>
+			<material-input [(ngModel)]="firstName"
+							ngControl="firstName"
+							floatingLabel
+							label="Förnamn"
+							required
+							requiredErrorMsg="Ange förnamn."
+							style="width: 150px; margin-right: 20px">
+			</material-input>
+
+			<material-input [(ngModel)]="lastName"
+							ngControl="lastName"
+							floatingLabel
+							label="Efternamn"
+							required
+							requiredErrorMsg="Ange efternamn."
+							style="width: 150px">
+			</material-input>
+		</div>
+		<div>
+			<material-input [(ngModel)]="phoneNo"
+							ngControl="phoneNo"
+							floatingLabel
+							label="Telefonnummer"
+							required
+							requiredErrorMsg="Ange telefonnummer."
+							pattern="[0-9()+\- ]+"
+							style="width: 150px; margin-right: 20px"
+							type="tel">
+			</material-input>
+
+			<material-input [(ngModel)]="email"
+							ngControl="email"
+							floatingLabel
+							label="E-postadress"
+							required
+							requiredErrorMsg="Ange e-postadress."
+							pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
+							style="width: 250px"
+							tel="email">
+			</material-input>
+		</div>
+		<p class="super-important" style="margin-top: 0">
+			Dubbelkolla att e-postadressen stämmer!
+		</p>
+		<div>
+			Om vi får välja, äter vi helst lunch klockan...<br/>
+			<material-radio-group [(ngModel)]="lunch"
+								  ngControl="lunch">
+				<material-radio style="margin-left: 0"
+								value="11">
+					11:00
+				</material-radio>
+				<material-radio [checked]="true"
+								value="13">
+					13:00
+				</material-radio>
+				<material-radio value="15">
+					15:00
+				</material-radio>
+			</material-radio-group>
+		</div>
+		<div>
+			<material-checkbox [(ngModel)]="acceptToc"
+							   ngControl="acceptTog"
+							   style="font-size: smaller; margin-left: 0">
+				Jag godkänner att de personuppgifter jag anger i bokningen får lagras och användas av Sjöslaget och dess samarbetspartners.
+				Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Sjöslaget att göra.
+			</material-checkbox>
+		</div>
+		<div style="margin-top: 10px">
+			<material-button [disabled]="!bookingForm.valid || !acceptToc"
+							 class="control-blue"
+							 raised
+							 (trigger)="submitDetails()">
+				Jag har fyllt i allt rätt, ta mig till hytterna!
+			</material-button>
+		</div>
+		<p *ngIf="!bookingForm.valid || !acceptToc">
+			Är knappen grå? Kolla så att du har fyllt i allting.
+		</p>
+	</form>
 </div>
-<p *ngIf="!forceOpenBooking">
+
+<p *ngIf="isCruiseLocked && !isLoadingCruise">
 	Bokningen har inte öppnat ännu. Håll utkik!
 </p>
+
+<spinner-widget *ngIf="isLoadingCruise"></spinner-widget>
 
 <h1 style="margin-top: 20px">Ändra din bokning</h1>
 

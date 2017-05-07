@@ -45,4 +45,18 @@ class CruiseRepository {
 		HttpStatus.throwIfNotSuccessful(response);
 		return JSON.decode(response.body);
 	}
+
+	Future<bool> lockUnlockCruise(Client client) async {
+		Response response;
+
+		try {
+			response = await client.put(_apiRoot + '/cruise/lock');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final Map<String, dynamic> body = JSON.decode(response.body);
+		return body[Cruise.IS_LOCKED];
+	}
 }

@@ -24,12 +24,22 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 	final Router _router;
+
+	bool _isLockingUnlocking = false;
 	Timer _timer;
 
 	Map<String, int> availability;
 	List<CruiseCabin> cabins;
 	Cruise cruise;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
+
+	bool get cruiseIsLocked => null != cruise && cruise.isLocked;
+
+	bool get isLoadingCabins => null == cabins;
+
+	bool get isLoadingCruise => null == cruise || _isLockingUnlocking;
+
+	bool get isLoadingBookings => null == recentlyUpdatedBookings;
 
 	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
 
@@ -68,6 +78,22 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	void ngOnDestroy() {
 		if (null != _timer)
 			_timer.cancel();
+	}
+
+	Future<Null> lockUnlockCruise() async {
+		if (null == cruise || _isLockingUnlocking)
+			return;
+
+		_isLockingUnlocking = true;
+		try {
+			final client = await _clientFactory.getClient();
+			final bool isLocked = await _cruiseRepository.lockUnlockCruise(client);
+			cruise.isLocked = isLocked;
+		} catch (e) {
+			print('Failed to lock/unlock cruise: ' + e.toString());
+		} finally {
+			_isLockingUnlocking = false;
+		}
 	}
 
 	void tick(Timer ignored) {
