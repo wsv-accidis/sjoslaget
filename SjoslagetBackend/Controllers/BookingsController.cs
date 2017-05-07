@@ -39,7 +39,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					if(!AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, bookingSource.Reference, StringComparison.InvariantCultureIgnoreCase))
 						return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
 
-					BookingResult result = await _bookingRepository.UpdateAsync(activeCruise, bookingSource, allowUpdateIfLocked: AuthContext.IsAdmin);
+					BookingResult result = await _bookingRepository.UpdateAsync(activeCruise, bookingSource, allowUpdateDetails: AuthContext.IsAdmin, allowUpdateIfLocked: AuthContext.IsAdmin);
 					_log.Info("Updated booking {0}.", result.Reference);
 					return Ok(result);
 				}

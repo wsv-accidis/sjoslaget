@@ -98,9 +98,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		public async Task<BookingResult> UpdateAsync(Cruise cruise, BookingSource source, bool allowUpdateIfLocked = false)
+		public async Task<BookingResult> UpdateAsync(Cruise cruise, BookingSource source, bool allowUpdateDetails = false, bool allowUpdateIfLocked = false)
 		{
 			BookingSource.ValidateCabins(source);
+			if(allowUpdateDetails)
+				source.ValidateDetails();
+
 			Booking booking;
 
 			// See CreateAsync regarding the use of transaction + applock here.
@@ -119,7 +122,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await DeleteCabins(db, booking);
 				await CheckAvailability(db, cruise.Id, source.Cabins);
 				await CreateCabins(db, booking, source.Cabins);
-				await db.ExecuteAsync("update [Booking] set [Updated] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
+
+				if(allowUpdateDetails)
+				{
+					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [Updated] = sysdatetime() where [Id] = @Id",
+						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, Id = booking.Id});
+				}
+				else
+					await db.ExecuteAsync("update [Booking] set [Updated] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
 
 				tran.Complete();
 			}

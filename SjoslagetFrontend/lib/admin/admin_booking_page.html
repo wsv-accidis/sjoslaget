@@ -73,30 +73,39 @@
 			</material-radio>
 		</material-radio-group>
 	</div>
+
 	<spinner-widget *ngIf="!hasLoaded"></spinner-widget>
 
-	<material-button class="control-blue"
-					 [disabled]="!canSaveCabins || !bookingForm.valid"
-					 raised
-					 (trigger)="saveBooking()">
-		Spara bokningen
-	</material-button>
+	<div *ngIf="!isSaving">
+		<material-button class="control-blue"
+						 [disabled]="!canSaveCabins || !bookingForm.valid"
+						 raised
+						 (trigger)="saveBooking()">
+			Spara bokningen
+		</material-button>
 
-	<material-button *ngIf="canLock"
-					 class="control-red"
-					 [disabled]="isLockingUnlocking"
-					 raised
-					 (trigger)="lockUnlockBooking()">
-		Lås bokningen
-	</material-button>
+		<material-button *ngIf="canLock"
+						 class="control-red"
+						 [disabled]="isLockingUnlocking"
+						 raised
+						 (trigger)="lockUnlockBooking()">
+			Lås bokningen
+		</material-button>
 
-	<material-button *ngIf="canUnlock"
-					 class="control-green"
-					 [disabled]="isLockingUnlocking"
-					 raised
-					 (trigger)="lockUnlockBooking()">
-		Lås upp bokningen
-	</material-button>
+		<material-button *ngIf="canUnlock"
+						 class="control-green"
+						 [disabled]="isLockingUnlocking"
+						 raised
+						 (trigger)="lockUnlockBooking()">
+			Lås upp bokningen
+		</material-button>
+	</div>
+
+	<spinner-widget *ngIf="isSaving"></spinner-widget>
+
+	<p class="super-important" *ngIf="hasBookingError">
+		{{ bookingError }}
+	</p>
 </form>
 
 <h2 style="margin-top: 30px">

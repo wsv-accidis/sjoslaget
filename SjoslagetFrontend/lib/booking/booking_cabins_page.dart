@@ -118,6 +118,8 @@ class BookingCabinsPage implements OnInit {
 	}
 
 	Future<Null> saveBooking() async {
+		// This is very similar to saveBooking in admin_booking_page, keep the two in sync
+
 		if (isSaving)
 			return;
 
@@ -127,8 +129,6 @@ class BookingCabinsPage implements OnInit {
 		window.sessionStorage.remove(BookingComponent.BOOKING);
 
 		try {
-			await cabins.refreshAvailability();
-
 			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
 			final client = await _clientFactory.getClient();
 			BookingResult result;
@@ -137,6 +137,7 @@ class BookingCabinsPage implements OnInit {
 				result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
 			} catch (e) {
 				if (e is AvailabilityException) {
+					await cabins.refreshAvailability();
 					List<BookingCabin> savedCabins = null;
 					if (isSaved) {
 						// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
@@ -166,7 +167,9 @@ class BookingCabinsPage implements OnInit {
 
 			bookingResult = result;
 			bookingDetails.reference = result.reference;
-			cabins.markCabinsAsSaved();
+
+			await cabins.refreshAvailability();
+			cabins.onSaved();
 
 			if (!equalsIgnoreCase(_clientFactory.authenticatedUser, bookingResult.reference) && isNotEmpty(bookingResult.password)) {
 				try {

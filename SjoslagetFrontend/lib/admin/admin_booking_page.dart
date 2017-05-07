@@ -7,10 +7,14 @@ import 'package:decimal/decimal.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../booking/cabins_component.dart';
+import '../client/availability_exception.dart';
+import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
+import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
+import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
@@ -37,6 +41,7 @@ class AdminBookingPage implements OnInit {
 	CabinsComponent cabins;
 
 	BookingSource booking;
+	String bookingError;
 	bool isSaving = false;
 	String payment;
 	String paymentError;
@@ -48,6 +53,8 @@ class AdminBookingPage implements OnInit {
 	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
 
 	bool get canSaveCabins => !cabins.isEmpty && cabins.isValid && !isSaving;
+
+	bool get hasBookingError => isNotEmpty(bookingError);
 
 	bool get hasLoaded => null != booking;
 
@@ -123,6 +130,80 @@ class AdminBookingPage implements OnInit {
 		} finally {
 			isSaving = false;
 		}
+	}
+
+	Future<Null> saveBooking() async {
+		// This is very similar to saveBooking in booking_cabins_page, keep the two in sync
+
+		if (isSaving)
+			return;
+
+		isSaving = true;
+		cabins.disableAddCabins = true;
+		bookingError = null;
+
+		try {
+			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
+			final client = await _clientFactory.getClient();
+
+			try {
+				await _bookingRepository.saveOrUpdateBooking(client, booking, cabinsToSave);
+			} catch (e) {
+				if (e is AvailabilityException) {
+					await cabins.refreshAvailability();
+					List<BookingCabin> savedCabins = null;
+					// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
+					try {
+						final BookingSource lastSavedBooking = await _bookingRepository.findBooking(client, booking.reference);
+						savedCabins = lastSavedBooking.cabins;
+					} catch (e) {
+						print('Failed to retrieve prior booking for checking availability: ' + e.toString());
+					}
+					bookingError = _getAvailabilityError(savedCabins);
+				}
+				else if (e is BookingException) {
+					// Exception from backend, validation error (should not happen as we validate locally, but oh well)
+					bookingError = 'Någonting gick fel när bokningen skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen.';
+				} else {
+					// Exception which is not coming from backend, potentially bad network
+					bookingError = 'Någonting gick fel när bokningen skulle sparas. Kontrollera att du är ansluten till internet och försök igen.';
+				}
+				print('Failed to save booking: ' + e.toString());
+				return;
+			}
+
+			await cabins.refreshAvailability();
+			cabins.onSaved();
+		} finally {
+			cabins.disableAddCabins = false;
+			isSaving = false;
+		}
+	}
+
+	String _getAvailabilityError(List<BookingCabin> savedCabins) {
+		// Calling this depends on having refreshed availability first
+
+		String error = 'Det finns inte tillräckligt många lediga hytter för att spara.';
+		for (CruiseCabin cabin in cabins.cruiseCabins) {
+			final int available = cabins.getTotalAvailability(cabin.id);
+			final int inBooking = cabins.getNumberOfCabinsInBooking(cabin.id);
+			final int inSavedBooking = _getNumberOfCabinsOfType(savedCabins, cabin.id);
+
+			if (available < inBooking)
+				error += ' Det finns $inBooking hytt(er) av typen ${cabin.name} i bokningen, men det finns ${available + inSavedBooking} kvar att boka.';
+		}
+
+		error += ' Ta bort hytter från bokningen eller byt till en annan typ och försök igen.';
+		return error;
+	}
+
+	static int _getNumberOfCabinsOfType(List<BookingCabin> cabins, String id) {
+		if (null == cabins)
+			return 0;
+
+		return cabins
+			.where((b) => b.cabinTypeId == id)
+			.length;
 	}
 
 	void _refreshRemainingPrice() {

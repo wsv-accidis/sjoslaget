@@ -25,8 +25,10 @@ class CabinsComponent implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
+	Map<String, int> _availability;
+	List<BookingCabinView> _pendingDeleteCabins = new List<BookingCabinView>();
+
 	Decimal amountPaid;
-	Map<String, int> availability;
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins;
@@ -40,7 +42,7 @@ class CabinsComponent implements OnInit {
 
 	bool get isEmpty => bookingCabins.isEmpty;
 
-	bool get isLoaded => null != availability && null != cruiseCabins;
+	bool get isLoaded => null != _availability && null != cruiseCabins;
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
 
@@ -70,6 +72,10 @@ class CabinsComponent implements OnInit {
 	}
 
 	void deleteCabin(int idx) {
+		final cabin = bookingCabins[idx];
+		if (cabin.isSaved)
+			_pendingDeleteCabins.add(cabin);
+
 		bookingCabins.removeAt(idx);
 
 		if (0 == idx && bookingCabins.isNotEmpty) {
@@ -83,45 +89,45 @@ class CabinsComponent implements OnInit {
 	int getAvailability(String id) {
 		final int available = getTotalAvailability(id);
 		final int inBooking = getNumberOfCabinsInBooking(id);
-		return _max(0, available - inBooking);
+		final int savedInBooking = _getNumberOfSavedCabinsInBooking(id);
+		final int pendingDeletion = _getNumberOfCabinsPendingDeletion(id);
+		return available - inBooking + savedInBooking + pendingDeletion;
 	}
 
-	int getNumberOfCabinsInBooking(String id) {
-		return bookingCabins
-			.where((b) => b.id == id)
-			.length;
-	}
+	int getNumberOfCabinsInBooking(String id) => _getCabinsInBooking(id).length;
 
 	int getTotalAvailability(String id) {
-		if (null == availability || !availability.containsKey(id))
+		if (null == _availability || !_availability.containsKey(id))
 			return 0;
-		return availability[id];
+		return _availability[id];
 	}
 
 	bool hasAvailability(String id) {
 		return getAvailability(id) > 0;
 	}
 
-	void markCabinsAsSaved() {
-		for (BookingCabinView b in bookingCabins)
-			b.isSaved = true;
-	}
-
 	Future<Null> ngOnInit() async {
 		try {
 			final client = await _clientFactory.getClient();
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-			availability = await _cruiseRepository.getAvailability(client);
+			_availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
 			print('Failed to get cabins or availability due to an exception: ' + e.toString());
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
 		}
 	}
 
+	void onSaved() {
+		_pendingDeleteCabins.clear();
+		for (BookingCabinView b in bookingCabins)
+			b.isSaved = true;
+	}
+
+
 	Future<Null> refreshAvailability() async {
 		try {
 			final client = await _clientFactory.getClient();
-			availability = await _cruiseRepository.getAvailability(client);
+			_availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
 			print('Failed to refresh availability due to an exception: ' + e.toString());
 			// Ignore this here, keep using old availability
@@ -151,11 +157,22 @@ class CabinsComponent implements OnInit {
 		return int.parse(target.dataset['idx']);
 	}
 
+	Iterable<BookingCabinView> _getCabinsInBooking(String id) {
+		return bookingCabins.where((b) => b.id == id);
+	}
+
 	CruiseCabin _getCruiseCabin(String id) {
 		return cruiseCabins.firstWhere((c) => c.id == id);
 	}
 
-	static int _max(int a, int b) {
-		return a > b ? a : b;
-	}
+	int _getNumberOfSavedCabinsInBooking(String id) =>
+		_getCabinsInBooking(id)
+			.where((b) => b.isSaved)
+			.length;
+
+	int _getNumberOfCabinsPendingDeletion(String id) =>
+		_pendingDeleteCabins
+			.where((c) => c.id == id)
+			.length;
+
 }
