@@ -24,9 +24,6 @@ class BookingPage implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 	final Router _router;
-
-	bool _overrideUnlockCruise;
-
 	Cruise cruise;
 	String firstName;
 	String lastName;
@@ -37,7 +34,7 @@ class BookingPage implements OnInit {
 
 	bool get isLoadingCruise => null == cruise;
 
-	bool get isCruiseLocked => null == cruise || (cruise.isLocked && !_overrideUnlockCruise);
+	bool get isCruiseLocked => null == cruise || cruise.isLocked;
 
 	BookingPage(this._clientFactory, this._cruiseRepository, this._router);
 
@@ -49,8 +46,6 @@ class BookingPage implements OnInit {
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 			print('Failed to get cruise due to an exception: ' + e.toString());
 		}
-
-		_overrideUnlockCruise = str.isNotEmpty(window.sessionStorage['override_unlock_cruise']);
 	}
 
 	void submitDetails() {

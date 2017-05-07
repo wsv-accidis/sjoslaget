@@ -27,10 +27,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_userManager = userManager;
 		}
 
-		public async Task<BookingResult> CreateAsync(Guid cruiseId, BookingSource source)
+		public async Task<BookingResult> CreateAsync(Cruise cruise, BookingSource source, bool allowCreateIfLocked = false)
 		{
+			if(cruise.IsLocked && !allowCreateIfLocked)
+				throw new BookingException("Cruise is locked, may not create bookings.");
+
 			BookingSource.Validate(source);
-			var booking = Booking.FromSource(source, cruiseId, _randomKeyGenerator.GenerateBookingReference());
+			var booking = Booking.FromSource(source, cruise.Id, _randomKeyGenerator.GenerateBookingReference());
 
 			/*
 			 * Start a low-isolation transaction just to give us rollback capability in case something fails in the middle of 
@@ -42,7 +45,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var db = SjoslagetDb.Open())
 			{
 				await db.GetAppLockAsync(LockResource, LockTimeout);
-				await CheckAvailability(db, cruiseId, source.Cabins);
+				await CheckAvailability(db, cruise.Id, source.Cabins);
 				await CreateBooking(db, booking);
 				await CreateCabins(db, booking, source.Cabins);
 
@@ -95,7 +98,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		public async Task<BookingResult> UpdateAsync(Guid cruiseId, BookingSource source, bool allowUpdateIfLocked = false)
+		public async Task<BookingResult> UpdateAsync(Cruise cruise, BookingSource source, bool allowUpdateIfLocked = false)
 		{
 			BookingSource.ValidateCabins(source);
 			Booking booking;
@@ -108,13 +111,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
 				booking = await FindByReferenceAsync(db, source.Reference);
-				if(null == booking || booking.CruiseId != cruiseId)
+				if(null == booking || booking.CruiseId != cruise.Id)
 					throw new BookingException($"Booking with reference {source.Reference} not found or not in active cruise.");
-				if(booking.IsLocked && !allowUpdateIfLocked)
+				if((cruise.IsLocked || booking.IsLocked) && !allowUpdateIfLocked)
 					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
 				await DeleteCabins(db, booking);
-				await CheckAvailability(db, cruiseId, source.Cabins);
+				await CheckAvailability(db, cruise.Id, source.Cabins);
 				await CreateCabins(db, booking, source.Cabins);
 				await db.ExecuteAsync("update [Booking] set [Updated] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
 

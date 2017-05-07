@@ -46,6 +46,25 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenBookingSource_WhenCruiseIsLocked_ShouldFailToCreate()
+		{
+			var cruiseRepository = new CruiseRepository();
+			var cruise = await cruiseRepository.GetActiveAsync();
+			Assert.IsFalse(cruise.IsLocked);
+			cruise.IsLocked = true;
+			await cruiseRepository.UpdateMetadataAsync(cruise);
+
+			try
+			{
+				await GetNewlyCreatedBookingForTestAsync(cruise, GetBookingRepositoryForTest());
+				Assert.Fail("Create booking did not throw");
+			}
+			catch(BookingException)
+			{
+			}
+		}
+
+		[TestMethod]
 		public async Task GivenBookingSource_WhenDataIsPartiallyCorrect_ShouldNotCreateBooking()
 		{
 			var source = GetBookingForTest(
@@ -86,10 +105,37 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenCruiseIsLocked_ShouldFailToUpdate()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			var booking = await GetNewlyCreatedBookingForTestAsync(cruise, repository);
+			Assert.IsFalse(booking.IsLocked);
+
+			var cruiseRepository = new CruiseRepository();
+			Assert.IsFalse(cruise.IsLocked);
+			cruise.IsLocked = true;
+			await cruiseRepository.UpdateMetadataAsync(cruise);
+
+			var updateSource = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
+			updateSource.Reference = booking.Reference;
+			try
+			{
+				await repository.UpdateAsync(cruise, updateSource);
+				Assert.Fail("Update booking did not throw.");
+			}
+			catch(BookingException)
+			{
+			}
+		}
+
+		[TestMethod]
 		public async Task GivenExistingBooking_WhenItIsLocked_ShouldFailToUpdate()
 		{
 			var repository = GetBookingRepositoryForTest();
-			var booking = await GetNewlyCreatedBookingForTestAsync(repository);
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			var booking = await GetNewlyCreatedBookingForTestAsync(cruise, repository);
+			Assert.IsFalse(booking.IsLocked);
 
 			booking.IsLocked = true;
 			await repository.UpdateMetadataAsync(booking);
@@ -98,7 +144,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			updateSource.Reference = booking.Reference;
 			try
 			{
-				await repository.UpdateAsync(SjoslagetDbExtensions.CruiseId, updateSource);
+				await repository.UpdateAsync(cruise, updateSource);
 				Assert.Fail("Update booking did not throw.");
 			}
 			catch(BookingException)
@@ -110,6 +156,8 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenExistingBooking_WhenUpdatedWithMoreCabins_ShouldAllowUpToMaximumCapacity()
 		{
 			Assert.AreEqual(10, Config.NumberOfCabins);
+
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
 			var repository = GetBookingRepositoryForTest();
 
 			// First create a booking of 8/10 cabins
@@ -118,7 +166,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				eightOutOfTenCabins[i] = GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest());
 
 			var booking = GetBookingForTest(eightOutOfTenCabins);
-			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, booking);
+			var result = await repository.CreateAsync(cruise, booking);
 
 			// Now update it to 9/10 cabins
 			var nineOutOfTenCabins = new BookingSource.Cabin[9];
@@ -127,7 +175,7 @@ namespace Accidis.Sjoslaget.Test.Services
 
 			booking = GetBookingForTest(nineOutOfTenCabins);
 			booking.Reference = result.Reference;
-			result = await repository.UpdateAsync(SjoslagetDbExtensions.CruiseId, booking);
+			result = await repository.UpdateAsync(cruise, booking);
 
 			var savedBooking = await repository.FindByReferenceAsync(result.Reference);
 			var cabins = await repository.GetCabinsForBookingAsync(savedBooking);
@@ -138,6 +186,8 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenExistingBooking_WhenUpdatedWithTooManyCabins_ShouldPreserveExistingBooking()
 		{
 			Assert.AreEqual(10, Config.NumberOfCabins);
+
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
 			var repository = GetBookingRepositoryForTest();
 
 			// First create a booking of 9/10 cabins
@@ -145,11 +195,11 @@ namespace Accidis.Sjoslaget.Test.Services
 			for(int i = 0; i < nineOutOfTenCabins.Length; i++)
 				nineOutOfTenCabins[i] = GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest());
 			var bookingThatFillsNineOutOfTenCabins = GetBookingForTest(nineOutOfTenCabins);
-			await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, bookingThatFillsNineOutOfTenCabins);
+			await repository.CreateAsync(cruise, bookingThatFillsNineOutOfTenCabins);
 
 			// Then create a booking for the 10th cabin
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Test1", lastName: "Test2")));
-			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			var result = await repository.CreateAsync(cruise, source);
 
 			var booking = await repository.FindByReferenceAsync(result.Reference);
 			var cabins = await repository.GetCabinsForBookingAsync(booking);
@@ -164,7 +214,7 @@ namespace Accidis.Sjoslaget.Test.Services
 
 			try
 			{
-				result = await repository.UpdateAsync(booking.CruiseId, source);
+				result = await repository.UpdateAsync(cruise, source);
 				Assert.Fail("Update booking did not throw.");
 			}
 			catch(AvailabilityException)
@@ -185,10 +235,11 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenExistingBooking_WhenUpdatedWithValidData_ShouldUpdateBooking()
 		{
 			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
 
 			// Create a booking with one cabin
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
-			var result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			var result = await repository.CreateAsync(cruise, source);
 
 			var booking = await repository.FindByReferenceAsync(result.Reference);
 			var cabins = await repository.GetCabinsForBookingAsync(booking);
@@ -203,7 +254,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			);
 			source.Reference = result.Reference;
 
-			result = await repository.UpdateAsync(booking.CruiseId, source);
+			result = await repository.UpdateAsync(cruise, source);
 			Assert.AreEqual(booking.Reference, result.Reference);
 
 			booking = await repository.FindByReferenceAsync(result.Reference);
@@ -222,12 +273,13 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenMultipleConcurrentBookings_ShouldNotExceedAvailableCabins()
 		{
 			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
 			var tasks = new List<Task>();
 
 			const int overload = 10;
 			for(int i = 0; i < Config.NumberOfCabins + overload; i++)
-				tasks.Add(repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source));
+				tasks.Add(repository.CreateAsync(cruise, source));
 
 			var combinedTask = Task.WhenAll(tasks);
 			try
@@ -259,13 +311,14 @@ namespace Accidis.Sjoslaget.Test.Services
 
 		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync()
 		{
-			return await GetNewlyCreatedBookingForTestAsync(GetBookingRepositoryForTest());
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			return await GetNewlyCreatedBookingForTestAsync(cruise, GetBookingRepositoryForTest());
 		}
 
-		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync(BookingRepository repository)
+		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync(Cruise cruise, BookingRepository repository)
 		{
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
-			BookingResult result = await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			BookingResult result = await repository.CreateAsync(cruise, source);
 
 			return await repository.FindByReferenceAsync(result.Reference);
 		}
@@ -275,7 +328,8 @@ namespace Accidis.Sjoslaget.Test.Services
 			if(null == repository)
 				repository = GetBookingRepositoryForTest();
 
-			return await repository.CreateAsync(SjoslagetDbExtensions.CruiseId, source);
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			return await repository.CreateAsync(cruise, source);
 		}
 
 		static BookingSource GetBookingForTest(params BookingSource.Cabin[] cabins)

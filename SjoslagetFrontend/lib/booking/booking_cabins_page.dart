@@ -18,6 +18,7 @@ import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
+import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
@@ -76,9 +77,11 @@ class BookingCabinsPage implements OnInit {
 			final String reference = _clientFactory.authenticatedUser;
 			List<CruiseCabin> cruiseCabins;
 			BookingSource booking;
+			Cruise cruise;
 
 			try {
 				final client = await _clientFactory.getClient();
+				cruise = await _cruiseRepository.getActiveCruise(client);
 				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 				booking = await _bookingRepository.findBooking(client, reference);
 			} catch (e) {
@@ -93,8 +96,10 @@ class BookingCabinsPage implements OnInit {
 
 			cabins.amountPaid = booking.payment.total;
 			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
-			cabins.readOnly = booking.isLocked;
-			cabins.validateAll();
+			cabins.readOnly = booking.isLocked || cruise.isLocked;
+
+			if (!cabins.readOnly)
+				cabins.validateAll();
 
 			isNewBooking = false;
 		} else {
