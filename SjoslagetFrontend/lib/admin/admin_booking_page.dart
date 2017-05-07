@@ -15,6 +15,7 @@ import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
 import '../util/currency_formatter.dart';
+import '../util/datetime_formatter.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
@@ -30,6 +31,8 @@ class AdminBookingPage implements OnInit {
 	final CruiseRepository _cruiseRepository;
 	final RouteParams _routeParams;
 
+	bool _isLockingUnlocking = false;
+
 	@ViewChild('cabins')
 	CabinsComponent cabins;
 
@@ -38,16 +41,36 @@ class AdminBookingPage implements OnInit {
 	String payment;
 	String paymentError;
 
+	bool get canLock => null != booking && !booking.isLocked;
+
+	bool get canUnlock => null != booking && booking.isLocked;
+
+	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
+
 	bool get canSaveCabins => !cabins.isEmpty && cabins.isValid && !isSaving;
 
 	bool get hasLoaded => null != booking;
 
 	bool get hasPaymentError => isNotEmpty(paymentError);
 
+	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
+
 	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams);
 
-	void lockBooking() {
-		cabins.readOnly = !cabins.readOnly;
+	Future<Null> lockUnlockBooking() async {
+		if (!hasLoaded || isLockingUnlocking)
+			return;
+
+		_isLockingUnlocking = true;
+		try {
+			final client = await _clientFactory.getClient();
+			final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
+			booking.isLocked = isLocked;
+		} catch (e) {
+			print('Failed to lock/unlock cruise: ' + e.toString());
+		} finally {
+			_isLockingUnlocking = false;
+		}
 	}
 
 	Future<Null> ngOnInit() async {

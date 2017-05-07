@@ -82,10 +82,20 @@
 		Spara bokningen
 	</material-button>
 
-	<material-button class="control-red"
+	<material-button *ngIf="canLock"
+					 class="control-red"
+					 [disabled]="isLockingUnlocking"
 					 raised
-					 (trigger)="lockBooking()">
+					 (trigger)="lockUnlockBooking()">
 		Lås bokningen
+	</material-button>
+
+	<material-button *ngIf="canUnlock"
+					 class="control-green"
+					 [disabled]="isLockingUnlocking"
+					 raised
+					 (trigger)="lockUnlockBooking()">
+		Lås upp bokningen
 	</material-button>
 </form>
 
@@ -97,9 +107,13 @@
 	Här registrerar du inkomna betalningar för den här bokningen. Korrigeringar och återbetalningar kan göras genom att ange negativa belopp.
 </p>
 
-<p class="booking-payments">
+<p class="booking-payments" *ngIf="!cabins.hasPayment">
+	Bokningens totala pris är <span>{{ cabins.priceFormatted }}</span>.
+</p>
+
+<p class="booking-payments" *ngIf="cabins.hasPayment">
 	Bokningens totala pris är <span>{{ cabins.priceFormatted }}</span> och totalt <span>{{ cabins.amountPaidFormatted }}</span> har betalats in.
-	Det återstår att betala <span>{{ cabins.remainingPriceFormatted }}</span>.
+	Det återstår att betala <span>{{ cabins.remainingPriceFormatted }}</span>. Den senaste betalningen registrerades <span>{{ latestPaymentFormatted }}</span>.
 </p>
 
 <form #paymentForm="ngForm">

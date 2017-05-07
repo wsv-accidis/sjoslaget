@@ -155,7 +155,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			try
 			{
-				if(payment.Amount > 0)
+				if(payment.Amount != 0)
 					await _paymentRepository.CreateAsync(booking, payment.Amount);
 			}
 			catch(Exception ex)

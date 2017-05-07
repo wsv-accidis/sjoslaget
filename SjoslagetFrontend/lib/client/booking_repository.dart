@@ -49,6 +49,20 @@ class BookingRepository {
 			.toList();
 	}
 
+	Future<bool> lockUnlockBooking(Client client, String reference) async {
+		Response response;
+
+		try {
+			response = await client.put(_apiRoot + '/bookings/lock/' + reference);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final Map<String, dynamic> body = JSON.decode(response.body);
+		return body[BookingSource.IS_LOCKED];
+	}
+
 	Future<PaymentSummary> registerPayment(Client client, String reference, Decimal amount) async {
 		final headers = _createJsonHeaders();
 		final source = JSON.encode({PaymentSummary.AMOUNT: amount.toDouble()});

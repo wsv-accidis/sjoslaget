@@ -97,6 +97,11 @@ glyph {
 	color: white;
 }
 
+.control-green {
+	background-color: #0EBA3C;
+	color: white;
+}
+
 .control-red {
 	background-color: darkred;
 	color: white;

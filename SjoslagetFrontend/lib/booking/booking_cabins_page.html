@@ -24,7 +24,8 @@
 	<p>
 		<strong>Spara</strong> bokningen ofta, förslagsvis efter varje hytt. <strong>Skriv upp</strong> den bokningsreferens och
 		PIN-kod som visas då du behöver den för att kunna göra ändringar senare, betala för din bokning och få ut biljetterna!
-		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat.
+		Du kan fortsätta lägga till hytter och ändra i bokningen efter att du sparat. När det närmar sig kryssning kommer bokningarna
+		att låsas och ändringar kan då inte längre göras.
 	</p>
 
 	<p class="super-important">
@@ -45,36 +46,51 @@
 
 	<cabins-component #cabins></cabins-component>
 
-	<h3>Spara bokningen</h3>
+	<div *ngIf="!cabins.readOnly">
+		<h3>Spara bokningen</h3>
 
-	<p *ngIf="isNewlySaved">
-		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span> och din PIN-kod är <span class="booking-result">{{ bookingResult.password }}</span>.
-		Skriv ner dessa, du kommer att behöva dem senare.
-	</p>
+		<p *ngIf="isNewlySaved">
+			Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span> och din PIN-kod är <span class="booking-result">{{ bookingResult.password }}</span>.
+			Skriv ner dessa, du kommer att behöva dem senare.
+		</p>
 
-	<p *ngIf="isExisting">
-		Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
-	</p>
+		<p *ngIf="isExisting">
+			Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
+		</p>
 
-	<p class="super-important" *ngIf="hasBookingError">
-		{{ bookingError }}
-	</p>
+		<p class="super-important" *ngIf="hasBookingError">
+			{{ bookingError }}
+		</p>
 
-	<div style="margin-bottom: 50px" *ngIf="!isSaving">
-		<material-button class="control-blue"
-						 [disabled]="!canSave"
-						 raised
-						 (trigger)="saveBooking()">
-			Spara bokningen
-		</material-button>
+		<div style="margin-bottom: 50px" *ngIf="!isSaving">
+			<material-button class="control-blue"
+							 [disabled]="!canSave"
+							 raised
+							 (trigger)="saveBooking()">
+				Spara bokningen
+			</material-button>
 
-		<material-button class="control-red"
-						 [disabled]="!canFinish"
-						 raised
-						 (trigger)="finishBooking()">
-			Jag är klar med bokningen och har sparat, ta mig härifrån
-		</material-button>
+			<material-button class="control-red"
+							 [disabled]="!canFinish"
+							 raised
+							 (trigger)="finishBooking()">
+				Jag är klar med bokningen och har sparat, ta mig härifrån
+			</material-button>
+		</div>
+
+		<spinner-widget *ngIf="isSaving"></spinner-widget>
 	</div>
 
-	<spinner-widget *ngIf="isSaving"></spinner-widget>
+	<div *ngIf="cabins.readOnly">
+		<h3>Bokningen är låst.</h3>
+
+		<p>
+			Bokningen kan inte längre ändras. Ändringar i sista stund kan göras direkt på terminalen i samband med incheckning.
+			Kontakta <a href="mailto:info@sjoslaget.se">Amiralen</a> om du har frågor.
+		</p>
+
+		<p>
+			Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
+		</p>
+	</div>
 </form>

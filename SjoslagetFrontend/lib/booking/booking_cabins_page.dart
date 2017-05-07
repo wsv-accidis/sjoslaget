@@ -90,8 +90,12 @@ class BookingCabinsPage implements OnInit {
 
 			bookingResult = new BookingResult(reference, null);
 			bookingDetails = booking;
+
+			cabins.amountPaid = booking.payment.total;
 			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
+			cabins.readOnly = booking.isLocked;
 			cabins.validateAll();
+
 			isNewBooking = false;
 		} else {
 			/*
