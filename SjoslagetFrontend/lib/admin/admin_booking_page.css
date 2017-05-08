@@ -1,3 +1,31 @@
+.booking-lunch {
+	display: inline-block;
+	margin-bottom: 10px;
+	white-space: nowrap;
+}
+
+.booking-lunch span {
+	margin-right: 10px;
+}
+
 .booking-payments span {
 	font-weight: bold;
+}
+
+.booking-payments-form {
+
+}
+
+.booking-payments-form .payment-button {
+	margin-left: 20px;
+}
+
+.booking-payments-form .payment-field {
+	margin-left: 20px;
+	margin-right: 20px;
+	width: 60px;
+}
+
+.booking-payments-form span {
+	margin-left: 50px;
 }

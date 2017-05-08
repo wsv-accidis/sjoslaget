@@ -96,6 +96,7 @@ class BookingCabinsPage implements OnInit {
 
 			cabins.amountPaid = booking.payment.total;
 			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
+			cabins.discountPercent = booking.discount;
 			cabins.readOnly = booking.isLocked || cruise.isLocked;
 
 			if (!cabins.readOnly)

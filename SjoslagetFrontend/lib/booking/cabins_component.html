@@ -150,12 +150,18 @@
 	</div>
 </div>
 
-<div *ngIf="price > 0" class="booking-price">
+<div *ngIf="hasPrice" class="booking-price">
 	Totalt pris <span>{{ priceFormatted }}</span>
+</div>
+<div *ngIf="hasDiscount" class="booking-price">
+	Rabatt ({{ discountPercent }} %) <span>{{ discountFormatted }}</span>
 </div>
 <div *ngIf="hasPayment" class="booking-price">
 	Betalat <span>{{ amountPaidFormatted }}</span><br/>
-	Kvar att betala <span>{{ remainingPriceFormatted }}</span>
+	Kvar att betala <span>{{ priceRemainingFormatted }}</span>
+</div>
+<div *ngIf="!hasPayment && hasDiscount" class="booking-price">
+	Kvar att betala <span>{{ priceRemainingFormatted }}</span>
 </div>
 
 <div *ngIf="!readOnly">

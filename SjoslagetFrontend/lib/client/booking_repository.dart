@@ -74,10 +74,22 @@ class BookingRepository {
 			throw new IOException.fromException(e);
 		}
 
-		if (HttpStatus.OK == response.statusCode)
-			return new PaymentSummary.fromJson(response.body);
-		else
-			throw new IOException.fromResponse(response);
+		HttpStatus.throwIfNotSuccessful(response);
+		return new PaymentSummary.fromJson(response.body);
+	}
+
+	Future<Null> updateDiscount(Client client, String reference, int amount) async {
+		final headers = _createJsonHeaders();
+		final source = JSON.encode({PaymentSummary.AMOUNT: amount});
+
+		Response response;
+		try {
+			response = await client.post(_apiRoot + '/bookings/discount/' + reference, headers: headers, body: source);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
 	}
 
 	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins) async {

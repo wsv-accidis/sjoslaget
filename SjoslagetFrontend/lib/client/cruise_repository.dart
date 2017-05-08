@@ -47,6 +47,7 @@ class CruiseRepository {
 	}
 
 	Future<bool> lockUnlockCruise(Client client) async {
+		_cache.remove('/cruise/active');
 		Response response;
 
 		try {

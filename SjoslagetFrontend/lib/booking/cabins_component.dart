@@ -32,9 +32,20 @@ class CabinsComponent implements OnInit {
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins;
+	int discountPercent = 0;
 	bool readOnly;
 
 	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
+
+	Decimal get discount {
+		final priceAsDec = new Decimal.fromInt(price);
+		final discountAsDec = new Decimal.fromInt(discountPercent) / new Decimal.fromInt(100);
+		return priceAsDec * discountAsDec;
+	}
+
+	String get discountFormatted => CurrencyFormatter.formatDecimalAsSEK(discount);
+
+	bool get hasDiscount => discountPercent > 0;
 
 	bool get hasPayment => null != amountPaid && amountPaid.ceilToDouble() > 0.0;
 
@@ -50,12 +61,13 @@ class CabinsComponent implements OnInit {
 
 	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
 
-	Decimal get remainingPrice {
-		final priceAsDec = new Decimal.fromInt(price);
-		return hasPayment ? priceAsDec - amountPaid : priceAsDec;
-	}
+	Decimal get priceRemaining => hasPayment ? priceWithDiscount - amountPaid : priceWithDiscount;
 
-	String get remainingPriceFormatted => CurrencyFormatter.formatDecimalAsSEK(remainingPrice);
+	String get priceRemainingFormatted => CurrencyFormatter.formatDecimalAsSEK(priceRemaining);
+
+	Decimal get priceWithDiscount => new Decimal.fromInt(price) - discount;
+
+	String get priceWithDiscountFormatted => CurrencyFormatter.formatDecimalAsSEK(priceWithDiscount);
 
 	CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 

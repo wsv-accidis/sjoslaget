@@ -14,7 +14,6 @@ import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
-import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
@@ -26,7 +25,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_booking_page.css'],
-	directives: const<dynamic>[materialDirectives, SpinnerWidget, CabinsComponent],
+	directives: const<dynamic>[materialDirectives, ROUTER_DIRECTIVES, SpinnerWidget, CabinsComponent],
 	providers: const<dynamic>[materialProviders]
 )
 class AdminBookingPage implements OnInit {
@@ -45,6 +44,7 @@ class AdminBookingPage implements OnInit {
 	bool isSaving = false;
 	String payment;
 	String paymentError;
+	String discount;
 
 	bool get canLock => null != booking && !booking.isLocked;
 
@@ -90,9 +90,11 @@ class AdminBookingPage implements OnInit {
 			final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			cabins.amountPaid = booking.payment.total;
 			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
+			cabins.discountPercent = booking.discount;
+
 			cabins.validateAll();
 
-			_refreshRemainingPrice();
+			_refreshPayment();
 		} catch (e) {
 			print('Failed to load booking: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
@@ -104,6 +106,7 @@ class AdminBookingPage implements OnInit {
 			return;
 
 		isSaving = true;
+		paymentError = null;
 
 		try {
 			Decimal paymentDec;
@@ -122,7 +125,7 @@ class AdminBookingPage implements OnInit {
 				cabins.amountPaid = result.total;
 				booking.payment = result;
 
-				_refreshRemainingPrice();
+				_refreshPayment();
 			} catch (e) {
 				print('Failed to register payment: ' + e.toString());
 				paymentError = 'Någonting gick fel när betalningen skulle registreras. Försök igen.';
@@ -180,6 +183,40 @@ class AdminBookingPage implements OnInit {
 		}
 	}
 
+	Future<Null> updateDiscount() async {
+		if (isSaving)
+			return;
+
+		isSaving = true;
+		paymentError = null;
+
+		try {
+			int discountInt;
+			try {
+				discountInt = int.parse(discount.replaceAll(',', '.').replaceAll('%', ''));
+			} catch (e) {
+				print('Exception parsing discount amount: ' + e.toString());
+				paymentError = 'Felaktig rabatt. Kontrollera att fältet bara innehåller siffror.';
+				return;
+			}
+
+			try {
+				final client = await _clientFactory.getClient();
+				await _bookingRepository.updateDiscount(client, booking.reference, discountInt);
+
+				cabins.discountPercent = discountInt;
+				booking.discount = discountInt;
+
+				_refreshPayment();
+			} catch (e) {
+				print('Failed to update discount: ' + e.toString());
+				paymentError = 'Någonting gick fel när rabatten skulle sparas. Försök igen.';
+			}
+		} finally {
+			isSaving = false;
+		}
+	}
+
 	String _getAvailabilityError(List<BookingCabin> savedCabins) {
 		// Calling this depends on having refreshed availability first
 
@@ -206,10 +243,12 @@ class AdminBookingPage implements OnInit {
 			.length;
 	}
 
-	void _refreshRemainingPrice() {
-		final remainingPrice = cabins.remainingPrice;
+	void _refreshPayment() {
+		final remainingPrice = cabins.priceRemaining;
 		if (remainingPrice.ceilToDouble() > 0.0) {
 			payment = CurrencyFormatter.formatDecimalForInput(remainingPrice);
 		}
+
+		discount = booking.discount.toString();
 	}
 }
