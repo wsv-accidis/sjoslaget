@@ -89,7 +89,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				BookingCabinWithPax[] bookingCabins = result.ToArray();
 				foreach(BookingCabinWithPax cabin in bookingCabins)
 				{
-					var pax = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingCabinId] = @BookingCabinId",
+					var pax = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingCabinId] = @BookingCabinId order by [Order]",
 						new {BookingCabinId = cabin.Id});
 					cabin.Pax.AddRange(pax);
 				}
@@ -195,16 +195,17 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		async Task CreateCabins(SqlConnection db, Booking booking, List<BookingSource.Cabin> sourceList)
 		{
-			int idx = 0;
+			int cabinIdx = 0;
 			foreach(BookingSource.Cabin cabinSource in sourceList)
 			{
 				var cabin = BookingCabin.FromSource(cabinSource, booking.Id);
 				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [BookingCabin] ([CruiseId], [BookingId], [CabinTypeId], [Order]) output inserted.[Id] values (@CruiseId, @BookingId, @CabinTypeId, @Order)",
-					new {CruiseId = booking.CruiseId, BookingId = booking.Id, CabinTypeId = cabin.CabinTypeId, Order = idx++});
+					new {CruiseId = booking.CruiseId, BookingId = booking.Id, CabinTypeId = cabin.CabinTypeId, Order = cabinIdx++});
 
+				int paxIdx = 0;
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years)",
-					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years}));
+				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years], [Order]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years, @Order)",
+					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years, Order = paxIdx++}));
 			}
 		}
 
