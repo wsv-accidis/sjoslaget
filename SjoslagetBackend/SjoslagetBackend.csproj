@@ -201,6 +201,7 @@
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />

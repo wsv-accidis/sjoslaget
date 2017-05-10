@@ -4,11 +4,13 @@ using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Microsoft.AspNet.Identity;
+using NLog;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class UsersController : ApiController
 	{
+		readonly Logger _log = LogManager.GetLogger(typeof(UsersController).Name);
 		readonly SjoslagetUserManager _userManager;
 
 		public UsersController(SjoslagetUserManager userManager)
@@ -18,20 +20,49 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
-		public async Task<IHttpActionResult> Create(User user)
+		public async Task<IHttpActionResult> ChangePassword(UserPasswordChange change)
 		{
-			IdentityResult result = await _userManager.CreateAsync(new User {UserName = user.UserName}, user.Password);
-
-			if(null == result)
-				return InternalServerError();
-
-			if(!result.Succeeded)
+			try
 			{
+				User user = await _userManager.FindByNameAsync(change.Username);
+
+				if(null == user)
+					return NotFound();
+				if(user.IsBooking)
+					return BadRequest("This operation can't be used to change the PIN code of a booking.");
+
+				IdentityResult result = await _userManager.ChangePasswordAsync(user.Id, change.CurrentPassword, change.NewPassword);
+				if(result.Succeeded)
+					return Ok();
+
 				string message = string.Join(Environment.NewLine, result.Errors);
 				return BadRequest(message);
 			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while trying to change a user's password.");
+				throw;
+			}
+		}
 
-			return Ok();
+		[Authorize(Roles = Roles.Admin)]
+		[HttpPost]
+		public async Task<IHttpActionResult> Create(User user)
+		{
+			try
+			{
+				IdentityResult result = await _userManager.CreateAsync(new User {UserName = user.UserName}, user.Password);
+				if(result.Succeeded)
+					return Ok();
+
+				string message = string.Join(Environment.NewLine, result.Errors);
+				return BadRequest(message);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while trying to create a user.");
+				throw;
+			}
 		}
 
 		[Authorize]
