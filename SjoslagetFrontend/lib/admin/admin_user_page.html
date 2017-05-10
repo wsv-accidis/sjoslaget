@@ -1,0 +1,40 @@
+<h1>
+	Byt lösenord
+</h1>
+
+<p>
+	Du är inloggad som <span>{{ username }}</span>. Här kan du byta lösenord på ditt konto. När du bytt lösenord kommer du att loggas ut automatiskt.
+</p>
+
+<form #passwordForm="ngForm">
+	<material-input [(ngModel)]="currentPassword"
+					ngControl="currentPassword"
+					floatingLabel
+					label="Nuvarande lösenord"
+					required
+					requiredErrorMsg="Ange lösenord."
+					style="width: 150px; margin-right: 20px"
+					type="password">
+	</material-input>
+
+	<material-input [(ngModel)]="newPassword"
+					ngControl="newPassword"
+					floatingLabel
+					label="Nytt lösenord"
+					required
+					requiredErrorMsg="Ange lösenord."
+					style="width: 150px; margin-right: 20px"
+					type="password">
+	</material-input>
+
+	<material-button class="control-blue"
+					 [disabled]="!passwordForm.valid"
+					 raised
+					 (trigger)="changePassword()">
+		Byt lösenord
+	</material-button>
+</form>
+
+<p class="super-important" *ngIf="hasError">
+	{{ error }}
+</p>

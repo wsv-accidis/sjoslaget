@@ -10,13 +10,14 @@ import 'client/booking_repository.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
 import 'client/session_storage_cache.dart';
+import 'client/user_repository.dart';
 
 @Component(
 	selector: 'sjoslaget-app',
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	providers: const <dynamic>[BookingRepository, BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache],
+	providers: const <dynamic>[BookingRepository, BookingValidator, ClientFactory, CruiseRepository, SessionStorageCache, UserRepository],
 	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [

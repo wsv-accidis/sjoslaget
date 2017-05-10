@@ -2,6 +2,10 @@ div.admin-menu {
 	font-size: large;
 }
 
+div.admin-menu span {
+	margin-left: 15px;
+}
+
 h2.available-cabins-title {
 	margin-bottom: 8px;
 	margin-top: 20px;
