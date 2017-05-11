@@ -1,22 +1,34 @@
-Sjöslaget
+SjÃ¶slaget
 =========
 
 _This application is directed exclusively at a Swedish audience. International visitors, please
 contact me if you have any questions._
 
-Det här är den officiella webbplatsen för [Sjöslaget](http://www.sjoslaget.se). Sjöslaget 
-är en årlig kryssning för i huvudsak universitets- och högskolestudenter.
+Det hÃ¤r Ã¤r den officiella webbplatsen fÃ¶r [SjÃ¶slaget](http://www.sjoslaget.se). SjÃ¶slaget 
+Ã¤r en Ã¥rlig kryssning fÃ¶r i huvudsak universitets- och hÃ¶gskolestudenter.
 
 ## Status
-Sidan är under utveckling och inte fullt funktionsduglig. Den är i skarp drift på 
-[www.sjoslaget.se](http://www.sjoslaget.se) men koden som körs där är inte nödvändigtvis i synk med detta repo.
+Webbplatsen Ã¤r under aktiv utveckling. Den Ã¤r i skarp drift pÃ¥ [www.sjoslaget.se](http://www.sjoslaget.se)
+men koden som kÃ¶rs dÃ¤r Ã¤r inte nÃ¶dvÃ¤ndigtvis i synk med detta repo.
 
-## Teknik
-Serversidan utvecklas i [ASP.NET Web API](https://www.asp.net/web-api) med [OWIN](http://owin.org/), 
-[Dapper](https://github.com/StackExchange/Dapper), [DryIoC](https://bitbucket.org/dadhi/dryioc) och 
-[NLog](http://nlog-project.org/). Databasen är [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2016).
-Klientsidan utvecklas i [AngularDart](https://webdev.dartlang.org/). För autentisering används
-[OAuth 2](https://oauth.net/2/).
+## Teknik och tillkÃ¤nnagivanden
+Serversidan utvecklas i [ASP.NET Web API](https://www.asp.net/web-api). Webbplatsen hostas pÃ¥ [IIS](https://www.iis.net/) i Windows-miljÃ¶ med
+databas i [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2016). Den anvÃ¤nder fÃ¶ljande bibliotek och ramverk:
+
+* [Dapper](https://github.com/StackExchange/Dapper)
+* [DryIoC](https://bitbucket.org/dadhi/dryioc)
+* [NLog](http://nlog-project.org/)
+* [Moq](https://github.com/moq/moq4)
+* [OAuth 2](https://oauth.net/2/)
+* [OWIN](http://owin.org/)
+
+Klientsidan utvecklas i [Dart](https://webdev.dartlang.org/). Den anvÃ¤nder fÃ¶ljande bibliotek och ramverk:
+
+* [AngularDart](https://webdev.dartlang.org/angular)
+* [Corsac JWT](https://github.com/corsac-dart/jwt)
+* [Dart Decimals](https://pub.dartlang.org/packages/decimal)
+* [Material Design components for AngularDart](https://github.com/dart-lang/angular_components)
+* [Quiver](https://github.com/google/quiver-dart)
 
 ## Licensiering
 Koden distribueras i enlighet med licensvillkoren i **Apache License version 2.0**.
