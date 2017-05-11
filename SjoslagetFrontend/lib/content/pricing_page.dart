@@ -23,7 +23,7 @@ class PricingPage implements OnInit {
 
 	Future<Null> ngOnInit() async {
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		} catch (e) {
 			print('Failed to load active cruise cabins: ' + e.toString());

@@ -35,7 +35,7 @@ class AdminUserPage {
 		error = null;
 
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			await _userRepository.changePassword(client, username, currentPassword, newPassword);
 		} catch (e) {
 			print('Failed to change password: ' + e.toString());

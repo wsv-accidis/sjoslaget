@@ -40,7 +40,7 @@ class BookingPage implements OnInit {
 
 	Future<Null> ngOnInit() async {
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);
 		} catch (e) {
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes

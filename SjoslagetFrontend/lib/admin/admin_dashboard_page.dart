@@ -4,19 +4,19 @@ import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 import 'package:angular2_components/angular2_components.dart';
 
+import '../booking/availability_component.dart';
 import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
-import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_dashboard_page.css'],
-	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
+	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, AvailabilityComponent, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
@@ -28,26 +28,16 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	bool _isLockingUnlocking = false;
 	Timer _timer;
 
-	Map<String, int> availability;
-	List<CruiseCabin> cabins;
 	Cruise cruise;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
 
 	bool get cruiseIsLocked => null != cruise && cruise.isLocked;
-
-	bool get isLoadingCabins => null == cabins;
 
 	bool get isLoadingCruise => null == cruise || _isLockingUnlocking;
 
 	bool get isLoadingBookings => null == recentlyUpdatedBookings;
 
 	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
-
-	int getAvailability(String id) {
-		if (null == availability || !availability.containsKey(id))
-			return 0;
-		return availability[id];
-	}
 
 	void logOut() {
 		_clientFactory.clear();
@@ -61,10 +51,8 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		}
 
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);
-			availability = await _cruiseRepository.getAvailability(client);
-			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);
 		} catch (e) {
 			print('Failed to load recently updated bookings: ' + e.toString());
@@ -86,7 +74,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 		_isLockingUnlocking = true;
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			final bool isLocked = await _cruiseRepository.lockUnlockCruise(client);
 			cruise.isLocked = isLocked;
 		} catch (e) {

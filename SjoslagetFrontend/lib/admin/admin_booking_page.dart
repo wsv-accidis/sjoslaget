@@ -70,7 +70,7 @@ class AdminBookingPage implements OnInit {
 
 		_isLockingUnlocking = true;
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
 			booking.isLocked = isLocked;
 		} catch (e) {
@@ -84,7 +84,7 @@ class AdminBookingPage implements OnInit {
 		final String reference = _routeParams.get('ref');
 
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			booking = await _bookingRepository.findBooking(client, reference);
 
 			final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
@@ -119,7 +119,7 @@ class AdminBookingPage implements OnInit {
 			}
 
 			try {
-				final client = await _clientFactory.getClient();
+				final client = _clientFactory.getClient();
 				final PaymentSummary result = await _bookingRepository.registerPayment(client, booking.reference, paymentDec);
 
 				cabins.amountPaid = result.total;
@@ -147,7 +147,7 @@ class AdminBookingPage implements OnInit {
 
 		try {
 			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 
 			try {
 				await _bookingRepository.saveOrUpdateBooking(client, booking, cabinsToSave);
@@ -201,7 +201,7 @@ class AdminBookingPage implements OnInit {
 			}
 
 			try {
-				final client = await _clientFactory.getClient();
+				final client = _clientFactory.getClient();
 				await _bookingRepository.updateDiscount(client, booking.reference, discountInt);
 
 				cabins.discountPercent = discountInt;

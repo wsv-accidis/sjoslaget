@@ -120,7 +120,7 @@ class CabinsComponent implements OnInit {
 
 	Future<Null> ngOnInit() async {
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
@@ -138,7 +138,7 @@ class CabinsComponent implements OnInit {
 
 	Future<Null> refreshAvailability() async {
 		try {
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			_availability = await _cruiseRepository.getAvailability(client);
 		} catch (e) {
 			print('Failed to refresh availability due to an exception: ' + e.toString());

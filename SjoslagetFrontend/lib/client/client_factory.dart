@@ -46,7 +46,7 @@ class ClientFactory {
 		print('Session state cleared.');
 	}
 
-	Future<http.Client> getClient() async {
+	http.Client getClient() {
 		try {
 			if (window.sessionStorage.containsKey(TOKEN_KEY)) {
 				if (null != _clientInstance)

@@ -6,17 +6,13 @@ div.admin-menu span {
 	margin-left: 15px;
 }
 
-h2.available-cabins-title {
-	margin-bottom: 8px;
-	margin-top: 20px;
-}
-
-table.available-cabins {
+div.available-cabins {
 	width: 65%;
 }
 
-td.available-cabins-progress {
-	width: 80%;
+h2.available-cabins-title {
+	margin-bottom: 8px;
+	margin-top: 20px;
 }
 
 h2.cruise-title {
@@ -31,8 +27,7 @@ table.recently-updated-bookings {
 	width: 65%;
 }
 
-table.available-cabins th, table.available-cabins td,
-table.recently-updated-bookings th, table.recently-updated-bookings td {
+table.available-cabins th, table.available-cabins td {
 	padding-bottom: 4px;
 	padding-right: 8px;
 	padding-top: 4px;

@@ -80,7 +80,7 @@ class BookingCabinsPage implements OnInit {
 			Cruise cruise;
 
 			try {
-				final client = await _clientFactory.getClient();
+				final client = _clientFactory.getClient();
 				cruise = await _cruiseRepository.getActiveCruise(client);
 				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 				booking = await _bookingRepository.findBooking(client, reference);
@@ -131,7 +131,7 @@ class BookingCabinsPage implements OnInit {
 
 		try {
 			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
-			final client = await _clientFactory.getClient();
+			final client = _clientFactory.getClient();
 			BookingResult result;
 
 			try {
