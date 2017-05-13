@@ -1,0 +1,73 @@
+<h1>
+	Bokningar
+</h1>
+
+<div class="admin-menu">
+	<glyph icon="arrow_back"></glyph>
+	<a [routerLink]="['Dashboard']">Huvudsidan</a>
+</div>
+
+<spinner-widget *ngIf="isLoading"></spinner-widget>
+
+<table cellpadding="0" cellspacing="0" border="0" class="bookings" *ngIf="!isLoading">
+	<th>
+		Status
+	</th>
+	<th>
+		Referens
+	</th>
+	<th>
+		Kontaktperson
+	</th>
+	<th>
+		Hytter
+	</th>
+	<th>
+		Betalat
+	</th>
+	<th>
+		Kvar att betala
+	</th>
+	<th>
+		Uppdaterad
+	</th>
+	<tr *ngFor="let booking of bookings" [ngSwitch]="getStatus(booking)">
+		<td *ngSwitchWhen="'locked'" class="locked">
+			Låst
+		</td>
+		<td *ngSwitchWhen="'fully-paid'" class="fully-paid">
+			Betald
+		</td>
+		<td *ngSwitchWhen="'partially-paid'" class="partially-paid">
+			Delbetald
+		</td>
+		<td *ngSwitchWhen="'not-paid'" class="not-paid">
+			Ej betald
+		</td>
+		<td *ngSwitchDefault>
+			-
+		</td>
+		<td>
+			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+				{{ booking.reference }}
+			</a>
+		</td>
+		<td>
+			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+				{{ booking.firstName }} {{ booking.lastName }}
+			</a>
+		</td>
+		<td>
+			{{ booking.numberOfCabins }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.amountPaid) }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.amountRemaining) }}
+		</td>
+		<td>
+			{{ formatDateTime(booking.updated) }}
+		</td>
+	</tr>
+</table>

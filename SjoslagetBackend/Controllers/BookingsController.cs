@@ -160,7 +160,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = SjoslagetDb.Open())
 			{
-				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [TotalPrice], [Updated], " +
+				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [TotalPrice], [IsLocked], [Updated], " +
 																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
 																	  "(select sum([Amount]) from [dbu-jv3].[BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
 																	  "from [Booking] B where [CruiseId] = @CruiseId",

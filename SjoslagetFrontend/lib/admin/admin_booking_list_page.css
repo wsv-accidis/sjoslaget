@@ -1,0 +1,16 @@
+table.bookings {
+	margin-top: 20px;
+	width: 95%;
+}
+
+td.locked {
+	color: darkblue;
+}
+
+td.fully-paid {
+	color: darkgreen;
+}
+
+td.partially-paid {
+	color: orangered;
+}

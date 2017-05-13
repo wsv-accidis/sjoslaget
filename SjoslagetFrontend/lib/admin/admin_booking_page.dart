@@ -24,7 +24,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_booking_page.css'],
+	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
 	directives: const<dynamic>[materialDirectives, ROUTER_DIRECTIVES, SpinnerWidget, CabinsComponent],
 	providers: const<dynamic>[materialProviders]
 )

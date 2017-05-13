@@ -8,3 +8,11 @@ th, td {
 p span {
 	font-weight: bold;
 }
+
+div.admin-menu {
+	font-size: large;
+}
+
+div.admin-menu span {
+	margin-left: 15px;
+}

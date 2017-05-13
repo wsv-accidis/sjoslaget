@@ -3,11 +3,14 @@
 </h1>
 
 <div class="admin-menu">
-	<glyph icon="exit_to_app"></glyph>
-	<a href="javascript:" (click)="logOut()">Logga ut</a>
+	<glyph icon="view_list"></glyph>
+	<a [routerLink]="['BookingList']">Alla bokningar</a>
 	<span></span>
 	<glyph icon="lock_outline"></glyph>
 	<a [routerLink]="['User']">Byt lösenord</a>
+	<span></span>
+	<glyph icon="exit_to_app"></glyph>
+	<a href="javascript:" (click)="logOut()">Logga ut</a>
 </div>
 
 <p>
@@ -37,7 +40,7 @@
 	<th>
 		Uppdaterad
 	</th>
-	<tr *ngFor="let booking of recentlyUpdatedBookings; let p = index">
+	<tr *ngFor="let booking of recentlyUpdatedBookings">
 		<td>
 			<a [routerLink]="['Booking', {'ref': booking.reference}]">
 				{{ booking.reference }}

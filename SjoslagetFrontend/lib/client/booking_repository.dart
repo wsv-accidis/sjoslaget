@@ -13,6 +13,7 @@ import 'io_exception.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/booking_details.dart';
+import '../model/booking_overview_item.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/payment_summary.dart';
@@ -33,6 +34,20 @@ class BookingRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		return new BookingSource.fromJson(response.body);
+	}
+
+	Future<List<BookingOverviewItem>> getOverview(Client client) async {
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/bookings/overview');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return JSON.decode(response.body)
+			.map((Map<String, dynamic> value) => new BookingOverviewItem.fromMap(value))
+			.toList();
 	}
 
 	Future<List<BookingDashboardItem>> getRecentlyUpdated(Client client) async {

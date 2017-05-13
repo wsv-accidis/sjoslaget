@@ -2,6 +2,7 @@ import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 
 import 'admin_booking_page.dart';
+import 'admin_booking_list_page.dart';
 import 'admin_dashboard_page.dart';
 import 'admin_login_page.dart';
 import 'admin_user_page.dart';
@@ -16,8 +17,9 @@ import '../client/client_factory.dart';
 @RouteConfig(const [
 	const Route(path: '/', name: 'Dashboard', component: AdminDashboardPage),
 	const Route(path: '/bokning/:ref', name: 'Booking', component: AdminBookingPage),
+	const Route(path: '/bokningar', name: 'BookingList', component: AdminBookingListPage),
 	const Route(path: '/login', name: 'Login', component: AdminLoginPage),
-	const Route(path: '/user', name: 'User', component: AdminUserPage)
+	const Route(path: '/byt-losenord', name: 'User', component: AdminUserPage)
 
 ])
 class AdminComponent implements OnInit {
