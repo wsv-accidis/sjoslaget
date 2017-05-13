@@ -26,14 +26,3 @@ h2.recently-updated-bookings-title {
 table.recently-updated-bookings {
 	width: 65%;
 }
-
-table.available-cabins th, table.available-cabins td {
-	padding-bottom: 4px;
-	padding-right: 8px;
-	padding-top: 4px;
-	border-bottom: 1px solid silver;
-}
-
-p span {
-	font-weight: bold;
-}

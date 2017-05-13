@@ -12,7 +12,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
 	selector: 'admin-user-page',
 	templateUrl: 'admin_user_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_user_page.css'],
+	styleUrls: const ['../content/content_styles.css', 'admin_styles.css'],
 	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
