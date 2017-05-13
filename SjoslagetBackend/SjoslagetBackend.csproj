@@ -186,6 +186,7 @@
     <Compile Include="Models\BookingCabinWithPax.cs" />
     <Compile Include="Models\BookingDashboardItem.cs" />
     <Compile Include="Models\BookingException.cs" />
+    <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Services\CruiseRepository.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\PaymentRepository.cs" />
+    <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Services\BookingConfig.cs" />
     <Compile Include="Services\RandomKeyGenerator.cs" />

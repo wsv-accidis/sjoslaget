@@ -17,12 +17,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 		const int LockTimeout = 10000;
 
 		readonly CabinRepository _cabinRepository;
+		readonly PriceCalculator _priceCalculator;
 		readonly RandomKeyGenerator _randomKeyGenerator;
 		readonly SjoslagetUserManager _userManager;
 
-		public BookingRepository(CabinRepository cabinRepository, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		public BookingRepository(CabinRepository cabinRepository, PriceCalculator priceCalculator, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
 		{
 			_cabinRepository = cabinRepository;
+			_priceCalculator = priceCalculator;
 			_randomKeyGenerator = randomKeyGenerator;
 			_userManager = userManager;
 		}
@@ -44,8 +46,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = SjoslagetDb.Open())
 			{
+				IEnumerable<CabinType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+
 				await db.GetAppLockAsync(LockResource, LockTimeout);
-				await CheckAvailability(db, cruise.Id, source.Cabins);
+				await CheckAvailability(db, cruise.Id, source.Cabins, cabinTypes);
 				await CreateBooking(db, booking);
 				await CreateCabins(db, booking, source.Cabins);
 
@@ -111,6 +115,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = SjoslagetDb.Open())
 			{
+				IEnumerable<CruiseCabinWithType> cruiseCabins = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
 				booking = await FindByReferenceAsync(db, source.Reference);
@@ -120,16 +126,17 @@ namespace Accidis.Sjoslaget.WebService.Services
 					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
 				await DeleteCabins(db, booking);
-				await CheckAvailability(db, cruise.Id, source.Cabins);
+				await CheckAvailability(db, cruise.Id, source.Cabins, cruiseCabins);
 				await CreateCabins(db, booking, source.Cabins);
+				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cruiseCabins);
 
 				if(allowUpdateDetails)
 				{
-					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [Updated] = sysdatetime() where [Id] = @Id",
-						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, Id = booking.Id});
+					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, TotalPrice = totalPrice, Id = booking.Id});
 				}
 				else
-					await db.ExecuteAsync("update [Booking] set [Updated] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
+					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new {TotalPrice = totalPrice, Id = booking.Id});
 
 				tran.Complete();
 			}
@@ -137,18 +144,31 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return BookingResult.FromBooking(booking, null);
 		}
 
-		public async Task UpdateMetadataAsync(Booking booking)
+		public async Task UpdateDiscountAsync(Booking booking)
 		{
 			using(var db = SjoslagetDb.Open())
 			{
-				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [IsLocked] = @IsLocked where [Id] = @Id",
-					new {Id = booking.Id, Discount = @booking.Discount, IsLocked = booking.IsLocked});
+				IEnumerable<CruiseCabinWithType> cruiseCabins = await _cabinRepository.GetActiveAsync(db, booking.CruiseId);
+				var bookingCabins = (await db.QueryAsync<BookingSource.Cabin>("select [CabinTypeId] [TypeId] from [BookingCabin] where [BookingId] = @Id", new {Id = booking.Id})).ToList();
+				decimal totalPrice = _priceCalculator.CalculatePrice(bookingCabins, booking.Discount, cruiseCabins);
+
+				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [TotalPrice] = @TotalPrice where [Id] = @Id",
+					new {Id = booking.Id, Discount = booking.Discount, TotalPrice = totalPrice});
 			}
 		}
 
-		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList)
+		public async Task UpdateIsLockedAsync(Booking booking)
 		{
-			Dictionary<Guid, CabinType> typeDict = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
+			using(var db = SjoslagetDb.Open())
+			{
+				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id",
+					new {Id = booking.Id, IsLocked = booking.IsLocked});
+			}
+		}
+
+		async Task CheckAvailability(SqlConnection db, Guid cruiseId, List<BookingSource.Cabin> sourceList, IEnumerable<CabinType> cruiseCabins)
+		{
+			Dictionary<Guid, CabinType> typeDict = cruiseCabins.ToDictionary(c => c.Id, c => c);
 			Dictionary<Guid, CruiseCabinAvailability> availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruiseId)).ToDictionary(c => c.CabinTypeId, c => c);
 
 			foreach(BookingSource.Cabin cabinSource in sourceList)

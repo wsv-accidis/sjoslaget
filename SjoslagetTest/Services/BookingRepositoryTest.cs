@@ -138,7 +138,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			Assert.IsFalse(booking.IsLocked);
 
 			booking.IsLocked = true;
-			await repository.UpdateMetadataAsync(booking);
+			await repository.UpdateIsLockedAsync(booking);
 
 			var updateSource = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
 			updateSource.Reference = booking.Reference;
@@ -350,7 +350,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			var userManagerMock = new Mock<SjoslagetUserManager>();
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
-			var sut = new BookingRepository(new CabinRepository(), new RandomKeyGenerator(), userManagerMock.Object);
+			var sut = new BookingRepository(new CabinRepository(), new PriceCalculator(), new RandomKeyGenerator(), userManagerMock.Object);
 			return sut;
 		}
 

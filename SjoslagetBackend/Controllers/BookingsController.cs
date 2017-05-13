@@ -14,13 +14,15 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class BookingsController : ApiController
 	{
 		readonly BookingRepository _bookingRepository;
+		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
 		readonly PaymentRepository _paymentRepository;
 
-		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
+		public BookingsController(BookingRepository bookingRepository, CabinRepository cabinRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
 		{
 			_bookingRepository = bookingRepository;
+			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
 			_paymentRepository = paymentRepository;
 		}
@@ -81,9 +83,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				int amount = Convert.ToInt32(discount.Amount);
 				amount = Math.Max(Math.Min(amount, 100), 0);
-				booking.Discount = amount;
 
-				await _bookingRepository.UpdateMetadataAsync(booking);
+				if(amount != booking.Discount)
+				{
+					booking.Discount = amount;
+					await _bookingRepository.UpdateDiscountAsync(booking);
+				}
 
 				return Ok();
 			}
@@ -134,7 +139,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			try
 			{
 				booking.IsLocked = !booking.IsLocked;
-				await _bookingRepository.UpdateMetadataAsync(booking);
+				await _bookingRepository.UpdateIsLockedAsync(booking);
 
 				return Ok(IsLockedResult.FromBooking(booking));
 			}
@@ -142,6 +147,27 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				_log.Error(ex, $"An unexpected exception occurred while locking/unlocking the booking with reference {reference}.");
 				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Overview()
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			using(var db = SjoslagetDb.Open())
+			{
+				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [TotalPrice], [Updated], " +
+																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
+																	  "(select sum([Amount]) from [dbu-jv3].[BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
+																	  "from [Booking] B where [CruiseId] = @CruiseId",
+					new {CruiseId = activeCruise.Id});
+
+				BookingOverviewItem[] result = items.ToArray();
+				return Ok(result);
 			}
 		}
 

@@ -66,6 +66,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 										  "when matched then update set CC.[Count] = @Count, CC.[PricePerPax] = @PricePerPax " +
 										  "when not matched then insert ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @Count, @PricePerPax);",
 						new {CruiseId = activeCruise.Id, CabinTypeId = cruiseCabin.TypeId, Count = cruiseCabin.Count, PricePerPax = cruiseCabin.PricePerPax});
+
+					// TODO Must update every booking's price total when doing this
 				}
 				catch(SqlException ex)
 				{
