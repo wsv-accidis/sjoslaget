@@ -4,6 +4,7 @@ import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 import 'package:angular2_components/angular2_components.dart';
 import 'package:decimal/decimal.dart';
+import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -21,15 +22,38 @@ import '../util/datetime_formatter.dart';
 	providers: const <dynamic>[materialProviders]
 )
 class AdminBookingListPage implements OnInit {
+	static final NONE = 'none';
+	static final LOCKED = 'locked';
+	static final FULLY_PAID = 'fully-paid';
+	static final PARTIALLY_PAID = 'partially-paid';
+	static final NOT_PAID = 'not-paid';
+
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 
 	List<BookingOverviewItem> _bookings;
+	String _filterText = '';
+	String _filterStatus = 'none';
+
 	SortableState sort = new SortableState('reference', false);
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
 	List<BookingOverviewItem> bookingsView;
+
+	String get filterText => _filterText;
+
+	set filterText(String value) {
+		_filterText = value;
+		_refreshView();
+	}
+
+	String get filterStatus => _filterStatus;
+
+	set filterStatus(String value) {
+		_filterStatus = value;
+		_refreshView();
+	}
 
 	bool get isLoading => null == bookingsView;
 
@@ -39,15 +63,15 @@ class AdminBookingListPage implements OnInit {
 
 	String getStatus(BookingOverviewItem item) {
 		if (item.isLocked)
-			return 'locked';
+			return LOCKED;
 		if (item.isFullyPaid)
-			return 'fully-paid';
+			return FULLY_PAID;
 		if (item.isPartiallyPaid)
-			return 'partially-paid';
+			return PARTIALLY_PAID;
 		if (item.isUnpaid)
-			return 'not-paid';
+			return NOT_PAID;
 
-		return '';
+		return NONE;
 	}
 
 	Future<Null> ngOnInit() async {
@@ -61,13 +85,27 @@ class AdminBookingListPage implements OnInit {
 		}
 	}
 
+	void onFilterChanged() {
+		_refreshView();
+	}
+
 	void onSortChanged(SortableState state) {
 		sort = state;
 		_refreshView();
 	}
 
 	void _refreshView() {
-		bookingsView = new List.from(_bookings);
+		Iterable<BookingOverviewItem> filteredList = _bookings;
+
+		if (isNotEmpty(_filterText)) {
+			final filterText = _filterText.toLowerCase().trim();
+			filteredList = filteredList.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
+		}
+		if (NONE != _filterStatus) {
+			filteredList = filteredList.where((b) => getStatus(b) == _filterStatus);
+		}
+
+		bookingsView = filteredList.toList(growable: false);
 		bookingsView.sort(_bookingComparator);
 	}
 

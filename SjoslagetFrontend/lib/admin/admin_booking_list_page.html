@@ -9,6 +9,38 @@
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>
 
+<div *ngIf="!isLoading" class="bookings-filter">
+	<h2>Filtrera</h2>
+
+	Referens/namn
+
+	<material-input [(ngModel)]="filterText"
+					class="filter-field"
+					label="Skriv för att filtrera"
+					style="width: 250px">
+	</material-input>
+
+	Status
+
+	<material-radio-group [(ngModel)]="filterStatus">
+		<material-radio class="filter-radio" value="none" title="Alla">
+			Alla
+		</material-radio>
+		<material-radio class="filter-radio" value="locked" title="Låst">
+			Låst
+		</material-radio>
+		<material-radio class="filter-radio" value="fully-paid" title="Betald">
+			Betald
+		</material-radio>
+		<material-radio class="filter-radio" value="partially-paid" title="Delbetald">
+			Delbetald
+		</material-radio>
+		<material-radio class="filter-radio" value="not-paid" title="Ej betald">
+			Ej betald
+		</material-radio>
+	</material-radio-group>
+</div>
+
 <table *ngIf="!isLoading"
 	   border="0"
 	   cellpadding="0"
@@ -79,3 +111,5 @@
 		</td>
 	</tr>
 </table>
+
+<div style="clear: both; height: 40px"></div>
