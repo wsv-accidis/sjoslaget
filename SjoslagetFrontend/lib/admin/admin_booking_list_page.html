@@ -9,29 +9,37 @@
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>
 
-<table cellpadding="0" cellspacing="0" border="0" class="bookings" *ngIf="!isLoading">
-	<th>
-		Status
+<table *ngIf="!isLoading"
+	   border="0"
+	   cellpadding="0"
+	   cellspacing="0"
+	   class="bookings"
+	   (onSortChange)="onSortChanged($event)"
+	   sortableColumns
+	   [sortColumn]="sort.column"
+	   [sortDesc]="sort.desc">
+	<th style="width: 130px">
+		<sortable-column-header key="status" title="Status"></sortable-column-header>
+	</th>
+	<th style="width: 120px">
+		<sortable-column-header key="reference" title="Referens"></sortable-column-header>
 	</th>
 	<th>
-		Referens
+		<sortable-column-header key="contact" title="Kontaktperson"></sortable-column-header>
 	</th>
-	<th>
-		Kontaktperson
+	<th style="width: 100px">
+		<sortable-column-header key="noOfCabins" title="Hytter"></sortable-column-header>
 	</th>
-	<th>
-		Hytter
+	<th style="width: 130px">
+		<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
 	</th>
-	<th>
-		Betalat
+	<th style="width: 130px">
+		<sortable-column-header key="amountRemaining" title="Kvar att betala"></sortable-column-header>
 	</th>
-	<th>
-		Kvar att betala
+	<th style="width: 220px">
+		<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
 	</th>
-	<th>
-		Uppdaterad
-	</th>
-	<tr *ngFor="let booking of bookings" [ngSwitch]="getStatus(booking)">
+	<tr *ngFor="let booking of bookingsView" [ngSwitch]="getStatus(booking)">
 		<td *ngSwitchWhen="'locked'" class="locked">
 			Låst
 		</td>
