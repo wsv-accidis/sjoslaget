@@ -72,6 +72,28 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		[Authorize(Roles = Roles.Admin)]
+		[HttpDelete]
+		public async Task<IHttpActionResult> Delete(string reference)
+		{
+			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
+			if(null == booking)
+				return NotFound();
+
+			try
+			{
+				await _bookingRepository.DeleteAsync(booking);
+				_log.Info("Deleted booking {0}.", booking.Reference);
+
+				return Ok();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while deleting the booking.");
+				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public async Task<IHttpActionResult> Discount(string reference, PaymentSource discount)
 		{
@@ -88,6 +110,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				{
 					booking.Discount = amount;
 					await _bookingRepository.UpdateDiscountAsync(booking);
+					_log.Info("Set discount to {0}% for booking {1}.", amount, booking.Reference);
 				}
 
 				return Ok();
@@ -140,6 +163,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				booking.IsLocked = !booking.IsLocked;
 				await _bookingRepository.UpdateIsLockedAsync(booking);
+				_log.Info("{0}ocked booking {1}.", booking.IsLocked ? "L" : "Unl", booking.Reference);
 
 				return Ok(IsLockedResult.FromBooking(booking));
 			}
@@ -161,9 +185,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			using(var db = SjoslagetDb.Open())
 			{
 				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [TotalPrice], [IsLocked], [Updated], " +
-																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
-																	  "(select sum([Amount]) from [dbu-jv3].[BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
-																	  "from [Booking] B where [CruiseId] = @CruiseId",
+																	 "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
+																	 "(select sum([Amount]) from [dbu-jv3].[BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
+																	 "from [Booking] B where [CruiseId] = @CruiseId",
 					new {CruiseId = activeCruise.Id});
 
 				BookingOverviewItem[] result = items.ToArray();
@@ -182,7 +206,10 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			try
 			{
 				if(payment.Amount != 0)
+				{
 					await _paymentRepository.CreateAsync(booking, payment.Amount);
+					_log.Info("Registered payment of {0} kr for booking {1}.", payment.Amount, booking.Reference);
+				}
 			}
 			catch(Exception ex)
 			{

@@ -62,6 +62,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return BookingResult.FromBooking(booking, password);
 		}
 
+		public async Task DeleteAsync(Booking booking)
+		{
+			User user = await _userManager.FindByNameAsync(booking.Reference);
+			if(null != user && user.IsBooking)
+				await _userManager.DeleteAsync(user);
+
+			using (var db = SjoslagetDb.Open())
+				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new {Id = booking.Id});
+		}
+
 		public async Task<Booking> FindByIdAsync(Guid id)
 		{
 			using(var db = SjoslagetDb.Open())

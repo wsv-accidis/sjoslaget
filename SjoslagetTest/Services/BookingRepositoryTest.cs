@@ -130,6 +130,23 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenDeleted_ShouldCeaseToExist()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			var booking = await GetNewlyCreatedBookingForTestAsync(cruise, repository);
+
+			Assert.AreNotEqual(Guid.Empty, booking.Id);
+			await repository.DeleteAsync(booking);
+
+			Booking deletedBooking = await repository.FindByReferenceAsync(booking.Reference);
+			Assert.IsNull(deletedBooking);
+
+			deletedBooking = await repository.FindByIdAsync(booking.Id);
+			Assert.IsNull(deletedBooking);
+		}
+
+		[TestMethod]
 		public async Task GivenExistingBooking_WhenItIsLocked_ShouldFailToUpdate()
 		{
 			var repository = GetBookingRepositoryForTest();
