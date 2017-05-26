@@ -38,6 +38,9 @@
 		Deltagare
 	</th>
 	<th>
+		Skapad
+	</th>
+	<th>
 		Uppdaterad
 	</th>
 	<tr *ngFor="let booking of recentlyUpdatedBookings">
@@ -56,6 +59,9 @@
 		</td>
 		<td>
 			{{ booking.numberOfPax }}
+		</td>
+		<td>
+			{{ formatDateTime(booking.created) }}
 		</td>
 		<td>
 			{{ booking.sinceUpdated }}

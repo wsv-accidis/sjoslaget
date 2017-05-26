@@ -10,6 +10,7 @@ import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
+import '../util/datetime_formatter.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
@@ -38,6 +39,8 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	bool get isLoadingBookings => null == recentlyUpdatedBookings;
 
 	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
+
+	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
 	void logOut() {
 		_clientFactory.clear();

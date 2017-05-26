@@ -204,7 +204,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = SjoslagetDb.Open())
 			{
-				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [FirstName], [LastName], [Updated], " +
+				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [FirstName], [LastName], [Created], [Updated], " +
 																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
 																	  "(select count(*) from [BookingPax] BP where BP.[BookingCabinId] in (select[Id] from [BookingCabin] BC where BC.[BookingId] = B.[Id])) as NumberOfPax " +
 																	  "from [Booking] B where [CruiseId] = @CruiseId " +

@@ -72,6 +72,10 @@ iframe.twitter-box {
 	height: 800px;
 }
 
+span.underline {
+	text-decoration: underline;
+}
+
 ul.undecorated-list {
 	list-style: none;
 	padding-left: 0;

@@ -3,6 +3,7 @@ class BookingDashboardItem {
 	static const REFERENCE = 'Reference';
 	static const FIRSTNAME = 'FirstName';
 	static const LASTNAME = 'LastName';
+	static const CREATED = 'Created';
 	static const UPDATED = 'Updated';
 	static const NUMBER_OF_CABINS = 'NumberOfCabins';
 	static const NUMBER_OF_PAX = 'NumberOfPax';
@@ -13,12 +14,13 @@ class BookingDashboardItem {
 	String reference;
 	String firstName;
 	String lastName;
+	DateTime created;
 	DateTime updated;
 	int numberOfCabins;
 	int numberOfPax;
 
 	String get sinceUpdated {
-		if(null == _sinceUpdated)
+		if (null == _sinceUpdated)
 			return '';
 
 		int seconds = _sinceUpdated.inSeconds;
@@ -46,7 +48,7 @@ class BookingDashboardItem {
 		return result.toString();
 	}
 
-	BookingDashboardItem(this.id, this.reference, this.firstName, this.lastName, this.updated, this.numberOfCabins, this.numberOfPax);
+	BookingDashboardItem(this.id, this.reference, this.firstName, this.lastName, this.created, this.updated, this.numberOfCabins, this.numberOfPax);
 
 	factory BookingDashboardItem.fromMap(Map<String, dynamic> json) {
 		return new BookingDashboardItem(
@@ -54,6 +56,7 @@ class BookingDashboardItem {
 			json[REFERENCE],
 			json[FIRSTNAME],
 			json[LASTNAME],
+			DateTime.parse(json[CREATED]),
 			DateTime.parse(json[UPDATED]),
 			json[NUMBER_OF_CABINS],
 			json[NUMBER_OF_PAX]
