@@ -36,10 +36,9 @@ class AdminBookingListPage implements OnInit {
 	String _filterStatus = 'none';
 
 	SortableState sort = new SortableState('reference', false);
+	List<BookingOverviewItem> bookingsView;
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
-
-	List<BookingOverviewItem> bookingsView;
 
 	String get filterText => _filterText;
 

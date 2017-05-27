@@ -50,27 +50,29 @@
 	   sortableColumns
 	   [sortColumn]="sort.column"
 	   [sortDesc]="sort.desc">
-	<th style="width: 130px">
-		<sortable-column-header key="status" title="Status"></sortable-column-header>
-	</th>
-	<th style="width: 120px">
-		<sortable-column-header key="reference" title="Referens"></sortable-column-header>
-	</th>
-	<th>
-		<sortable-column-header key="contact" title="Kontaktperson"></sortable-column-header>
-	</th>
-	<th style="width: 100px">
-		<sortable-column-header key="noOfCabins" title="Hytter"></sortable-column-header>
-	</th>
-	<th style="width: 130px">
-		<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
-	</th>
-	<th style="width: 130px">
-		<sortable-column-header key="amountRemaining" title="Kvar att betala"></sortable-column-header>
-	</th>
-	<th style="width: 220px">
-		<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
-	</th>
+	<tr>
+		<th style="width: 130px">
+			<sortable-column-header key="status" title="Status"></sortable-column-header>
+		</th>
+		<th style="width: 120px">
+			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="contact" title="Kontaktperson"></sortable-column-header>
+		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="noOfCabins" title="Hytter"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="amountRemaining" title="Kvar att betala"></sortable-column-header>
+		</th>
+		<th style="width: 220px">
+			<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
+		</th>
+	</tr>
 	<tr *ngFor="let booking of bookingsView" [ngSwitch]="getStatus(booking)">
 		<td *ngSwitchWhen="'locked'" class="locked">
 			Låst

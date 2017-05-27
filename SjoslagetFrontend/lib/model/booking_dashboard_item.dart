@@ -10,14 +10,14 @@ class BookingDashboardItem {
 
 	Duration _sinceUpdated;
 
-	String id;
-	String reference;
-	String firstName;
-	String lastName;
-	DateTime created;
-	DateTime updated;
-	int numberOfCabins;
-	int numberOfPax;
+	final String id;
+	final String reference;
+	final String firstName;
+	final String lastName;
+	final DateTime created;
+	final DateTime updated;
+	final int numberOfCabins;
+	final int numberOfPax;
 
 	String get sinceUpdated {
 		if (null == _sinceUpdated)

@@ -7,15 +7,14 @@ class BookingOverviewItem {
 	static const IS_LOCKED = 'IsLocked';
 	static const TOTAL_PRICE = 'TotalPrice';
 
-	String id;
-	String reference;
-	String firstName;
-	String lastName;
-	Decimal totalPrice;
-	Decimal amountPaid;
-	int numberOfCabins;
-	bool isLocked;
-	DateTime updated;
+	final String reference;
+	final String firstName;
+	final String lastName;
+	final Decimal totalPrice;
+	final Decimal amountPaid;
+	final int numberOfCabins;
+	final bool isLocked;
+	final DateTime updated;
 
 	Decimal get amountRemaining => totalPrice - amountPaid;
 
@@ -24,12 +23,11 @@ class BookingOverviewItem {
 	bool get isPartiallyPaid => amountRemaining.toDouble() > 0 && amountRemaining < totalPrice;
 
 	bool get isUnpaid => amountPaid.toDouble() <= 0;
-	
-	BookingOverviewItem(this.id, this.reference, this.firstName, this.lastName, this.totalPrice, this.amountPaid, this.numberOfCabins, this.isLocked, this.updated);
+
+	BookingOverviewItem(this.reference, this.firstName, this.lastName, this.totalPrice, this.amountPaid, this.numberOfCabins, this.isLocked, this.updated);
 
 	factory BookingOverviewItem.fromMap(Map<String, dynamic> json) {
 		return new BookingOverviewItem(
-			json[BookingDashboardItem.ID],
 			json[BookingDashboardItem.REFERENCE],
 			json[BookingDashboardItem.FIRSTNAME],
 			json[BookingDashboardItem.LASTNAME],
