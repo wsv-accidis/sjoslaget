@@ -19,13 +19,14 @@ import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
 import '../util/currency_formatter.dart';
 import '../util/datetime_formatter.dart';
+import '../widgets/modal_dialog.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: const<dynamic>[materialDirectives, ROUTER_DIRECTIVES, SpinnerWidget, CabinsComponent],
+	directives: const<dynamic>[materialDirectives, ROUTER_DIRECTIVES, CabinsComponent, ModalDialog, SpinnerWidget],
 	providers: const<dynamic>[materialProviders]
 )
 class AdminBookingPage implements OnInit {
@@ -33,11 +34,15 @@ class AdminBookingPage implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 	final RouteParams _routeParams;
+	final Router _router;
 
 	bool _isLockingUnlocking = false;
 
 	@ViewChild('cabins')
 	CabinsComponent cabins;
+
+	@ViewChild('deleteBookingDialog')
+	ModalDialog deleteBookingDialog;
 
 	BookingSource booking;
 	String bookingError;
@@ -45,6 +50,8 @@ class AdminBookingPage implements OnInit {
 	String payment;
 	String paymentError;
 	String discount;
+
+	bool get canDelete => !isSaving;
 
 	bool get canLock => null != booking && !booking.isLocked;
 
@@ -62,7 +69,27 @@ class AdminBookingPage implements OnInit {
 
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams);
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams, this._router);
+
+	Future<Null> deleteBooking() async {
+		if (isSaving)
+			return;
+		if(!await deleteBookingDialog.openAsync())
+			return;
+
+		isSaving = true;
+
+		try {
+			final client = _clientFactory.getClient();
+			await _bookingRepository.deleteBooking(client, booking.reference);
+		} catch (e) {
+			print('Failed to delete booking: ' + e.toString());
+		} finally {
+			isSaving = false;
+		}
+
+		_router.navigate(<dynamic> ['Dashboard']);
+	}
 
 	Future<Null> lockUnlockBooking() async {
 		if (!hasLoaded || isLockingUnlocking)
@@ -74,7 +101,7 @@ class AdminBookingPage implements OnInit {
 			final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
 			booking.isLocked = isLocked;
 		} catch (e) {
-			print('Failed to lock/unlock cruise: ' + e.toString());
+			print('Failed to lock/unlock booking: ' + e.toString());
 		} finally {
 			_isLockingUnlocking = false;
 		}

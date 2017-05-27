@@ -24,6 +24,17 @@ class BookingRepository {
 
 	BookingRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
+	Future<Null> deleteBooking(Client client, String reference) async {
+		Response response;
+		try {
+			response = await client.delete(_apiRoot + '/bookings/' + reference);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+	}
+
 	Future<BookingSource> findBooking(Client client, String reference) async {
 		Response response;
 		try {

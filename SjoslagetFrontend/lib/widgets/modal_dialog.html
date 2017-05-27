@@ -3,10 +3,16 @@
 		<h3 header>
 			{{ title }}
 		</h3>
-		<p>
+		<p style="margin-bottom: 20px">
 			{{ message }}
 		</p>
 		<div footer>
+			<material-button *ngIf="hasAction"
+							 clear-size
+							 (trigger)="doAction()">
+				{{ action }}
+			</material-button>
+
 			<material-button autoFocus
 							 clear-size
 							 (trigger)="close()">
