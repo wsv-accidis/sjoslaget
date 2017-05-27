@@ -187,6 +187,7 @@
     <Compile Include="Models\BookingDashboardItem.cs" />
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingOverviewItem.cs" />
+    <Compile Include="Models\BookingPaxItem.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />

@@ -196,6 +196,28 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Pax()
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			using(var db = SjoslagetDb.Open())
+			{
+				var items = await db.QueryAsync<BookingPaxItem>("select BP.[Id], BP.[Group], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[CabinTypeId], B.[Reference] " +
+																"from [BookingPax] BP " +
+																"left join [dbu-jv3].[BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+																"left join [dbu-jv3].[Booking] B on BC.[BookingId] = B.[Id] " +
+																"where B.[CruiseId] = @CruiseId",
+					new {CruiseId = activeCruise.Id});
+
+				BookingPaxItem[] result = items.ToArray();
+				return Ok(result);
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
 		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
 		{
