@@ -26,19 +26,19 @@ class BookingDashboardItem {
 		int seconds = _sinceUpdated.inSeconds;
 		final result = new StringBuffer();
 
-		if (seconds > Duration.SECONDS_PER_DAY) {
+		if (seconds >= Duration.SECONDS_PER_DAY) {
 			final days = (seconds / Duration.SECONDS_PER_DAY).floor();
 			seconds %= Duration.SECONDS_PER_DAY;
 			result.write('${days}d ');
 		}
 
-		if (seconds > Duration.SECONDS_PER_HOUR) {
+		if (seconds >= Duration.SECONDS_PER_HOUR) {
 			final hours = (seconds / Duration.SECONDS_PER_HOUR).floor();
 			seconds %= Duration.SECONDS_PER_HOUR;
 			result.write('${hours}h ');
 		}
 
-		if (seconds > Duration.SECONDS_PER_MINUTE) {
+		if (seconds >= Duration.SECONDS_PER_MINUTE) {
 			final mins = (seconds / Duration.SECONDS_PER_MINUTE).floor();
 			seconds %= Duration.SECONDS_PER_MINUTE;
 			result.write('${mins}m ');
