@@ -46,12 +46,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = SjoslagetDb.Open())
 			{
-				IEnumerable<CabinType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise.Id);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 				await CheckAvailability(db, cruise.Id, source.Cabins, cabinTypes);
 				await CreateBooking(db, booking);
 				await CreateCabins(db, booking, source.Cabins);
+
+				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cabinTypes);
+				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
 
 				tran.Complete();
 			}
