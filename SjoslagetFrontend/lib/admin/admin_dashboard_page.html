@@ -3,6 +3,9 @@
 </h1>
 
 <div class="admin-menu">
+	<glyph icon="refresh"></glyph>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
 	<glyph icon="view_list"></glyph>
 	<a [routerLink]="['BookingList']">Alla bokningar</a>
 	<span></span>
@@ -77,7 +80,7 @@
 </h2>
 
 <div class="available-cabins">
-	<availability-component></availability-component>
+	<availability-component #availabilityComponent></availability-component>
 </div>
 
 <h2 class="cruise-title">Kryssning</h2>

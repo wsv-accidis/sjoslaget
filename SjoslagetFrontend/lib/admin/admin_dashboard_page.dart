@@ -29,6 +29,9 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	bool _isLockingUnlocking = false;
 	Timer _timer;
 
+	@ViewChild('availabilityComponent')
+	AvailabilityComponent availabilityComponent;
+
 	Cruise cruise;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
 
@@ -53,15 +56,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			return;
 		}
 
-		try {
-			final client = _clientFactory.getClient();
-			cruise = await _cruiseRepository.getActiveCruise(client);
-			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);
-		} catch (e) {
-			print('Failed to load recently updated bookings: ' + e.toString());
-			// Just ignore this here, we will be stuck in the loading state until the user refreshes
-		}
-
+		await refreshRecentlyUpdated();
 		tick(null);
 		_timer = new Timer.periodic(new Duration(milliseconds: 250), tick);
 	}
@@ -84,6 +79,26 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			print('Failed to lock/unlock cruise: ' + e.toString());
 		} finally {
 			_isLockingUnlocking = false;
+		}
+	}
+
+	void refresh() {
+		refreshRecentlyUpdated();
+		refreshAvailability();
+	}
+
+	Future<Null> refreshAvailability() async {
+		await availabilityComponent.refresh();
+	}
+
+	Future<Null> refreshRecentlyUpdated() async {
+		try {
+			final client = _clientFactory.getClient();
+			cruise = await _cruiseRepository.getActiveCruise(client);
+			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);
+		} catch (e) {
+			print('Failed to load recently updated bookings: ' + e.toString());
+			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 

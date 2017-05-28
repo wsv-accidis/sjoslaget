@@ -27,6 +27,16 @@ class AvailabilityComponent implements OnInit {
 	AvailabilityComponent(this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
+		await refresh();
+	}
+
+	int getAvailability(String id) {
+		if (null == availability || !availability.containsKey(id))
+			return 0;
+		return availability[id];
+	}
+
+	Future<Null> refresh() async {
 		try {
 			final client = _clientFactory.getClient();
 			availability = await _cruiseRepository.getAvailability(client);
@@ -35,11 +45,5 @@ class AvailabilityComponent implements OnInit {
 			print('Failed to load cabins and availability: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
-	}
-
-	int getAvailability(String id) {
-		if (null == availability || !availability.containsKey(id))
-			return 0;
-		return availability[id];
 	}
 }
