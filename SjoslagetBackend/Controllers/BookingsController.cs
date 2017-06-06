@@ -257,7 +257,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
 																	  "(select count(*) from [BookingPax] BP where BP.[BookingCabinId] in (select[Id] from [BookingCabin] BC where BC.[BookingId] = B.[Id])) as NumberOfPax " +
 																	  "from [Booking] B where [CruiseId] = @CruiseId " +
-																	  "order by [Updated] asc",
+																	  "order by [Updated] desc",
 					new {CruiseId = activeCruise.Id, Limit = limit});
 
 				BookingDashboardItem[] result = items.ToArray();
