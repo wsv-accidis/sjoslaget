@@ -10,6 +10,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string Password { get; set; }
 		public string PasswordHash { get; set; }
 		public string SecurityStamp { get; set; }
+		public string ResetToken { get; set; }
 		public bool IsBooking { get; set; }
 	}
 }

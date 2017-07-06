@@ -17,6 +17,8 @@ namespace Accidis.Sjoslaget.WebService.Auth
 		{
 			var manager = new SjoslagetUserManager();
 
+			manager.UserTokenProvider = new SjoslagetUserTokenProvider();
+
 			manager.UserValidator = new UserValidator<User, Guid>(manager)
 			{
 				AllowOnlyAlphanumericUserNames = true,

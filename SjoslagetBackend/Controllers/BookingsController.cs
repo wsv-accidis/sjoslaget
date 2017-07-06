@@ -14,15 +14,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class BookingsController : ApiController
 	{
 		readonly BookingRepository _bookingRepository;
-		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
 		readonly PaymentRepository _paymentRepository;
 
-		public BookingsController(BookingRepository bookingRepository, CabinRepository cabinRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
+		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
 		{
 			_bookingRepository = bookingRepository;
-			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
 			_paymentRepository = paymentRepository;
 		}

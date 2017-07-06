@@ -166,6 +166,7 @@
     <Compile Include="Auth\Roles.cs" />
     <Compile Include="Auth\SjoslagetUserManager.cs" />
     <Compile Include="Auth\SjoslagetUserStore.cs" />
+    <Compile Include="Auth\SjoslagetUserTokenProvider.cs" />
     <Compile Include="Content\Emails.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -188,6 +189,7 @@
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\BookingPaxItem.cs" />
+    <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
