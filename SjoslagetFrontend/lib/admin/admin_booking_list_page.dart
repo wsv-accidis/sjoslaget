@@ -93,21 +93,6 @@ class AdminBookingListPage implements OnInit {
 		_refreshView();
 	}
 
-	void _refreshView() {
-		Iterable<BookingOverviewItem> filteredList = _bookings;
-
-		if (isNotEmpty(_filterText)) {
-			final filterText = _filterText.toLowerCase().trim();
-			filteredList = filteredList.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
-		}
-		if (NONE != _filterStatus) {
-			filteredList = filteredList.where((b) => getStatus(b) == _filterStatus);
-		}
-
-		bookingsView = filteredList.toList(growable: false);
-		bookingsView.sort(_bookingComparator);
-	}
-
 	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
 		if (sort.desc) {
 			// Swap the items when using descending sort, so we can keep the rest identical
@@ -136,6 +121,21 @@ class AdminBookingListPage implements OnInit {
 				print('Unrecognized column \"${sort.column}\", no sort applied.');
 				return 0;
 		}
+	}
+
+	void _refreshView() {
+		Iterable<BookingOverviewItem> filteredList = _bookings;
+
+		if (isNotEmpty(_filterText)) {
+			final filterText = _filterText.toLowerCase().trim();
+			filteredList = filteredList.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
+		}
+		if (NONE != _filterStatus) {
+			filteredList = filteredList.where((b) => getStatus(b) == _filterStatus);
+		}
+
+		bookingsView = filteredList.toList(growable: false);
+		bookingsView.sort(_bookingComparator);
 	}
 
 	static int _statusToInt(BookingOverviewItem item) {

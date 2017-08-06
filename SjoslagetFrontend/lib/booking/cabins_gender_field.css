@@ -1,0 +1,34 @@
+
+td.gender-field-cell {
+	white-space: nowrap;
+	width: 165px;
+}
+
+th.gender-field-cell, th.gender-field-cell {
+	width: 100px;
+}
+
+td.gender-field-cell span.gender-other {
+	font-size: x-small;
+	font-weight: bold;
+	margin-left: -4px;
+}
+
+td.gender-field-cell-readonly span.gender-other {
+	font-size: small;
+	font-weight: bold;
+}
+
+td.gender-field-cell img {
+	border: 0;
+	box-shadow: none;
+	margin-left: -4px;
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+td.gender-field-cell-readonly img {
+	border: 0;
+	box-shadow: none;
+	vertical-align: middle;
+}

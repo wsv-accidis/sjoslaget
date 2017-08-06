@@ -9,10 +9,31 @@
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>
 
-<div *ngIf="!isLoading">
+<p *ngIf="!isLoading" class="stats">
+	Det finns {{ totalCount }} anmälda deltagare varav {{ filteredCount }} i listan.
+</p>
+
+<div *ngIf="!isLoading" class="pax-filter">
 	<h2>Filtrera</h2>
 
-	Foo bar
+	<table>
+		<tr>
+			<td>
+				Referens/förening/namn
+
+				<material-input [(ngModel)]="filterText"
+								class="filter-field"
+								label="Skriv för att filtrera"
+								style="width: 250px">
+				</material-input>
+			</td>
+			<td>
+				<material-checkbox [(ngModel)]="filterYear5"
+								   label="Åker 5:e året">
+				</material-checkbox>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <table *ngIf="!isLoading"
@@ -25,10 +46,10 @@
 	   [sortColumn]="sort.column"
 	   [sortDesc]="sort.desc">
 	<tr>
-		<th>
+		<th style="width: 100px">
 			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
 		</th>
-		<th>
+		<th style="width: 70px">
 			<sortable-column-header key="cabinType" title="Hytt"></sortable-column-header>
 		</th>
 		<th>
@@ -37,25 +58,27 @@
 		<th>
 			<sortable-column-header key="name" title="Namn"></sortable-column-header>
 		</th>
-		<th>
+		<th style="width: 70px">
 			<sortable-column-header key="gender" title="Kön"></sortable-column-header>
 		</th>
-		<th>
+		<th style="width: 130px">
 			<sortable-column-header key="dob" title="Födelsedatum"></sortable-column-header>
 		</th>
-		<th>
-			<sortable-column-header key="nationalitet" title="Nationalitet"></sortable-column-header>
+		<th style="width: 110px">
+			<sortable-column-header key="nationality" title="Nationalitet"></sortable-column-header>
 		</th>
-		<th>
+		<th style="width: 80px">
 			<sortable-column-header key="years" title="Åkta år"></sortable-column-header>
 		</th>
 	</tr>
 	<tr *ngFor="let pax of paxView">
 		<td>
-			{{ pax.reference }}
+			<a [routerLink]="['Booking', {'ref': pax.reference}]">
+				{{ pax.reference }}
+			</a>
 		</td>
 		<td>
-			A4
+			{{ pax.cabinType }}
 		</td>
 		<td>
 			{{ pax.group }}
@@ -63,8 +86,10 @@
 		<td>
 			{{ pax.name }}
 		</td>
-		<td>
-			{{ pax.gender }}
+		<td class="gender-field-cell-readonly">
+			<img *ngIf="'m' == pax.gender" src="gfx/symbol_m.png" height="16" width="16" alt="Man">
+			<img *ngIf="'f' == pax.gender" src="gfx/symbol_f.png" height="20" width="14" alt="Kvinna">
+			<span *ngIf="'x' == pax.gender" class="gender-other">Annat</span>
 		</td>
 		<td>
 			{{ pax.dob }}
@@ -77,3 +102,5 @@
 		</td>
 	</tr>
 </table>
+
+<div style="clear: both; height: 40px"></div>

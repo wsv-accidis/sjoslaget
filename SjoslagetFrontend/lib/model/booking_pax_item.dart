@@ -9,6 +9,7 @@ class BookingPaxItem {
 	static const NATIONALITY = 'Nationality';
 	static const YEARS = 'Years';
 
+	String cabinType;
 	final String cabinTypeId;
 	final String reference;
 	final String group;

@@ -16,7 +16,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
-	styleUrls: const ['../content/content_styles.css', 'cabins_component.css'],
+	styleUrls: const ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
 	directives: const <dynamic>[materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
@@ -134,7 +134,6 @@ class CabinsComponent implements OnInit {
 		for (BookingCabinView b in bookingCabins)
 			b.isSaved = true;
 	}
-
 
 	Future<Null> refreshAvailability() async {
 		try {

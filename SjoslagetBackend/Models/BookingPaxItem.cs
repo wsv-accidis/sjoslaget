@@ -4,6 +4,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 {
 	public sealed class BookingPaxItem
 	{
+		string _nationality;
+
 		public Guid Id { get; set; }
 		public Guid CabinTypeId { get; set; }
 		public string Reference { get; set; }
@@ -12,7 +14,13 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string LastName { get; set; }
 		public string Gender { get; set; }
 		public string Dob { get; set; }
-		public string Nationality { get; set; }
+
+		public string Nationality
+		{
+			get { return _nationality; }
+			set { _nationality = value?.ToUpperInvariant(); }
+		}
+
 		public int Years { get; set; }
 	}
 }
