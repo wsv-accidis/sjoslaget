@@ -205,3 +205,32 @@
 			  title="Radera bokning"
 			  message="Är du säker? Bokningen raderas permanent. Det här går inte att ångra.">
 </modal-dialog>
+
+<h2>
+	PIN-kod
+</h2>
+
+<div>
+	Då bokningen skapas får kontaktpersonen en bokningsreferens och PIN-kod, som denne kan använda för att redigera sin bokning.
+	Om PIN-koden kommit bort kan du skapa en ny här (inget mail skickas). Den tidigare koden slutar då att gälla.
+</div>
+
+<form #paymentForm="ngForm">
+	<div class="reset-pin-form">
+		<material-button *ngIf="!hasResetPinCode"
+						 class="control-red reset-pin-button"
+						 [disabled]="isSaving"
+						 raised
+						 (trigger)="resetPinCode()">
+			Skapa ny PIN-kod
+		</material-button>
+
+		<p class="reset-pin-result" *ngIf="hasResetPinCode">
+			Den nya PIN-koden är <span>{{ newPinCode }}</span>.
+		</p>
+
+		<p class="super-important" *ngIf="hasResetPinCodeError">
+			{{ resetPinCodeError }}
+		</p>
+	</div>
+</form>

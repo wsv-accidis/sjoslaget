@@ -12,6 +12,7 @@ import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
+import '../client/user_repository.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_source.dart';
@@ -35,6 +36,7 @@ class AdminBookingPage implements OnInit {
 	final CruiseRepository _cruiseRepository;
 	final RouteParams _routeParams;
 	final Router _router;
+	final UserRepository _userRepository;
 
 	bool _isLockingUnlocking = false;
 
@@ -46,10 +48,12 @@ class AdminBookingPage implements OnInit {
 
 	BookingSource booking;
 	String bookingError;
+	String discount;
 	bool isSaving = false;
+	String newPinCode;
 	String payment;
 	String paymentError;
-	String discount;
+	String resetPinCodeError;
 
 	bool get canDelete => !isSaving;
 
@@ -67,14 +71,18 @@ class AdminBookingPage implements OnInit {
 
 	bool get hasPaymentError => isNotEmpty(paymentError);
 
+	bool get hasResetPinCode => isNotEmpty(newPinCode);
+
+	bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
+
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams, this._router);
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams, this._router, this._userRepository);
 
 	Future<Null> deleteBooking() async {
 		if (isSaving)
 			return;
-		if(!await deleteBookingDialog.openAsync())
+		if (!await deleteBookingDialog.openAsync())
 			return;
 
 		isSaving = true;
@@ -88,7 +96,7 @@ class AdminBookingPage implements OnInit {
 			isSaving = false;
 		}
 
-		_router.navigate(<dynamic> ['Dashboard']);
+		_router.navigate(<dynamic>['Dashboard']);
 	}
 
 	Future<Null> lockUnlockBooking() async {
@@ -157,6 +165,27 @@ class AdminBookingPage implements OnInit {
 				print('Failed to register payment: ' + e.toString());
 				paymentError = 'Någonting gick fel när betalningen skulle registreras. Försök igen.';
 			}
+		} finally {
+			isSaving = false;
+		}
+	}
+
+	Future<Null> resetPinCode() async {
+		if (isSaving)
+			return;
+
+		isSaving = true;
+		resetPinCodeError = null;
+
+		try {
+			final client = _clientFactory.getClient();
+			final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
+
+			if(isNotEmpty(pinCode))
+				newPinCode = pinCode;
+		} catch (e) {
+			print('Failed to reset PIN code: ' + e.toString());
+			resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
 		} finally {
 			isSaving = false;
 		}
