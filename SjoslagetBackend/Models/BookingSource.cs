@@ -16,6 +16,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public int Discount { get; set; }
 		public bool IsLocked { get; set; }
 		public List<Cabin> Cabins { get; set; }
+		public List<Product> Products { get; set; }
 		public PaymentSummary Payment { get; set; }
 
 		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins, PaymentSummary payment)
@@ -55,6 +56,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 			bookingSource.ValidateDetails();
 			bookingSource.ValidateCabins();
+			bookingSource.ValidateProducts();
 		}
 
 		public static void ValidateCabins(BookingSource bookingSource)
@@ -91,6 +93,15 @@ namespace Accidis.Sjoslaget.WebService.Models
 				cabin.Validate(isFirstCabin, ref defaultGroup);
 				isFirstCabin = false;
 			}
+		}
+
+		void ValidateProducts()
+		{
+			if(null == Products || !Products.Any())
+				return; // No products on booking is just peachy
+
+			foreach(Product product in Products)
+				product.Validate();
 		}
 
 		public sealed class Cabin
@@ -159,6 +170,20 @@ namespace Accidis.Sjoslaget.WebService.Models
 			static bool TryValidateNationality(string nationality)
 			{
 				return Regex.IsMatch(nationality, "^[a-z]{2}$", RegexOptions.IgnoreCase);
+			}
+		}
+
+		public sealed class Product
+		{
+			public Guid TypeId { get; set; }
+			public int Quantity { get; set; }
+
+			public void Validate()
+			{
+				if(Guid.Empty.Equals(TypeId))
+					throw new BookingException("Product type must be specified.");
+				if(Quantity <= 0)
+					throw new BookingException("Product quantity must be positive.");
 			}
 		}
 	}

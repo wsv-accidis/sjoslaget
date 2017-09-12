@@ -175,6 +175,7 @@
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\CruiseController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\BookingPaxItem.cs" />
     <Compile Include="Models\BookingReference.cs" />
+    <Compile Include="Models\CruiseProductWithType.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
@@ -204,6 +206,7 @@
     <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
+    <Compile Include="Models\ProductType.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -213,6 +216,7 @@
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
+    <Compile Include="Services\ProductRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Services\BookingConfig.cs" />
     <Compile Include="Services\RandomKeyGenerator.cs" />
