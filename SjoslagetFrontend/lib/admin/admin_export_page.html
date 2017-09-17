@@ -1,0 +1,34 @@
+<h1>
+	Exportera
+</h1>
+
+<div class="admin-menu">
+	<glyph icon="arrow_back"></glyph>
+	<a [routerLink]="['Dashboard']">Huvudsidan</a>
+</div>
+
+<p>
+	Här exporterar du alla bokningar för nuvarande kryssning i Microsoft Excel-format.
+</p>
+
+<div>
+	<material-radio-group [(ngModel)]="onlyFullyPaid">
+		<material-radio value="true" title="Endast färdigbetalade bokningar">
+			Endast färdigbetalade bokningar
+		</material-radio>
+		<material-radio value="false" title="Alla bokningar">
+			Alla bokningar
+		</material-radio>
+	</material-radio-group>
+</div>
+
+<div *ngIf="!isDownloading" style="margin-top: 20px">
+	<material-button class="control-blue"
+					 [disabled]="isDownloading"
+					 raised
+					 (trigger)="doExport()">
+		Ladda ned
+	</material-button>
+</div>
+
+<spinner-widget *ngIf="isDownloading"></spinner-widget>

@@ -18,7 +18,7 @@ import '../widgets/spinner_widget.dart';
 	templateUrl: 'admin_pax_list_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_pax_list_page.css', '../booking/cabins_gender_field.css'],
 	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	providers: const<dynamic>[materialProviders]
 )
 class AdminPaxListPage implements OnInit {
 	final BookingRepository _bookingRepository;
@@ -106,7 +106,9 @@ class AdminPaxListPage implements OnInit {
 	}
 
 	void _populateCabinType(BookingPaxItem pax, List<CruiseCabin> cruiseCabins) {
-		pax.cabinType = cruiseCabins.firstWhere((c) => c.id == pax.cabinTypeId).name;
+		pax.cabinType = cruiseCabins
+			.firstWhere((c) => c.id == pax.cabinTypeId)
+			.name;
 	}
 
 	void _refreshView() {

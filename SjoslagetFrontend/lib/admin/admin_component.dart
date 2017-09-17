@@ -4,6 +4,7 @@ import 'package:angular2/router.dart';
 import 'admin_booking_page.dart';
 import 'admin_booking_list_page.dart';
 import 'admin_dashboard_page.dart';
+import 'admin_export_page.dart';
 import 'admin_login_page.dart';
 import 'admin_pax_list_page.dart';
 import 'admin_user_page.dart';
@@ -20,6 +21,7 @@ import '../client/client_factory.dart';
 	const Route(path: '/bokning/:ref', name: 'Booking', component: AdminBookingPage),
 	const Route(path: '/bokningar', name: 'BookingList', component: AdminBookingListPage),
 	const Route(path: '/deltagare', name: 'PaxList', component: AdminPaxListPage),
+	const Route(path: '/exportera', name: 'Export', component: AdminExportPage),
 	const Route(path: '/login', name: 'Login', component: AdminLoginPage),
 	const Route(path: '/byt-losenord', name: 'User', component: AdminUserPage)
 

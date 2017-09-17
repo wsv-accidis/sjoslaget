@@ -181,7 +181,7 @@ class AdminBookingPage implements OnInit {
 			final client = _clientFactory.getClient();
 			final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
 
-			if(isNotEmpty(pinCode))
+			if (isNotEmpty(pinCode))
 				newPinCode = pinCode;
 		} catch (e) {
 			print('Failed to reset PIN code: ' + e.toString());

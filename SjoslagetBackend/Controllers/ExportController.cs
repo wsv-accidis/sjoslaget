@@ -66,7 +66,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 															 "from [BookingPax] BP " +
 															 "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
 															 "where BC.[BookingId] = @BookingId " +
-															 "order by BC.[Order]",
+															 "order by BC.[Order], BP.[Order]",
 						new {BookingId = booking.Id});
 
 					Pax[] paxInBooking = paxResult.ToArray();
@@ -116,6 +116,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			};
 
 			var result = new HttpResponseMessage(HttpStatusCode.OK) {Content = content};
+			// This is necessary so that the front-end can read the filename of the attachment
+			result.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
 			return ResponseMessage(result);
 		}
 

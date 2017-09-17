@@ -18,7 +18,7 @@ import '../widgets/spinner_widget.dart';
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
 	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, AvailabilityComponent, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	providers: const<dynamic>[materialProviders]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
 	final BookingRepository _bookingRepository;
