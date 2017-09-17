@@ -117,6 +117,10 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Simplexcel, Version=2.0.3.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\simplexcel.2.0.3.6\lib\net45\Simplexcel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.IdentityModel" />
@@ -124,6 +128,7 @@
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.4.402070948\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -175,6 +180,7 @@
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\CruiseController.cs" />
+    <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />

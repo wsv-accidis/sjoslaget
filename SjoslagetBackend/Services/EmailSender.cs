@@ -21,8 +21,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			buffer.Replace("{BOOKING_REF}", bookingRef);
 			buffer.Replace("{PIN_CODE}", pinCode);
 
-			const string subject = "Din bokning till Sjöslaget";
-			await SendMailAsync(recipient, subject, buffer.ToString());
+			await SendMailAsync(recipient, Emails.BookingCreatedSubject, buffer.ToString());
 		}
 
 		public async Task SendMailAsync(string recipient, string subject, string body)

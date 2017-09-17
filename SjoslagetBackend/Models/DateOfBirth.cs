@@ -25,6 +25,11 @@ namespace Accidis.Sjoslaget.WebService.Models
 			return date.Year - Year - 1;
 		}
 
+		public string Format(string format)
+		{
+			return _date.ToString(format, CultureInfo.InvariantCulture);
+		}
+
 		public static bool IsValid(string dob)
 		{
 			DateTime ignored;

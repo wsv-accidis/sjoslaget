@@ -63,22 +63,31 @@ namespace Accidis.Sjoslaget.WebService.Content {
         /// <summary>
         ///   Looks up a localized string similar to Hej!
         ///
-        ///Det här är en bekräftelse på att din bokning på Sjöslaget är mottagen.
+        ///Det här är en bekräftelse på att din bokning till Sjöslaget är mottagen.
         ///
         ///Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
         ///
-        ///Ta vara på dessa! Du behöver bokningsreferensen för att hämta ut dina biljetter
-        ///och om du behöver ändra i bokningen senare.
+        ///Ta vara på dessa! Du behöver bokningsreferensen för att hämta ut dina
+        ///biljetter och tillsammans med PIN-koden för att komma åt din bokning.
         ///
         ///Gå till sjoslaget.se/bokning och mata in referens samt PIN-kod för att visa
         ///din bokning och se det totala beloppet att betala.
         ///
-        ///Vårt Bankgiro har nummer 299-5272 och betalningsmottagare är OMO Media AB.
-        ///Betala så snart som möj [rest of string was truncated]&quot;;.
+        ///Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
+        ///Betala så sna [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BookingCreatedEmail {
             get {
                 return ResourceManager.GetString("BookingCreatedEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Din bokning till Sjöslaget.
+        /// </summary>
+        internal static string BookingCreatedSubject {
+            get {
+                return ResourceManager.GetString("BookingCreatedSubject", resourceCulture);
             }
         }
     }

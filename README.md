@@ -21,6 +21,7 @@ databas i [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-201
 * [Moq](https://github.com/moq/moq4)
 * [OAuth 2](https://oauth.net/2/)
 * [OWIN](http://owin.org/)
+* [Simplexcel](https://github.com/mstum/Simplexcel)
 
 Klientsidan utvecklas i [Dart](https://webdev.dartlang.org/). Den använder följande bibliotek och ramverk:
 

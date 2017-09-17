@@ -184,7 +184,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [TotalPrice], [IsLocked], [Updated], " +
 																	 "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
-																	 "(select sum([Amount]) from [dbu-jv3].[BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
+																	 "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
 																	 "from [Booking] B where [CruiseId] = @CruiseId",
 					new {CruiseId = activeCruise.Id});
 
@@ -205,8 +205,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				var items = await db.QueryAsync<BookingPaxItem>("select BP.[Id], BP.[Group], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[CabinTypeId], B.[Reference] " +
 																"from [BookingPax] BP " +
-																"left join [dbu-jv3].[BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
-																"left join [dbu-jv3].[Booking] B on BC.[BookingId] = B.[Id] " +
+																"left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+																"left join [Booking] B on BC.[BookingId] = B.[Id] " +
 																"where B.[CruiseId] = @CruiseId",
 					new {CruiseId = activeCruise.Id});
 
