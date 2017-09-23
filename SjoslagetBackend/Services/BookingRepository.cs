@@ -52,6 +52,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await CheckAvailability(db, cruise.Id, source.Cabins, cabinTypes);
 				await CreateBooking(db, booking);
 				await CreateCabins(db, booking, source.Cabins);
+				await CreateProducts(db, booking, source.Products);
 
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cabinTypes);
 				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
@@ -141,6 +142,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await DeleteCabins(db, booking);
 				await CheckAvailability(db, cruise.Id, source.Cabins, cruiseCabins);
 				await CreateCabins(db, booking, source.Cabins);
+
+				await DeleteProducts(db, booking);
+				await CreateProducts(db, booking, source.Products);
+
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cruiseCabins);
 
 				if(allowUpdateDetails)
@@ -242,9 +247,26 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		async Task CreateProducts(SqlConnection db, Booking booking, List<BookingSource.Product> sourceList)
+		{
+			if (null == sourceList || !sourceList.Any())
+				return;
+
+			foreach(BookingSource.Product prodSource in sourceList)
+			{
+				await db.ExecuteAsync("insert into [BookingProduct] ([CruiseId], [BookingId], [ProductTypeId], [Quantity]) values (@CruiseId, @BookingId, @ProductTypeId, @Quantity)",
+					new {CruiseId = booking.CruiseId, BookingId = booking.Id, ProductTypeId = prodSource.TypeId, Quantity = prodSource.Quantity});
+			}
+		}
+
 		async Task DeleteCabins(SqlConnection db, Booking booking)
 		{
 			await db.ExecuteAsync("delete from [BookingCabin] where [BookingId] = @BookingId", new {BookingId = booking.Id});
+		}
+
+		async Task DeleteProducts(SqlConnection db, Booking booking)
+		{
+			await db.ExecuteAsync("delete from [BookingProduct] where [BookingId] = @BookingId", new {BookingId = booking.Id});
 		}
 	}
 }

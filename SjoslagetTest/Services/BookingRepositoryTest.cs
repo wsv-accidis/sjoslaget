@@ -105,6 +105,29 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenBookingSource_ContainingProducts_ShouldSaveProducts()
+		{
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+			source.Products.Add(new BookingSource.Product
+			{
+				TypeId = SjoslagetDbExtensions.ProductId,
+				Quantity = 10
+			});
+
+			var repository = GetBookingRepositoryForTest();
+			var result = await CreateBookingFromSource(source, repository);
+			Assert.IsNotNull(result.Reference);
+
+			var booking = await repository.FindByReferenceAsync(result.Reference);
+			var productRepository = new ProductRepository();
+			var productsOnBooking = await productRepository.GetProductsForBookingAsync(booking);
+
+			Assert.AreEqual(1, productsOnBooking.Length);
+			Assert.AreEqual(SjoslagetDbExtensions.ProductId, productsOnBooking[0].ProductTypeId);
+			Assert.AreEqual(10, productsOnBooking[0].Quantity);
+		}
+
+		[TestMethod]
 		public async Task GivenExistingBooking_WhenCruiseIsLocked_ShouldFailToUpdate()
 		{
 			var repository = GetBookingRepositoryForTest();
@@ -358,7 +381,8 @@ namespace Accidis.Sjoslaget.Test.Services
 				Email = "test@sjoslaget.se",
 				PhoneNo = "0000-123 456",
 				Lunch = "15",
-				Cabins = new List<BookingSource.Cabin>(cabins)
+				Cabins = new List<BookingSource.Cabin>(cabins),
+				Products = new List<BookingSource.Product>()
 			};
 		}
 
