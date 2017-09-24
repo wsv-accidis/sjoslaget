@@ -17,12 +17,14 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
 		readonly PaymentRepository _paymentRepository;
+		readonly ProductRepository _productRepository;
 
-		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository)
+		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository, ProductRepository productRepository)
 		{
 			_bookingRepository = bookingRepository;
 			_cruiseRepository = cruiseRepository;
 			_paymentRepository = paymentRepository;
+			_productRepository = productRepository;
 		}
 
 		[HttpPost]
@@ -138,9 +140,10 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					return BadRequest("Request is unauthorized, or booking belongs to an inactive cruise.");
 
 				BookingCabinWithPax[] cabins = await _bookingRepository.GetCabinsForBookingAsync(booking);
+				BookingProduct[] products = await _productRepository.GetProductsForBookingAsync(booking);
 				PaymentSummary payment = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
 
-				return Ok(BookingSource.FromBooking(booking, cabins, payment));
+				return Ok(BookingSource.FromBooking(booking, cabins, products, payment));
 			}
 			catch(Exception ex)
 			{

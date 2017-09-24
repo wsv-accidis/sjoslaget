@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -196,6 +197,7 @@
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\BookingPaxItem.cs" />
+    <Compile Include="Models\BookingProduct.cs" />
     <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\CruiseProductWithType.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
@@ -268,7 +270,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61796</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

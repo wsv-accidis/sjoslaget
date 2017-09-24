@@ -19,7 +19,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public List<Product> Products { get; set; }
 		public PaymentSummary Payment { get; set; }
 
-		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins, PaymentSummary payment)
+		public static BookingSource FromBooking(Booking booking, BookingCabinWithPax[] cabins, BookingProduct[] products, PaymentSummary payment)
 		{
 			return new BookingSource
 			{
@@ -44,6 +44,11 @@ namespace Accidis.Sjoslaget.WebService.Models
 						Nationality = p.Nationality.ToUpperInvariant(),
 						Years = p.Years
 					}).ToList()
+				}).ToList(),
+				Products = products.Select(p => new Product
+				{
+					TypeId = p.ProductTypeId,
+					Quantity = p.Quantity
 				}).ToList(),
 				Payment = payment
 			};

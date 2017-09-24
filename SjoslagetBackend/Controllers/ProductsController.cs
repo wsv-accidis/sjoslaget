@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
-using System.Web.Http;
+﻿using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using System;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -19,10 +21,17 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> Active()
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
-			if(null == activeCruise)
+			if (null == activeCruise)
 				return NotFound();
 
-			return Ok(await _productRepository.GetActiveAsync(activeCruise.Id));
+			CruiseProductWithType[] products = await _productRepository.GetActiveAsync(activeCruise.Id);
+
+			// Give relative URLs for images to make life easier on frontend
+			foreach(CruiseProductWithType product in products)
+				if(!String.IsNullOrEmpty(product.Image))
+					product.Image = string.Concat("/gfx/products/", product.Image);
+
+			return Ok(products);
 		}
 
 		[HttpGet]
