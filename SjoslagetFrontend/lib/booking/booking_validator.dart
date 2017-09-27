@@ -4,12 +4,13 @@ import 'package:angular2/core.dart';
 
 import '../model/booking_cabin_view.dart';
 import '../model/booking_pax_view.dart';
+import '../model/booking_product_view.dart';
 
 @Injectable()
 class BookingValidator {
 	final _dobRegExp = new RegExp(r'^\d{6}$');
 	final _nationalityRegExp = new RegExp(r'^[a-zA-Z]{2}$');
-	final _yearsRegExp = new RegExp(r'^\d+$');
+	final _numberRegExp = new RegExp(r'^\d+$');
 
 	bool validateCabin(BookingCabinView cabin) {
 		cabin.isValid = cabin.pax
@@ -57,13 +58,25 @@ class BookingValidator {
 			pax.nationalityError = null;
 		}
 
-		if (!isBlank(pax.years) && !_yearsRegExp.hasMatch(pax.years)) {
+		if (!isBlank(pax.years) && !_numberRegExp.hasMatch(pax.years)) {
 			pax.yearsError = 'Ange siffror.';
 		} else {
 			pax.yearsError = null;
 		}
 
-		return !pax.hasError;
+		return pax.isValid;
+	}
+
+	bool validateProduct(BookingProductView product) {
+		if (!isBlank(product.quantity) && !_numberRegExp.hasMatch(product.quantity)) {
+			product.quantityError = 'Ange siffror.';
+		} else if (!isBlank(product.quantity) && product.quantity.length > 3) {
+			product.quantity = '999';
+		} else {
+			product.quantityError = null;
+		}
+
+		return product.isValid;
 	}
 
 	// Mildly dubious conversion - interpret as 20xx unless that would be in the future, otherwise 19xx

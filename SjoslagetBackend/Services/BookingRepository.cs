@@ -252,7 +252,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			if (null == sourceList || !sourceList.Any())
 				return;
 
-			foreach(BookingSource.Product prodSource in sourceList)
+			foreach(BookingSource.Product prodSource in sourceList.Where(p => p.Quantity > 0))
 			{
 				await db.ExecuteAsync("insert into [BookingProduct] ([CruiseId], [BookingId], [ProductTypeId], [Quantity]) values (@CruiseId, @BookingId, @ProductTypeId, @Quantity)",
 					new {CruiseId = booking.CruiseId, BookingId = booking.Id, ProductTypeId = prodSource.TypeId, Quantity = prodSource.Quantity});

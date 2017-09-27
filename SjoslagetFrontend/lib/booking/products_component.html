@@ -1,0 +1,34 @@
+<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
+
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td *ngFor="let product of bookingProducts">
+			<img [alt]="product.name"
+				 class="product-image"
+				 [src]="product.image"
+			     [title]="product.description" />
+		</td>
+	</tr>
+	<tr>
+		<td *ngFor="let product of bookingProducts" class="product-title">
+			<span [title]="product.description">{{ product.name }}</span>
+		</td>
+	</tr>
+	<tr>
+		<td *ngFor="let product of bookingProducts; let p = index">
+			<material-input [(ngModel)]="product.quantity"
+							[class]="product.hasQuantityError ? 'product-field error-marker' : 'product-field'"
+							[error]="product.quantityError"
+							(keyup)="validate($event)"
+							label="Antal"
+							[ngControl]="'product_' + p.toString()"
+							type="number">
+			</material-input>
+			× {{ product.priceFormatted }}
+		</td>
+	</tr>
+</table>
+
+<p class="product-note" *ngIf="showProductNote">
+	Alla paket innehåller 4 x 33 cl av vald dryck, 2 x 50 cl vatten och Pringles Originalchips.
+</p>

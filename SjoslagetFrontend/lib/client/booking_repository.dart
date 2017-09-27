@@ -15,6 +15,7 @@ import '../model/booking_dashboard_item.dart';
 import '../model/booking_details.dart';
 import '../model/booking_overview_item.dart';
 import '../model/booking_pax_item.dart';
+import '../model/booking_product.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/payment_summary.dart';
@@ -133,9 +134,9 @@ class BookingRepository {
 		HttpStatus.throwIfNotSuccessful(response);
 	}
 
-	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins) async {
+	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins, List<BookingProduct> products) async {
 		final headers = _createJsonHeaders();
-		final source = new BookingSource.fromDetails(details, cabins);
+		final source = new BookingSource.fromDetails(details, cabins, products);
 
 		Response response;
 		try {

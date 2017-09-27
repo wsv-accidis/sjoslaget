@@ -1,0 +1,22 @@
+.product-field {
+	width: 70px;
+}
+
+img.product-image {
+	border: 0;
+	box-shadow: none;
+	height: 140px;
+	max-width: 100px;
+}
+
+.product-note {
+	margin-top: 0;
+}
+
+.product-title {
+	font-weight: bold;
+}
+
+table {
+	width: 800px;
+}

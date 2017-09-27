@@ -31,6 +31,12 @@
 		att låsas och ändringar kan då inte längre göras.
 	</p>
 
+	<p>
+		Observera att Siljas <strong>nya taxfree-regler</strong> gäller i år och du kan köpa alkohol i taxfree först från och med
+		måndag morgon. För att ha något att dricka på söndag kväll kan du förbeställa paket med dryck, chips och vatten i samband
+		med bokning, eller uppsöka någon av fartygets barer. Paketen får du efter ombordstigning.
+	</p>
+
 	<p class="super-important">
 		Hytterna reserveras inte förrän du sparar din bokning. Det betyder att om någon kategori tar slut under tiden du fyller i uppgifter,
 		kommer du inte att kunna spara bokningen innan du har tagit bort de hytter som tagit slut. Börja därför med att boka hytter av de
@@ -49,8 +55,12 @@
 
 	<cabins-component #cabins></cabins-component>
 
+	<h2 style="margin-bottom: 5px; margin-top: 30px">Beställ dryckespaket</h2>
+
+	<products-component #products></products-component>
+
 	<div *ngIf="!cabins.readOnly">
-		<h3>Spara bokningen</h3>
+		<h2 style="margin-top: 30px">Spara bokningen</h2>
 
 		<p *ngIf="isNewlySaved">
 			Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span> och din PIN-kod är <span class="booking-result">{{ bookingResult.password }}</span>.

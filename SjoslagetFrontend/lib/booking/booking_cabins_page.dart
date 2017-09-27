@@ -8,6 +8,7 @@ import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
 import 'booking_component.dart';
 import 'cabins_component.dart';
+import 'products_component.dart';
 import '../client/availability_exception.dart';
 import '../client/booking_exception.dart';
 import '../client/booking_repository.dart';
@@ -16,6 +17,8 @@ import '../client/cruise_repository.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
+import '../model/booking_product.dart';
+import '../model/booking_product_view.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/cruise.dart';
@@ -26,7 +29,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
 	styleUrls: const ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: const <dynamic>[materialDirectives, SpinnerWidget, CabinsComponent],
+	directives: const <dynamic>[materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingCabinsPage implements OnInit {
@@ -38,6 +41,9 @@ class BookingCabinsPage implements OnInit {
 	@ViewChild('cabins')
 	CabinsComponent cabins;
 
+	@ViewChild('products')
+	ProductsComponent products;
+
 	BookingDetails bookingDetails;
 	String bookingError;
 	BookingResult bookingResult;
@@ -45,9 +51,9 @@ class BookingCabinsPage implements OnInit {
 	String loadingError;
 	bool isNewBooking;
 
-	bool get canFinish => !cabins.isEmpty && isSaved && cabins.isValid && !isSaving;
+	bool get canFinish => !cabins.isEmpty && isSaved && cabins.isValid && products.isValid && !isSaving;
 
-	bool get canSave => !cabins.isEmpty && cabins.isValid && !isSaving;
+	bool get canSave => !cabins.isEmpty && cabins.isValid && products.isValid && !isSaving;
 
 	bool get hasBookingError => isNotEmpty(bookingError);
 
@@ -99,6 +105,9 @@ class BookingCabinsPage implements OnInit {
 			cabins.discountPercent = booking.discount;
 			cabins.readOnly = booking.isLocked || cruise.isLocked;
 
+			products.quantitiesFromBooking = booking.products;
+			cabins.registerAddonProvider(products);
+
 			if (!cabins.readOnly)
 				cabins.validateAll();
 
@@ -131,11 +140,12 @@ class BookingCabinsPage implements OnInit {
 
 		try {
 			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
+			final List<BookingProduct> productsToSave = BookingProductView.listToListOfBookingProduct(products.bookingProducts);
 			final client = _clientFactory.getClient();
 			BookingResult result;
 
 			try {
-				result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave);
+				result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave, productsToSave);
 			} catch (e) {
 				if (e is AvailabilityException) {
 					await cabins.refreshAvailability();

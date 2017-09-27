@@ -23,7 +23,11 @@
 <form #bookingForm="ngForm">
 	<cabins-component #cabins></cabins-component>
 
-	<h2 style="margin-top: 30px; margin-bottom: 5px">Kontaktperson</h2>
+	<h2 class="booking-subtitle">Dryckespaket</h2>
+
+	<products-component #products></products-component>
+
+	<h2 class="booking-subtitle" style="margin-top: 5px">Kontaktperson</h2>
 
 	<div *ngIf="hasLoaded" style="margin-left: 5px">
 		<material-input [(ngModel)]="booking.firstName"
@@ -91,7 +95,7 @@
 
 	<div>
 		<material-button class="control-blue"
-						 [disabled]="!canSaveCabins || !bookingForm.valid"
+						 [disabled]="!canSave || !bookingForm.valid"
 						 raised
 						 (trigger)="saveBooking()">
 			Spara bokningen
@@ -128,7 +132,7 @@
 	</p>
 </form>
 
-<h2 style="margin-top: 30px">
+<h2 class="booking-subtitle">
 	Betalningar
 </h2>
 

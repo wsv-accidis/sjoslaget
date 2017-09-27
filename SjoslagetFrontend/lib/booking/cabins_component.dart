@@ -5,19 +5,19 @@ import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
 import 'package:decimal/decimal.dart';
 
+import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/cruise_cabin.dart';
 import '../util/currency_formatter.dart';
-import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
 	styleUrls: const ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
-	directives: const <dynamic>[materialDirectives, SpinnerWidget],
+	directives: const <dynamic>[materialDirectives],
 	providers: const <dynamic>[materialProviders]
 )
 class CabinsComponent implements OnInit {
@@ -29,6 +29,7 @@ class CabinsComponent implements OnInit {
 	List<BookingCabinView> _pendingDeleteCabins = new List<BookingCabinView>();
 
 	Decimal amountPaid;
+	List<BookingAddonProvider> bookingAddons = new List<BookingAddonProvider>();
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins;
@@ -38,12 +39,14 @@ class CabinsComponent implements OnInit {
 	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
 
 	Decimal get discount {
-		final priceAsDec = new Decimal.fromInt(price);
+		final priceAsDec = new Decimal.fromInt(priceOfCabins);
 		final discountAsDec = new Decimal.fromInt(discountPercent) / new Decimal.fromInt(100);
 		return priceAsDec * discountAsDec;
 	}
 
 	String get discountFormatted => CurrencyFormatter.formatDecimalAsSEK(discount);
+
+	bool get hasAddons => priceOfAddons > 0;
 
 	bool get hasDiscount => discountPercent > 0;
 
@@ -57,9 +60,17 @@ class CabinsComponent implements OnInit {
 
 	bool get isValid => bookingCabins.every((b) => b.isValid);
 
-	int get price => bookingCabins.fold(0, (sum, b) => sum + b.price);
+	int get price => priceOfCabins + priceOfAddons;
+
+	int get priceOfAddons => bookingAddons.fold(0, (sum, a) => sum + a.price);
+
+	int get priceOfCabins => bookingCabins.fold(0, (sum, b) => sum + b.price);
 
 	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
+
+	String get priceOfAddonsFormatted => CurrencyFormatter.formatIntAsSEK(priceOfAddons);
+
+	String get priceOfCabinsFormatted => CurrencyFormatter.formatIntAsSEK(priceOfCabins);
 
 	Decimal get priceRemaining => hasPayment ? priceWithDiscount - amountPaid : priceWithDiscount;
 
@@ -143,6 +154,10 @@ class CabinsComponent implements OnInit {
 			print('Failed to refresh availability due to an exception: ' + e.toString());
 			// Ignore this here, keep using old availability
 		}
+	}
+
+	void registerAddonProvider(BookingAddonProvider provider) {
+		bookingAddons.add(provider);
 	}
 
 	String uniqueId(String prefix, int cabin, int pax) {

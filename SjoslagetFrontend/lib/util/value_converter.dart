@@ -8,6 +8,10 @@ abstract class ValueConverter {
 		if (id is double)
 			return id.toInt();
 
-		return int.parse(id.toString());
+		try {
+			return int.parse(id.toString());
+		} catch (e) {
+			return 0;
+		}
 	}
 }

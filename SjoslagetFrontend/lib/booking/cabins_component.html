@@ -79,8 +79,8 @@
 									[class]="pax.hasGroupError ? 'error-marker' : ''"
 									[error]="pax.groupError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('group', c, p)"
-									label="Förening">
+									label="Förening"
+									[ngControl]="uniqueId('group', c, p)">
 					</material-input>
 				</td>
 				<td class="name-field-cell">
@@ -88,8 +88,8 @@
 									[class]="pax.hasFirstNameError ? 'error-marker' : ''"
 									[error]="pax.firstNameError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('firstName', c, p)"
-									label="Förnamn">
+									label="Förnamn"
+									[ngControl]="uniqueId('firstName', c, p)">
 					</material-input>
 				</td>
 				<td class="name-field-cell">
@@ -97,8 +97,8 @@
 									[class]="pax.hasLastNameError ? 'error-marker' : ''"
 									[error]="pax.lastNameError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('lastName', c, p)"
-									label="Efternamn">
+									label="Efternamn"
+									[ngControl]="uniqueId('lastName', c, p)">
 					</material-input>
 				</td>
 				<td class="gender-field-cell">
@@ -121,8 +121,8 @@
 									[class]="pax.hasDobError ? 'error-marker' : ''"
 									[error]="pax.dobError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('dob', c, p)"
 									label="ÅÅMMDD"
+									[ngControl]="uniqueId('dob', c, p)"
 									type="number">
 					</material-input>
 				</td>
@@ -131,8 +131,8 @@
 									[class]="pax.hasNationalityError ? 'error-marker' : ''"
 									[error]="pax.nationalityError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('nationality', c, p)"
-									label="Nationalitet">
+									label="Nationalitet"
+									[ngControl]="uniqueId('nationality', c, p)">
 					</material-input>
 				</td>
 				<td class="years-field-cell">
@@ -140,8 +140,8 @@
 									[class]="pax.hasYearsError ? 'error-marker' : ''"
 									[error]="pax.yearsError"
 									(keyup)="validate($event)"
-									[ngControl]="uniqueId('years', c, p)"
 									label="Åkta år"
+									[ngControl]="uniqueId('years', c, p)"
 									type="number">
 					</material-input>
 				</td>
@@ -150,6 +150,12 @@
 	</div>
 </div>
 
+<div *ngIf="hasPrice && hasAddons" class="booking-price">
+	Totalt hyttpris <span>{{ priceOfCabinsFormatted }}</span>
+</div>
+<div *ngIf="hasAddons" class="booking-price">
+	Tillägg <span>{{ priceOfAddonsFormatted }}</span>
+</div>
 <div *ngIf="hasPrice" class="booking-price">
 	Totalt pris <span>{{ priceFormatted }}</span>
 </div>

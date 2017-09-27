@@ -38,8 +38,6 @@ class BookingPaxView {
 		clearErrors();
 	}
 
-	bool get hasError => hasGroupError || hasFirstNameError || hasLastNameError || hasGenderError || hasDobError || hasNationalityError || hasYearsError;
-
 	bool get hasGroupError => !str.isEmpty(groupError);
 
 	bool get hasFirstNameError => !str.isEmpty(firstNameError);
@@ -55,6 +53,8 @@ class BookingPaxView {
 	bool get hasYearsError => !str.isEmpty(yearsError);
 
 	bool get isEmpty => str.isBlank(group) && str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
+
+	bool get isValid => !hasGroupError && !hasFirstNameError && !hasLastNameError && !hasGenderError && !hasDobError && !hasNationalityError && !hasYearsError;
 
 	void clearErrors() {
 		groupError = null;
