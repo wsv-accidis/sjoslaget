@@ -1,6 +1,7 @@
 import 'package:quiver/strings.dart' as str show isBlank, isEmpty;
 
 import '../model/booking_pax.dart';
+import '../util/value_converter.dart';
 
 class BookingPaxView {
 	String group;
@@ -76,10 +77,5 @@ class BookingPaxView {
 			_toInt(years));
 	}
 
-	static int _toInt(dynamic id) {
-		if (null == id)
-			return 0;
-
-		return int.parse(id.toString());
-	}
+	static int _toInt(dynamic id) => ValueConverter.toInt(id);
 }

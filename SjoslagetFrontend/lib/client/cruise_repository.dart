@@ -10,11 +10,13 @@ import 'io_exception.dart';
 import 'session_storage_cache.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
+import '../model/cruise_product.dart';
 
 @Injectable()
 class CruiseRepository {
 	static const ACTIVE_CRUISE_TIMEOUT = 60 * 1000;
 	static const ACTIVE_CRUISE_CABINS_TIMEOUT = 30 * 60 * 1000;
+	static const ACTIVE_CRUISE_PRODUCTS_TIMEOUT = 15 * 60 * 1000;
 
 	final String _apiRoot;
 	final SessionStorageCache _cache;
@@ -30,6 +32,13 @@ class CruiseRepository {
 		final body = await _cache.get(client, '/cabins/active', ACTIVE_CRUISE_CABINS_TIMEOUT);
 		return JSON.decode(body)
 			.map((Map<String, dynamic> value) => new CruiseCabin.fromMap(value))
+			.toList();
+	}
+
+	Future<List<CruiseProduct>> getActiveCruiseProducts(Client client) async {
+		final body = await _cache.get(client, '/products/active', ACTIVE_CRUISE_PRODUCTS_TIMEOUT);
+		return JSON.decode(body)
+			.map((Map<String, dynamic> value) => new CruiseProduct.fromMap(value))
 			.toList();
 	}
 
