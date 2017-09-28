@@ -75,6 +75,7 @@ class BookingCabinsPage implements OnInit {
 			 * Initialize a new booking where the previously supplied details are in session storage.
 			 */
 			bookingDetails = new BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
+			cabins.registerAddonProvider(products);
 			isNewBooking = true;
 		} else if (_clientFactory.hasCredentials && !_clientFactory.isAdmin) {
 			/*
