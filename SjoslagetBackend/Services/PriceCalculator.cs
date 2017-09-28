@@ -7,7 +7,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class PriceCalculator
 	{
-		public decimal CalculatePrice(List<BookingSource.Cabin> bookingCabins, List<BookingSource.Product> bookingProducts, 
+		public decimal CalculatePrice(List<BookingSource.Cabin> bookingCabins, List<BookingSource.Product> bookingProducts,
 			int discount, IEnumerable<CruiseCabinWithType> cruiseCabins, IEnumerable<CruiseProductWithType> cruiseProducts)
 		{
 			if(!bookingCabins.Any() || discount >= 100)

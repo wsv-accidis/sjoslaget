@@ -37,7 +37,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<BookingProduct[]> GetProductsForBookingAsync(Booking booking)
 		{
-			using (var db = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var result = await db.QueryAsync<BookingProduct>("select * from [BookingProduct] where [BookingId] = @BookingId",
 					new {BookingId = booking.Id});

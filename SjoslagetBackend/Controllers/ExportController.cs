@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Dapper;
 using Simplexcel;
-using System.Collections.Generic;
-using Accidis.Sjoslaget.WebService.Auth;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -24,11 +26,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
+		readonly ProductRepository _productRepository;
 
-		public ExportController(CabinRepository cabinRepository, CruiseRepository cruiseRepository)
+		public ExportController(CabinRepository cabinRepository, CruiseRepository cruiseRepository, ProductRepository productRepository)
 		{
 			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
+			_productRepository = productRepository;
 		}
 
 		[Authorize(Roles = Roles.Admin)]
@@ -43,9 +47,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			WorkbookGenerator.CreateHeaderRow(sheet, 0);
 
 			Dictionary<Guid, string> cabinTypes = (await _cabinRepository.GetAllAsync()).ToDictionary(c => c.Id, c => c.Name);
-			int rowNo = 1, cabinNo = 0;
+			Dictionary<Guid, string> productTypes = (await _productRepository.GetAllAsync()).ToDictionary(c => c.Id, c => c.Name);
 
-			using (var db = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 			{
 				var bookingsResult = await db.QueryAsync<Booking>("select [Id], [Reference], [TotalPrice], " +
 																  "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
@@ -53,13 +57,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 																  "order by [Reference]",
 					new {CruiseId = activeCruise.Id});
 
-				var cabinId = Guid.Empty;
-				string cabinTypeName = String.Empty;
-
 				Booking[] allBookings = onlyFullyPaid
 					? bookingsResult.Where(b => b.IsFullyPaid).ToArray()
 					: bookingsResult.ToArray();
 
+				int cabinNo = 0, rowNo = 1;
 				foreach(Booking booking in allBookings)
 				{
 					var paxResult = await db.QueryAsync<Pax>("select BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
@@ -69,33 +71,10 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 															 "order by BC.[Order], BP.[Order]",
 						new {BookingId = booking.Id});
 
-					Pax[] paxInBooking = paxResult.ToArray();
-					foreach(Pax pax in paxInBooking)
-					{
-						string products = string.Empty; // TODO
+					var productsResult = await db.QueryAsync<BookingProduct>("select [ProductTypeId], [Quantity] from [BookingProduct] where [BookingId] = @BookingId",
+						new {BookingId = booking.Id});
 
-						if(!cabinId.Equals(pax.CabinId))
-						{
-							cabinId = pax.CabinId;
-							cabinTypeName = cabinTypes[pax.CabinTypeId];
-							cabinNo++;
-							rowNo++; // inserts a blank row into the sheet
-						}
-
-						WorkbookGenerator.CreateRow(
-							sheet,
-							rowNo++,
-							cabinNo,
-							cabinTypeName,
-							pax.LastName,
-							pax.FirstName,
-							pax.Dob,
-							pax.Gender,
-							pax.Nationality,
-							booking.Reference,
-							products
-						);
-					}
+					CreateRowsForBooking(db, sheet, booking, paxResult.ToArray(), productsResult.ToArray(), cabinTypes, productTypes, ref cabinNo, ref rowNo);
 				}
 			}
 
@@ -119,6 +98,52 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			// This is necessary so that the front-end can read the filename of the attachment
 			result.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
 			return ResponseMessage(result);
+		}
+
+		static void CreateRowsForBooking(SqlConnection db, Worksheet sheet, Booking booking, Pax[] paxInBooking, BookingProduct[] productsInBooking, 
+			Dictionary<Guid, string> cabinTypes, Dictionary<Guid, string> productTypes, ref int cabinNo, ref int rowNo)
+		{
+			Guid cabinId = Guid.Empty;
+			string cabinTypeName = String.Empty;
+
+			foreach(Pax pax in paxInBooking)
+			{
+				string products = CreateStringForProducts(productsInBooking, productTypes);
+
+				if(!cabinId.Equals(pax.CabinId))
+				{
+					cabinId = pax.CabinId;
+					cabinTypeName = cabinTypes[pax.CabinTypeId];
+					cabinNo++;
+					rowNo++; // inserts a blank row into the sheet
+				}
+
+				WorkbookGenerator.CreateRow(
+					sheet,
+					rowNo++,
+					cabinNo,
+					cabinTypeName,
+					pax.LastName,
+					pax.FirstName,
+					pax.Dob,
+					pax.Gender,
+					pax.Nationality,
+					booking.Reference,
+					products
+				);
+			}
+		}
+
+		static string CreateStringForProducts(BookingProduct[] productsInBooking, Dictionary<Guid, string> productTypes)
+		{
+			var buffer = new StringBuilder();
+			foreach(BookingProduct bookingProduct in productsInBooking)
+			{
+				if(buffer.Length > 0)
+					buffer.Append(", ");
+				buffer.AppendFormat("{0} x {1}", bookingProduct.Quantity, productTypes[bookingProduct.ProductTypeId]);
+			}
+			return buffer.ToString();
 		}
 
 		sealed class Booking
@@ -159,16 +184,16 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			internal static void CreateRow(
 				Worksheet sheet,
 				int row,
-				int cabinNo, 
-				string cabinTypeName, 
-				string lastName, 
-				string firstName, 
-				DateOfBirth dob, 
-				Gender gender, 
-				string nationality, 
-				string reference, 
+				int cabinNo,
+				string cabinTypeName,
+				string lastName,
+				string firstName,
+				DateOfBirth dob,
+				Gender gender,
+				string nationality,
+				string reference,
 				string products
-				)
+			)
 			{
 				sheet[row, 0] = cabinNo;
 				sheet[row, 1] = cabinTypeName;
@@ -179,6 +204,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				sheet[row, 6] = nationality.ToUpperInvariant();
 				sheet[row, 7] = reference;
 				sheet[row, 8] = products;
+			}
+
+			internal static Workbook CreateWorkbook(Worksheet sheet)
+			{
+				var workbook = new Workbook();
+				workbook.Add(sheet);
+				return workbook;
 			}
 
 			internal static Worksheet CreateWorksheet()
@@ -197,13 +229,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				sheet.ColumnWidths[8] = 30;
 
 				return sheet;
-			}
-
-			internal static Workbook CreateWorkbook(Worksheet sheet)
-			{
-				var workbook = new Workbook();
-				workbook.Add(sheet);
-				return workbook;
 			}
 
 			static Cell CreateHeaderCell(String text)

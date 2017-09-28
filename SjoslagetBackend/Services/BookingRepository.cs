@@ -58,7 +58,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await CreateProducts(db, booking, source.Products);
 
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
-				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
+				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice where [Id] = @Id", new {TotalPrice = totalPrice, Id = booking.Id});
 
 				tran.Complete();
 			}
@@ -75,7 +75,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			if(null != user && user.IsBooking)
 				await _userManager.DeleteAsync(user);
 
-			using (var db = SjoslagetDb.Open())
+			using(var db = SjoslagetDb.Open())
 				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new {Id = booking.Id});
 		}
 
@@ -256,7 +256,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		async Task CreateProducts(SqlConnection db, Booking booking, List<BookingSource.Product> sourceList)
 		{
-			if (null == sourceList || !sourceList.Any())
+			if(null == sourceList || !sourceList.Any())
 				return;
 
 			foreach(BookingSource.Product prodSource in sourceList.Where(p => p.Quantity > 0))

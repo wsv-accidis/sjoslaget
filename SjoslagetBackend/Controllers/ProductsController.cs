@@ -1,8 +1,8 @@
-﻿using Accidis.Sjoslaget.WebService.Models;
-using Accidis.Sjoslaget.WebService.Services;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Models;
+using Accidis.Sjoslaget.WebService.Services;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -21,7 +21,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> Active()
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
-			if (null == activeCruise)
+			if(null == activeCruise)
 				return NotFound();
 
 			CruiseProductWithType[] products = await _productRepository.GetActiveAsync(activeCruise.Id);
