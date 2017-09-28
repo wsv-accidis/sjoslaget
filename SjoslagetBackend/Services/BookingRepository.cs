@@ -18,13 +18,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		readonly CabinRepository _cabinRepository;
 		readonly PriceCalculator _priceCalculator;
+		readonly ProductRepository _productRepository;
 		readonly RandomKeyGenerator _randomKeyGenerator;
 		readonly SjoslagetUserManager _userManager;
 
-		public BookingRepository(CabinRepository cabinRepository, PriceCalculator priceCalculator, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		public BookingRepository(CabinRepository cabinRepository, PriceCalculator priceCalculator, ProductRepository productRepository, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
 		{
 			_cabinRepository = cabinRepository;
 			_priceCalculator = priceCalculator;
+			_productRepository = productRepository;
 			_randomKeyGenerator = randomKeyGenerator;
 			_userManager = userManager;
 		}
@@ -47,6 +49,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var db = SjoslagetDb.Open())
 			{
 				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise.Id);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 				await CheckAvailability(db, cruise.Id, source.Cabins, cabinTypes);
@@ -54,7 +57,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await CreateCabins(db, booking, source.Cabins);
 				await CreateProducts(db, booking, source.Products);
 
-				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cabinTypes);
+				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
 				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
 
 				tran.Complete();
@@ -129,7 +132,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = SjoslagetDb.Open())
 			{
-				IEnumerable<CruiseCabinWithType> cruiseCabins = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise.Id);
+				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise.Id);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
@@ -140,13 +144,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
 				await DeleteCabins(db, booking);
-				await CheckAvailability(db, cruise.Id, source.Cabins, cruiseCabins);
+				await CheckAvailability(db, cruise.Id, source.Cabins, cabinTypes);
 				await CreateCabins(db, booking, source.Cabins);
 
 				await DeleteProducts(db, booking);
 				await CreateProducts(db, booking, source.Products);
 
-				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, booking.Discount, cruiseCabins);
+				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
 
 				if(allowUpdateDetails)
 				{
@@ -166,9 +170,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			using(var db = SjoslagetDb.Open())
 			{
-				IEnumerable<CruiseCabinWithType> cruiseCabins = await _cabinRepository.GetActiveAsync(db, booking.CruiseId);
+				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, booking.CruiseId);
+				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, booking.CruiseId);
 				var bookingCabins = (await db.QueryAsync<BookingSource.Cabin>("select [CabinTypeId] [TypeId] from [BookingCabin] where [BookingId] = @Id", new {Id = booking.Id})).ToList();
-				decimal totalPrice = _priceCalculator.CalculatePrice(bookingCabins, booking.Discount, cruiseCabins);
+				var bookingProducts = (await db.QueryAsync<BookingSource.Product>("select [ProductTypeId] [TypeId], [Quantity] from [BookingProduct] where [BookingId] = @Id", new {Id = booking.Id})).ToList();
+
+				decimal totalPrice = _priceCalculator.CalculatePrice(bookingCabins, bookingProducts, booking.Discount, cabinTypes, productTypes);
 
 				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [TotalPrice] = @TotalPrice where [Id] = @Id",
 					new {Id = booking.Id, Discount = booking.Discount, TotalPrice = totalPrice});
