@@ -97,6 +97,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			var result = new HttpResponseMessage(HttpStatusCode.OK) {Content = content};
 			// This is necessary so that the front-end can read the filename of the attachment
 			result.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+			result.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
 			return ResponseMessage(result);
 		}
 

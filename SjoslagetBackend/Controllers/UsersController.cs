@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Accidis.Sjoslaget.WebService.Auth;
+﻿using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.Sjoslaget.WebService.Web;
 using Microsoft.AspNet.Identity;
 using NLog;
+using System;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -115,7 +116,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(String.IsNullOrEmpty(userName))
 				throw new InvalidOperationException("Request is authorized, but username was null or empty.");
 
-			return Ok(new {UserName = userName});
+			return this.OkNoCache(new {UserName = userName});
 		}
 	}
 }

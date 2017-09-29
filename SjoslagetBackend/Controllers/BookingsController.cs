@@ -1,13 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Accidis.Sjoslaget.WebService.Auth;
+﻿using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.Sjoslaget.WebService.Web;
 using Dapper;
 using NLog;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -143,7 +144,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				BookingProduct[] products = await _productRepository.GetProductsForBookingAsync(booking);
 				PaymentSummary payment = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
 
-				return Ok(BookingSource.FromBooking(booking, cabins, products, payment));
+				return this.OkNoCache(BookingSource.FromBooking(booking, cabins, products, payment));
 			}
 			catch(Exception ex)
 			{
@@ -192,7 +193,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					new {CruiseId = activeCruise.Id});
 
 				BookingOverviewItem[] result = items.ToArray();
-				return Ok(result);
+				return this.OkNoCache(result);
 			}
 		}
 
@@ -214,7 +215,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					new {CruiseId = activeCruise.Id});
 
 				BookingPaxItem[] result = items.ToArray();
-				return Ok(result);
+				return this.OkNoCache(result);
 			}
 		}
 
@@ -262,7 +263,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					new {CruiseId = activeCruise.Id, Limit = limit});
 
 				BookingDashboardItem[] result = items.ToArray();
-				return Ok(result);
+				return this.OkNoCache(result);
 			}
 		}
 

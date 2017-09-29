@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Accidis.Sjoslaget.WebService.Auth;
+﻿using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.Sjoslaget.WebService.Web;
 using NLog;
+using System;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -25,7 +26,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == cruise)
 				return NotFound();
 
-			return Ok(cruise);
+			return this.OkCacheControl(cruise, WebConfig.StaticDataMaxAge);
 		}
 
 		[Authorize(Roles = Roles.Admin)]

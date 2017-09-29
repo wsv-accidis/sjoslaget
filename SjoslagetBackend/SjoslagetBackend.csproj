@@ -225,9 +225,13 @@
     <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Services\ProductRepository.cs" />
+    <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Services\BookingConfig.cs" />
     <Compile Include="Services\RandomKeyGenerator.cs" />
+    <Compile Include="Web\ApiControllerExtensions.cs" />
+    <Compile Include="Web\OkCacheControlResult.cs" />
+    <Compile Include="Web\OkNoCacheResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

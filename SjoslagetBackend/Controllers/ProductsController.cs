@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.Sjoslaget.WebService.Web;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -31,13 +32,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				if(!String.IsNullOrEmpty(product.Image))
 					product.Image = string.Concat("/gfx/products/", product.Image);
 
-			return Ok(products);
+			return this.OkCacheControl(products, WebConfig.StaticDataMaxAge);
 		}
 
 		[HttpGet]
 		public async Task<IHttpActionResult> All()
 		{
-			return Ok(await _productRepository.GetAllAsync());
+			return this.OkCacheControl(await _productRepository.GetAllAsync(), WebConfig.StaticDataMaxAge);
 		}
 	}
 }
