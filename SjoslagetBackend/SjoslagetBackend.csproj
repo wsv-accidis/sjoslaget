@@ -214,6 +214,7 @@
     <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
+    <Compile Include="Models\ProductCount.cs" />
     <Compile Include="Models\ProductType.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserPasswordChange.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Services\CabinRepository.cs" />
     <Compile Include="Services\CruiseRepository.cs" />
     <Compile Include="Services\EmailSender.cs" />
+    <Compile Include="Services\ExportToExcelGenerator.cs" />
     <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Services\ProductRepository.cs" />

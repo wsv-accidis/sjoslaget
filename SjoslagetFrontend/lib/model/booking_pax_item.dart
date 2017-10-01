@@ -12,7 +12,7 @@ class BookingPaxItem {
 	String cabinType;
 	final String cabinTypeId;
 	final String reference;
-	final String group;
+	String group;
 	final String firstName;
 	final String lastName;
 	final String gender;

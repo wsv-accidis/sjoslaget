@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Db;
@@ -20,6 +21,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 				return new Cruise {Id = id, IsActive = true, Name = name};
 			}
+		}
+
+		public async Task<Cruise> FindByIdAsync(SqlConnection db, Guid id)
+		{
+			var result = await db.QueryAsync<Cruise>("select * from [Cruise] where [Id] = @Id", new {Id = id});
+			return result.FirstOrDefault();
 		}
 
 		public async Task<Cruise> GetActiveAsync()

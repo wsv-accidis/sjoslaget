@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Auth;
+using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.Sjoslaget.WebService.Web;
@@ -25,7 +27,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			CruiseProductWithType[] products = await _productRepository.GetActiveAsync(activeCruise.Id);
+			CruiseProductWithType[] products = await _productRepository.GetActiveAsync(activeCruise);
 
 			// Give relative URLs for images to make life easier on frontend
 			foreach(CruiseProductWithType product in products)
@@ -39,6 +41,22 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> All()
 		{
 			return this.OkCacheControl(await _productRepository.GetAllAsync(), WebConfig.StaticDataMaxAge);
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Stats(bool onlyFullyPaid = false)
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			using(var db = SjoslagetDb.Open())
+			{
+				ProductCount[] counts = await _productRepository.GetSumOfOrdersByProductAsync(db, activeCruise, onlyFullyPaid);
+				// TODO Add more stats here later
+				return this.OkCacheControl(new {OrderedCount = counts}, WebConfig.DynamicDataMaxAge);
+			}
 		}
 	}
 }

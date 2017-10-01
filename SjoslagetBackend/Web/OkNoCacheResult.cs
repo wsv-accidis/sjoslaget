@@ -15,7 +15,7 @@ namespace Accidis.Sjoslaget.WebService.Web
 		{
 		}
 
-		public OkNoCacheResult(T content, IContentNegotiator contentNegotiator, HttpRequestMessage request, IEnumerable<MediaTypeFormatter> formatters) 
+		public OkNoCacheResult(T content, IContentNegotiator contentNegotiator, HttpRequestMessage request, IEnumerable<MediaTypeFormatter> formatters)
 			: base(content, contentNegotiator, request, formatters)
 		{
 		}
@@ -23,7 +23,7 @@ namespace Accidis.Sjoslaget.WebService.Web
 		public override async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
 		{
 			HttpResponseMessage response = await base.ExecuteAsync(cancellationToken);
-			response.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
+			response.Headers.CacheControl = new CacheControlHeaderValue {NoCache = true};
 			return response;
 		}
 	}

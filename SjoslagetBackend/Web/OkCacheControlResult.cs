@@ -26,7 +26,7 @@ namespace Accidis.Sjoslaget.WebService.Web
 		public override async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
 		{
 			HttpResponseMessage response = await base.ExecuteAsync(cancellationToken);
-			response.Headers.CacheControl = new CacheControlHeaderValue { Private = true, MaxAge = MaxAge };
+			response.Headers.CacheControl = new CacheControlHeaderValue {Private = true, MaxAge = MaxAge};
 			return response;
 		}
 	}

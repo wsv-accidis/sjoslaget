@@ -1,14 +1,14 @@
-﻿using Accidis.Sjoslaget.WebService.Auth;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.Sjoslaget.WebService.Web;
 using Dapper;
 using NLog;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {

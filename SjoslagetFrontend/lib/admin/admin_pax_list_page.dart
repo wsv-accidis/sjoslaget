@@ -25,6 +25,8 @@ class AdminPaxListPage implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
+	static const GroupMaxLength = 30;
+
 	String _filterText = '';
 	bool _filterYear5;
 	List<BookingPaxItem> _pax;
@@ -60,7 +62,10 @@ class AdminPaxListPage implements OnInit {
 			final cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 
 			_pax = await _bookingRepository.getPax(client);
-			_pax.forEach((p) => _populateCabinType(p, cruiseCabins));
+			_pax.forEach((p) {
+				_limitTextLengths(p);
+				_populateCabinType(p, cruiseCabins);
+			});
 
 			paxView = _pax;
 		} catch (e) {
@@ -105,7 +110,19 @@ class AdminPaxListPage implements OnInit {
 		}
 	}
 
-	void _populateCabinType(BookingPaxItem pax, List<CruiseCabin> cruiseCabins) {
+	static String _ellipsify(String str, int length) {
+		if(isNotEmpty(str) && str.length > length - 3) {
+			return str.substring(0, length - 3).trimRight() + '...';
+		} else {
+			return str;
+		}
+	}
+
+	static void _limitTextLengths(BookingPaxItem pax) {
+		pax.group = _ellipsify(pax.group, GroupMaxLength);
+	}
+
+	static void _populateCabinType(BookingPaxItem pax, List<CruiseCabin> cruiseCabins) {
 		pax.cabinType = cruiseCabins
 			.firstWhere((c) => c.id == pax.cabinTypeId)
 			.name;

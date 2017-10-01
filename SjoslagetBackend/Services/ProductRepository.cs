@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,16 +10,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class ProductRepository
 	{
-		public async Task<CruiseProductWithType[]> GetActiveAsync(Guid cruiseId)
+		public async Task<CruiseProductWithType[]> GetActiveAsync(Cruise cruise)
 		{
 			using(var db = SjoslagetDb.Open())
-				return await GetActiveAsync(db, cruiseId);
+				return await GetActiveAsync(db, cruise);
 		}
 
-		public async Task<CruiseProductWithType[]> GetActiveAsync(SqlConnection db, Guid cruiseId)
+		public async Task<CruiseProductWithType[]> GetActiveAsync(SqlConnection db, Cruise cruise)
 		{
 			var result = await db.QueryAsync<CruiseProductWithType>("select PT.*, CP.* from [CruiseProduct] CP join [ProductType] PT on CP.[ProductTypeId] = PT.[Id] where CP.[CruiseId] = @Id order by PT.[Order]",
-				new {Id = cruiseId});
+				new {Id = cruise.Id});
 			return result.ToArray();
 		}
 
@@ -43,6 +43,31 @@ namespace Accidis.Sjoslaget.WebService.Services
 					new {BookingId = booking.Id});
 				return result.ToArray();
 			}
+		}
+
+		public async Task<ProductCount[]> GetSumOfOrdersByProductAsync(SqlConnection db, Cruise cruise, bool onlyFullyPaid)
+		{
+			IEnumerable<ProductCount> result;
+			var queryParams = new {CruiseId = cruise.Id};
+
+			if(onlyFullyPaid)
+			{
+				result = await db.QueryAsync<ProductCount>(
+					"select [ProductTypeId] [TypeId], SUM([Quantity]) [Count] from [BookingProduct] " +
+					"where [BookingId] in ( " +
+					"    select [Id] from [Booking] B where " +
+					"    B.[CruiseId] = @CruiseId and " +
+					"    ISNULL((select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]), 0) >= B.[TotalPrice] " +
+					") group by [ProductTypeId]", queryParams);
+			}
+			else
+			{
+				result = await db.QueryAsync<ProductCount>("select [ProductTypeId] [TypeId], SUM([Quantity]) [Count] from [BookingProduct] " +
+														   "where [CruiseId] = @CruiseId " +
+														   "group by [ProductTypeId]", queryParams);
+			}
+
+			return result.ToArray();
 		}
 	}
 }

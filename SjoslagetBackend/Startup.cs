@@ -147,14 +147,14 @@ namespace Accidis.Sjoslaget.WebService
 			config.Routes.MapHttpRoute(
 				name: "ControllerActionIdApi",
 				routeTemplate: "api/{controller}/{action}/{reference}",
-				defaults: new {},
+				defaults: new { },
 				constraints: new {reference = BookingConfig.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerIdApi",
 				routeTemplate: "api/{controller}/{reference}",
-				defaults: new {},
+				defaults: new { },
 				constraints: new {reference = BookingConfig.BookingReferencePattern}
 			);
 

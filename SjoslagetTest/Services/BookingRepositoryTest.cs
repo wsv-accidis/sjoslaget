@@ -391,7 +391,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			var userManagerMock = new Mock<SjoslagetUserManager>();
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
-			var sut = new BookingRepository(new CabinRepository(), new PriceCalculator(), new ProductRepository(), new RandomKeyGenerator(), userManagerMock.Object);
+			var sut = new BookingRepository(new CabinRepository(), new CruiseRepository(), new PriceCalculator(), new ProductRepository(), new RandomKeyGenerator(), userManagerMock.Object);
 			return sut;
 		}
 

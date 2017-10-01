@@ -1,14 +1,13 @@
-﻿using Accidis.Sjoslaget.WebService.Auth;
+﻿using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.Sjoslaget.WebService.Web;
 using Dapper;
-using System;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -30,7 +29,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			return this.OkCacheControl(await _cabinRepository.GetActiveAsync(activeCruise.Id), WebConfig.StaticDataMaxAge);
+			return this.OkCacheControl(await _cabinRepository.GetActiveAsync(activeCruise), WebConfig.StaticDataMaxAge);
 		}
 
 		[HttpGet]
@@ -46,7 +45,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			CruiseCabinAvailability[] availabilities = await _cabinRepository.GetAvailabilityAsync(activeCruise.Id);
+			CruiseCabinAvailability[] availabilities = await _cabinRepository.GetAvailabilityAsync(activeCruise);
 			return this.OkCacheControl(availabilities.ToDictionary(a => a.CabinTypeId, a => a.Available), WebConfig.DynamicDataMaxAge);
 		}
 

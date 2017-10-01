@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Db;
@@ -10,17 +9,17 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class CabinRepository
 	{
-		public async Task<CruiseCabinWithType[]> GetActiveAsync(SqlConnection db, Guid cruiseId)
+		public async Task<CruiseCabinWithType[]> GetActiveAsync(SqlConnection db, Cruise cruise)
 		{
 			var result = await db.QueryAsync<CruiseCabinWithType>("select CT.*, CC.* from [CruiseCabin] CC join [CabinType] CT on CC.[CabinTypeId] = CT.[Id] where CC.[CruiseId] = @Id order by CT.[Order]",
-				new {Id = cruiseId});
+				new {Id = cruise.Id});
 			return result.ToArray();
 		}
 
-		public async Task<CruiseCabinWithType[]> GetActiveAsync(Guid cruiseId)
+		public async Task<CruiseCabinWithType[]> GetActiveAsync(Cruise cruise)
 		{
 			using(var db = SjoslagetDb.Open())
-				return await GetActiveAsync(db, cruiseId);
+				return await GetActiveAsync(db, cruise);
 		}
 
 		public async Task<CabinType[]> GetAllAsync()
@@ -35,16 +34,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return result.ToArray();
 		}
 
-		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(Guid cruiseId)
+		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(Cruise cruise)
 		{
 			using(var db = SjoslagetDb.Open())
-				return await GetAvailabilityAsync(db, cruiseId);
+				return await GetAvailabilityAsync(db, cruise);
 		}
 
-		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(SqlConnection db, Guid cruiseId)
+		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(SqlConnection db, Cruise cruise)
 		{
 			var result = await db.QueryAsync<CruiseCabinAvailability>("select cc.[CabinTypeId], cc.[Count] - (select count(*) from [BookingCabin] BC where BC.[CruiseId] = @CruiseId and BC.[CabinTypeId] = cc.[CabinTypeId]) Available " +
-																	  "from [CruiseCabin] CC where CC.[CruiseId] = @CruiseId", new {CruiseId = cruiseId});
+																	  "from [CruiseCabin] CC where CC.[CruiseId] = @CruiseId", new {CruiseId = cruise.Id});
 			return result.ToArray();
 		}
 	}
