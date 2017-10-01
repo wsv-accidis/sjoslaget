@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class ExportController : ApiController
 	{
+		const string UpdatedSinceFormat = "yyyyMMdd";
 		const string FilenameFormat = "Export_{0:yyyyMMdd_HHmmss}.xlsx";
 
 		readonly CabinRepository _cabinRepository;
@@ -29,14 +31,18 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Excel(bool onlyFullyPaid = false)
+		public async Task<IHttpActionResult> Excel(bool onlyFullyPaid = false, string updatedSince = null)
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
 			if(null == activeCruise)
 				return NotFound();
 
+			DateTime? updatedSinceDate = String.IsNullOrEmpty(updatedSince)
+				? null
+				: new DateTime?(DateTime.ParseExact(updatedSince, UpdatedSinceFormat, CultureInfo.InvariantCulture));
+
 			var exportToExcelGenerator = new ExportToExcelGenerator(_cabinRepository, _productRepository);
-			Workbook workbook = await exportToExcelGenerator.ExportToWorkbook(activeCruise, onlyFullyPaid);
+			Workbook workbook = await exportToExcelGenerator.ExportToWorkbook(activeCruise, onlyFullyPaid, updatedSinceDate);
 
 			return CreateHttpResponseMessage(workbook);
 		}

@@ -1,4 +1,4 @@
-import 'package:quiver/strings.dart' as str show isEmpty;
+import 'package:quiver/strings.dart' as str show isNotEmpty;
 
 import 'booking_product.dart';
 import 'cruise_product.dart';
@@ -9,7 +9,7 @@ class BookingProductView extends CruiseProduct {
 	String quantity;
 	String quantityError;
 
-	bool get hasQuantityError => !str.isEmpty(quantityError);
+	bool get hasQuantityError => str.isNotEmpty(quantityError);
 
 	bool get isValid => !hasQuantityError;
 

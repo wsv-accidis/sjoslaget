@@ -11,24 +11,42 @@
 	Här exporterar du alla bokningar för nuvarande kryssning i Microsoft Excel-format.
 </p>
 
-<div>
-	<material-radio-group [(ngModel)]="onlyFullyPaid">
-		<material-radio value="true" title="Endast färdigbetalade bokningar">
-			Endast färdigbetalade bokningar
-		</material-radio>
-		<material-radio value="false" title="Alla bokningar">
-			Alla bokningar
-		</material-radio>
-	</material-radio-group>
-</div>
+<form #exportForm="ngForm" (submit)="doExport()">
+	<div style="margin-bottom: 0;">
+		Markera bokningar uppdaterade sedan:
+		<material-input [(ngModel)]="updatedSince"
+						[class]="hasUpdatedSinceError ? 'error-marker' : ''"
+						[error]="updatedSinceError"
+						floatingLabel
+						label="Datum ÅÅÅÅ-MM-DD"
+						ngControl="updatedSince"
+						style="margin-left: 10px"
+						(keyup)="validate()">
+		</material-input>
+	</div>
 
-<div *ngIf="!isDownloading" style="margin-top: 20px">
-	<material-button class="control-blue"
-					 [disabled]="isDownloading"
-					 raised
-					 (trigger)="doExport()">
-		Ladda ned
-	</material-button>
-</div>
+	<div>
+		Inkludera
+		<material-radio-group [(ngModel)]="onlyFullyPaid">
+			<material-radio value="true" title="Endast färdigbetalade bokningar">
+				Endast färdigbetalade bokningar
+			</material-radio>
+			<material-radio value="false" title="Alla bokningar">
+				Alla bokningar
+			</material-radio>
+		</material-radio-group>
+	</div>
+
+	<div *ngIf="!isDownloading" style="margin-top: 20px">
+		<material-button class="control-blue"
+						 [disabled]="!canDownload"
+						 raised
+						 (trigger)="doExport()">
+			Ladda ned
+		</material-button>
+	</div>
+</form>
 
 <spinner-widget *ngIf="isDownloading"></spinner-widget>
+
+<div style="clear: both; height: 40px"></div>

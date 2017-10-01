@@ -1,4 +1,4 @@
-import 'package:quiver/strings.dart' as str show isBlank, isEmpty;
+import 'package:quiver/strings.dart' as str show isBlank, isEmpty, isNotEmpty;
 
 import '../model/booking_pax.dart';
 import '../util/value_converter.dart';
@@ -38,19 +38,19 @@ class BookingPaxView {
 		clearErrors();
 	}
 
-	bool get hasGroupError => !str.isEmpty(groupError);
+	bool get hasGroupError => str.isNotEmpty(groupError);
 
-	bool get hasFirstNameError => !str.isEmpty(firstNameError);
+	bool get hasFirstNameError => str.isNotEmpty(firstNameError);
 
-	bool get hasLastNameError => !str.isEmpty(lastNameError);
+	bool get hasLastNameError => str.isNotEmpty(lastNameError);
 
 	bool get hasGenderError => str.isEmpty(gender);
 
-	bool get hasDobError => !str.isEmpty(dobError);
+	bool get hasDobError => str.isNotEmpty(dobError);
 
-	bool get hasNationalityError => !str.isEmpty(nationalityError);
+	bool get hasNationalityError => str.isNotEmpty(nationalityError);
 
-	bool get hasYearsError => !str.isEmpty(yearsError);
+	bool get hasYearsError => str.isNotEmpty(yearsError);
 
 	bool get isEmpty => str.isBlank(group) && str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
 

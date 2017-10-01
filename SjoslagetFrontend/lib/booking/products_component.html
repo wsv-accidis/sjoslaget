@@ -19,7 +19,7 @@
 			<material-input [(ngModel)]="product.quantity"
 							[class]="product.hasQuantityError ? 'product-field error-marker' : 'product-field'"
 							[error]="product.quantityError"
-							(keyup)="validate($event)"
+							(keyup)="validate()"
 							label="Antal"
 							[ngControl]="'product_' + p.toString()"
 							type="number">

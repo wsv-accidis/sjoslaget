@@ -21,6 +21,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		Cruise _cruise;
 		bool _onlyFullyPaid;
 		int _rowNo;
+		DateTime? _updatedSince;
 
 		public ExportToExcelGenerator(CabinRepository cabinRepository, ProductRepository productRepository)
 		{
@@ -28,10 +29,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_productRepository = productRepository;
 		}
 
-		public async Task<Workbook> ExportToWorkbook(Cruise cruise, bool onlyFullyPaid)
+		public async Task<Workbook> ExportToWorkbook(Cruise cruise, bool onlyFullyPaid, DateTime? updatedSince)
 		{
 			_cruise = cruise;
 			_onlyFullyPaid = onlyFullyPaid;
+			_updatedSince = updatedSince;
 
 			using(var db = SjoslagetDb.Open())
 			{
@@ -47,7 +49,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		static void CreateCabinsHeaderRow(Worksheet sheet, int row = 0)
+		void CreateCabinsHeaderRow(Worksheet sheet, int row = 0)
 		{
 			sheet[row, 0] = CreateHeaderCell("Hyttnr");
 			sheet[row, 1] = CreateHeaderCell("Hyttkategori");
@@ -57,6 +59,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet[row, 5] = CreateHeaderCell("Kön");
 			sheet[row, 6] = CreateHeaderCell("Nationalitet");
 			sheet[row, 7] = CreateHeaderCell("Bokningsref");
+
+			if(_updatedSince.HasValue)
+				sheet[row, 8] = CreateHeaderCell("Uppdaterad");
 		}
 
 		static Worksheet CreateCabinsWorksheet()
@@ -72,6 +77,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet.ColumnWidths[5] = 4;
 			sheet.ColumnWidths[6] = 12;
 			sheet.ColumnWidths[7] = 12;
+			sheet.ColumnWidths[8] = 12;
 
 			return sheet;
 		}
@@ -105,7 +111,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return sheet;
 		}
 
-		static void CreateRow(
+		void CreateRow(
 			Worksheet sheet,
 			int row,
 			int cabinNo,
@@ -115,7 +121,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			DateOfBirth dob,
 			Gender gender,
 			string nationality,
-			string reference
+			string reference,
+			bool isCreated,
+			bool isUpdated
 		)
 		{
 			sheet[row, 0] = cabinNo;
@@ -126,6 +134,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet[row, 5] = gender.ToString().ToUpperInvariant();
 			sheet[row, 6] = nationality.ToUpperInvariant();
 			sheet[row, 7] = reference;
+
+			if(_updatedSince.HasValue && (isCreated || isUpdated))
+				sheet[row, 8] = isCreated ? "NY" : "ÄNDRAD";
 		}
 
 		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
@@ -154,7 +165,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 					pax.Dob,
 					pax.Gender,
 					pax.Nationality,
-					booking.Reference
+					booking.Reference,
+					booking.IsCreated,
+					booking.IsUpdated
 				);
 			}
 		}
@@ -173,10 +186,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_rowNo = 0;
 
 			var bookingsResult = await db.QueryAsync<BookingDbRow>("select [Id], [Reference], [TotalPrice], " +
-																   "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
+																   "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid, " +
+																   "iif([Created] > @UpdatedSince, 1, 0) IsCreated, iif([Updated] > @UpdatedSince, 1, 0) IsUpdated " +
 																   "from [Booking] B where [CruiseId] = @CruiseId " +
 																   "order by [Reference]",
-				new {CruiseId = _cruise.Id});
+				new
+				{
+					CruiseId = _cruise.Id,
+					UpdatedSince = _updatedSince
+				});
 
 			BookingDbRow[] allBookings = _onlyFullyPaid
 				? bookingsResult.Where(b => b.IsFullyPaid).ToArray()
@@ -219,6 +237,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			public string Reference { get; set; }
 			public decimal TotalPrice { get; set; }
 			public decimal AmountPaid { get; set; }
+			public bool IsCreated { get; set; }
+			public bool IsUpdated { get; set; }
 			public bool IsFullyPaid => AmountPaid >= TotalPrice;
 		}
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html' show Event;
 
 import 'package:angular2/core.dart';
 import 'package:angular2_components/angular2_components.dart';
@@ -55,7 +54,7 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 		}
 	}
 
-	void validate(Event event) {
+	void validate() {
 		bookingProducts.forEach((p) => _bookingValidator.validateProduct(p));
 	}
 
