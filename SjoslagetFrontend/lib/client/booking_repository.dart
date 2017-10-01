@@ -93,7 +93,6 @@ class BookingRepository {
 
 	Future<bool> lockUnlockBooking(Client client, String reference) async {
 		Response response;
-
 		try {
 			response = await client.put(_apiRoot + '/bookings/lock/' + reference);
 		} catch (e) {

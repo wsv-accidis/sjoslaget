@@ -7,44 +7,58 @@ import 'package:http/http.dart';
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import 'http_status.dart';
 import 'io_exception.dart';
-import 'session_storage_cache.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
 import '../model/cruise_product.dart';
 
 @Injectable()
 class CruiseRepository {
-	static const ACTIVE_CRUISE_TIMEOUT = 60 * 1000;
-	static const ACTIVE_CRUISE_CABINS_TIMEOUT = 30 * 60 * 1000;
-	static const ACTIVE_CRUISE_PRODUCTS_TIMEOUT = 15 * 60 * 1000;
-
 	final String _apiRoot;
-	final SessionStorageCache _cache;
 
-	CruiseRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot, SessionStorageCache this._cache);
+	CruiseRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
 	Future<Cruise> getActiveCruise(Client client) async {
-		final body = await _cache.get(client, '/cruise/active', ACTIVE_CRUISE_TIMEOUT);
-		return new Cruise.fromJson(body);
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/cruise/active');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return new Cruise.fromJson(response.body);
 	}
 
 	Future<List<CruiseCabin>> getActiveCruiseCabins(Client client) async {
-		final body = await _cache.get(client, '/cabins/active', ACTIVE_CRUISE_CABINS_TIMEOUT);
-		return JSON.decode(body)
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/cabins/active');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return JSON.decode(response.body)
 			.map((Map<String, dynamic> value) => new CruiseCabin.fromMap(value))
 			.toList();
 	}
 
 	Future<List<CruiseProduct>> getActiveCruiseProducts(Client client) async {
-		final body = await _cache.get(client, '/products/active', ACTIVE_CRUISE_PRODUCTS_TIMEOUT);
-		return JSON.decode(body)
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/products/active');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return JSON.decode(response.body)
 			.map((Map<String, dynamic> value) => new CruiseProduct.fromMap(value))
 			.toList();
 	}
 
 	Future<Map<String, int>> getAvailability(Client client) async {
 		Response response;
-
 		try {
 			response = await client.get(_apiRoot + '/cabins/availability');
 		} catch (e) {
@@ -56,9 +70,7 @@ class CruiseRepository {
 	}
 
 	Future<bool> lockUnlockCruise(Client client) async {
-		_cache.remove('/cruise/active');
 		Response response;
-
 		try {
 			response = await client.put(_apiRoot + '/cruise/lock');
 		} catch (e) {

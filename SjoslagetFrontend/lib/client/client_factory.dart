@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:html' show window;
+import 'dart:html' show Storage, window;
 
 import 'package:angular2/core.dart';
 import 'package:corsac_jwt/corsac_jwt.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
-import 'package:quiver/strings.dart' show equalsIgnoreCase;
+import 'package:quiver/strings.dart' as str show equalsIgnoreCase;
 
 import 'io_exception.dart';
 
@@ -29,11 +29,18 @@ class ClientFactory {
 
 			final jwt = new JWT.parse(client.credentials.accessToken);
 			final credsJson = client.credentials.toJson();
+			final String role = jwt.getClaim('role');
+			final String uniqueName = jwt.getClaim('unique_name');
 
 			print('Authentication successful.');
-			window.sessionStorage[TOKEN_KEY] = credsJson;
-			window.sessionStorage[UNIQUE_NAME_KEY] = jwt.getClaim('unique_name');
-			window.sessionStorage[ROLE_KEY] = jwt.getClaim('role');
+
+			final Storage storage = _isAdmin(role)
+				? window.localStorage // store admin sessions in localStorage so they persist
+				: window.sessionStorage;
+
+			storage[TOKEN_KEY] = credsJson;
+			storage[UNIQUE_NAME_KEY] = uniqueName;
+			storage[ROLE_KEY] = role;
 
 			return client;
 		} catch (e) {
@@ -48,11 +55,11 @@ class ClientFactory {
 
 	http.Client getClient() {
 		try {
-			if (window.sessionStorage.containsKey(TOKEN_KEY)) {
+			if (hasCredentials) {
 				if (null != _clientInstance)
 					return _clientInstance;
 
-				final credentials = new oauth2.Credentials.fromJson(window.sessionStorage[TOKEN_KEY]);
+				final credentials = new oauth2.Credentials.fromJson(_getValue(TOKEN_KEY));
 				_clientInstance = new oauth2.Client(credentials);
 				print('Using authenticated client.');
 				return _clientInstance;
@@ -65,20 +72,39 @@ class ClientFactory {
 		return new BrowserClient();
 	}
 
-	String get authenticatedRole => window.sessionStorage.containsKey(ROLE_KEY) ? window.sessionStorage[ROLE_KEY] : '';
+	String get authenticatedRole => _getValue(ROLE_KEY);
 
-	String get authenticatedUser => window.sessionStorage.containsKey(UNIQUE_NAME_KEY) ? window.sessionStorage[UNIQUE_NAME_KEY] : '';
+	String get authenticatedUser => _getValue(UNIQUE_NAME_KEY);
 
-	bool get hasCredentials => window.sessionStorage.containsKey(TOKEN_KEY);
+	bool get hasCredentials => _hasValue(TOKEN_KEY);
 
-	bool get isAdmin => equalsIgnoreCase('admin', authenticatedRole);
+	bool get isAdmin => _isAdmin(authenticatedRole);
 
 	void _clear() {
 		_clientInstance = null;
+
+		window.localStorage.remove(ROLE_KEY);
+		window.localStorage.remove(TOKEN_KEY);
+		window.localStorage.remove(UNIQUE_NAME_KEY);
+
 		window.sessionStorage.remove(ROLE_KEY);
 		window.sessionStorage.remove(TOKEN_KEY);
 		window.sessionStorage.remove(UNIQUE_NAME_KEY);
 	}
+
+	String _getValue(String key) {
+		if (window.sessionStorage.containsKey(key)) {
+			return window.sessionStorage[key];
+		} else if (window.localStorage.containsKey(key)) {
+			return window.localStorage[key];
+		} else {
+			return '';
+		}
+	}
+
+	bool _hasValue(String key) => window.sessionStorage.containsKey(key) || window.localStorage.containsKey(key);
+
+	bool _isAdmin(String role) => str.equalsIgnoreCase('admin', role);
 }
 
 const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken('sjoslagetApiRoot');
