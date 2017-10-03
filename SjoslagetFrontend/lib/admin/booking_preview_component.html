@@ -1,0 +1,7 @@
+<a #bookingPopup="popupSource" (click)="popupVisible = !popupVisible" href="javascript:" popupSource>
+	<glyph icon="zoom_in"></glyph>
+</a>
+
+<material-popup [source]="bookingPopup" [(visible)]="popupVisible">
+	<booking-preview-component-popup [bookingItem]="booking" *deferredContent></booking-preview-component-popup>
+</material-popup>

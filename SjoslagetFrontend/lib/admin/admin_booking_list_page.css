@@ -15,6 +15,10 @@ div.bookings-filter .filter-radio {
 	margin-right: 0;
 }
 
+td.bookings-preview-cell {
+	padding: 0;
+}
+
 td.locked {
 	color: darkblue;
 }

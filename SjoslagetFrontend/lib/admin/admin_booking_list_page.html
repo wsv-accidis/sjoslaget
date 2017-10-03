@@ -54,6 +54,7 @@
 		<th style="width: 130px">
 			<sortable-column-header key="status" title="Status"></sortable-column-header>
 		</th>
+		<th style="width: 30px"></th>
 		<th style="width: 120px">
 			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
 		</th>
@@ -88,6 +89,9 @@
 		</td>
 		<td *ngSwitchDefault>
 			-
+		</td>
+		<td class="bookings-preview-cell">
+			<booking-preview-component [booking]="booking"></booking-preview-component>
 		</td>
 		<td>
 			<a [routerLink]="['Booking', {'ref': booking.reference}]">

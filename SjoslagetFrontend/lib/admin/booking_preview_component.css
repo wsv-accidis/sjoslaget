@@ -1,0 +1,40 @@
+a:hover {
+	text-decoration: none;
+}
+
+glyph {
+	padding-top: 2px;
+}
+
+th.contents-header-cell {
+	width: 50%;
+}
+
+th.contents-header-cell h2 {
+	margin-bottom: 5px;
+}
+
+td.details-header-cell {
+	vertical-align: middle;
+	width: 35px;
+}
+
+td.details-value-cell {
+	vertical-align: middle;
+}
+
+div.popup-container {
+	margin: 10px;
+	min-height: 200px;
+	width: 400px;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul li {
+	padding-bottom: 5px;
+}
