@@ -34,18 +34,19 @@ class AdminBookingListPage implements OnInit {
 	final ClientFactory _clientFactory;
 
 	List<BookingOverviewItem> _bookings;
-	String _filterText = '';
+	String _filterLunch = '';
 	String _filterStatus = 'none';
+	String _filterText = '';
 
 	SortableState sort = new SortableState('reference', false);
 	List<BookingOverviewItem> bookingsView;
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
-	String get filterText => _filterText;
+	String get filterLunch => _filterLunch;
 
-	set filterText(String value) {
-		_filterText = value;
+	set filterLunch(String value) {
+		_filterLunch = value;
 		_refreshView();
 	}
 
@@ -53,6 +54,13 @@ class AdminBookingListPage implements OnInit {
 
 	set filterStatus(String value) {
 		_filterStatus = value;
+		_refreshView();
+	}
+
+	String get filterText => _filterText;
+
+	set filterText(String value) {
+		_filterText = value;
 		_refreshView();
 	}
 
@@ -113,6 +121,8 @@ class AdminBookingListPage implements OnInit {
 			case 'contact':
 				int result = one.firstName.compareTo(two.firstName);
 				return 0 != result ? result : one.lastName.compareTo(two.lastName);
+			case 'lunch':
+				return one.lunch.compareTo(two.lunch);
 			case 'noOfCabins':
 				return one.numberOfCabins - two.numberOfCabins;
 			case 'amountPaid':
@@ -136,6 +146,9 @@ class AdminBookingListPage implements OnInit {
 		}
 		if (NONE != _filterStatus) {
 			filteredList = filteredList.where((b) => getStatus(b) == _filterStatus);
+		}
+		if (isNotEmpty(_filterLunch)) {
+			filteredList = filteredList.where((b) => b.lunch == _filterLunch);
 		}
 
 		bookingsView = filteredList.toList(growable: false);
