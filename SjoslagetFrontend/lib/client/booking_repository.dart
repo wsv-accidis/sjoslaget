@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:angular2/core.dart';
 import 'package:decimal/decimal.dart';
 import 'package:http/http.dart';
+import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import 'availability_exception.dart';
 import 'booking_exception.dart';
@@ -81,6 +82,8 @@ class BookingRepository {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + '/bookings/recentlyUpdated');
+		} on ExpirationException catch (e) {
+			throw e; // special case for dashboard
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:angular2/core.dart';
 import 'package:http/http.dart';
+import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import 'http_status.dart';
@@ -21,6 +22,8 @@ class CruiseRepository {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + '/cruise/active');
+		} on ExpirationException catch (e) {
+			throw e; // special case for dashboard
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}

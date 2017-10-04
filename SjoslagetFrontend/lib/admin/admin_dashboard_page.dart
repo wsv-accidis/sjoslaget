@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:angular2/core.dart';
 import 'package:angular2/router.dart';
 import 'package:angular2_components/angular2_components.dart';
+import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../booking/availability_component.dart';
 import '../client/client_factory.dart';
@@ -96,6 +97,10 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);
 			recentlyUpdatedBookings = await _bookingRepository.getRecentlyUpdated(client);
+		} on ExpirationException catch (e) {
+			print(e.toString());
+			_clientFactory.clear();
+			_router.navigate(<dynamic>['/Admin/Login']);
 		} catch (e) {
 			print('Failed to load recently updated bookings: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
