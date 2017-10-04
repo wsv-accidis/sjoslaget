@@ -86,14 +86,7 @@ class AdminBookingListPage implements OnInit {
 	}
 
 	Future<Null> ngOnInit() async {
-		try {
-			final client = _clientFactory.getClient();
-			_bookings = await _bookingRepository.getOverview(client);
-			bookingsView = _bookings;
-		} catch (e) {
-			print('Failed to load list of bookings: ' + e.toString());
-			// Just ignore this here, we will be stuck in the loading state until the user refreshes
-		}
+		await refresh();
 	}
 
 	void onFilterChanged() {
@@ -103,6 +96,17 @@ class AdminBookingListPage implements OnInit {
 	void onSortChanged(SortableState state) {
 		sort = state;
 		_refreshView();
+	}
+
+	Future<Null> refresh() async {
+		try {
+			final client = _clientFactory.getClient();
+			_bookings = await _bookingRepository.getOverview(client);
+			_refreshView();
+		} catch (e) {
+			print('Failed to load list of bookings: ' + e.toString());
+			// Just ignore this here, we will be stuck in the loading state until the user refreshes
+		}
 	}
 
 	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {

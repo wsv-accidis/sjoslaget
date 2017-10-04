@@ -57,26 +57,29 @@ class AdminPaxListPage implements OnInit {
 	AdminPaxListPage(this._bookingRepository, this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
+		await refresh();
+	}
+
+	void onSortChanged(SortableState state) {
+		sort = state;
+		_refreshView();
+	}
+
+	Future<Null> refresh() async {
 		try {
 			final client = _clientFactory.getClient();
 			final cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-
 			_pax = await _bookingRepository.getPax(client);
 			_pax.forEach((p) {
 				_limitTextLengths(p);
 				_populateCabinType(p, cruiseCabins);
 			});
 
-			paxView = _pax;
+			_refreshView();
 		} catch (e) {
 			print('Failed to load list of bookings: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
-	}
-
-	void onSortChanged(SortableState state) {
-		sort = state;
-		_refreshView();
 	}
 
 	int _bookingComparator(BookingPaxItem one, BookingPaxItem two) {
@@ -111,7 +114,7 @@ class AdminPaxListPage implements OnInit {
 	}
 
 	static String _ellipsify(String str, int length) {
-		if(isNotEmpty(str) && str.length > length - 3) {
+		if (isNotEmpty(str) && str.length > length - 3) {
 			return str.substring(0, length - 3).trimRight() + '...';
 		} else {
 			return str;
