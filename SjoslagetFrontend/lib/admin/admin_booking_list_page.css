@@ -30,3 +30,7 @@ td.fully-paid {
 td.partially-paid {
 	color: orangered;
 }
+
+td.over-paid {
+	color: darkred;
+}

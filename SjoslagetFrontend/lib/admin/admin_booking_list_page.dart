@@ -27,6 +27,7 @@ class AdminBookingListPage implements OnInit {
 	static final LOCKED = 'locked';
 	static final FULLY_PAID = 'fully-paid';
 	static final PARTIALLY_PAID = 'partially-paid';
+	static final OVER_PAID = 'over-paid';
 	static final NOT_PAID = 'not-paid';
 
 	final BookingRepository _bookingRepository;
@@ -68,6 +69,8 @@ class AdminBookingListPage implements OnInit {
 			return FULLY_PAID;
 		if (item.isPartiallyPaid)
 			return PARTIALLY_PAID;
+		if (item.isOverPaid)
+			return OVER_PAID;
 		if (item.isUnpaid)
 			return NOT_PAID;
 
@@ -141,14 +144,16 @@ class AdminBookingListPage implements OnInit {
 
 	static int _statusToInt(BookingOverviewItem item) {
 		if (item.isLocked)
-			return 3;
+			return 4;
 		if (item.isFullyPaid)
-			return 2;
+			return 3;
 		if (item.isPartiallyPaid)
+			return 2;
+		if (item.isOverPaid)
 			return 1;
 		if (item.isUnpaid)
 			return 0;
 
-		return 4;
+		return 5;
 	}
 }

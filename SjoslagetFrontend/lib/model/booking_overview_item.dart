@@ -22,6 +22,8 @@ class BookingOverviewItem {
 
 	bool get isPartiallyPaid => amountRemaining.toDouble() > 0 && amountRemaining < totalPrice;
 
+	bool get isOverPaid => amountRemaining.toDouble() < 0;
+
 	bool get isUnpaid => amountPaid.toDouble() <= 0;
 
 	BookingOverviewItem(this.reference, this.firstName, this.lastName, this.totalPrice, this.amountPaid, this.numberOfCabins, this.isLocked, this.updated);

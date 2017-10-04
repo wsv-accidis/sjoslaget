@@ -35,6 +35,9 @@
 		<material-radio class="filter-radio" value="partially-paid" title="Delbetald">
 			Delbetald
 		</material-radio>
+		<material-radio class="filter-radio" value="over-paid" title="Överbetald">
+			Överbetald
+		</material-radio>
 		<material-radio class="filter-radio" value="not-paid" title="Ej betald">
 			Ej betald
 		</material-radio>
@@ -83,6 +86,9 @@
 		</td>
 		<td *ngSwitchWhen="'partially-paid'" class="partially-paid">
 			Delbetald
+		</td>
+		<td *ngSwitchWhen="'over-paid'" class="over-paid">
+			Överbetald
 		</td>
 		<td *ngSwitchWhen="'not-paid'" class="not-paid">
 			Ej betald
