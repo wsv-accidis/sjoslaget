@@ -24,7 +24,7 @@ td.details-value-cell {
 }
 
 div.popup-container {
-	margin: 10px;
+	margin-bottom: 10px;
 	min-height: 200px;
 	width: 400px;
 }

@@ -1,7 +1,17 @@
-<a #bookingPopup="popupSource" (click)="popupVisible = !popupVisible" href="javascript:" popupSource>
+<a (click)="open()" href="javascript:">
 	<glyph icon="zoom_in"></glyph>
 </a>
 
-<material-popup [source]="bookingPopup" [(visible)]="popupVisible">
-	<booking-preview-component-popup [bookingItem]="booking" *deferredContent></booking-preview-component-popup>
-</material-popup>
+<modal [visible]="isOpen">
+	<material-dialog>
+		<booking-preview-component-popup [bookingItem]="booking" *deferredContent></booking-preview-component-popup>
+
+		<div footer>
+			<material-button autoFocus
+							 clear-size
+							 (trigger)="close()">
+				Stäng
+			</material-button>
+		</div>
+	</material-dialog>
+</modal>

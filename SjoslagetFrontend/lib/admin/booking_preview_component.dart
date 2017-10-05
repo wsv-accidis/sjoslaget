@@ -99,5 +99,13 @@ class BookingPreviewComponent {
 	@Input()
 	BookingOverviewItem booking;
 
-	bool popupVisible;
+	bool isOpen;
+
+	void close() {
+		isOpen = false;
+	}
+
+	void open() {
+		isOpen = true;
+	}
 }
