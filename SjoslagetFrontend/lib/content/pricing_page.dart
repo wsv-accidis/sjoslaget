@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
@@ -11,7 +11,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'pricing-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'pricing_page.html',
-	directives: const <dynamic>[SpinnerWidget]
+	directives: const <dynamic>[CORE_DIRECTIVES, SpinnerWidget]
 )
 class PricingPage implements OnInit {
 	final ClientFactory _clientFactory;

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 import 'package:http/http.dart';
 
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;

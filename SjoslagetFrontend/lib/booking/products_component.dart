@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 
 import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
@@ -16,7 +16,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'products-component',
 	templateUrl: 'products_component.html',
 	styleUrls: const ['../content/content_styles.css', 'products_component.css'],
-	directives: const <dynamic>[materialDirectives, SpinnerWidget],
+	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class ProductsComponent implements BookingAddonProvider, OnInit {

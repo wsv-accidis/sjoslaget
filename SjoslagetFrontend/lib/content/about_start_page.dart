@@ -1,6 +1,6 @@
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_router/angular_router.dart';
 
 import 'about_booking_page.dart';
 import 'about_faq_page.dart';
@@ -12,15 +12,7 @@ import 'about_rules_page.dart';
 	selector: 'about-start-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'about_start_page.html',
-	directives: const <dynamic>[
-		materialDirectives,
-		ROUTER_DIRECTIVES,
-		AboutBookingPage,
-		AboutFaqPage,
-		AboutHistoryPage,
-		AboutProgramPage,
-		AboutRulesPage
-	]
+	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, AboutBookingPage, AboutFaqPage, AboutHistoryPage, AboutProgramPage, AboutRulesPage]
 )
 class AboutStartPage {
 }

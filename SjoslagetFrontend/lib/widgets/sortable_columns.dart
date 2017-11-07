@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:collection';
 
-import 'package:angular2/core.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 
 class SortableState {
 	final String column;
@@ -10,12 +11,14 @@ class SortableState {
 	SortableState(this.column, this.desc);
 }
 
-@Directive(selector: '[sortableColumns]', inputs: const ['sortColumn', 'sortDesc'], outputs: const ['onSortChange'])
+@Directive(selector: '[sortableColumns]', inputs: const ['sortColumn', 'sortDesc'])
 class SortableColumns {
 	final _headers = new HashMap<String, SortableColumnHeader>();
+	final _onSortChange = new StreamController<SortableState>.broadcast();
 	SortableState _state = new SortableState('', false);
 
-	final onSortChange = new EventEmitter<SortableState>();
+	@Output()
+	Stream get onSortChange => _onSortChange.stream;
 
 	String get sortColumn => _state.column;
 
@@ -47,7 +50,7 @@ class SortableColumns {
 	}
 
 	void _refreshState() {
-		onSortChange.emit(_state);
+		_onSortChange.add(_state);
 		_headers.values.forEach(_applyTo);
 	}
 
@@ -67,7 +70,7 @@ class SortableColumns {
 			<glyph *ngIf="mode == 'asc'" icon="arrow_downward"></glyph>
 			<glyph *ngIf="mode == 'desc'" icon="arrow_upward"></glyph>
 		</div>''',
-	directives: const <dynamic>[materialDirectives]
+	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives]
 )
 class SortableColumnHeader implements OnInit {
 	final SortableColumns _sortableColumns;

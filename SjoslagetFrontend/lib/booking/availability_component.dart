@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
@@ -12,7 +12,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'availability-component',
 	templateUrl: 'availability_component.html',
 	styleUrls: const ['../content/content_styles.css', 'availability_component.css'],
-	directives: const<dynamic>[materialDirectives, SpinnerWidget],
+	directives: const<dynamic>[CORE_DIRECTIVES, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class AvailabilityComponent implements OnInit {

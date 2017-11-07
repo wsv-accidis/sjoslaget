@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_router/angular_router.dart';
 
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -18,7 +18,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-preview-component-popup',
 	templateUrl: 'booking_preview_component_popup.html',
 	styleUrls: const ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
+	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingPreviewComponentPopup implements OnInit {

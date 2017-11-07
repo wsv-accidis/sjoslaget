@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:html' show Event, HtmlElement;
 
-import 'package:angular2/core.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
 import 'package:decimal/decimal.dart';
 
 import 'booking_addon_provider.dart';
@@ -17,7 +18,7 @@ import '../util/currency_formatter.dart';
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
 	styleUrls: const ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
-	directives: const <dynamic>[materialDirectives],
+	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives],
 	providers: const <dynamic>[materialProviders]
 )
 class CabinsComponent implements OnInit {

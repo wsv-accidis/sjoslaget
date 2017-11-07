@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
@@ -19,7 +19,7 @@ import '../util/datetime_formatter.dart';
 	selector: 'admin-booking-list-page',
 	templateUrl: 'admin_booking_list_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class AdminBookingListPage implements OnInit {

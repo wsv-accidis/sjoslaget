@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
@@ -30,7 +31,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: const<dynamic>[materialDirectives, ROUTER_DIRECTIVES, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
+	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
 	providers: const<dynamic>[materialProviders]
 )
 class AdminBookingPage implements OnInit {

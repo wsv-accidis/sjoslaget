@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 
 import '../booking/availability_component.dart';
 import '../client/client_factory.dart';
@@ -11,7 +11,7 @@ import '../model/cruise.dart';
 	selector: 'start-page',
 	styleUrls: const ['content_styles.css', 'start_page.css'],
 	templateUrl: 'start_page.html',
-	directives: const <dynamic>[AvailabilityComponent]
+	directives: const <dynamic>[CORE_DIRECTIVES, AvailabilityComponent]
 )
 class StartPage implements OnInit {
 	final ClientFactory _clientFactory;

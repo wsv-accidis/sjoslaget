@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:html' show window;
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 
 import 'booking_component.dart';
 import '../client/client_factory.dart';
@@ -12,7 +13,7 @@ import '../widgets/modal_dialog.dart';
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
-	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, ModalDialog],
+	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, ModalDialog],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingLoginComponent {

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 

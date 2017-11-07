@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:html' show Storage, window;
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 import 'package:corsac_jwt/corsac_jwt.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';

@@ -1,25 +1,27 @@
 name: Sjoslaget
 description: Front-end for the new Sjoslaget.se web site.
 version: 0.0.1
+
 environment:
   sdk: '>=1.19.0 <2.0.0'
+
 dependencies:
-  angular2: '>=2.2.0 <2.3.0'
-  angular2_components: '>=0.2.2 <0.3.0'
+  angular: ^4.0.0
+  angular_components: ^0.8.0
+  angular_forms: ^1.0.0
+  angular_router: ^1.0.0
   corsac_jwt:
     git: https://github.com/corsac-dart/jwt.git
   decimal:
   oauth2:
     git: https://github.com/wsv-accidis/oauth2.git
-  quiver: '>=0.23.0 <0.24.0'
+  quiver: '>=0.23.0 <0.27.0'
+
 dev_dependencies:
   browser: ^0.10.0
   dart_to_js_script_rewriter: ^1.0.1
+
 transformers:
-- angular2:
-    platform_directives:
-    - 'package:angular2/common.dart#COMMON_DIRECTIVES'
-    platform_pipes:
-    - 'package:angular2/common.dart#COMMON_PIPES'
+- angular:
     entry_points: web/main.dart
 - dart_to_js_script_rewriter

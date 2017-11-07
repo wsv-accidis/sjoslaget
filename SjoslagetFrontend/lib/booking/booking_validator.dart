@@ -1,6 +1,6 @@
 import 'package:quiver/strings.dart' show isBlank;
 
-import 'package:angular2/core.dart';
+import 'package:angular/angular.dart';
 
 import '../model/booking_cabin_view.dart';
 import '../model/booking_pax_view.dart';

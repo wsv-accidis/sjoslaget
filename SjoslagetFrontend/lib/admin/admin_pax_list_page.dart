@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/booking_repository.dart';
@@ -17,7 +17,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-pax-list-page',
 	templateUrl: 'admin_pax_list_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_pax_list_page.css', '../booking/cabins_gender_field.css'],
-	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
 	providers: const<dynamic>[materialProviders]
 )
 class AdminPaxListPage implements OnInit {

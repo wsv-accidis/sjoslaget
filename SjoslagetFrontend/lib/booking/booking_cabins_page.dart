@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:html' show window;
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
 import 'booking_component.dart';
@@ -29,7 +30,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
 	styleUrls: const ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: const <dynamic>[materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
+	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingCabinsPage implements OnInit {

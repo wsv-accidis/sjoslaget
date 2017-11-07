@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 @Component(
 	selector: 'modal-dialog',
 	templateUrl: 'modal_dialog.html',
-	directives: const <dynamic>[materialDirectives],
+	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives],
 	providers: const <dynamic>[materialProviders]
 )
 class ModalDialog {

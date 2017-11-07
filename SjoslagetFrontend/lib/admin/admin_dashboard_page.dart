@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../booking/availability_component.dart';
@@ -18,7 +18,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
-	directives: const<dynamic>[ROUTER_DIRECTIVES, materialDirectives, AvailabilityComponent, SpinnerWidget],
+	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, AvailabilityComponent, SpinnerWidget],
 	providers: const<dynamic>[materialProviders]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {

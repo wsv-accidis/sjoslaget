@@ -1,7 +1,5 @@
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2/platform/browser.dart';
-import 'package:angular2/platform/common.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_router/angular_router.dart';
 
 import 'package:Sjoslaget/app_component.dart';
 import 'package:Sjoslaget/client/client_factory.dart' show SJOSLAGET_API_ROOT;
@@ -21,8 +19,8 @@ void main() {
 		providers = <dynamic>[
 			ROUTER_PROVIDERS,
 			provide(APP_BASE_HREF, useValue: '/'),
-			provide(SJOSLAGET_API_ROOT, useValue: 'http://localhost:60949/api'),
-			const Provider(LocationStrategy, useClass: HashLocationStrategy)
+			provide(SJOSLAGET_API_ROOT, useValue: 'http://localhost:61796/api'),
+			const Provider<dynamic>(LocationStrategy, useClass: HashLocationStrategy)
 		];
 	}
 

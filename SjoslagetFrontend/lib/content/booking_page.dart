@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:html' show window;
 
-import 'package:angular2/core.dart';
-import 'package:angular2/router.dart';
-import 'package:angular2_components/angular2_components.dart';
+import 'package:angular/angular.dart';
+import 'package:angular_router/angular_router.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
 
 import '../booking/booking_component.dart';
 import '../booking/booking_login_component.dart';
@@ -17,7 +18,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-page',
 	styleUrls: const ['content_styles.css'],
 	templateUrl: 'booking_page.html',
-	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, BookingLoginComponent, SpinnerWidget],
+	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, BookingLoginComponent, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingPage implements OnInit {
