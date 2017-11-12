@@ -303,11 +303,8 @@
     pub build
     cd $(SolutionDir)SjoslagetFrontend\build\web
     rd /s /q packages
-    del /s /q *.ng_meta.json
-    del /s /q *.ng_summary.json
-    del /s /q LICENSE.*
-    del /s /q README.*
-)</PostBuildEvent>
+)
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
