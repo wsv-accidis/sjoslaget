@@ -6,3 +6,7 @@ span.booking-result {
 p.loading-error {
 	font-size: larger;
 }
+
+div.last-section {
+	margin-bottom: 50px;
+}

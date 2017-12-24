@@ -7,7 +7,7 @@
 <material-expansionpanel [expanded]="isNewBooking"
 						 flat="true"
 						 name="Instruktioner - så här bokar du (läs först!)"
-						 showSaveCancel="false">
+						 [showSaveCancel]="false">
 	<p style="margin-top: 0;">
 		Lägg till hytter och fyll i <strong>Förening</strong> (se nedan), <strong>Förnamn</strong>, <strong>Efternamn</strong>, <strong>Kön</strong>,
 		<strong>Födelsedatum</strong>, <strong>Nationalitet</strong> och antal <strong>Åkta år</strong> (sjöslag) på alla deltagare.
@@ -75,7 +75,7 @@
 			{{ bookingError }}
 		</p>
 
-		<div style="margin-bottom: 50px" *ngIf="!isSaving">
+		<div *ngIf="!isSaving" class="last-section">
 			<material-button class="control-blue"
 							 [disabled]="!canSave"
 							 raised
@@ -87,14 +87,14 @@
 							 [disabled]="!canFinish"
 							 raised
 							 (trigger)="finishBooking()">
-				Jag är klar med bokningen och har sparat, ta mig härifrån
+				Jag är klar med bokningen och har sparat, logga ut mig
 			</material-button>
 		</div>
 
 		<spinner-widget *ngIf="isSaving"></spinner-widget>
 	</div>
 
-	<div *ngIf="cabins.readOnly">
+	<div *ngIf="cabins.readOnly" class="last-section">
 		<h3>Bokningen är låst.</h3>
 
 		<p>
@@ -105,5 +105,11 @@
 		<p>
 			Din bokningsreferens är <span class="booking-result">{{ bookingResult.reference }}</span>.
 		</p>
+
+		<material-button class="control-blue"
+						 raised
+						 (trigger)="finishBooking()">
+			Jag är klar, logga ut mig
+		</material-button>
 	</div>
 </form>
