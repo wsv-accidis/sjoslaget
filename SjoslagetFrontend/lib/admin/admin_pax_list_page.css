@@ -15,6 +15,7 @@ div.pax-filter .filter-field {
 	margin-right: 20px;
 }
 
-p.stats {
+div.pax-paging {
 	margin-bottom: 10px;
+	margin-top: -20px;
 }

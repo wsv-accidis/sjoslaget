@@ -9,6 +9,10 @@ p span {
 	font-weight: bold;
 }
 
+table.layout-table td {
+	border: none;
+}
+
 div.admin-menu {
 	font-size: large;
 }
@@ -20,7 +24,7 @@ div.admin-menu span {
 span.paging-list {
 }
 
-span.paging-list >> a:not(:last-child) {
+span.paging-list > a:not(:last-child) {
 	margin-right: 5px;
 }
 

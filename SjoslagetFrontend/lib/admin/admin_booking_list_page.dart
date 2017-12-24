@@ -31,6 +31,8 @@ class AdminBookingListPage implements OnInit {
 	static final OVER_PAID = 'over-paid';
 	static final NOT_PAID = 'not-paid';
 
+	static const PageLimit = 20;
+
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 
@@ -41,7 +43,7 @@ class AdminBookingListPage implements OnInit {
 
 	SortableState sort = new SortableState('reference', false);
 	List<BookingOverviewItem> bookingsView;
-	final PagingSupport paging = new PagingSupport();
+	final PagingSupport paging = new PagingSupport(PageLimit);
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
@@ -73,15 +75,15 @@ class AdminBookingListPage implements OnInit {
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
 	String getStatus(BookingOverviewItem item) {
-		if (item.isLocked)
+		if(item.isLocked)
 			return LOCKED;
-		if (item.isFullyPaid)
+		if(item.isFullyPaid)
 			return FULLY_PAID;
-		if (item.isPartiallyPaid)
+		if(item.isPartiallyPaid)
 			return PARTIALLY_PAID;
-		if (item.isOverPaid)
+		if(item.isOverPaid)
 			return OVER_PAID;
-		if (item.isUnpaid)
+		if(item.isUnpaid)
 			return NOT_PAID;
 
 		return NONE;
@@ -106,21 +108,21 @@ class AdminBookingListPage implements OnInit {
 			final client = _clientFactory.getClient();
 			_bookings = await _bookingRepository.getOverview(client);
 			_refreshView();
-		} catch (e) {
+		} catch(e) {
 			print('Failed to load list of bookings: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 
 	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
-		if (sort.desc) {
+		if(sort.desc) {
 			// Swap the items when using descending sort, so we can keep the rest identical
 			BookingOverviewItem temp = two;
 			two = one;
 			one = temp;
 		}
 
-		switch (sort.column) {
+		switch(sort.column) {
 			case 'status':
 				return _statusToInt(one) - _statusToInt(two);
 			case 'reference':
@@ -147,14 +149,14 @@ class AdminBookingListPage implements OnInit {
 	void _refreshView() {
 		Iterable<BookingOverviewItem> filtered = _bookings;
 
-		if (isNotEmpty(_filterText)) {
+		if(isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
 			filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
 		}
-		if (NONE != _filterStatus) {
+		if(NONE != _filterStatus) {
 			filtered = filtered.where((b) => getStatus(b) == _filterStatus);
 		}
-		if (isNotEmpty(_filterLunch)) {
+		if(isNotEmpty(_filterLunch)) {
 			filtered = filtered.where((b) => b.lunch == _filterLunch);
 		}
 
@@ -166,15 +168,15 @@ class AdminBookingListPage implements OnInit {
 	}
 
 	static int _statusToInt(BookingOverviewItem item) {
-		if (item.isLocked)
+		if(item.isLocked)
 			return 4;
-		if (item.isFullyPaid)
+		if(item.isFullyPaid)
 			return 3;
-		if (item.isPartiallyPaid)
+		if(item.isPartiallyPaid)
 			return 2;
-		if (item.isOverPaid)
+		if(item.isOverPaid)
 			return 1;
-		if (item.isUnpaid)
+		if(item.isUnpaid)
 			return 0;
 
 		return 5;

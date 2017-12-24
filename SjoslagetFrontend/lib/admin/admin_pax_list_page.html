@@ -12,14 +12,10 @@
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>
 
-<p *ngIf="!isLoading" class="stats">
-	Det finns {{ totalCount }} anmälda deltagare varav {{ filteredCount }} i listan.
-</p>
-
 <div *ngIf="!isLoading" class="pax-filter">
 	<h2>Filtrera</h2>
 
-	<table>
+	<table class="layout-table">
 		<tr>
 			<td>
 				Referens/förening/namn
@@ -37,6 +33,14 @@
 			</td>
 		</tr>
 	</table>
+</div>
+
+<div *ngIf="!isLoading" class="pax-paging">
+	{{ paging.numberOfResults }} deltagare <span *ngIf="paging.hasResults">(visar {{ paging.pageOffsetStart }} - {{ paging.pageOffsetEnd }})</span>
+	<span class="paging-list" *ngIf="paging.hasMultiplePages">
+		välj sida <a *ngFor="let page of paging.pages" href="javascript:" (click)="paging.pageNo = page"
+					 [class]="paging.pageNo == page ? 'page-selected' : ''">{{ page }}</a>
+	</span>
 </div>
 
 <table *ngIf="!isLoading"

@@ -40,7 +40,7 @@
 		</material-radio>
 	</material-radio-group>
 
-	<br />Status
+	<br/>Status
 
 	<material-radio-group [(ngModel)]="filterStatus">
 		<material-radio class="filter-radio" value="none" title="Alla">
@@ -67,7 +67,8 @@
 <div *ngIf="!isLoading" class="bookings-paging">
 	{{ paging.numberOfResults }} bokning{{ paging.numberOfResults == 1 ? '' : 'ar' }} <span *ngIf="paging.hasResults">(visar {{ paging.pageOffsetStart }} - {{ paging.pageOffsetEnd }})</span>
 	<span class="paging-list" *ngIf="paging.hasMultiplePages">
-		välj sida <a *ngFor="let page of paging.pages" href="javascript:" (click)="paging.pageNo = page" [class]="paging.pageNo == page ? 'page-selected' : ''">{{ page }}</a>
+		välj sida <a *ngFor="let page of paging.pages" href="javascript:" (click)="paging.pageNo = page"
+					 [class]="paging.pageNo == page ? 'page-selected' : ''">{{ page }}</a>
 	</span>
 </div>
 
