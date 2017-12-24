@@ -33,9 +33,9 @@ class CabinsComponent implements OnInit {
 	List<BookingAddonProvider> bookingAddons = new List<BookingAddonProvider>();
 	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
 	List<CruiseCabin> cruiseCabins;
-	bool disableAddCabins;
+	bool disableAddCabins = false;
 	int discountPercent = 0;
-	bool readOnly;
+	bool readOnly = false;
 
 	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
 

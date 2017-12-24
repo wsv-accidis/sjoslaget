@@ -11,7 +11,7 @@ class BookingPaxView {
 	String lastName;
 	String lastNameError;
 	String gender;
-	bool genderError;
+	bool genderError = false;
 	String dob;
 	String dobError;
 	String nationality;
@@ -19,8 +19,8 @@ class BookingPaxView {
 	String years;
 	String yearsError;
 
-	bool firstRow;
-	bool requiredRow;
+	bool firstRow = false;
+	bool requiredRow = false;
 
 	BookingPaxView() {
 		// TODO: Would be better not to set default gender but material-radio is not sending a checkedChange event if unset

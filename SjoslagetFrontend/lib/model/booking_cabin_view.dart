@@ -4,8 +4,8 @@ import 'cruise_cabin.dart';
 
 class BookingCabinView {
 	String id;
-	bool isSaved;
-	bool isValid;
+	bool isSaved = false;
+	bool isValid = false;
 	String name;
 	int capacity;
 	List<BookingPaxView> pax;
