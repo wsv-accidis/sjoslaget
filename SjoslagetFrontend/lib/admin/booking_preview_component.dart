@@ -35,14 +35,14 @@ class BookingPreviewComponentPopup implements OnInit {
 
 	List<SummaryView> get cabinSummary {
 		final result = new List<SummaryView>();
-		if (null == booking || null == _cabins)
+		if(null == booking || null == _cabins)
 			return result;
 
-		for (CruiseCabin cabinType in _cabins) {
+		for(CruiseCabin cabinType in _cabins) {
 			final count = booking.cabins
 				.where((bc) => bc.cabinTypeId == cabinType.id)
 				.length;
-			if (count > 0)
+			if(count > 0)
 				result.add(new SummaryView(cabinType.id, cabinType.name, count));
 		}
 
@@ -53,13 +53,13 @@ class BookingPreviewComponentPopup implements OnInit {
 
 	List<SummaryView> get productSummary {
 		final result = new List<SummaryView>();
-		if (null == booking || null == _products)
+		if(null == booking || null == _products)
 			return result;
 
-		for (CruiseProduct productType in _products) {
+		for(CruiseProduct productType in _products) {
 			final bookingProduct = booking.products.firstWhere(
 					(bp) => bp.productTypeId == productType.id, orElse: () => null);
-			if (null != bookingProduct && bookingProduct.quantity > 0)
+			if(null != bookingProduct && bookingProduct.quantity > 0)
 				result.add(new SummaryView(productType.id, productType.name, bookingProduct.quantity));
 		}
 
@@ -71,7 +71,7 @@ class BookingPreviewComponentPopup implements OnInit {
 	BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository);
 
 	Future<Null> ngOnInit() async {
-		if (null == bookingItem) {
+		if(null == bookingItem) {
 			print('Failed to initialize popup - no item!');
 			return;
 		}
@@ -81,7 +81,7 @@ class BookingPreviewComponentPopup implements OnInit {
 			_cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_products = await _cruiseRepository.getActiveCruiseProducts(client);
 			booking = await _bookingRepository.findBooking(client, bookingItem.reference);
-		} catch (e) {
+		} catch(e) {
 			print('Failed to load booking: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state
 		}
@@ -96,16 +96,15 @@ class BookingPreviewComponentPopup implements OnInit {
 	providers: const <dynamic>[materialProviders]
 )
 class BookingPreviewComponent {
-	@Input()
 	BookingOverviewItem booking;
-
 	bool isOpen;
 
 	void close() {
 		isOpen = false;
 	}
 
-	void open() {
+	void open(BookingOverviewItem booking) {
+		this.booking = booking;
 		isOpen = true;
 	}
 }

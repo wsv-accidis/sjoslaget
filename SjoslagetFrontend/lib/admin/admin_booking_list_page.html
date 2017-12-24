@@ -72,6 +72,8 @@
 	</span>
 </div>
 
+<booking-preview-component #bookingPreview></booking-preview-component>
+
 <table *ngIf="!isLoading"
 	   border="0"
 	   cellpadding="0"
@@ -128,7 +130,9 @@
 			-
 		</td>
 		<td class="bookings-preview-cell">
-			<booking-preview-component [booking]="booking"></booking-preview-component>
+			<a (click)="openPreviewPopup(booking)" href="javascript:">
+				<glyph icon="zoom_in"></glyph>
+			</a>
 		</td>
 		<td>
 			<a [routerLink]="['Booking', {'ref': booking.reference}]">

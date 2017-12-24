@@ -26,6 +26,14 @@ td.bookings-preview-cell {
 	padding: 0;
 }
 
+td.bookings-preview-cell a:hover {
+	text-decoration: none;
+}
+
+td.bookings-preview-cell glyph {
+	padding-top: 2px;
+}
+
 td.locked {
 	color: darkblue;
 }

@@ -41,6 +41,9 @@ class AdminBookingListPage implements OnInit {
 	String _filterStatus = 'none';
 	String _filterText = '';
 
+	@ViewChild('bookingPreview')
+	BookingPreviewComponent bookingPreview;
+
 	SortableState sort = new SortableState('reference', false);
 	List<BookingOverviewItem> bookingsView;
 	final PagingSupport paging = new PagingSupport(PageLimit);
@@ -101,6 +104,10 @@ class AdminBookingListPage implements OnInit {
 	void onSortChanged(SortableState state) {
 		sort = state;
 		_refreshView();
+	}
+
+	void openPreviewPopup(BookingOverviewItem booking) {
+		bookingPreview.open(booking);
 	}
 
 	Future<Null> refresh() async {
