@@ -16,3 +16,15 @@ div.admin-menu {
 div.admin-menu span {
 	margin-left: 15px;
 }
+
+span.paging-list {
+}
+
+span.paging-list >> a:not(:last-child) {
+	margin-right: 5px;
+}
+
+a.page-selected {
+	font-weight: bold;
+	font-size: larger;
+}

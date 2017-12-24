@@ -10,6 +10,7 @@ import 'booking_preview_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../model/booking_overview_item.dart';
+import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
 import '../util/currency_formatter.dart';
@@ -40,6 +41,7 @@ class AdminBookingListPage implements OnInit {
 
 	SortableState sort = new SortableState('reference', false);
 	List<BookingOverviewItem> bookingsView;
+	final PagingSupport paging = new PagingSupport();
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
@@ -86,6 +88,7 @@ class AdminBookingListPage implements OnInit {
 	}
 
 	Future<Null> ngOnInit() async {
+		paging.refreshCallback = _refreshView;
 		await refresh();
 	}
 
@@ -142,21 +145,24 @@ class AdminBookingListPage implements OnInit {
 	}
 
 	void _refreshView() {
-		Iterable<BookingOverviewItem> filteredList = _bookings;
+		Iterable<BookingOverviewItem> filtered = _bookings;
 
 		if (isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
-			filteredList = filteredList.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
+			filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
 		}
 		if (NONE != _filterStatus) {
-			filteredList = filteredList.where((b) => getStatus(b) == _filterStatus);
+			filtered = filtered.where((b) => getStatus(b) == _filterStatus);
 		}
 		if (isNotEmpty(_filterLunch)) {
-			filteredList = filteredList.where((b) => b.lunch == _filterLunch);
+			filtered = filtered.where((b) => b.lunch == _filterLunch);
 		}
 
-		bookingsView = filteredList.toList(growable: false);
-		bookingsView.sort(_bookingComparator);
+		// Can't sort an iterable in Dart without turning it to a list first
+		List<BookingOverviewItem> sorted = filtered.toList(growable: false);
+		sorted.sort(_bookingComparator);
+
+		bookingsView = paging.apply(sorted);
 	}
 
 	static int _statusToInt(BookingOverviewItem item) {

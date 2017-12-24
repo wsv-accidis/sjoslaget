@@ -18,6 +18,10 @@ div.bookings-filter .filter-radio {
 	margin-right: 0;
 }
 
+div.bookings-paging {
+	margin-top: 10px;
+}
+
 td.bookings-preview-cell {
 	padding: 0;
 }
