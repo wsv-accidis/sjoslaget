@@ -108,6 +108,7 @@ class BookingCabinsPage implements OnInit {
 			cabins.readOnly = booking.isLocked || cruise.isLocked;
 
 			products.quantitiesFromBooking = booking.products;
+			products.readOnly = cabins.readOnly;
 			cabins.registerAddonProvider(products);
 
 			if (!cabins.readOnly)

@@ -14,7 +14,7 @@
 			<span [title]="product.description">{{ product.name }}</span>
 		</td>
 	</tr>
-	<tr>
+	<tr *ngIf="!readOnly">
 		<td *ngFor="let product of bookingProducts; let p = index">
 			<material-input [(ngModel)]="product.quantity"
 							[class]="product.hasQuantityError ? 'product-field error-marker' : 'product-field'"
@@ -25,6 +25,11 @@
 							type="number">
 			</material-input>
 			× {{ product.priceFormatted }}
+		</td>
+	</tr>
+	<tr *ngIf="readOnly">
+		<td *ngFor="let product of bookingProducts" class="product-readonly-quantity">
+			{{ product.quantity }} st × {{ product.priceFormatted }}
 		</td>
 	</tr>
 </table>

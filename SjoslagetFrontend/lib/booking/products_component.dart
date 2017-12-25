@@ -27,6 +27,7 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 	List<BookingProduct> _quantitiesFromBooking;
 
 	List<BookingProductView> bookingProducts;
+	bool readOnly = false;
 	bool showProductNote = true;
 
 	set quantitiesFromBooking(List<BookingProduct> value) {
