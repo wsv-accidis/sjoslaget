@@ -10,11 +10,12 @@ import 'booking_preview_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../model/booking_overview_item.dart';
+import '../util/currency_formatter.dart';
+import '../util/datetime_formatter.dart';
+import '../util/value_comparer.dart';
 import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
-import '../util/currency_formatter.dart';
-import '../util/datetime_formatter.dart';
 
 @Component(
 	selector: 'admin-booking-list-page',
@@ -44,9 +45,9 @@ class AdminBookingListPage implements OnInit {
 	@ViewChild('bookingPreview')
 	BookingPreviewComponent bookingPreview;
 
-	SortableState sort = new SortableState('reference', false);
 	List<BookingOverviewItem> bookingsView;
 	final PagingSupport paging = new PagingSupport(PageLimit);
+	SortableState sort = new SortableState('reference', false);
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
@@ -135,18 +136,17 @@ class AdminBookingListPage implements OnInit {
 			case 'reference':
 				return one.reference.compareTo(two.reference);
 			case 'contact':
-				int result = one.firstName.compareTo(two.firstName);
-				return 0 != result ? result : one.lastName.compareTo(two.lastName);
+				return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
 			case 'lunch':
 				return one.lunch.compareTo(two.lunch);
 			case 'noOfCabins':
 				return one.numberOfCabins - two.numberOfCabins;
 			case 'amountPaid':
-				return one.amountPaid > two.amountPaid ? 1 : (one.amountPaid < two.amountPaid ? -1 : 0);
+				return one.amountPaid.compareTo(two.amountPaid);
 			case 'amountRemaining':
-				return one.amountRemaining > two.amountRemaining ? 1 : (one.amountRemaining < two.amountRemaining ? -1 : 0);
+				return one.amountRemaining.compareTo(two.amountRemaining);
 			case 'updated':
-				return one.updated.isAfter(two.updated) ? 1 : (one.updated.isBefore(two.updated) ? -1 : 0);
+				return one.updated.compareTo(two.updated);
 			default:
 				print('Unrecognized column \"${sort.column}\", no sort applied.');
 				return 0;

@@ -7,10 +7,13 @@
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
 	<glyph icon="view_list"></glyph>
-	<a [routerLink]="['BookingList']">Alla bokningar</a>
+	<a [routerLink]="['BookingList']">Bokningar</a>
 	<span></span>
 	<glyph icon="people"></glyph>
-	<a [routerLink]="['PaxList']">Alla deltagare</a>
+	<a [routerLink]="['PaxList']">Deltagare</a>
+	<span></span>
+	<glyph icon="delete"></glyph>
+	<a [routerLink]="['DeletedList']">Papperskorg</a>
 	<span></span>
 	<glyph icon="cloud_download"></glyph>
 	<a [routerLink]="['Export']">Exportera</a>
@@ -104,4 +107,4 @@
 	Öppna bokningen
 </material-button>
 
-<div style="clear: both; height: 40px"></div>
+<div class="page-end-block"></div>

@@ -21,6 +21,11 @@ div.admin-menu span {
 	margin-left: 15px;
 }
 
+div.page-end-block {
+	clear: both;
+	height: 50px;
+}
+
 span.paging-list {
 }
 

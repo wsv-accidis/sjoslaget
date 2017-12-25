@@ -6,6 +6,9 @@
 	<glyph icon="refresh"></glyph>
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
+	<glyph icon="view_list"></glyph>
+	<a [routerLink]="['BookingList']">Bokningar</a>
+	<span></span>
 	<glyph icon="arrow_back"></glyph>
 	<a [routerLink]="['Dashboard']">Huvudsidan</a>
 </div>
@@ -110,4 +113,4 @@
 	</tr>
 </table>
 
-<div style="clear: both; height: 40px"></div>
+<div class="page-end-block"></div>

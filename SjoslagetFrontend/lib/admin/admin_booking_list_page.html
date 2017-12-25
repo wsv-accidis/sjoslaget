@@ -6,6 +6,12 @@
 	<glyph icon="refresh"></glyph>
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
+	<glyph icon="people"></glyph>
+	<a [routerLink]="['PaxList']">Deltagare</a>
+	<span></span>
+	<glyph icon="delete"></glyph>
+	<a [routerLink]="['DeletedList']">Papperskorg</a>
+	<span></span>
 	<glyph icon="arrow_back"></glyph>
 	<a [routerLink]="['Dashboard']">Huvudsidan</a>
 </div>
@@ -162,4 +168,4 @@
 	</tr>
 </table>
 
-<div style="clear: both; height: 40px"></div>
+<div class="page-end-block"></div>

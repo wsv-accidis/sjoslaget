@@ -84,7 +84,6 @@ class AdminPaxListPage implements OnInit {
 
 	int _bookingComparator(BookingPaxItem one, BookingPaxItem two) {
 		if(sort.desc) {
-			// Swap the items when using descending sort, so we can keep the rest identical
 			BookingPaxItem temp = two;
 			two = one;
 			one = temp;
@@ -126,9 +125,14 @@ class AdminPaxListPage implements OnInit {
 	}
 
 	static void _populateCabinType(BookingPaxItem pax, List<CruiseCabin> cruiseCabins) {
-		pax.cabinType = cruiseCabins
-			.firstWhere((c) => c.id == pax.cabinTypeId)
-			.name;
+		try {
+			pax.cabinType = cruiseCabins
+				.firstWhere((c) => c.id == pax.cabinTypeId)
+				.name;
+		} catch(e) {
+			// Shouldn't happen, but can if cruiseCabins failed to initialize properly for some reason
+			pax.cabinType = '?';
+		}
 	}
 
 	void _refreshView() {

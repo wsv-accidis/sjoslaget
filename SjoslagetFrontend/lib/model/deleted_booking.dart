@@ -24,10 +24,10 @@ class DeletedBooking {
 			map[LASTNAME],
 			map[PHONE_NO],
 			map[EMAIL],
-			map[TOTAL_PRICE],
-			map[AMOUNT_PAID],
-			map[UPDATED],
-			map[DELETED]
+			Decimal.parse(map[TOTAL_PRICE].toString()),
+			Decimal.parse(map[AMOUNT_PAID].toString()),
+			DateTime.parse(map[UPDATED]),
+			DateTime.parse(map[DELETED])
 		);
 	}
 }

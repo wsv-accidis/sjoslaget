@@ -1,0 +1,84 @@
+<h1>
+	Raderade bokningar
+</h1>
+
+<div class="admin-menu">
+	<glyph icon="refresh"></glyph>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
+	<glyph icon="view_list"></glyph>
+	<a [routerLink]="['BookingList']">Bokningar</a>
+	<span></span>
+	<glyph icon="people"></glyph>
+	<a [routerLink]="['PaxList']">Deltagare</a>
+	<span></span>
+	<glyph icon="arrow_back"></glyph>
+	<a [routerLink]="['Dashboard']">Huvudsidan</a>
+</div>
+
+<spinner-widget *ngIf="isLoading"></spinner-widget>
+
+<div *ngIf="!isLoading" class="bookings-filter">
+	<h2>Filtrera</h2>
+
+	Referens/namn
+
+	<material-input [(ngModel)]="filterText"
+					class="filter-field"
+					label="Skriv för att filtrera"
+					style="width: 250px">
+	</material-input>
+</div>
+
+<table *ngIf="!isLoading"
+	   border="0"
+	   cellpadding="0"
+	   cellspacing="0"
+	   class="bookings"
+	   (onSortChange)="onSortChanged($event)"
+	   sortableColumns
+	   [sortColumn]="sort.column"
+	   [sortDesc]="sort.desc">
+	<tr>
+		<th style="width: 120px">
+			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="contact" title="Kontaktperson"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="totalPrice" title="Totalt"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
+		</th>
+		<th style="width: 220px">
+			<sortable-column-header key="updated" title="Sist ändrad"></sortable-column-header>
+		</th>
+		<th style="width: 220px">
+			<sortable-column-header key="deleted" title="Raderad"></sortable-column-header>
+		</th>
+	</tr>
+	<tr *ngFor="let booking of bookingsView">
+		<td>
+			{{ booking.reference }}
+		</td>
+		<td>
+			{{ booking.firstName }} {{ booking.lastName }}, {{ booking.email }}, {{ booking.phoneNo }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.totalPrice) }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.amountPaid) }}
+		</td>
+		<td>
+			{{ formatDateTime(booking.updated) }}
+		</td>
+		<td>
+			{{ formatDateTime(booking.deleted) }}
+		</td>
+	</tr>
+</table>
+
+<div class="page-end-block"></div>
