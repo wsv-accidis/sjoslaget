@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
+import 'package:angular_forms/angular_forms.dart';
 
 import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
@@ -16,7 +17,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'products-component',
 	templateUrl: 'products_component.html',
 	styleUrls: const ['../content/content_styles.css', 'products_component.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives, SpinnerWidget],
+	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
 )
 class ProductsComponent implements BookingAddonProvider, OnInit {
@@ -37,9 +38,9 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 
 	bool get isLoaded => null != bookingProducts;
 
-	bool get isValid => bookingProducts.every((p) => p.isValid);
+	bool get isValid => isLoaded && bookingProducts.every((p) => p.isValid);
 
-	int get price => bookingProducts.fold(0, (sum, p) => sum + p.price * ValueConverter.toInt(p.quantity));
+	int get price => isLoaded ? bookingProducts.fold(0, (sum, p) => sum + p.price * ValueConverter.toInt(p.quantity)) : 0;
 
 	ProductsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 
