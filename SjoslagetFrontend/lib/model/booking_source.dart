@@ -3,15 +3,10 @@ import 'dart:convert';
 import 'booking_cabin.dart';
 import 'booking_details.dart';
 import 'booking_product.dart';
+import 'json_field.dart';
 import 'payment_summary.dart';
 
 class BookingSource extends BookingDetails {
-	static const CABINS = 'Cabins';
-	static const DISCOUNT = 'Discount';
-	static const IS_LOCKED = 'IsLocked';
-	static const PAYMENT = 'Payment';
-	static const PRODUCTS = 'Products';
-
 	List<BookingCabin> cabins;
 	int discount;
 	bool isLocked;
@@ -32,12 +27,12 @@ class BookingSource extends BookingDetails {
 		final List<BookingProduct> products = map[PRODUCTS].map((Map<String, dynamic> value) => new BookingProduct.fromMap(value)).toList(growable: false);
 
 		return new BookingSource(
-			map[BookingDetails.FIRSTNAME],
-			map[BookingDetails.LASTNAME],
-			map[BookingDetails.PHONE_NO],
-			map[BookingDetails.EMAIL],
-			map[BookingDetails.LUNCH],
-			map[BookingDetails.REFERENCE],
+			map[FIRSTNAME],
+			map[LASTNAME],
+			map[PHONE_NO],
+			map[EMAIL],
+			map[LUNCH],
+			map[REFERENCE],
 			map[DISCOUNT],
 			map[IS_LOCKED],
 			cabins,
@@ -51,12 +46,12 @@ class BookingSource extends BookingDetails {
 		final productsMap = null == products ? null : products.where((p) => p.quantity > 0).map((p) => p.toMap()).toList(growable: false);
 
 		return JSON.encode({
-			BookingDetails.FIRSTNAME: firstName,
-			BookingDetails.LASTNAME: lastName,
-			BookingDetails.PHONE_NO: phoneNo,
-			BookingDetails.EMAIL: email,
-			BookingDetails.LUNCH: lunch,
-			BookingDetails.REFERENCE: reference,
+			FIRSTNAME: firstName,
+			LASTNAME: lastName,
+			PHONE_NO: phoneNo,
+			EMAIL: email,
+			LUNCH: lunch,
+			REFERENCE: reference,
 			CABINS: cabinsMap,
 			PRODUCTS: productsMap
 		});

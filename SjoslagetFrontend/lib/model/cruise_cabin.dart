@@ -1,13 +1,7 @@
+import 'json_field.dart';
 import '../util/value_converter.dart';
 
 class CruiseCabin {
-	static const ID = 'Id';
-	static const NAME = 'Name';
-	static const DESCRIPTION = 'Description';
-	static const CAPACITY = 'Capacity';
-	static const COUNT = 'Count';
-	static const PRICE_PER_PAX = 'PricePerPax';
-
 	final int capacity;
 	final int count;
 	final String description;

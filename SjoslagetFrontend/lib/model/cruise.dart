@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-class Cruise {
-	static const IS_LOCKED = 'IsLocked';
-	static const NAME = 'Name';
+import 'json_field.dart';
 
+class Cruise {
 	String name;
 	bool isLocked;
 

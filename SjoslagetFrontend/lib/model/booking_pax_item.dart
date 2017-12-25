@@ -1,14 +1,6 @@
-class BookingPaxItem {
-	static const CABIN_TYPE_ID = 'CabinTypeId';
-	static const REFERENCE = 'Reference';
-	static const GROUP = 'Group';
-	static const FIRST_NAME = 'FirstName';
-	static const LAST_NAME = 'LastName';
-	static const GENDER = 'Gender';
-	static const DOB = 'Dob';
-	static const NATIONALITY = 'Nationality';
-	static const YEARS = 'Years';
+import 'json_field.dart';
 
+class BookingPaxItem {
 	String cabinType;
 	final String cabinTypeId;
 	final String reference;
@@ -29,8 +21,8 @@ class BookingPaxItem {
 			json[CABIN_TYPE_ID],
 			json[REFERENCE],
 			json[GROUP],
-			json[FIRST_NAME],
-			json[LAST_NAME],
+			json[FIRSTNAME],
+			json[LASTNAME],
 			json[GENDER],
 			json[DOB],
 			json[NATIONALITY],

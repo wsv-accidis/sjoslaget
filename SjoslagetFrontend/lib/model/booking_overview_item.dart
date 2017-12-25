@@ -1,14 +1,9 @@
 import 'package:decimal/decimal.dart';
 import 'package:quiver/strings.dart' as str show isEmpty;
 
-import 'booking_dashboard_item.dart';
+import 'json_field.dart';
 
 class BookingOverviewItem {
-	static const AMOUNT_PAID = 'AmountPaid';
-	static const IS_LOCKED = 'IsLocked';
-	static const LUNCH = 'Lunch';
-	static const TOTAL_PRICE = 'TotalPrice';
-
 	final String reference;
 	final String firstName;
 	final String lastName;
@@ -35,15 +30,15 @@ class BookingOverviewItem {
 
 	factory BookingOverviewItem.fromMap(Map<String, dynamic> json) {
 		return new BookingOverviewItem(
-			json[BookingDashboardItem.REFERENCE],
-			json[BookingDashboardItem.FIRSTNAME],
-			json[BookingDashboardItem.LASTNAME],
+			json[REFERENCE],
+			json[FIRSTNAME],
+			json[LASTNAME],
 			json[LUNCH],
 			Decimal.parse(json[TOTAL_PRICE].toString()),
 			Decimal.parse(json[AMOUNT_PAID].toString()),
-			json[BookingDashboardItem.NUMBER_OF_CABINS],
+			json[NUMBER_OF_CABINS],
 			json[IS_LOCKED],
-			DateTime.parse(json[BookingDashboardItem.UPDATED])
+			DateTime.parse(json[UPDATED])
 		);
 	}
 }

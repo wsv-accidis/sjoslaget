@@ -1,7 +1,6 @@
-class BookingProduct {
-	static const PRODUCT_TYPE_ID = 'TypeId';
-	static const QUANTITY = 'Quantity';
+import 'json_field.dart';
 
+class BookingProduct {
 	final String productTypeId;
 	final int quantity;
 

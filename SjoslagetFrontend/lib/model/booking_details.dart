@@ -1,13 +1,8 @@
 import 'dart:convert';
 
-class BookingDetails {
-	static const EMAIL = 'Email';
-	static const FIRSTNAME = 'FirstName';
-	static const LASTNAME = 'LastName';
-	static const LUNCH = 'Lunch';
-	static const PHONE_NO = 'PhoneNo';
-	static const REFERENCE = 'Reference';
+import 'json_field.dart';
 
+class BookingDetails {
 	String firstName;
 	String lastName;
 	String phoneNo;

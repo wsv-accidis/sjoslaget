@@ -1,19 +1,9 @@
 import 'package:quiver/strings.dart' as str show isNotEmpty;
 
 import 'booking_pax.dart';
+import 'json_field.dart';
 
 class BookingCabin {
-	static const ID = 'Id';
-	static const CABIN_TYPE_ID = 'TypeId';
-	static const PAX = 'Pax';
-	static const GROUP = 'Group';
-	static const FIRSTNAME = 'FirstName';
-	static const LASTNAME = 'LastName';
-	static const GENDER = 'Gender';
-	static const DOB = 'Dob';
-	static const NATIONALITY = 'Nationality';
-	static const YEARS = 'Years';
-
 	final String id;
 	final String cabinTypeId;
 	final List<BookingPax> pax;

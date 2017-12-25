@@ -2,11 +2,9 @@ import 'dart:convert';
 
 import 'package:decimal/decimal.dart';
 
-class PaymentSummary {
-	static const AMOUNT = 'Amount'; // for PaymentSource
-	static const LATEST = 'Latest';
-	static const TOTAL = 'Total';
+import 'json_field.dart';
 
+class PaymentSummary {
 	DateTime latest;
 	Decimal total;
 

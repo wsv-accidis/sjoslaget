@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
+import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
@@ -21,13 +22,25 @@ class PricingPage implements OnInit {
 
 	PricingPage(this._clientFactory, this._cruiseRepository);
 
-	Future<Null> ngOnInit() async {
+	Future<Null> doInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
-		} catch (e) {
+		} on ExpirationException catch(e) {
+			throw e;
+		} catch(e) {
 			print('Failed to load active cruise cabins: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
+		}
+	}
+
+	Future<Null> ngOnInit() async {
+		try {
+			await doInit();
+		} on ExpirationException catch(e) {
+			print(e.toString());
+			_clientFactory.clear();
+			doInit();
 		}
 	}
 }

@@ -19,6 +19,7 @@ import '../model/booking_pax_item.dart';
 import '../model/booking_product.dart';
 import '../model/booking_result.dart';
 import '../model/booking_source.dart';
+import '../model/json_field.dart';
 import '../model/payment_summary.dart';
 
 @Injectable()
@@ -83,7 +84,7 @@ class BookingRepository {
 		try {
 			response = await client.get(_apiRoot + '/bookings/recentlyUpdated');
 		} on ExpirationException catch (e) {
-			throw e; // special case for dashboard
+			throw e; // special case for OAuth2 expiration
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}
@@ -104,12 +105,12 @@ class BookingRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		final Map<String, dynamic> body = JSON.decode(response.body);
-		return body[BookingSource.IS_LOCKED];
+		return body[IS_LOCKED];
 	}
 
 	Future<PaymentSummary> registerPayment(Client client, String reference, Decimal amount) async {
 		final headers = _createJsonHeaders();
-		final source = JSON.encode({PaymentSummary.AMOUNT: amount.toDouble()});
+		final source = JSON.encode({AMOUNT: amount.toDouble()});
 
 		Response response;
 		try {
@@ -124,7 +125,7 @@ class BookingRepository {
 
 	Future<Null> updateDiscount(Client client, String reference, int amount) async {
 		final headers = _createJsonHeaders();
-		final source = JSON.encode({PaymentSummary.AMOUNT: amount});
+		final source = JSON.encode({AMOUNT: amount});
 
 		Response response;
 		try {

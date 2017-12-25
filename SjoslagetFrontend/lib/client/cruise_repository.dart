@@ -11,6 +11,7 @@ import 'io_exception.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
 import '../model/cruise_product.dart';
+import '../model/json_field.dart';
 
 @Injectable()
 class CruiseRepository {
@@ -23,7 +24,7 @@ class CruiseRepository {
 		try {
 			response = await client.get(_apiRoot + '/cruise/active');
 		} on ExpirationException catch (e) {
-			throw e; // special case for dashboard
+			throw e; // special case for OAuth2 expiration
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}
@@ -36,6 +37,8 @@ class CruiseRepository {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + '/cabins/active');
+		} on ExpirationException catch (e) {
+			throw e; // special case for OAuth2 expiration
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}
@@ -82,6 +85,6 @@ class CruiseRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		final Map<String, dynamic> body = JSON.decode(response.body);
-		return body[Cruise.IS_LOCKED];
+		return body[IS_LOCKED];
 	}
 }

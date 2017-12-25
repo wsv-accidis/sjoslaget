@@ -7,14 +7,10 @@ import 'package:http/http.dart';
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import 'http_status.dart';
 import 'io_exception.dart';
-import '../model/booking_result.dart';
+import '../model/json_field.dart';
 
 @Injectable()
 class UserRepository {
-	static const USERNAME = 'Username';
-	static const CURRENT_PASSWORD = 'CurrentPassword';
-	static const NEW_PASSWORD = 'NewPassword';
-
 	final String _apiRoot;
 
 	UserRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
@@ -39,7 +35,7 @@ class UserRepository {
 
 	Future<String> resetPinCode(Client client, String reference) async {
 		final headers = _createJsonHeaders();
-		final source = JSON.encode({BookingResult.REFERENCE: reference});
+		final source = JSON.encode({REFERENCE: reference});
 
 		Response response;
 		try {
@@ -50,7 +46,7 @@ class UserRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		final Map<String, String> body = JSON.decode(response.body);
-		return body[BookingResult.PASSWORD];
+		return body[PASSWORD];
 	}
 
 	static Map<String, String> _createJsonHeaders() {

@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-class BookingResult {
-	static const REFERENCE = 'Reference';
-	static const PASSWORD = 'Password';
+import 'json_field.dart';
 
+class BookingResult {
 	String reference;
 	String password;
 

@@ -5,6 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../booking/booking_component.dart';
 import '../booking/booking_login_component.dart';
@@ -39,13 +40,25 @@ class BookingPage implements OnInit {
 
 	BookingPage(this._clientFactory, this._cruiseRepository, this._router);
 
-	Future<Null> ngOnInit() async {
+	Future<Null> doInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);
-		} catch (e) {
+		} on ExpirationException catch(e) {
+			throw e;
+		} catch(e) {
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 			print('Failed to get cruise due to an exception: ' + e.toString());
+		}
+	}
+
+	Future<Null> ngOnInit() async {
+		try {
+			await doInit();
+		} on ExpirationException catch(e) {
+			print(e.toString());
+			_clientFactory.clear();
+			doInit();
 		}
 	}
 

@@ -16,14 +16,21 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	{
 		readonly BookingRepository _bookingRepository;
 		readonly CruiseRepository _cruiseRepository;
+		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
 		readonly PaymentRepository _paymentRepository;
 		readonly ProductRepository _productRepository;
 
-		public BookingsController(BookingRepository bookingRepository, CruiseRepository cruiseRepository, PaymentRepository paymentRepository, ProductRepository productRepository)
+		public BookingsController(
+			BookingRepository bookingRepository, 
+			CruiseRepository cruiseRepository, 
+			DeletedBookingRepository deletedBookingRepository, 
+			PaymentRepository paymentRepository, 
+			ProductRepository productRepository)
 		{
 			_bookingRepository = bookingRepository;
 			_cruiseRepository = cruiseRepository;
+			_deletedBookingRepository = deletedBookingRepository;
 			_paymentRepository = paymentRepository;
 			_productRepository = productRepository;
 		}
@@ -92,6 +99,18 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				_log.Error(ex, "An unexpected exception occurred while deleting the booking.");
 				throw;
 			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Deleted()
+		{
+			Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
+			if (null == activeCruise)
+				return NotFound();
+
+			DeletedBooking[] result = await _deletedBookingRepository.GetAllAsync(activeCruise);
+			return this.OkNoCache(result);
 		}
 
 		[Authorize(Roles = Roles.Admin)]

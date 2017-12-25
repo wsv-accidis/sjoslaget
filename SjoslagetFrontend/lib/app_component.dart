@@ -9,6 +9,7 @@ import 'content/content_component.dart';
 import 'client/booking_repository.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
+import 'client/deleted_booking_repository.dart';
 import 'client/user_repository.dart';
 
 @Component(
@@ -16,7 +17,14 @@ import 'client/user_repository.dart';
 	template: '''
 	<router-outlet></router-outlet>
 	''',
-	providers: const <dynamic>[BookingRepository, BookingValidator, ClientFactory, CruiseRepository, UserRepository],
+	providers: const <dynamic>[
+		BookingRepository,
+		BookingValidator,
+		ClientFactory,
+		CruiseRepository,
+		DeletedBookingRepository,
+		UserRepository
+	],
 	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [

@@ -1,13 +1,6 @@
-class BookingDashboardItem {
-	static const ID = 'Id';
-	static const REFERENCE = 'Reference';
-	static const FIRSTNAME = 'FirstName';
-	static const LASTNAME = 'LastName';
-	static const CREATED = 'Created';
-	static const UPDATED = 'Updated';
-	static const NUMBER_OF_CABINS = 'NumberOfCabins';
-	static const NUMBER_OF_PAX = 'NumberOfPax';
+import 'json_field.dart';
 
+class BookingDashboardItem {
 	Duration _sinceUpdated;
 
 	final String id;

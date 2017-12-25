@@ -1,12 +1,7 @@
+import 'json_field.dart';
 import '../util/value_converter.dart';
 
 class CruiseProduct {
-	static const ID = 'Id';
-	static const NAME = 'Name';
-	static const DESCRIPTION = 'Description';
-	static const IMAGE = 'Image';
-	static const PRICE = 'Price';
-
 	final String description;
 	final String name;
 	final String id;

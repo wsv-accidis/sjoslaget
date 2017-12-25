@@ -37,5 +37,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 				return result.ToArray();
 			}
 		}
+
+		public async Task<DeletedBooking[]> GetAllAsync(Cruise cruise)
+		{
+			using(var db = SjoslagetDb.Open())
+			{
+				var result = await db.QueryAsync<DeletedBooking>("select * from [DeletedBooking] where [CruiseId] = @Id", new {Id = cruise.Id});
+				return result.ToArray();
+			}
+		}
 	}
 }
