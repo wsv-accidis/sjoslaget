@@ -15,7 +15,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenBooking_WhenPaymentsRegistered_ShouldCalculateCorrectSummary()
 		{
 			var booking = await BookingRepositoryTest.GetNewlyCreatedBookingForTestAsync();
-			var repository = new PaymentRepository();
+			var repository = GetPaymentRepositoryForTest();
 
 			decimal amount1 = 409.27m, amount2 = 15000m, amount3 = -927.44m;
 
@@ -32,6 +32,11 @@ namespace Accidis.Sjoslaget.Test.Services
 		public void Initialize()
 		{
 			SjoslagetDbExtensions.InitializeForTest();
+		}
+
+		internal static PaymentRepository GetPaymentRepositoryForTest()
+		{
+			return new PaymentRepository();
 		}
 	}
 }

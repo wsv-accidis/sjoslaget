@@ -108,11 +108,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		public async Task GivenBookingSource_ContainingProducts_ShouldSaveProducts()
 		{
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
-			source.Products.Add(new BookingSource.Product
-			{
-				TypeId = SjoslagetDbExtensions.ProductId,
-				Quantity = 10
-			});
+			source.Products.Add(GetProductForTest());
 
 			var repository = GetBookingRepositoryForTest();
 			var result = await CreateBookingFromSource(source, repository);
@@ -167,6 +163,36 @@ namespace Accidis.Sjoslaget.Test.Services
 
 			deletedBooking = await repository.FindByIdAsync(booking.Id);
 			Assert.IsNull(deletedBooking);
+		}
+
+		[TestMethod]
+		public async Task GivenExistingBooking_WhenDeleted_SubTablesShouldBeCleared()
+		{
+			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));		
+			source.Products.Add(GetProductForTest());
+
+			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+			var result = await repository.CreateAsync(cruise, source);
+
+			var booking = await repository.FindByReferenceAsync(result.Reference);
+			var paymentRepository = PaymentRepositoryTest.GetPaymentRepositoryForTest();
+			await paymentRepository.CreateAsync(booking, 123.45m);
+
+			await repository.DeleteAsync(booking);
+
+			// The booking now has cabins, pax, products and a payment
+			// If we add more data in subtables remember to add and check for it here
+			// All relevant tables should be empty now
+
+			using (var db = SjoslagetDb.Open())
+			{
+				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [Booking]"));
+				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingCabin]"));
+				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingPax]"));
+				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingPayment]"));
+				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingProduct]"));
+			}
 		}
 
 		[TestMethod]
@@ -423,6 +449,15 @@ namespace Accidis.Sjoslaget.Test.Services
 				Gender = gender,
 				Nationality = nationality,
 				Years = years
+			};
+		}
+
+		static BookingSource.Product GetProductForTest()
+		{
+			return new BookingSource.Product
+			{
+				TypeId = SjoslagetDbExtensions.ProductId,
+				Quantity = 10
 			};
 		}
 	}
