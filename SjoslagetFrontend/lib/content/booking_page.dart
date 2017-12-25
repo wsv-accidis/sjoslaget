@@ -32,7 +32,7 @@ class BookingPage implements OnInit {
 	String phoneNo;
 	String email;
 	String lunch;
-	bool acceptToc;
+	bool acceptToc = false;
 
 	bool get isLoadingCruise => null == cruise;
 

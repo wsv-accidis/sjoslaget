@@ -4,7 +4,7 @@ import 'json_field.dart';
 
 class Cruise {
 	String name;
-	bool isLocked;
+	bool isLocked = false;
 
 	Cruise(this.name, this.isLocked);
 
