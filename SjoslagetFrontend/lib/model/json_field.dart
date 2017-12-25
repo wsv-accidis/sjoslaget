@@ -1,7 +1,7 @@
 const AMOUNT = 'Amount';
 const AMOUNT_PAID = 'AmountPaid';
 const CABINS = 'Cabins';
-const CABIN_TYPE_ID = 'TypeId';
+const CABIN_TYPE_ID = 'CabinTypeId';
 const CAPACITY = 'Capacity';
 const COUNT = 'Count';
 const CREATED = 'Created';
@@ -37,6 +37,7 @@ const QUANTITY = 'Quantity';
 const REFERENCE = 'Reference';
 const TOTAL = 'Total';
 const TOTAL_PRICE = 'TotalPrice';
+const TYPE_ID = 'TypeId';
 const UPDATED = 'Updated';
 const USERNAME = 'Username';
 const YEARS = 'Years';

@@ -21,13 +21,13 @@ class BookingCabin {
 			value[NATIONALITY],
 			value[YEARS])).toList(growable: false);
 
-		return new BookingCabin(map[ID], map[CABIN_TYPE_ID], pax);
+		return new BookingCabin(map[ID], map[TYPE_ID], pax);
 	}
 
 	Map<String, dynamic> toMap() {
 		return <String, dynamic>{
 			ID: id,
-			CABIN_TYPE_ID: cabinTypeId,
+			TYPE_ID: cabinTypeId,
 			PAX: pax.where((p) => str.isNotEmpty(p.firstName)).map((p) =>
 			{
 				GROUP: p.group,
