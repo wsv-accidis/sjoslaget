@@ -97,7 +97,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public async Task GivenBookingSource_WhenDataIsValid_ShouldCreateBooking()
 		{
-			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+			var source = GetSimpleBookingForTest();
 
 			var result = await CreateBookingFromSource(source);
 			Assert.IsNotNull(result.Reference);
@@ -107,7 +107,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public async Task GivenBookingSource_ContainingProducts_ShouldSaveProducts()
 		{
-			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+			var source = GetSimpleBookingForTest();
 			source.Products.Add(GetProductForTest());
 
 			var repository = GetBookingRepositoryForTest();
@@ -145,53 +145,6 @@ namespace Accidis.Sjoslaget.Test.Services
 			}
 			catch(BookingException)
 			{
-			}
-		}
-
-		[TestMethod]
-		public async Task GivenExistingBooking_WhenDeleted_ShouldCeaseToExist()
-		{
-			var repository = GetBookingRepositoryForTest();
-			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
-			var booking = await GetNewlyCreatedBookingForTestAsync(cruise, repository);
-
-			Assert.AreNotEqual(Guid.Empty, booking.Id);
-			await repository.DeleteAsync(booking);
-
-			Booking deletedBooking = await repository.FindByReferenceAsync(booking.Reference);
-			Assert.IsNull(deletedBooking);
-
-			deletedBooking = await repository.FindByIdAsync(booking.Id);
-			Assert.IsNull(deletedBooking);
-		}
-
-		[TestMethod]
-		public async Task GivenExistingBooking_WhenDeleted_SubTablesShouldBeCleared()
-		{
-			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));		
-			source.Products.Add(GetProductForTest());
-
-			var repository = GetBookingRepositoryForTest();
-			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
-			var result = await repository.CreateAsync(cruise, source);
-
-			var booking = await repository.FindByReferenceAsync(result.Reference);
-			var paymentRepository = PaymentRepositoryTest.GetPaymentRepositoryForTest();
-			await paymentRepository.CreateAsync(booking, 123.45m);
-
-			await repository.DeleteAsync(booking);
-
-			// The booking now has cabins, pax, products and a payment
-			// If we add more data in subtables remember to add and check for it here
-			// All relevant tables should be empty now
-
-			using (var db = SjoslagetDb.Open())
-			{
-				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [Booking]"));
-				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingCabin]"));
-				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingPax]"));
-				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingPayment]"));
-				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingProduct]"));
 			}
 		}
 
@@ -340,7 +293,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		{
 			var repository = GetBookingRepositoryForTest();
 			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
-			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+			var source = GetSimpleBookingForTest();
 			var tasks = new List<Task>();
 
 			const int overload = 10;
@@ -412,12 +365,25 @@ namespace Accidis.Sjoslaget.Test.Services
 			};
 		}
 
-		static BookingRepository GetBookingRepositoryForTest()
+		internal static BookingSource GetSimpleBookingForTest()
+		{
+			return GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+		}
+
+		internal static BookingRepository GetBookingRepositoryForTest()
 		{
 			var userManagerMock = new Mock<SjoslagetUserManager>();
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
-			var sut = new BookingRepository(new CabinRepository(), new CruiseRepository(), new PriceCalculator(), new ProductRepository(), new RandomKeyGenerator(), userManagerMock.Object);
+			var sut = new BookingRepository(
+				new CabinRepository(),
+				CruiseRepositoryTest.GetCruiseRepositoryForTest(),
+				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
+				new PriceCalculator(),
+				new ProductRepository(),
+				new RandomKeyGenerator(),
+				userManagerMock.Object);
+
 			return sut;
 		}
 
@@ -452,7 +418,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			};
 		}
 
-		static BookingSource.Product GetProductForTest()
+		internal static BookingSource.Product GetProductForTest()
 		{
 			return new BookingSource.Product
 			{

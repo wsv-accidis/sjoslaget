@@ -18,15 +18,24 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
+		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly PriceCalculator _priceCalculator;
 		readonly ProductRepository _productRepository;
 		readonly RandomKeyGenerator _randomKeyGenerator;
 		readonly SjoslagetUserManager _userManager;
 
-		public BookingRepository(CabinRepository cabinRepository, CruiseRepository cruiseRepository, PriceCalculator priceCalculator, ProductRepository productRepository, RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		public BookingRepository(
+			CabinRepository cabinRepository,
+			CruiseRepository cruiseRepository,
+			DeletedBookingRepository deletedBookingRepository,
+			PriceCalculator priceCalculator,
+			ProductRepository productRepository,
+			RandomKeyGenerator randomKeyGenerator,
+			SjoslagetUserManager userManager)
 		{
 			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
+			_deletedBookingRepository = deletedBookingRepository;
 			_priceCalculator = priceCalculator;
 			_productRepository = productRepository;
 			_randomKeyGenerator = randomKeyGenerator;
@@ -77,7 +86,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			if(null != user && user.IsBooking)
 				await _userManager.DeleteAsync(user);
 
-			using(var db = SjoslagetDb.Open())
+			await _deletedBookingRepository.CreateAsync(booking);
+
+			using (var db = SjoslagetDb.Open())
 				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new {Id = booking.Id});
 		}
 
@@ -208,7 +219,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 					throw new BookingException($"Cabin of type \"{cabinSource.TypeId}\" is overbooked, capacity is {type.Capacity}, got {cabinSource.Pax.Count} pax.");
 
 				CruiseCabinAvailability availability;
-				if (!availabilityDict.TryGetValue(cabinSource.TypeId, out availability))
+				if(!availabilityDict.TryGetValue(cabinSource.TypeId, out availability))
 					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an active type.");
 
 				availability.Available--;

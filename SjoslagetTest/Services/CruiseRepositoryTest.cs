@@ -13,7 +13,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public async Task GivenActiveCruise_ShouldGetIt()
 		{
-			var repository = new CruiseRepository();
+			var repository = GetCruiseRepositoryForTest();
 			Cruise cruise = await repository.GetActiveAsync();
 
 			Assert.IsNotNull(cruise);
@@ -29,8 +29,13 @@ namespace Accidis.Sjoslaget.Test.Services
 
 		internal static async Task<Cruise> GetCruiseForTestAsync()
 		{
-			var repository = new CruiseRepository();
+			var repository = GetCruiseRepositoryForTest();
 			return await repository.GetActiveAsync();
+		}
+
+		internal static CruiseRepository GetCruiseRepositoryForTest()
+		{
+			return new CruiseRepository();
 		}
 	}
 }

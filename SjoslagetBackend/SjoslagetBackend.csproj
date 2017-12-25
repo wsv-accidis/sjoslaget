@@ -200,6 +200,7 @@
     <Compile Include="Models\BookingProduct.cs" />
     <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\CruiseProductWithType.cs" />
+    <Compile Include="Models\DeletedBooking.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingResult.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />
     <Compile Include="Services\CruiseRepository.cs" />
+    <Compile Include="Services\DeletedBookingRepository.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\ExportToExcelGenerator.cs" />
     <Compile Include="Services\PaymentRepository.cs" />

@@ -89,6 +89,7 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<BookingRepository>();
 			container.Register<CabinRepository>();
 			container.Register<CruiseRepository>();
+			container.Register<DeletedBookingRepository>();
 			container.Register<PriceCalculator>();
 			container.Register<ProductRepository>();
 			container.Register<RandomKeyGenerator>();
