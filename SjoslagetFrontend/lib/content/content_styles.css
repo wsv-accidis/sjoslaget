@@ -39,6 +39,14 @@ td.border {
 	border-top: 1px solid #608BA8;
 }
 
+tr > td.border:last-child {
+	border-right: 1px solid #608BA8;
+}
+
+tbody > tr:last-child > td.border {
+	border-bottom: 1px solid #608BA8;
+}
+
 img {
 	border: 1px solid darkgray;
 	box-shadow: 2px 2px 4px darkgray;

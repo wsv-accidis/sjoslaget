@@ -16,24 +16,24 @@ div.navigation {
 }
 
 div.logo {
-	background-color: #0F76BC;
 	border-radius: 15px 0 0 15px;
 }
 
 div.logo img {
-	padding: 5px;
-	width: 180px;
+	padding: 5px 15px 5px 0;
+	height: 75px;
 }
 
 div.menu {
 	width: 100%;
+	padding-top: 10px;
 }
 
 div.menu-item {
 	border-left: 2px solid white;
 	box-sizing: border-box;
 	float: left;
-	height: 120px;
+	height: 60px;
 	width: 25%;
 }
 
@@ -43,7 +43,7 @@ div.menu-item a {
 	color: white;
 	display: flex;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
-	font-size: x-large;
+	font-size: large;
 	height: 100%;
 	justify-content: center;
 	line-height: 1.1;
@@ -55,12 +55,16 @@ div.menu-item a:hover {
 	background-color: #0A507F;
 }
 
+div.menu > div.menu-item:first-child > a {
+	border-radius: 15px 0 0 15px;
+}
+
 div.menu > div.menu-item:last-child > a {
 	border-radius: 0 15px 15px 0;
 }
 
 div.content {
-	margin: 20px;
+	margin: 10px 5px;
 }
 
 @media (max-width: 700px) {
@@ -70,12 +74,14 @@ div.content {
 	}
 
 	div.logo {
+		background-color: #0F76BC;
 		border-radius: 0;
 		width: 100%;
 	}
 
 	div.logo img {
 		/* TODO Use different artwork for logo */
+		height: auto;
 		padding: 5px;
 		width: 90px !important;
 	}
@@ -87,6 +93,7 @@ div.content {
 	div.menu {
 		height: 60px;
 		border-top: 2px solid white;
+		padding-top: 0;
 	}
 
 	div.menu > div.menu-item:first-child {
@@ -107,5 +114,9 @@ div.content {
 
 	div.menu-item a {
 		font-size: small !important;
+	}
+
+	div.content {
+		margin: 10px;
 	}
 }
