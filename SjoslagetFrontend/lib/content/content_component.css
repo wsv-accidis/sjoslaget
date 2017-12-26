@@ -1,57 +1,104 @@
 :host {
 }
 
-.logo {
-	position: absolute;
-	left: 30px;
-	top: 50px;
-	z-index: 1;
+div.page {
+	background-color: white;
+	max-width: 800px;
+	min-height: 100vh;
+	min-width: 700px;
+	margin: 0 auto;
+	padding: 20px 40px;
 }
 
-.splash {
-	position: absolute;
-	left: 0;
-	top: 0;
+div.navigation {
+	display: flex;
+	width: 100%;
 }
 
-.column {
+div.logo {
+	background-color: #0F76BC;
+	border-radius: 15px 0 0 15px;
+	width: auto;
+}
+
+div.logo img {
+	padding: 5px;
+	width: 180px;
+}
+
+div.menu {
+	background-color: #0F76BC;
+	border-radius: 0 15px 15px 0;
+	flex: 1;
 	position: relative;
-	left: 380px;
-	top: 0;
-	width: 498px;
+	width: 100%;
 }
 
-.menu {
-	background: url(gfx/Menu.png) no-repeat;
-	height: 48px;
-	padding-top: 25px;
-	padding-left: 3px;
-	white-space: nowrap;
-}
-
-.menu img {
-	border: 0;
-}
-
-.menu a {
-	color: white;
-	display: block;
+div.menu-item {
+	align-items: center;
+	border-left: 2px solid white;
+	box-sizing: border-box;
+	display: flex;
 	float: left;
+	height: 120px;
+	justify-content: center;
+	line-height: 1.1;
+	margin: 0;
+	width: 25%;
+}
+
+div.menu-item a {
+	color: white;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
-	margin-left: 18px;
-	margin-top: 7px;
+	font-size: x-large;
+	text-align: center;
 	text-decoration: none;
 }
 
-.menu a:hover {
+div.menu-item a:hover {
 	text-shadow: 2px 2px 4px white;
 }
 
-.content {
-	background: white;
-	padding: 0 12px;
-	border-left: 3px solid black;
-	border-right: 3px solid black;
-	border-bottom: 1px solid black;
-	min-height: 700px;
+div.content {
+	margin: 20px;
+}
+
+@media (max-width: 700px) {
+	div.page {
+		min-width: 320px;
+		padding: 0 0 20px 0;
+	}
+
+	div.logo {
+		border-radius: 0;
+		width: 100%;
+	}
+
+	div.logo img {
+		/* TODO Use different artwork for logo */
+		padding: 5px;
+		width: 90px !important;
+	}
+
+	div.navigation {
+		display: block;
+	}
+
+	div.menu {
+		height: 60px;
+		border-top: 2px solid white;
+		border-radius: 0 0 10px 10px;
+	}
+
+	div.menu > div.menu-item:first-child {
+		border-left: none;
+	}
+
+	div.menu-item {
+		height: 100%;
+	}
+
+	div.menu-item a {
+		font-size: small !important;
+	}
 }

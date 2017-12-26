@@ -18,7 +18,7 @@ import 'start_page.dart';
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),
 	const Route(path: '/allt-om/...', name: 'About', component: AboutComponent),
 	const Route(path: '/bokning', name: 'Booking', component: BookingPage),
-	const Route(path: '/contact', name: 'Contact', component: ContactPage),
+	const Route(path: '/kontakt', name: 'Contact', component: ContactPage),
 	const Route(path: '/priser', name: 'Pricing', component: PricingPage),
 	const Route(path: '/**', name: 'NotFound', component: NotFoundPage)
 ])

@@ -1,21 +1,19 @@
 :host {
 }
 
-.column {
-	position: relative;
-	left: 5%;
-	top: 30px;
-	width: 90%;
+div.page {
+	background-color: white;
+	min-height: 100vh;
+	min-width: 1050px;
+	margin: 0 20px;
 }
 
-.content {
-	background: white;
-	padding: 6px 12px;
-	border-top: 4px solid black;
-	border-left: 3px solid black;
-	border-right: 3px solid black;
-	border-bottom: 4px solid black;
-	border-radius: 10px;
-	min-height: 300px;
-	min-width: 1050px;
+div.content {
+	padding: 20px 40px;
+}
+
+@media (max-width: 700px) {
+	div.content {
+		padding: 10px;
+	}
 }

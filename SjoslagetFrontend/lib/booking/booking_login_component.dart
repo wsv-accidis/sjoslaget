@@ -13,6 +13,7 @@ import '../widgets/modal_dialog.dart';
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
+	styleUrls: const ['booking_login_component.css'],
 	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, ModalDialog],
 	providers: const <dynamic>[materialProviders]
 )

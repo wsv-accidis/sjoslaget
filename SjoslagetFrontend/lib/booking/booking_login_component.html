@@ -3,32 +3,34 @@
 
 	<material-input [(ngModel)]="bookingRef"
 					ngControl="bookingRef"
+					class="login-input"
 					floatingLabel
-					label="Bokningsreferens"
+					label="Referens"
 					required
 					requiredErrorMsg="Ange bokningsreferens."
-					style="margin-right: 20px">
+					style="width: 100px">
 	</material-input>
 
 	<material-input [(ngModel)]="pinCode"
 					ngControl="pinCode"
+					class="login-input"
 					floatingLabel
 					label="PIN-kod"
 					required
 					requiredErrorMsg="Ange PIN-kod."
-					style="width: 120px; margin-right: 20px"
+					style="width: 70px"
 					type="password">
 	</material-input>
 
 	<material-button (trigger)="logIn()"
 					 [disabled]="!loginForm.valid"
-					 class="control-blue"
+					 class="control-blue login-button"
 					 raised>
 		Logga in
 	</material-button>
 </form>
 
-<div *ngIf="isLoggedIn">
+<div *ngIf="isLoggedIn" class="login-notice">
 	Du är inloggad som {{ loggedInUser }}. <a href="javascript:" (click)="logOut()">Logga ut</a> när du är klar eller
 	<a [routerLink]="['/MyBooking/EditCabins']">fortsätt redigera din bokning</a>.
 </div>
