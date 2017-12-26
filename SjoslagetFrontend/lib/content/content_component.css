@@ -18,7 +18,6 @@ div.navigation {
 div.logo {
 	background-color: #0F76BC;
 	border-radius: 15px 0 0 15px;
-	width: auto;
 }
 
 div.logo img {
@@ -27,36 +26,37 @@ div.logo img {
 }
 
 div.menu {
-	background-color: #0F76BC;
-	border-radius: 0 15px 15px 0;
-	flex: 1;
-	position: relative;
 	width: 100%;
 }
 
 div.menu-item {
-	align-items: center;
 	border-left: 2px solid white;
 	box-sizing: border-box;
-	display: flex;
 	float: left;
 	height: 120px;
-	justify-content: center;
-	line-height: 1.1;
-	margin: 0;
 	width: 25%;
 }
 
 div.menu-item a {
+	align-items: center;
+	background-color: #0F76BC;
 	color: white;
+	display: flex;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
 	font-size: x-large;
+	height: 100%;
+	justify-content: center;
+	line-height: 1.1;
 	text-align: center;
 	text-decoration: none;
 }
 
 div.menu-item a:hover {
-	text-shadow: 2px 2px 4px white;
+	background-color: #0A507F;
+}
+
+div.menu > div.menu-item:last-child > a {
+	border-radius: 0 15px 15px 0;
 }
 
 div.content {
@@ -87,11 +87,18 @@ div.content {
 	div.menu {
 		height: 60px;
 		border-top: 2px solid white;
-		border-radius: 0 0 10px 10px;
 	}
 
 	div.menu > div.menu-item:first-child {
 		border-left: none;
+	}
+
+	div.menu > div.menu-item:first-child > a {
+		border-radius: 0 0 0 15px;
+	}
+
+	div.menu > div.menu-item:last-child > a {
+		border-radius: 0 0 15px 0;
 	}
 
 	div.menu-item {
