@@ -4,9 +4,9 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 
-namespace Accidis.Sjoslaget.WebService.Db
+namespace Accidis.WebServices.Db
 {
-	static class SqlConnectionExtensions
+	public static class SqlConnectionExtensions
 	{
 		public static async Task GetAppLockAsync(this SqlConnection db, string resourceName, int timeoutMs)
 		{

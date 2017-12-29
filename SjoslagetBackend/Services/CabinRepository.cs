@@ -1,8 +1,8 @@
 ﻿using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -18,13 +18,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<CruiseCabinWithType[]> GetActiveAsync(Cruise cruise)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				return await GetActiveAsync(db, cruise);
 		}
 
 		public async Task<CabinType[]> GetAllAsync()
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				return await GetAllAsync(db);
 		}
 
@@ -36,7 +36,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<CruiseCabinAvailability[]> GetAvailabilityAsync(Cruise cruise)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				return await GetAvailabilityAsync(db, cruise);
 		}
 

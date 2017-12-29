@@ -91,6 +91,10 @@
       <Project>{EEA8567A-2511-43D4-BCBC-6A6894600D61}</Project>
       <Name>SjoslagetBackend</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebServicesShared\WebServicesShared.csproj">
+      <Project>{dfb81ef3-55b9-4927-9b05-aae669b9ca56}</Project>
+      <Name>WebServicesShared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />

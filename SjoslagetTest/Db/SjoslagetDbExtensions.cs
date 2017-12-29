@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
-using Accidis.Sjoslaget.WebService.Db;
+using Accidis.WebServices.Db;
 using Dapper;
 
 namespace Accidis.Sjoslaget.Test.Db
@@ -18,7 +18,7 @@ namespace Accidis.Sjoslaget.Test.Db
 		// Use from [TestInitialize] or [ClassInitialize]
 		public static void InitializeForTest(SjoslagetDbTestConfig config = null)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				db.InitializeForTest(config);
 		}
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Accidis.Sjoslaget.WebService.Models
+namespace Accidis.WebServices.Models
 {
 	public class Gender
 	{

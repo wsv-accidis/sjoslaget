@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using Accidis.Sjoslaget.WebService.Auth;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -57,7 +57,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			 */
 			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
 				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise);
@@ -88,13 +88,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 			await _deletedBookingRepository.CreateAsync(booking);
 
-			using (var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new {Id = booking.Id});
 		}
 
 		public async Task<Booking> FindByIdAsync(Guid id)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<Booking>("select * from [Booking] where [Id] = @Id", new {Id = id});
 				return result.FirstOrDefault();
@@ -103,7 +103,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<Booking> FindByReferenceAsync(string reference)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				return await FindByReferenceAsync(db, reference);
 		}
 
@@ -115,7 +115,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<BookingCabinWithPax[]> GetCabinsForBookingAsync(Booking booking)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<BookingCabinWithPax>("select * from [BookingCabin] where [BookingId] = @BookingId order by [Order]",
 					new {BookingId = booking.Id});
@@ -143,7 +143,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			// See CreateAsync regarding the use of transaction + applock here.
 			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
 				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise);
@@ -181,7 +181,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task UpdateDiscountAsync(Booking booking)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				Cruise cruise = await _cruiseRepository.FindByIdAsync(db, booking.CruiseId);
 				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
@@ -198,7 +198,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task UpdateIsLockedAsync(Booking booking)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id",
 					new {Id = booking.Id, IsLocked = booking.IsLocked});

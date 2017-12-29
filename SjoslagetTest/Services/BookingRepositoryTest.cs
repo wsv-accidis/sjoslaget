@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.Test.Db;
 using Accidis.Sjoslaget.WebService.Auth;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Db;
 using Dapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,6 +18,25 @@ namespace Accidis.Sjoslaget.Test.Services
 	public class BookingRepositoryTest
 	{
 		static readonly SjoslagetDbTestConfig Config = SjoslagetDbTestConfig.Default;
+
+		[TestMethod]
+		public async Task GivenBookingSource_ContainingProducts_ShouldSaveProducts()
+		{
+			var source = GetSimpleBookingForTest();
+			source.Products.Add(GetProductForTest());
+
+			var repository = GetBookingRepositoryForTest();
+			var result = await CreateBookingFromSource(source, repository);
+			Assert.IsNotNull(result.Reference);
+
+			var booking = await repository.FindByReferenceAsync(result.Reference);
+			var productRepository = new ProductRepository();
+			var productsOnBooking = await productRepository.GetProductsForBookingAsync(booking);
+
+			Assert.AreEqual(1, productsOnBooking.Length);
+			Assert.AreEqual(SjoslagetDbExtensions.ProductId, productsOnBooking[0].ProductTypeId);
+			Assert.AreEqual(10, productsOnBooking[0].Quantity);
+		}
 
 		[TestMethod]
 		public async Task GivenBookingSource_WhenCabinHasTooFewPax_ShouldCreateBooking()
@@ -83,7 +102,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			}
 			Assert.IsTrue(failed, "Creating an invalid booking should have failed.");
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				int numberOfBookings = await db.ExecuteScalarAsync<int>("select count(*) from [Booking]");
 				Assert.AreEqual(0, numberOfBookings, "There should not be any bookings in the database.");
@@ -102,25 +121,6 @@ namespace Accidis.Sjoslaget.Test.Services
 			var result = await CreateBookingFromSource(source);
 			Assert.IsNotNull(result.Reference);
 			Assert.IsNotNull(result.Password);
-		}
-
-		[TestMethod]
-		public async Task GivenBookingSource_ContainingProducts_ShouldSaveProducts()
-		{
-			var source = GetSimpleBookingForTest();
-			source.Products.Add(GetProductForTest());
-
-			var repository = GetBookingRepositoryForTest();
-			var result = await CreateBookingFromSource(source, repository);
-			Assert.IsNotNull(result.Reference);
-
-			var booking = await repository.FindByReferenceAsync(result.Reference);
-			var productRepository = new ProductRepository();
-			var productsOnBooking = await productRepository.GetProductsForBookingAsync(booking);
-
-			Assert.AreEqual(1, productsOnBooking.Length);
-			Assert.AreEqual(SjoslagetDbExtensions.ProductId, productsOnBooking[0].ProductTypeId);
-			Assert.AreEqual(10, productsOnBooking[0].Quantity);
 		}
 
 		[TestMethod]
@@ -315,7 +315,7 @@ namespace Accidis.Sjoslaget.Test.Services
 					Assert.AreEqual(typeof(AvailabilityException), ex.GetType(), $"A task failed for an unexpected reason, got {ex.GetType()} instead of {nameof(AvailabilityException)}.");
 			}
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var numberOfCabins = await db.ExecuteScalarAsync<int>("select count(*) from [BookingCabin]");
 				Assert.AreEqual(Config.NumberOfCabins, numberOfCabins, "Wrong number of cabins were booked, found {0}, expected {1}.", numberOfCabins, Config.NumberOfCabins);
@@ -326,6 +326,23 @@ namespace Accidis.Sjoslaget.Test.Services
 		public void Initialize()
 		{
 			SjoslagetDbExtensions.InitializeForTest();
+		}
+
+		internal static BookingRepository GetBookingRepositoryForTest()
+		{
+			var userManagerMock = new Mock<SjoslagetUserManager>();
+			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
+
+			var sut = new BookingRepository(
+				new CabinRepository(),
+				CruiseRepositoryTest.GetCruiseRepositoryForTest(),
+				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
+				new PriceCalculator(),
+				new ProductRepository(),
+				new RandomKeyGenerator(),
+				userManagerMock.Object);
+
+			return sut;
 		}
 
 		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync()
@@ -340,6 +357,20 @@ namespace Accidis.Sjoslaget.Test.Services
 			BookingResult result = await repository.CreateAsync(cruise, source);
 
 			return await repository.FindByReferenceAsync(result.Reference);
+		}
+
+		internal static BookingSource.Product GetProductForTest()
+		{
+			return new BookingSource.Product
+			{
+				TypeId = SjoslagetDbExtensions.ProductId,
+				Quantity = 10
+			};
+		}
+
+		internal static BookingSource GetSimpleBookingForTest()
+		{
+			return GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
 		}
 
 		static async Task<BookingResult> CreateBookingFromSource(BookingSource source, BookingRepository repository = null)
@@ -363,28 +394,6 @@ namespace Accidis.Sjoslaget.Test.Services
 				Cabins = new List<BookingSource.Cabin>(cabins),
 				Products = new List<BookingSource.Product>()
 			};
-		}
-
-		internal static BookingSource GetSimpleBookingForTest()
-		{
-			return GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
-		}
-
-		internal static BookingRepository GetBookingRepositoryForTest()
-		{
-			var userManagerMock = new Mock<SjoslagetUserManager>();
-			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
-
-			var sut = new BookingRepository(
-				new CabinRepository(),
-				CruiseRepositoryTest.GetCruiseRepositoryForTest(),
-				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
-				new PriceCalculator(),
-				new ProductRepository(),
-				new RandomKeyGenerator(),
-				userManagerMock.Object);
-
-			return sut;
 		}
 
 		static BookingSource.Cabin GetCabinForTest(Guid cabinTypeId, params BookingSource.Pax[] pax)
@@ -415,15 +424,6 @@ namespace Accidis.Sjoslaget.Test.Services
 				Gender = gender,
 				Nationality = nationality,
 				Years = years
-			};
-		}
-
-		internal static BookingSource.Product GetProductForTest()
-		{
-			return new BookingSource.Product
-			{
-				TypeId = SjoslagetDbExtensions.ProductId,
-				Quantity = 10
 			};
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using Accidis.WebServices.Models;
 
 namespace Accidis.Sjoslaget.WebService.Models
 {

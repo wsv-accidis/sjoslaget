@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.Sjoslaget.WebService.Web;
+using Accidis.WebServices.Db;
 using Dapper;
 using NLog;
 
@@ -22,10 +22,10 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly ProductRepository _productRepository;
 
 		public BookingsController(
-			BookingRepository bookingRepository, 
-			CruiseRepository cruiseRepository, 
-			DeletedBookingRepository deletedBookingRepository, 
-			PaymentRepository paymentRepository, 
+			BookingRepository bookingRepository,
+			CruiseRepository cruiseRepository,
+			DeletedBookingRepository deletedBookingRepository,
+			PaymentRepository paymentRepository,
 			ProductRepository productRepository)
 		{
 			_bookingRepository = bookingRepository;
@@ -106,7 +106,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> Deleted()
 		{
 			Cruise activeCruise = await _cruiseRepository.GetActiveAsync();
-			if (null == activeCruise)
+			if(null == activeCruise)
 				return NotFound();
 
 			DeletedBooking[] result = await _deletedBookingRepository.GetAllAsync(activeCruise);
@@ -203,7 +203,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [Lunch], [TotalPrice], [IsLocked], [Updated], " +
 																	 "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
@@ -224,7 +224,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var items = await db.QueryAsync<BookingPaxItem>("select BP.[Id], BP.[Group], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[CabinTypeId], B.[Reference] " +
 																"from [BookingPax] BP " +
@@ -272,7 +272,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [FirstName], [LastName], [Created], [Updated], " +
 																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +

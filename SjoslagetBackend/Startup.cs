@@ -19,7 +19,7 @@ using NLog.Targets;
 using Owin;
 
 #if !DEBUG
-using Accidis.Sjoslaget.WebService.Db;
+using Accidis.WebServices.Db;
 #endif
 
 [assembly: OwinStartup(typeof(Startup))]
@@ -113,7 +113,7 @@ namespace Accidis.Sjoslaget.WebService
 			var target = new DatabaseTarget
 			{
 				Name = "db",
-				ConnectionString = SjoslagetDb.ConnectionString,
+				ConnectionString = DbUtil.ConnectionString,
 				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
 							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
 				Parameters =

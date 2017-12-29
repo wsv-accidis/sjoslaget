@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using Accidis.Sjoslaget.WebService.Db;
+using Accidis.WebServices.Db;
 using Dapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,7 +29,7 @@ namespace Accidis.Sjoslaget.Test.Db
 			 * 4. Replace all instances of the database name in brackets with __DATABASE__ and all instances of the schema name in brackets with __SCHEMA__. 
 			 * 5. Unignore this test and off you go!
 			 */
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				ExecuteScript(db, "DropAllTables.sql");
 				ExecuteScript(db, "CreateDatabase.sql");

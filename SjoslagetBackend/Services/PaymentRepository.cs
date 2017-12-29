@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -9,14 +9,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 	{
 		public async Task CreateAsync(Booking booking, decimal amount)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("insert into [BookingPayment] (BookingId, Amount) values (@BookingId, @Amount)",
 					new {BookingId = booking.Id, Amount = amount});
 		}
 
 		public async Task<PaymentSummary> GetSumOfPaymentsByBookingAsync(Booking booking)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryFirstOrDefaultAsync<PaymentSummary>("select sum([Amount]) [Total], max([Created]) [Latest] from [BookingPayment] where [BookingId] = @BookingId group by [BookingId]",
 					new {BookingId = booking.Id});

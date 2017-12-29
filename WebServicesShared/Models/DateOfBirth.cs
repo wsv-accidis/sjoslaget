@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Accidis.Sjoslaget.WebService.Models
+namespace Accidis.WebServices.Models
 {
 	public sealed class DateOfBirth
 	{

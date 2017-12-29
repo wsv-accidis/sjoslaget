@@ -2,8 +2,8 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -12,7 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 	{
 		public async Task<Cruise> CreateActiveAsync(string name)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				await db.ExecuteAsync("update [Cruise] set [IsActive] = 0");
 
@@ -31,7 +31,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<Cruise> GetActiveAsync()
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<Cruise>("select top 1 * from [Cruise] where [IsActive] = @IsActive", new {IsActive = true});
 				return result.FirstOrDefault();
@@ -40,7 +40,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task UpdateMetadataAsync(Cruise cruise)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				await db.ExecuteAsync("update [Cruise] set [IsActive] = @IsActive, [IsLocked] = @IsLocked where [Id] = @Id",
 					new {Id = cruise.Id, IsActive = cruise.IsActive, IsLocked = cruise.IsLocked});

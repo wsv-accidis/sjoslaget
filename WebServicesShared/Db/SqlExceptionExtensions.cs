@@ -1,8 +1,8 @@
 ﻿using System.Data.SqlClient;
 
-namespace Accidis.Sjoslaget.WebService.Db
+namespace Accidis.WebServices.Db
 {
-	static class SqlExceptionExtensions
+	public static class SqlExceptionExtensions
 	{
 		public static bool IsForeignKeyViolation(this SqlException ex)
 		{

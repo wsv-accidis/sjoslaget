@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
 using Dapper;
 using Simplexcel;
 
@@ -35,7 +36,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_onlyFullyPaid = onlyFullyPaid;
 			_updatedSince = updatedSince;
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				Worksheet cabinsSheet = CreateCabinsWorksheet();
 				CreateCabinsHeaderRow(cabinsSheet);

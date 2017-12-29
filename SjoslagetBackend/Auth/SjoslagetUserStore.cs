@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Db;
 using Dapper;
 using Microsoft.AspNet.Identity;
 
@@ -12,14 +12,14 @@ namespace Accidis.Sjoslaget.WebService.Auth
 	{
 		public async Task CreateAsync(User user)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("insert into [User] ([UserName], [PasswordHash], [SecurityStamp], [ResetToken], [IsBooking]) values (@UserName, @PasswordHash, @SecurityStamp, @ResetToken, @IsBooking)",
 					new {UserName = user.UserName, PasswordHash = user.PasswordHash, SecurityStamp = user.SecurityStamp, ResetToken = user.ResetToken, IsBooking = user.IsBooking});
 		}
 
 		public async Task DeleteAsync(User user)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("delete from [User] where [Id] = @Id", new {Id = user.Id});
 		}
 
@@ -29,7 +29,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public async Task<User> FindByIdAsync(Guid userId)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<User>("select * from [User] where [Id] = @Id", new {Id = userId});
 				return result.FirstOrDefault();
@@ -38,7 +38,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public async Task<User> FindByNameAsync(string userName)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<User>("select * from [User] where [UserName] = @UserName", new {UserName = userName});
 				return result.FirstOrDefault();
@@ -62,7 +62,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public async Task<bool> IsUserStoreEmptyAsync()
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				int count = await db.ExecuteScalarAsync<int>("select count(*) from [User]");
 				return 0 == count;
@@ -83,7 +83,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 
 		public async Task UpdateAsync(User user)
 		{
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("update [User] set [UserName] = @UserName, [PasswordHash] = @PasswordHash, [ResetToken] = @ResetToken, [SecurityStamp] = @SecurityStamp, [IsBooking] = @IsBooking where [Id] = @Id",
 					new {Id = user.Id, UserName = user.UserName, PasswordHash = user.PasswordHash, ResetToken = user.ResetToken, SecurityStamp = user.SecurityStamp, IsBooking = user.IsBooking});
 		}

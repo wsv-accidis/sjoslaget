@@ -1,8 +1,8 @@
 ﻿using System.Data;
-using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Models;
 using Dapper;
 
-namespace Accidis.Sjoslaget.WebService.Db
+namespace Accidis.WebServices.Db
 {
 	sealed class DateOfBirthTypeHandler : SqlMapper.TypeHandler<DateOfBirth>
 	{

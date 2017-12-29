@@ -2,11 +2,11 @@
 using System.Web.Configuration;
 using Dapper;
 
-namespace Accidis.Sjoslaget.WebService.Db
+namespace Accidis.WebServices.Db
 {
-	public sealed class SjoslagetDb
+	public sealed class DbUtil
 	{
-		static SjoslagetDb()
+		static DbUtil()
 		{
 			SqlMapper.AddTypeHandler(new GenderTypeHandler());
 			SqlMapper.AddTypeHandler(new DateOfBirthTypeHandler());

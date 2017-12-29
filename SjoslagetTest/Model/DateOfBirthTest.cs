@@ -1,5 +1,5 @@
 ﻿using System;
-using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Sjoslaget.Test.Model

@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using Accidis.Sjoslaget.WebService.Db;
+using Accidis.WebServices.Db;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Sjoslaget.Test.Db
@@ -15,7 +15,7 @@ namespace Accidis.Sjoslaget.Test.Db
 			SqlConnection db = null;
 			try
 			{
-				db = SjoslagetDb.Open();
+				db = DbUtil.Open();
 				Assert.AreEqual(ConnectionState.Open, db.State);
 			}
 			finally

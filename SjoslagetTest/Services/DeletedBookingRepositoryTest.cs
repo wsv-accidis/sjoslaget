@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.Test.Db;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Db;
 using Dapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -77,7 +77,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			// If we add more data in subtables remember to add and check for it here
 			// All relevant tables should be empty now
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [Booking]"));
 				Assert.AreEqual(0, db.ExecuteScalar<int>("select count(*) from [BookingCabin]"));

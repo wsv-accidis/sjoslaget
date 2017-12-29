@@ -173,11 +173,6 @@
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Db\DateOfBirthTypeHandler.cs" />
-    <Compile Include="Db\GenderTypeHandler.cs" />
-    <Compile Include="Db\SjoslagetDb.cs" />
-    <Compile Include="Db\SqlConnectionExtensions.cs" />
-    <Compile Include="Db\SqlExceptionExtensions.cs" />
     <Compile Include="Models\AvailabilityException.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingCabin.cs" />
@@ -200,8 +195,6 @@
     <Compile Include="Models\CruiseCabinAvailability.cs" />
     <Compile Include="Models\CruiseCabinWithType.cs" />
     <Compile Include="Models\CruiseCabinSource.cs" />
-    <Compile Include="Models\DateOfBirth.cs" />
-    <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\ProductCount.cs" />

@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
-using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.Sjoslaget.WebService.Web;
+using Accidis.WebServices.Db;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
 {
@@ -51,7 +51,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = SjoslagetDb.Open())
+			using(var db = DbUtil.Open())
 			{
 				ProductCount[] counts = await _productRepository.GetSumOfOrdersByProductAsync(db, activeCruise, onlyFullyPaid);
 				// TODO Add more stats here later
