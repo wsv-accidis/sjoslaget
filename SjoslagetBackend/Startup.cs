@@ -5,6 +5,7 @@ using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Auth;
 using DryIoc;
 using DryIoc.WebApi;
 using Microsoft.Owin;
@@ -63,7 +64,7 @@ namespace Accidis.Sjoslaget.WebService
 			var oauthOptions = new OAuthAuthorizationServerOptions
 			{
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
-				AccessTokenFormat = new JwtAccessTokenFormat(),
+				AccessTokenFormat = new JwtAccessTokenFormat(AuthConfig.AudienceSecret, AuthConfig.Audience, AuthConfig.Issuer),
 #if DEBUG
 				AllowInsecureHttp = true,
 #endif

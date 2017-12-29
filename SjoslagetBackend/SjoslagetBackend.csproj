@@ -157,7 +157,6 @@
   <ItemGroup>
     <Compile Include="Auth\AuthConfig.cs" />
     <Compile Include="Auth\AuthContext.cs" />
-    <Compile Include="Auth\JwtAccessTokenFormat.cs" />
     <Compile Include="Auth\OAuthProvider.cs" />
     <Compile Include="Auth\Roles.cs" />
     <Compile Include="Auth\SjoslagetUserManager.cs" />
@@ -253,6 +252,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Emails.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebServicesShared\WebServicesShared.csproj">
+      <Project>{dfb81ef3-55b9-4927-9b05-aae669b9ca56}</Project>
+      <Name>WebServicesShared</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
