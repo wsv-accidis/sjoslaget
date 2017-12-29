@@ -6,13 +6,10 @@ namespace Accidis.Sjoslaget.WebService.Auth
 {
 	sealed class JwtAccessTokenFormat : ISecureDataFormat<AuthenticationTicket>
 	{
-		const string DigestAlgorithm = "http://www.w3.org/2001/04/xmlenc#sha256";
-		const string SignatureAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
-
 		public string Protect(AuthenticationTicket data)
 		{
 			var keyBytes = Convert.FromBase64String(AuthConfig.AudienceSecret);
-			var signingCredentials = new SigningCredentials(new InMemorySymmetricSecurityKey(keyBytes), SignatureAlgorithm, DigestAlgorithm);
+			var signingCredentials = new SigningCredentials(new InMemorySymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
 
 			var token = new JwtSecurityToken(
 				issuer: AuthConfig.Issuer,
