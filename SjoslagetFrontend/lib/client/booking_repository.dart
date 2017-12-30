@@ -3,14 +3,13 @@ import 'dart:convert';
 
 import 'package:angular/angular.dart';
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import 'availability_exception.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
-import 'http_status.dart';
-import 'io_exception.dart';
 import '../model/booking_cabin.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/booking_details.dart';

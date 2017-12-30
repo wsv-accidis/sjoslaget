@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:angular/angular.dart';
+import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
-import 'http_status.dart';
-import 'io_exception.dart';
 import '../model/deleted_booking.dart';
 
 @Injectable()
