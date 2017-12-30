@@ -24,6 +24,16 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
+		public async Task DeleteAllAsync()
+		{
+			using(var db = DbUtil.Open())
+			{
+				await db.ExecuteAsync("delete from [BookingQueue]");
+				await db.ExecuteAsync("dbcc checkident ('[BookingQueue]', reseed, 0)");
+				await db.ExecuteAsync("delete from [BookingCandidate]");
+			}
+		}
+
 		public async Task<int> EnqueueAsync(Guid candidateId)
 		{
 			using(var db = DbUtil.Open())
@@ -70,16 +80,6 @@ namespace Accidis.Gotland.WebService.Services
 				int didUpdate = await db.ExecuteScalarAsync<int>("update [BookingCandidate] set [KeepAlive] = sysdatetime() output 1 where [Id] = @Id",
 					new {Id = candidateId});
 				return didUpdate != 0;
-			}
-		}
-
-		public async Task ResetQueueAsync()
-		{
-			using(var db = DbUtil.Open())
-			{
-				await db.ExecuteAsync("delete from [BookingQueue]");
-				await db.ExecuteAsync("dbcc checkident ('[BookingQueue]', reseed, 0)");
-				await db.ExecuteAsync("delete from [BookingCandidate]");
 			}
 		}
 

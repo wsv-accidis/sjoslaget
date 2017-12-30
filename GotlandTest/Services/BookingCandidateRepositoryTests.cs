@@ -18,7 +18,7 @@ namespace Accidis.Gotland.Test.Services
 		public async Task GivenManyCompetingCandidates_ShouldProduceOrderedQueue()
 		{
 			var repository = new BookingCandidateRepository();
-			await repository.ResetQueueAsync();
+			await repository.DeleteAllAsync();
 
 			const int numberOfCandidates = 500;
 			var candidates = new List<Guid>();

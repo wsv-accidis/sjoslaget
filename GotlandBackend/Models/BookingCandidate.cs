@@ -15,10 +15,12 @@ namespace Accidis.Gotland.WebService.Models
 
 		public static void Validate(BookingCandidate candidate)
 		{
-			// TODO Actually validate
+			if (string.IsNullOrWhiteSpace(candidate.FirstName))
+				throw new BookingException("First name must be set.");
+			if (string.IsNullOrWhiteSpace(candidate.LastName))
+				throw new BookingException("Last name must be set.");
 
-			candidate.FirstName = candidate.FirstName ?? String.Empty;
-			candidate.LastName = candidate.LastName ?? String.Empty;
+			// TODO Validate more
 			candidate.Email = candidate.Email ?? String.Empty;
 			candidate.PhoneNo = candidate.PhoneNo ?? String.Empty;
 			candidate.TeamName = candidate.TeamName ?? String.Empty;			

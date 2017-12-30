@@ -80,6 +80,7 @@ namespace Accidis.Gotland.WebService
 			var container = new Container().WithWebApi(config);
 
 			container.Register<BookingCandidateRepository>();
+			container.Register<EventRepository>();
 //			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
 
 			return container;
