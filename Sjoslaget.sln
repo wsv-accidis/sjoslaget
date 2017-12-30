@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GotlandBackend", "GotlandBa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServicesShared", "WebServicesShared\WebServicesShared.csproj", "{DFB81EF3-55B9-4927-9B05-AAE669B9CA56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GotlandTest", "GotlandTest\GotlandTest.csproj", "{01E12355-6A4A-4B81-A7E7-436C0E5D1E1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DFB81EF3-55B9-4927-9B05-AAE669B9CA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFB81EF3-55B9-4927-9B05-AAE669B9CA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFB81EF3-55B9-4927-9B05-AAE669B9CA56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01E12355-6A4A-4B81-A7E7-436C0E5D1E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01E12355-6A4A-4B81-A7E7-436C0E5D1E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01E12355-6A4A-4B81-A7E7-436C0E5D1E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01E12355-6A4A-4B81-A7E7-436C0E5D1E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
