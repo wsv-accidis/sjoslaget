@@ -1,0 +1,31 @@
+@import url(https://fonts.googleapis.com/css?family=Carter+One);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Material+Icons);
+
+* {
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+	/*background: #1176BC url(gfx/Background.png) repeat-x;*/
+	margin: 0;
+}
+
+div.loading {
+	padding: 5vw;
+	margin: 0 auto;
+}
+
+input.hidden-submit {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+}
+
+@media (max-width: 700px) {
+	body {
+		/* background is pointless on small screen since nobody will see it */
+		background: white;
+	}
+}

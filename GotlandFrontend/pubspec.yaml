@@ -1,0 +1,27 @@
+name: Gotland
+description: Front-end for the AG web site (prototype).
+version: 0.0.1
+
+environment:
+  sdk: '>=1.20.1 <2.0.0'
+
+dependencies:
+  angular: ^4.0.0
+  angular_components: ^0.8.0
+  angular_forms: ^1.0.0
+  angular_router: ^1.0.0
+  #decimal:
+  frontend_shared:
+    path: ../FrontendShared
+  #oauth2:
+  #  git: https://github.com/wsv-accidis/oauth2.git
+  quiver: '>=0.23.0 <0.27.0'
+
+dev_dependencies:
+  browser: ^0.10.0
+  dart_to_js_script_rewriter: ^1.0.1
+
+transformers:
+- angular:
+    entry_points: web/main.dart
+- dart_to_js_script_rewriter
