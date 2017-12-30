@@ -1,23 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Web.Http;
 using Accidis.Gotland.WebService;
-using Accidis.WebServices.Auth;
+using Accidis.Gotland.WebService.Services;
 using DryIoc;
 using DryIoc.WebApi;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Jwt;
-using Microsoft.Owin.Security.OAuth;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using Owin;
 
-//#if !DEBUG
-//using Accidis.Sjoslaget.WebService.Db;
-//#endif
+#if !DEBUG
+using Accidis.WebServices.Db;
+#endif
 
 [assembly: OwinStartup(typeof(Startup))]
 
@@ -83,7 +78,8 @@ namespace Accidis.Gotland.WebService
 		static IContainer ConfigureContainer(HttpConfiguration config)
 		{
 			var container = new Container().WithWebApi(config);
-			
+
+			container.Register<BookingCandidateRepository>();
 //			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
 
 			return container;
@@ -93,35 +89,35 @@ namespace Accidis.Gotland.WebService
 		{
 			var config = new LoggingConfiguration();
 
-//#if DEBUG
+#if DEBUG
 			var target = new DebuggerTarget {Name = "debug"};
 			config.AddTarget(target);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
-//#else
-//			var target = new DatabaseTarget
-//			{
-//				Name = "db",
-//				ConnectionString = SjoslagetDb.ConnectionString,
-//				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
-//							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
-//				Parameters =
-//				{
-//					new DatabaseParameterInfo("@Timestamp", "${date:universalTime=true}"),
-//					new DatabaseParameterInfo("@Level", "${level}"),
-//					new DatabaseParameterInfo("@Logger", "${logger}"),
-//					new DatabaseParameterInfo("@Message", "${message}"),
-//					new DatabaseParameterInfo("@Callsite", "${callsite}"),
-//					new DatabaseParameterInfo("@Exception", "${exception:format=tostring:maxInnerExceptionLevel=2}"),
-//					new DatabaseParameterInfo("@UserName", "${aspnet-User-Identity}"),
-//					new DatabaseParameterInfo("@Method", "${aspnet-Request-Method}"),
-//					new DatabaseParameterInfo("@Url", "${aspnet-Request:serverVariable=HTTP_URL}"),
-//					new DatabaseParameterInfo("@RemoteAddress", "${aspnet-Request:serverVariable=REMOTE_ADDR}"),
-//					new DatabaseParameterInfo("@LocalAddress", "${aspnet-Request:serverVariable=LOCAL_ADDR}")
-//				}
-//			};
-//			config.AddTarget(target);
-//			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, target));
-//#endif
+#else
+			var target = new DatabaseTarget
+			{
+				Name = "db",
+				ConnectionString = DbUtil.ConnectionString,
+				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
+							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
+				Parameters =
+				{
+					new DatabaseParameterInfo("@Timestamp", "${date:universalTime=true}"),
+					new DatabaseParameterInfo("@Level", "${level}"),
+					new DatabaseParameterInfo("@Logger", "${logger}"),
+					new DatabaseParameterInfo("@Message", "${message}"),
+					new DatabaseParameterInfo("@Callsite", "${callsite}"),
+					new DatabaseParameterInfo("@Exception", "${exception:format=tostring:maxInnerExceptionLevel=2}"),
+					new DatabaseParameterInfo("@UserName", "${aspnet-User-Identity}"),
+					new DatabaseParameterInfo("@Method", "${aspnet-Request-Method}"),
+					new DatabaseParameterInfo("@Url", "${aspnet-Request:serverVariable=HTTP_URL}"),
+					new DatabaseParameterInfo("@RemoteAddress", "${aspnet-Request:serverVariable=REMOTE_ADDR}"),
+					new DatabaseParameterInfo("@LocalAddress", "${aspnet-Request:serverVariable=LOCAL_ADDR}")
+				}
+			};
+			config.AddTarget(target);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, target));
+#endif
 			LogManager.Configuration = config;
 
 			var logger = LogManager.GetLogger(typeof(Startup).Name);
@@ -148,10 +144,10 @@ namespace Accidis.Gotland.WebService
 			//	constraints: new {reference = BookingConfig.BookingReferencePattern}
 			//);
 
-			//config.Routes.MapHttpRoute(
-			//	name: "ControllerActionApi",
-			//	routeTemplate: "api/{controller}/{action}"
-			//);
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionApi",
+				routeTemplate: "api/{controller}/{action}"
+			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerSimpleApi",

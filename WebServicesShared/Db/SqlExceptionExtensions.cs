@@ -11,7 +11,7 @@ namespace Accidis.WebServices.Db
 
 		public static bool IsUniqueKeyViolation(this SqlException ex)
 		{
-			return ex.Errors.Count > 0 && ex.Errors[0].Number == 2627;
+			return ex.Errors.Count > 0 && (ex.Errors[0].Number == 2627 || ex.Errors[0].Number == 2601);
 		}
 	}
 }

@@ -138,13 +138,18 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\HelloWorldController.cs" />
+    <Compile Include="Controllers\QueueController.cs" />
+    <Compile Include="Models\BookingCandidate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BookingCandidateRepository.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Db.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="packages.config" />
-    <None Include="Properties\PublishProfiles\ag-test.sjoslaget.se - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Beebyte WebDeploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -154,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebServicesShared\WebServicesShared.csproj">
