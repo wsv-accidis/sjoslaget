@@ -33,7 +33,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				var result = await db.QueryAsync<Cruise>("select top 1 * from [Cruise] where [IsActive] = @IsActive", new {IsActive = true});
+				var result = await db.QueryAsync<Cruise>("select top 1 * from [Cruise] where [IsActive] = 1");
 				return result.FirstOrDefault();
 			}
 		}

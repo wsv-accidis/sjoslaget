@@ -215,9 +215,6 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Services\BookingConfig.cs" />
     <Compile Include="Services\RandomKeyGenerator.cs" />
-    <Compile Include="Web\ApiControllerExtensions.cs" />
-    <Compile Include="Web\OkCacheControlResult.cs" />
-    <Compile Include="Web\OkNoCacheResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -4,7 +4,7 @@ using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
-using Accidis.Sjoslaget.WebService.Web;
+using Accidis.WebServices.Web;
 using NLog;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
