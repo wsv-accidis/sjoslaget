@@ -1,5 +1,6 @@
+import 'package:frontend_shared/util.dart';
+
 import 'json_field.dart';
-import '../util/value_converter.dart';
 
 class CruiseCabin {
 	final int capacity;

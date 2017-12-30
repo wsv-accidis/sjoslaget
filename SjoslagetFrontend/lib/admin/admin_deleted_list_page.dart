@@ -4,14 +4,12 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/client_factory.dart';
 import '../client/deleted_booking_repository.dart';
 import '../model/deleted_booking.dart';
-import '../util/currency_formatter.dart';
-import '../util/datetime_formatter.dart';
-import '../util/value_comparer.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
 

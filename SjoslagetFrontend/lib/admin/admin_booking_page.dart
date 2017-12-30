@@ -5,6 +5,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../booking/cabins_component.dart';
@@ -22,8 +23,6 @@ import '../model/booking_product_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
-import '../util/currency_formatter.dart';
-import '../util/datetime_formatter.dart';
 import '../widgets/modal_dialog.dart';
 import '../widgets/spinner_widget.dart';
 

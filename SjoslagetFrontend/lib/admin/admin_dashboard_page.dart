@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../booking/availability_component.dart';
@@ -11,7 +12,6 @@ import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
-import '../util/datetime_formatter.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(

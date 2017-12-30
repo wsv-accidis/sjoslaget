@@ -8,7 +8,9 @@ environment:
 dependencies:
   corsac_jwt:
     git: https://github.com/corsac-dart/jwt.git
+  decimal:
   http:
+  intl:
   oauth2:
     git: https://github.com/wsv-accidis/oauth2.git
   quiver: '>=0.23.0 <0.27.0'

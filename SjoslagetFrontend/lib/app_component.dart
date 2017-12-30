@@ -4,13 +4,12 @@ import 'package:angular_router/angular_router.dart';
 import 'admin/admin_component.dart';
 import 'booking/booking_component.dart';
 import 'booking/booking_validator.dart';
-import 'content/content_component.dart';
-
 import 'client/booking_repository.dart';
 import 'client/client_factory.dart';
 import 'client/cruise_repository.dart';
 import 'client/deleted_booking_repository.dart';
 import 'client/user_repository.dart';
+import 'content/content_component.dart';
 
 @Component(
 	selector: 'sjoslaget-app',

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:frontend_shared/util.dart';
 
 import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
@@ -10,7 +11,6 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_product.dart';
 import '../model/booking_product_view.dart';
-import '../util/value_converter.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(

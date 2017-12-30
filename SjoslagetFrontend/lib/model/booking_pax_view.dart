@@ -1,7 +1,7 @@
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' as str show isBlank, isEmpty, isNotEmpty;
 
 import '../model/booking_pax.dart';
-import '../util/value_converter.dart';
 
 class BookingPaxView {
 	String group;

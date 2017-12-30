@@ -1,9 +1,8 @@
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' as str show isNotEmpty;
 
 import 'booking_product.dart';
 import 'cruise_product.dart';
-import '../util/currency_formatter.dart';
-import '../util/value_converter.dart';
 
 class BookingProductView extends CruiseProduct {
 	String quantity;
