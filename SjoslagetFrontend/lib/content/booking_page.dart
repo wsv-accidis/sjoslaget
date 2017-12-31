@@ -26,6 +26,7 @@ class BookingPage implements OnInit {
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 	final Router _router;
+
 	Cruise cruise;
 	String firstName;
 	String lastName;

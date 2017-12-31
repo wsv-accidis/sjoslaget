@@ -1,6 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
+import 'countdown_page.dart';
 import 'start_page.dart';
 
 @Component(
@@ -11,6 +12,7 @@ import 'start_page.dart';
 )
 @RouteConfig(const [
 	const Route(path: '/', name: 'Start', component: StartPage, useAsDefault: true),
+	const Route(path: '/nedrakning', name: 'Countdown', component: CountdownPage),
 //	const Route(path: '/allt-om/...', name: 'About', component: AboutComponent),
 //	const Route(path: '/bokning', name: 'Booking', component: BookingPage),
 //	const Route(path: '/kontakt', name: 'Contact', component: ContactPage),

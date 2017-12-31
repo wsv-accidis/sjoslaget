@@ -1,6 +1,9 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
+import 'client/client_factory.dart';
+import 'client/event_repository.dart';
+import 'client/queue_repository.dart';
 import 'content/content_component.dart';
 
 @Component(
@@ -9,6 +12,9 @@ import 'content/content_component.dart';
 	<router-outlet></router-outlet>
 	''',
 	providers: const <dynamic>[
+		ClientFactory,
+		EventRepository,
+		QueueRepository
 	],
 	directives: const <dynamic>[ROUTER_DIRECTIVES]
 )

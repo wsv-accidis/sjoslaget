@@ -1,5 +1,11 @@
-
 abstract class ValueConverter {
+	static DateTime parseDateTime(String value) {
+		if (null == value || value.isEmpty)
+			return null;
+
+		return DateTime.parse(value);
+	}
+
 	static int toInt(dynamic id) {
 		if (null == id)
 			return 0;
