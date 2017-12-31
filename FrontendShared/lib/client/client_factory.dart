@@ -67,6 +67,7 @@ class ClientFactoryBase {
 			print('Failed to load stored credentials due to an exception: ' + e.toString());
 		}
 
+		// TODO Cache this instance too
 		return new BrowserClient();
 	}
 

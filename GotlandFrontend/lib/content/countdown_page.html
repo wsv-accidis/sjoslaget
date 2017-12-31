@@ -1,1 +1,19 @@
-O HAI
+<div *ngIf="shouldShowCountdown">
+	<p>
+		{{ countdownFormatted }}
+	</p>
+	<p>
+		<material-button [disabled]="!countdownIsElapsed"
+						 class="control-blue"
+						 raised
+						 (trigger)="submitCandidate()">
+			Nu jääävlar!
+		</material-button>
+	</p>
+</div>
+<div *ngIf="waitingForResponse">
+	Jobbar ...
+</div>
+<div *ngIf="hasResponse">
+	Grattis! Din plats i kön är nummer {{ queueResponse.placeInQueue }}!
+</div>

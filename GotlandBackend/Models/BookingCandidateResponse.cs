@@ -8,7 +8,7 @@ namespace Accidis.Gotland.WebService.Models
 		{
 			int countdown = -1;
 			if(evnt.Opening.HasValue)
-				countdown = Math.Max(0, Convert.ToInt32((evnt.Opening.Value - DateTime.Now).TotalSeconds));
+				countdown = Math.Max(0, Convert.ToInt32((evnt.Opening.Value - DateTime.Now).TotalMilliseconds));
 
 			Id = candidateId;
 			QueueSize = queueSize;

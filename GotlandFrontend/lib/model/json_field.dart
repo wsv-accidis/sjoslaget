@@ -7,4 +7,5 @@ const LASTNAME = 'LastName';
 const NAME = 'Name';
 const OPENING = 'Opening';
 const PHONE_NO = 'PhoneNo';
+const PLACE_IN_QUEUE = 'PlaceInQueue';
 const QUEUE_SIZE = 'QueueSize';

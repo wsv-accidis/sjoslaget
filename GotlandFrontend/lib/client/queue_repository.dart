@@ -8,6 +8,7 @@ import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 import '../model/booking_details.dart';
 import '../model/candidate_response.dart';
+import '../model/queue_response.dart';
 
 @Injectable()
 class QueueRepository {
@@ -28,6 +29,40 @@ class QueueRepository {
 		if (HttpStatus.OK == response.statusCode)
 			return new CandidateResponse.fromJson(response.body);
 		else if (HttpStatus.BAD_REQUEST == response.statusCode)
+			throw new BookingException();
+		else
+			throw new IOException.fromResponse(response);
+	}
+
+	Future<QueueResponse> go(Client client, String candidateId) async {
+		Response response;
+		try {
+			response = await client.put(_apiRoot + '/queue/go?c=' + candidateId);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
+			return new QueueResponse.fromJson(response.body);
+		else if (HttpStatus.BAD_REQUEST == response.statusCode)
+			// Countdown not elapsed yet
+			throw new BookingException();
+		else
+			throw new IOException.fromResponse(response);
+	}
+
+	Future<CandidateResponse> ping(Client client, String candidateId) async {
+		Response response;
+		try {
+			response = await client.put(_apiRoot + '/queue/ping?c=' + candidateId);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
+			return new CandidateResponse.fromJson(response.body);
+		else if (HttpStatus.NOT_FOUND == response.statusCode)
+			// The candidate has timed out
 			throw new BookingException();
 		else
 			throw new IOException.fromResponse(response);
