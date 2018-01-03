@@ -1,6 +1,5 @@
 ﻿using System;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using Microsoft.AspNet.Identity;
 
 namespace Accidis.WebServices.Auth
@@ -28,7 +27,7 @@ namespace Accidis.WebServices.Auth
 			manager.PasswordValidator = new PasswordValidator
 			{
 				RequireDigit = false,
-				RequiredLength = BookingKeyGenerator.PinCodeLength,
+				RequiredLength = AecCredentialsGenerator.PinCodeLength,
 				RequireLowercase = false,
 				RequireNonLetterOrDigit = false,
 				RequireUppercase = false

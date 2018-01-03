@@ -7,7 +7,6 @@ using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using Dapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -341,7 +340,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
 				new PriceCalculator(),
 				new ProductRepository(),
-				new BookingKeyGenerator(),
+				new AecCredentialsGenerator(),
 				userManagerMock.Object);
 
 			return sut;

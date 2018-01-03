@@ -86,16 +86,18 @@
     <Compile Include="Auth\AecUserManager.cs" />
     <Compile Include="Auth\AecUserStore.cs" />
     <Compile Include="Auth\AecUserTokenProvider.cs" />
+    <Compile Include="Services\AecUserSupport.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />
     <Compile Include="Db\DbUtil.cs" />
     <Compile Include="Db\SqlConnectionExtensions.cs" />
     <Compile Include="Db\SqlExceptionExtensions.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Models\DateOfBirth.cs" />
     <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\AecUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BookingKeyGenerator.cs" />
+    <Compile Include="Auth\AecCredentialsGenerator.cs" />
     <Compile Include="Web\ApiControllerExtensions.cs" />
     <Compile Include="Web\OkCacheControlResult.cs" />
     <Compile Include="Web\OkNoCacheResult.cs" />
@@ -104,5 +106,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

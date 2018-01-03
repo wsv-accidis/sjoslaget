@@ -8,7 +8,6 @@ using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -23,7 +22,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly PriceCalculator _priceCalculator;
 		readonly ProductRepository _productRepository;
-		readonly BookingKeyGenerator _bookingKeyGenerator;
+		readonly AecCredentialsGenerator _credentialsGenerator;
 		readonly AecUserManager _userManager;
 
 		public BookingRepository(
@@ -32,7 +31,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			DeletedBookingRepository deletedBookingRepository,
 			PriceCalculator priceCalculator,
 			ProductRepository productRepository,
-			BookingKeyGenerator bookingKeyGenerator,
+			AecCredentialsGenerator credentialsGenerator,
 			AecUserManager userManager)
 		{
 			_cabinRepository = cabinRepository;
@@ -40,7 +39,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_deletedBookingRepository = deletedBookingRepository;
 			_priceCalculator = priceCalculator;
 			_productRepository = productRepository;
-			_bookingKeyGenerator = bookingKeyGenerator;
+			_credentialsGenerator = credentialsGenerator;
 			_userManager = userManager;
 		}
 
@@ -50,7 +49,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				throw new BookingException("Cruise is locked, may not create bookings.");
 
 			BookingSource.Validate(source);
-			var booking = Booking.FromSource(source, cruise.Id, _bookingKeyGenerator.GenerateBookingReference());
+			var booking = Booking.FromSource(source, cruise.Id, _credentialsGenerator.GenerateBookingReference());
 
 			/*
 			 * Start a low-isolation transaction just to give us rollback capability in case something fails in the middle of 
@@ -76,7 +75,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				tran.Complete();
 			}
 
-			var password = _bookingKeyGenerator.GeneratePinCode();
+			var password = _credentialsGenerator.GeneratePinCode();
 			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
 
 			return BookingResult.FromBooking(booking, password);
@@ -247,7 +246,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				{
 					// in the unlikely event that a duplicate reference is generated, simply try again
 					if(ex.IsUniqueKeyViolation())
-						booking.Reference = _bookingKeyGenerator.GenerateBookingReference();
+						booking.Reference = _credentialsGenerator.GenerateBookingReference();
 					else
 						throw;
 				}

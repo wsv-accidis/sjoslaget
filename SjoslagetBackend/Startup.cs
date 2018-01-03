@@ -88,13 +88,14 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
+			container.Register<AecUserSupport>();
 			container.Register<BookingRepository>();
 			container.Register<CabinRepository>();
 			container.Register<CruiseRepository>();
 			container.Register<DeletedBookingRepository>();
 			container.Register<PriceCalculator>();
 			container.Register<ProductRepository>();
-			container.Register<BookingKeyGenerator>();
+			container.Register<AecCredentialsGenerator>();
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecOAuthProvider>();
 			container.Register<PaymentRepository>();
@@ -151,14 +152,14 @@ namespace Accidis.Sjoslaget.WebService
 				name: "ControllerActionIdApi",
 				routeTemplate: "api/{controller}/{action}/{reference}",
 				defaults: new { },
-				constraints: new {reference = BookingKeyGenerator.BookingReferencePattern}
+				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerIdApi",
 				routeTemplate: "api/{controller}/{reference}",
 				defaults: new { },
-				constraints: new {reference = BookingKeyGenerator.BookingReferencePattern}
+				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(

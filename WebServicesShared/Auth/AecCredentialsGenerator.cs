@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Security.Cryptography;
 
-namespace Accidis.WebServices.Services
+namespace Accidis.WebServices.Auth
 {
-	public sealed class BookingKeyGenerator
+	public sealed class AecCredentialsGenerator
 	{
 		public const int BookingReferenceLength = 6;
 		public const string BookingReferencePattern = @"[0-9][A-Z0-9]{5}";
