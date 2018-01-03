@@ -7,8 +7,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
-using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Auth;
 using Simplexcel;
 
 namespace Accidis.Sjoslaget.WebService.Controllers

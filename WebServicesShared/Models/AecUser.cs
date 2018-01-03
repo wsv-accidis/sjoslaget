@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNet.Identity;
 
-namespace Accidis.Sjoslaget.WebService.Models
+namespace Accidis.WebServices.Models
 {
-	public sealed class User : IUser<Guid>
+	public sealed class AecUser : IUser<Guid>
 	{
 		public Guid Id { get; set; }
 		public string UserName { get; set; }

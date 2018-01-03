@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Web;
 
-namespace Accidis.Sjoslaget.WebService.Auth
+namespace Accidis.WebServices.Auth
 {
 	public static class AuthContext
 	{

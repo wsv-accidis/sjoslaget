@@ -83,7 +83,7 @@
     <Compile Include="Services\EmailSenderTest.cs" />
     <Compile Include="Services\PriceCalculatorTest.cs" />
     <Compile Include="Services\PaymentRepositoryTest.cs" />
-    <Compile Include="Services\RandomKeyGeneratorTest.cs" />
+    <Compile Include="Services\BookingKeyGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

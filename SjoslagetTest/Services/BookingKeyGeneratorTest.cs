@@ -1,22 +1,22 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Sjoslaget.Test.Services
 {
 	[TestClass]
-	public class RandomKeyGeneratorTest
+	public class BookingKeyGeneratorTest
 	{
 		[TestMethod]
 		public void ShouldProduceOnlyValidPinCodes()
 		{
-			var sut = new RandomKeyGenerator();
+			var sut = new BookingKeyGenerator();
 
 			for(int i = 0; i < 1000; i++)
 			{
 				string pinCode = sut.GeneratePinCode();
-				Assert.AreEqual(BookingConfig.PinCodeLength, pinCode.Length);
+				Assert.AreEqual(BookingKeyGenerator.PinCodeLength, pinCode.Length);
 				Assert.IsTrue(pinCode.All(char.IsDigit));
 			}
 		}
@@ -24,13 +24,13 @@ namespace Accidis.Sjoslaget.Test.Services
 		[TestMethod]
 		public void ShouldProduceOnlyValidReferences()
 		{
-			var sut = new RandomKeyGenerator();
-			var regex = new Regex(BookingConfig.BookingReferencePattern, RegexOptions.Compiled);
+			var sut = new BookingKeyGenerator();
+			var regex = new Regex(BookingKeyGenerator.BookingReferencePattern, RegexOptions.Compiled);
 
 			for(int i = 0; i < 1000; i++)
 			{
 				string reference = sut.GenerateBookingReference();
-				Assert.AreEqual(BookingConfig.BookingReferenceLength, reference.Length);
+				Assert.AreEqual(BookingKeyGenerator.BookingReferenceLength, reference.Length);
 				Assert.IsTrue(regex.Match(reference).Success);
 			}
 		}

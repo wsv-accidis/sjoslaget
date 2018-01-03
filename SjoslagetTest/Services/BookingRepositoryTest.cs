@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.Test.Db;
-using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Dapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -330,8 +332,8 @@ namespace Accidis.Sjoslaget.Test.Services
 
 		internal static BookingRepository GetBookingRepositoryForTest()
 		{
-			var userManagerMock = new Mock<SjoslagetUserManager>();
-			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
+			var userManagerMock = new Mock<AecUserManager>();
+			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<AecUser>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
 			var sut = new BookingRepository(
 				new CabinRepository(),
@@ -339,7 +341,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
 				new PriceCalculator(),
 				new ProductRepository(),
-				new RandomKeyGenerator(),
+				new BookingKeyGenerator(),
 				userManagerMock.Object);
 
 			return sut;

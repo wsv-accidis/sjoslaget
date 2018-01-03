@@ -156,12 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\AuthConfig.cs" />
-    <Compile Include="Auth\AuthContext.cs" />
-    <Compile Include="Auth\OAuthProvider.cs" />
-    <Compile Include="Auth\Roles.cs" />
-    <Compile Include="Auth\SjoslagetUserManager.cs" />
-    <Compile Include="Auth\SjoslagetUserStore.cs" />
-    <Compile Include="Auth\SjoslagetUserTokenProvider.cs" />
     <Compile Include="Content\Emails.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -199,7 +193,6 @@
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\ProductCount.cs" />
     <Compile Include="Models\ProductType.cs" />
-    <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />
@@ -213,8 +206,6 @@
     <Compile Include="Services\ProductRepository.cs" />
     <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Services\BookingConfig.cs" />
-    <Compile Include="Services\RandomKeyGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

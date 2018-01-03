@@ -1,15 +1,15 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Models;
 using Microsoft.Owin.Security.OAuth;
 
-namespace Accidis.Sjoslaget.WebService.Auth
+namespace Accidis.WebServices.Auth
 {
-	public sealed class OAuthProvider : OAuthAuthorizationServerProvider
+	public sealed class AecOAuthProvider : OAuthAuthorizationServerProvider
 	{
-		readonly SjoslagetUserManager _userManager;
+		readonly AecUserManager _userManager;
 
-		public OAuthProvider(SjoslagetUserManager userManager)
+		public AecOAuthProvider(AecUserManager userManager)
 		{
 			_userManager = userManager;
 		}
@@ -18,7 +18,7 @@ namespace Accidis.Sjoslaget.WebService.Auth
 		{
 			context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] {"*"});
 
-			User user = await _userManager.FindAsync(context.UserName, context.Password);
+			AecUser user = await _userManager.FindAsync(context.UserName, context.Password);
 
 			if(null != user)
 			{

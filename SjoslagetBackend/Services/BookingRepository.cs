@@ -4,9 +4,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
-using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
+using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
@@ -21,8 +23,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly PriceCalculator _priceCalculator;
 		readonly ProductRepository _productRepository;
-		readonly RandomKeyGenerator _randomKeyGenerator;
-		readonly SjoslagetUserManager _userManager;
+		readonly BookingKeyGenerator _bookingKeyGenerator;
+		readonly AecUserManager _userManager;
 
 		public BookingRepository(
 			CabinRepository cabinRepository,
@@ -30,15 +32,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 			DeletedBookingRepository deletedBookingRepository,
 			PriceCalculator priceCalculator,
 			ProductRepository productRepository,
-			RandomKeyGenerator randomKeyGenerator,
-			SjoslagetUserManager userManager)
+			BookingKeyGenerator bookingKeyGenerator,
+			AecUserManager userManager)
 		{
 			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
 			_deletedBookingRepository = deletedBookingRepository;
 			_priceCalculator = priceCalculator;
 			_productRepository = productRepository;
-			_randomKeyGenerator = randomKeyGenerator;
+			_bookingKeyGenerator = bookingKeyGenerator;
 			_userManager = userManager;
 		}
 
@@ -48,7 +50,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				throw new BookingException("Cruise is locked, may not create bookings.");
 
 			BookingSource.Validate(source);
-			var booking = Booking.FromSource(source, cruise.Id, _randomKeyGenerator.GenerateBookingReference());
+			var booking = Booking.FromSource(source, cruise.Id, _bookingKeyGenerator.GenerateBookingReference());
 
 			/*
 			 * Start a low-isolation transaction just to give us rollback capability in case something fails in the middle of 
@@ -74,15 +76,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 				tran.Complete();
 			}
 
-			var password = _randomKeyGenerator.GeneratePinCode();
-			await _userManager.CreateAsync(new User {UserName = booking.Reference, IsBooking = true}, password);
+			var password = _bookingKeyGenerator.GeneratePinCode();
+			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
 
 			return BookingResult.FromBooking(booking, password);
 		}
 
 		public async Task DeleteAsync(Booking booking)
 		{
-			User user = await _userManager.FindByNameAsync(booking.Reference);
+			AecUser user = await _userManager.FindByNameAsync(booking.Reference);
 			if(null != user && user.IsBooking)
 				await _userManager.DeleteAsync(user);
 
@@ -245,7 +247,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				{
 					// in the unlikely event that a duplicate reference is generated, simply try again
 					if(ex.IsUniqueKeyViolation())
-						booking.Reference = _randomKeyGenerator.GenerateBookingReference();
+						booking.Reference = _bookingKeyGenerator.GenerateBookingReference();
 					else
 						throw;
 				}

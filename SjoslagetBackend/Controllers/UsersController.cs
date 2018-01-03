@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Models;
-using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Auth;
+using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Accidis.WebServices.Web;
 using Microsoft.AspNet.Identity;
 using NLog;
@@ -13,12 +14,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class UsersController : ApiController
 	{
 		readonly Logger _log = LogManager.GetLogger(typeof(UsersController).Name);
-		readonly RandomKeyGenerator _randomKeyGenerator;
-		readonly SjoslagetUserManager _userManager;
+		readonly BookingKeyGenerator _bookingKeyGenerator;
+		readonly AecUserManager _userManager;
 
-		public UsersController(RandomKeyGenerator randomKeyGenerator, SjoslagetUserManager userManager)
+		public UsersController(BookingKeyGenerator bookingKeyGenerator, AecUserManager userManager)
 		{
-			_randomKeyGenerator = randomKeyGenerator;
+			_bookingKeyGenerator = bookingKeyGenerator;
 			_userManager = userManager;
 		}
 
@@ -28,7 +29,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				User user = await _userManager.FindByNameAsync(change.Username);
+				AecUser user = await _userManager.FindByNameAsync(change.Username);
 
 				if(null == user)
 					return NotFound();
@@ -59,11 +60,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPost]
-		public async Task<IHttpActionResult> Create(User user)
+		public async Task<IHttpActionResult> Create(AecUser user)
 		{
 			try
 			{
-				IdentityResult result = await _userManager.CreateAsync(new User {UserName = user.UserName}, user.Password);
+				IdentityResult result = await _userManager.CreateAsync(new AecUser {UserName = user.UserName}, user.Password);
 				if(result.Succeeded)
 					return Ok();
 
@@ -83,14 +84,14 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				User user = await _userManager.FindByNameAsync(booking.Reference);
+				AecUser user = await _userManager.FindByNameAsync(booking.Reference);
 
 				if(null == user)
 					return NotFound();
 				if(!user.IsBooking)
 					return BadRequest("This operation can only be used to reset the PIN code of a booking.");
 
-				string pinCode = _randomKeyGenerator.GeneratePinCode();
+				string pinCode = _bookingKeyGenerator.GeneratePinCode();
 				var token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
 				IdentityResult result = await _userManager.ResetPasswordAsync(user.Id, token, pinCode);
 

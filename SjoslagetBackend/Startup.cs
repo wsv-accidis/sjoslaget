@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
 using Accidis.Sjoslaget.WebService.Auth;
-using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using DryIoc;
 using DryIoc.WebApi;
 using Microsoft.Owin;
@@ -42,12 +43,12 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			Task.Run((Action) (async () =>
 			{
-				using(var userManager = SjoslagetUserManager.Create())
+				using(var userManager = AecUserManager.Create())
 				{
 					if(await userManager.Store.IsUserStoreEmptyAsync())
 					{
 						logger.Warn("Database is empty, creating default admin user.");
-						await userManager.CreateAsync(new User {UserName = AuthConfig.StartupAdminUser}, AuthConfig.StartupAdminPassword);
+						await userManager.CreateAsync(new AecUser {UserName = AuthConfig.StartupAdminUser}, AuthConfig.StartupAdminPassword);
 					}
 				}
 			}));
@@ -68,7 +69,7 @@ namespace Accidis.Sjoslaget.WebService
 #if DEBUG
 				AllowInsecureHttp = true,
 #endif
-				Provider = container.Resolve<OAuthProvider>(),
+				Provider = container.Resolve<AecOAuthProvider>(),
 				TokenEndpointPath = new PathString("/api/token"),
 			};
 
@@ -93,9 +94,9 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<DeletedBookingRepository>();
 			container.Register<PriceCalculator>();
 			container.Register<ProductRepository>();
-			container.Register<RandomKeyGenerator>();
-			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
-			container.Register<OAuthProvider>();
+			container.Register<BookingKeyGenerator>();
+			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
+			container.Register<AecOAuthProvider>();
 			container.Register<PaymentRepository>();
 
 			return container;
@@ -150,14 +151,14 @@ namespace Accidis.Sjoslaget.WebService
 				name: "ControllerActionIdApi",
 				routeTemplate: "api/{controller}/{action}/{reference}",
 				defaults: new { },
-				constraints: new {reference = BookingConfig.BookingReferencePattern}
+				constraints: new {reference = BookingKeyGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerIdApi",
 				routeTemplate: "api/{controller}/{reference}",
 				defaults: new { },
-				constraints: new {reference = BookingConfig.BookingReferencePattern}
+				constraints: new {reference = BookingKeyGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
