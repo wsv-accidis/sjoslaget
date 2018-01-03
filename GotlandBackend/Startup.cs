@@ -1,6 +1,7 @@
 ﻿using System.Web.Http;
 using Accidis.Gotland.WebService;
 using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Auth;
 using DryIoc;
 using DryIoc.WebApi;
 using Microsoft.Owin;
@@ -34,7 +35,7 @@ namespace Accidis.Gotland.WebService
 		//{
 		//	Task.Run((Action) (async () =>
 		//	{
-		//		using(var userManager = SjoslagetUserManager.Create())
+		//		using(var userManager = AecUserManager.Create())
 		//		{
 		//			if(await userManager.Store.IsUserStoreEmptyAsync())
 		//			{
@@ -60,7 +61,7 @@ namespace Accidis.Gotland.WebService
 //#if DEBUG
 //				AllowInsecureHttp = true,
 //#endif
-//				Provider = container.Resolve<OAuthProvider>(),
+//				Provider = container.Resolve<AecOAuthProvider>(),
 //				TokenEndpointPath = new PathString("/api/token"),
 //			};
 
@@ -79,9 +80,11 @@ namespace Accidis.Gotland.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
+			container.Register<BookingRepository>();
 			container.Register<BookingCandidateRepository>();
 			container.Register<EventRepository>();
-//			container.Register<SjoslagetUserManager>(Made.Of(() => SjoslagetUserManager.Create()), Reuse.Singleton);
+			container.Register<AecCredentialsGenerator>();
+//			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 
 			return container;
 		}

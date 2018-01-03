@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Gotland.WebService.Models;
 using Accidis.WebServices.Db;
@@ -40,7 +41,7 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				try
 				{
-					int no = await GetPlaceInQueueAsync(db, candidateId);
+					int no = await FindPlaceInQueueAsync(db, candidateId);
 					if(no != 0) // shortcut in case the endpoint gets spammed
 						return no;
 
@@ -57,11 +58,23 @@ namespace Accidis.Gotland.WebService.Services
 					if(ex.IsForeignKeyViolation())
 						throw new Exception("Candidate does not exist."); // TODO Use exception type
 					if(ex.IsUniqueKeyViolation()) // race condition
-						return await GetPlaceInQueueAsync(db, candidateId);
+						return await FindPlaceInQueueAsync(db, candidateId);
 
 					throw;
 				}
 			}
+		}
+
+		public async Task<BookingCandidate> FindByIdAsync(SqlConnection db, Guid id)
+		{
+			var result = await db.QueryAsync<BookingCandidate>("select * from [BookingCandidate] where [Id] = @Id", new {Id = id});
+			return result.FirstOrDefault();
+		}
+
+		public async Task<int> FindPlaceInQueueAsync(SqlConnection db, Guid candidateId)
+		{
+			return await db.QueryFirstOrDefaultAsync<int>("select [No] from [BookingQueue] where [CandidateId] = @Id",
+				new {Id = candidateId});
 		}
 
 		public async Task<int> GetNumberOfActiveAsync()
@@ -81,12 +94,6 @@ namespace Accidis.Gotland.WebService.Services
 					new {Id = candidateId});
 				return didUpdate != 0;
 			}
-		}
-
-		async Task<int> GetPlaceInQueueAsync(SqlConnection db, Guid candidateId)
-		{
-			return await db.QueryFirstOrDefaultAsync<int>("select [No] from [BookingQueue] where [CandidateId] = @Id",
-				new {Id = candidateId});
 		}
 	}
 }
