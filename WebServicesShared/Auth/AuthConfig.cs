@@ -1,8 +1,8 @@
 ﻿using System.Web.Configuration;
 
-namespace Accidis.Sjoslaget.WebService.Auth
+namespace Accidis.WebServices.Auth
 {
-	static class AuthConfig
+	public static class AuthConfig
 	{
 		public static string Audience => WebConfigurationManager.AppSettings["audience"];
 		public static string AudienceSecret => WebConfigurationManager.AppSettings["audienceSecret"];

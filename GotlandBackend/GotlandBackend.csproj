@@ -158,6 +158,7 @@
     <Content Include="Db.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Auth.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Beebyte WebDeploy.pubxml" />
     <None Include="Web.Debug.config">

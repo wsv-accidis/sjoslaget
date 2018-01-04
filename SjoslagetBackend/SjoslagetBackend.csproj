@@ -155,7 +155,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auth\AuthConfig.cs" />
     <Compile Include="Content\Emails.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Accidis.WebServices.Models;
 using Microsoft.AspNet.Identity;
 
@@ -34,6 +35,19 @@ namespace Accidis.WebServices.Auth
 			};
 
 			return manager;
+		}
+
+		public static async Task<bool> CreateDefaultUserIfStoreIsEmptyAsync(string username, string password)
+		{
+			using(var userManager = Create())
+			{
+				if(await userManager.Store.IsUserStoreEmptyAsync())
+				{
+					await userManager.CreateAsync(new AecUser {UserName = username}, password);
+					return true;
+				}
+				return false;
+			}
 		}
 	}
 }

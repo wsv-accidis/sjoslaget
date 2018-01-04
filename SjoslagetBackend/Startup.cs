@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
-using Accidis.Sjoslaget.WebService.Auth;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
-using Accidis.WebServices.Models;
 using Accidis.WebServices.Services;
 using DryIoc;
 using DryIoc.WebApi;
@@ -15,8 +13,6 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
 using NLog;
-using NLog.Config;
-using NLog.Targets;
 using Owin;
 
 #if !DEBUG
@@ -29,6 +25,7 @@ namespace Accidis.Sjoslaget.WebService
 {
 	public sealed class Startup
 	{
+		// ReSharper disable once UnusedMember.Global
 		public void Configuration(IAppBuilder app)
 		{
 			var logger = ConfigureLogging();
@@ -43,14 +40,8 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			Task.Run((Action) (async () =>
 			{
-				using(var userManager = AecUserManager.Create())
-				{
-					if(await userManager.Store.IsUserStoreEmptyAsync())
-					{
-						logger.Warn("Database is empty, creating default admin user.");
-						await userManager.CreateAsync(new AecUser {UserName = AuthConfig.StartupAdminUser}, AuthConfig.StartupAdminPassword);
-					}
-				}
+				if(await AecUserManager.CreateDefaultUserIfStoreIsEmptyAsync(AuthConfig.StartupAdminUser, AuthConfig.StartupAdminPassword))
+					logger.Warn("Database was empty, created default admin user.");
 			}));
 		}
 
@@ -88,6 +79,9 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
+			container.Register<AecCredentialsGenerator>();
+			container.Register<AecOAuthProvider>();
+			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecUserSupport>();
 			container.Register<BookingRepository>();
 			container.Register<CabinRepository>();
@@ -95,9 +89,6 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<DeletedBookingRepository>();
 			container.Register<PriceCalculator>();
 			container.Register<ProductRepository>();
-			container.Register<AecCredentialsGenerator>();
-			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
-			container.Register<AecOAuthProvider>();
 			container.Register<PaymentRepository>();
 
 			return container;
@@ -105,38 +96,11 @@ namespace Accidis.Sjoslaget.WebService
 
 		static Logger ConfigureLogging()
 		{
-			var config = new LoggingConfiguration();
-
 #if DEBUG
-			var target = new DebuggerTarget {Name = "debug"};
-			config.AddTarget(target);
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
+			LogManager.Configuration = AecLoggingConfiguration.CreateForDebug(LogLevel.Debug);
 #else
-			var target = new DatabaseTarget
-			{
-				Name = "db",
-				ConnectionString = DbUtil.ConnectionString,
-				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
-							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
-				Parameters =
-				{
-					new DatabaseParameterInfo("@Timestamp", "${date:universalTime=true}"),
-					new DatabaseParameterInfo("@Level", "${level}"),
-					new DatabaseParameterInfo("@Logger", "${logger}"),
-					new DatabaseParameterInfo("@Message", "${message}"),
-					new DatabaseParameterInfo("@Callsite", "${callsite}"),
-					new DatabaseParameterInfo("@Exception", "${exception:format=tostring:maxInnerExceptionLevel=2}"),
-					new DatabaseParameterInfo("@UserName", "${aspnet-User-Identity}"),
-					new DatabaseParameterInfo("@Method", "${aspnet-Request-Method}"),
-					new DatabaseParameterInfo("@Url", "${aspnet-Request:serverVariable=HTTP_URL}"),
-					new DatabaseParameterInfo("@RemoteAddress", "${aspnet-Request:serverVariable=REMOTE_ADDR}"),
-					new DatabaseParameterInfo("@LocalAddress", "${aspnet-Request:serverVariable=LOCAL_ADDR}")
-				}
-			};
-			config.AddTarget(target);
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, target));
+			LogManager.Configuration = AecLoggingConfiguration.CreateForDatabase(DbUtil.ConnectionString, LogLevel.Info);
 #endif
-			LogManager.Configuration = config;
 
 			var logger = LogManager.GetLogger(typeof(Startup).Name);
 			logger.Debug("Starting up.");

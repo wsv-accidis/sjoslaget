@@ -55,6 +55,9 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -79,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\AuthConfig.cs" />
     <Compile Include="Auth\AuthContext.cs" />
     <Compile Include="Auth\JwtAccessTokenFormat.cs" />
     <Compile Include="Auth\AecOAuthProvider.cs" />
@@ -86,6 +90,7 @@
     <Compile Include="Auth\AecUserManager.cs" />
     <Compile Include="Auth\AecUserStore.cs" />
     <Compile Include="Auth\AecUserTokenProvider.cs" />
+    <Compile Include="Services\AecLoggingConfiguration.cs" />
     <Compile Include="Services\AecUserSupport.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />
