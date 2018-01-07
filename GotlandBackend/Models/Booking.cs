@@ -12,7 +12,9 @@ namespace Accidis.Gotland.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
+		public string SpecialRequests { get; set; }
 		public decimal TotalPrice { get; set; }
+		public Guid? CandidateId { get; set; }
 		public int QueueNo { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }

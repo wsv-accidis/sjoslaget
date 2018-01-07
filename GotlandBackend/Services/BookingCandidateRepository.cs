@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Gotland.WebService.Models;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Exceptions;
 using Dapper;
 
 namespace Accidis.Gotland.WebService.Services
@@ -56,13 +57,19 @@ namespace Accidis.Gotland.WebService.Services
 				catch(SqlException ex)
 				{
 					if(ex.IsForeignKeyViolation())
-						throw new Exception("Candidate does not exist."); // TODO Use exception type
+						throw new NotFoundException();
 					if(ex.IsUniqueKeyViolation()) // race condition
 						return await FindPlaceInQueueAsync(db, candidateId);
 
 					throw;
 				}
 			}
+		}
+
+		public async Task<BookingCandidate> FindByIdAsync(Guid id)
+		{
+			using(var db = DbUtil.Open())
+				return await FindByIdAsync(db, id);
 		}
 
 		public async Task<BookingCandidate> FindByIdAsync(SqlConnection db, Guid id)

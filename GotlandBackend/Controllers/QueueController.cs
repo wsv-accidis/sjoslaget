@@ -4,6 +4,7 @@ using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
 using NLog;
 
@@ -41,6 +42,11 @@ namespace Accidis.Gotland.WebService.Controllers
 				Guid candidateId = ParseGuid(c);
 				int placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
 				return Ok(new {PlaceInQueue = placeInQueue});
+			}
+			catch(NotFoundException)
+			{
+				_log.Warn("An attempt was made to enqueue a candidate that does not exist.");
+				return NotFound();
 			}
 			catch(Exception ex)
 			{
@@ -128,28 +134,32 @@ namespace Accidis.Gotland.WebService.Controllers
 			try
 			{
 				Guid candidateId = ParseGuid(c);
+				BookingCandidate candidate;
+				int placeInQueue;
+
 				using(var db = DbUtil.Open())
 				{
-					BookingCandidate candidate = await _candidateRepository.FindByIdAsync(db, candidateId);
+					candidate = await _candidateRepository.FindByIdAsync(db, candidateId);
 					if(null == candidate)
 						return NotFound();
 
-					int placeInQueue = await _candidateRepository.FindPlaceInQueueAsync(db, candidateId);
+					placeInQueue = await _candidateRepository.FindPlaceInQueueAsync(db, candidateId);
 					if(0 == placeInQueue)
 					{
 						_log.Warn($"An attempt was made to create a booking for candidate ID = {candidateId} with no place in the queue.");
 						return NotFound();
 					}
-
-					BookingResult result = await _bookingRepository.CreateFromCandidate(db, evnt, candidate, placeInQueue);
-					_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id, placeInQueue);
-
-					// TODO Send e-mail
-					return Ok(result);
 				}
+
+				BookingResult result = await _bookingRepository.CreateFromCandidate(evnt, candidate, placeInQueue);
+				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id, placeInQueue);
+
+				// TODO Send e-mail
+				return Ok(result);
 			}
 			catch(BookingException)
 			{
+				// An attempt was made to create a second booking from the same candidate
 				return Conflict();
 			}
 			catch(FormatException)

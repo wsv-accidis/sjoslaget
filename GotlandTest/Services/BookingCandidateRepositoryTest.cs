@@ -12,12 +12,12 @@ namespace Accidis.Gotland.Test.Services
 {
 	[TestClass]
 	[DeploymentItem("DbTest.config")]
-	public class BookingCandidateRepositoryTests
+	public class BookingCandidateRepositoryTest
 	{
 		[TestMethod]
 		public async Task GivenManyCompetingCandidates_ShouldProduceOrderedQueue()
 		{
-			var repository = new BookingCandidateRepository();
+			var repository = CreateBookingCandidateRepositoryForTest();
 			await repository.DeleteAllAsync();
 
 			const int numberOfCandidates = 500;
@@ -66,6 +66,24 @@ namespace Accidis.Gotland.Test.Services
 		public void Initialize()
 		{
 			GotlandDbExtensions.InitializeForTest();
+		}
+
+		internal static BookingCandidateRepository CreateBookingCandidateRepositoryForTest()
+		{
+			return new BookingCandidateRepository();
+		}
+
+		internal static async Task<BookingCandidate> GetNewlyCreatedBookingCandidateForTest()
+		{
+			var candidateRepository = CreateBookingCandidateRepositoryForTest();
+			var newCandidate = new BookingCandidate
+			{
+				FirstName = "Test1",
+				LastName = "Test2",
+			};
+
+			Guid candidateId = await candidateRepository.CreateAsync(newCandidate);
+			return await candidateRepository.FindByIdAsync(candidateId);
 		}
 	}
 }
