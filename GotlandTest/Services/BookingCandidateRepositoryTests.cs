@@ -26,7 +26,7 @@ namespace Accidis.Gotland.Test.Services
 			// Create hundreds of candidates
 			for(int i = 0; i < numberOfCandidates; i++)
 			{
-				var candidate = new BookingCandidate {FirstName = "Candidate " + i};
+				var candidate = new BookingCandidate {FirstName = "Candidate " + i, LastName = "Lastname"};
 				Guid id = await repository.CreateAsync(candidate);
 				candidates.Add(id);
 			}

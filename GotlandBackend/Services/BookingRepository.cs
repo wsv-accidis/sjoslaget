@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Accidis.Gotland.WebService.Models;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
 using Dapper;
 using NLog;
 
@@ -13,9 +14,9 @@ namespace Accidis.Gotland.WebService.Services
 	{
 		const string LockResource = "Booking";
 		const int LockTimeout = 10000;
+		readonly AecCredentialsGenerator _credentialsGenerator;
 
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingRepository).Name);
-		readonly AecCredentialsGenerator _credentialsGenerator;
 
 		public BookingRepository(AecCredentialsGenerator credentialsGenerator)
 		{

@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Accidis.WebServices.Auth
 {
-	public sealed class AecUserManager : UserManager<AecUser, Guid>
+	public class AecUserManager : UserManager<AecUser, Guid>
 	{
 		public AecUserManager() : base(new AecUserStore())
 		{

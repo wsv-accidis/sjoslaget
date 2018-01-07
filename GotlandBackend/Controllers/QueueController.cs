@@ -4,6 +4,7 @@ using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers

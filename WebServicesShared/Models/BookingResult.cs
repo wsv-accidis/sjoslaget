@@ -1,4 +1,4 @@
-﻿namespace Accidis.Gotland.WebService.Models
+﻿namespace Accidis.WebServices.Models
 {
 	public sealed class BookingResult
 	{

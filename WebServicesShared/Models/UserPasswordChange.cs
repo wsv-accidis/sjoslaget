@@ -1,4 +1,4 @@
-﻿namespace Accidis.Sjoslaget.WebService.Models
+﻿namespace Accidis.WebServices.Models
 {
 	public sealed class UserPasswordChange
 	{

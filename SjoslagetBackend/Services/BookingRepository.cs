@@ -18,11 +18,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 		const int LockTimeout = 10000;
 
 		readonly CabinRepository _cabinRepository;
+		readonly AecCredentialsGenerator _credentialsGenerator;
 		readonly CruiseRepository _cruiseRepository;
 		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly PriceCalculator _priceCalculator;
 		readonly ProductRepository _productRepository;
-		readonly AecCredentialsGenerator _credentialsGenerator;
 		readonly AecUserManager _userManager;
 
 		public BookingRepository(
@@ -78,7 +78,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			var password = _credentialsGenerator.GeneratePinCode();
 			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
 
-			return BookingResult.FromBooking(booking, password);
+			return new BookingResult {Reference = booking.Reference, Password = password};
 		}
 
 		public async Task DeleteAsync(Booking booking)
@@ -177,7 +177,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				tran.Complete();
 			}
 
-			return BookingResult.FromBooking(booking, null);
+			return new BookingResult {Reference = booking.Reference};
 		}
 
 		public async Task UpdateDiscountAsync(Booking booking)

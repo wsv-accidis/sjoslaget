@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;

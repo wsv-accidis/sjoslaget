@@ -90,6 +90,9 @@
     <Compile Include="Auth\AecUserManager.cs" />
     <Compile Include="Auth\AecUserStore.cs" />
     <Compile Include="Auth\AecUserTokenProvider.cs" />
+    <Compile Include="Models\BookingReference.cs" />
+    <Compile Include="Models\BookingResult.cs" />
+    <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Services\AecLoggingConfiguration.cs" />
     <Compile Include="Services\AecUserSupport.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />

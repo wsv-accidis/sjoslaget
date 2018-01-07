@@ -6,6 +6,7 @@ using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
 using Accidis.WebServices.Web;
 using Dapper;
 using NLog;

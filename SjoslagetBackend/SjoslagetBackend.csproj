@@ -175,12 +175,10 @@
     <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\BookingPaxItem.cs" />
     <Compile Include="Models\BookingProduct.cs" />
-    <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\CruiseProductWithType.cs" />
     <Compile Include="Models\DeletedBooking.cs" />
     <Compile Include="Models\IsLockedResult.cs" />
     <Compile Include="Models\BookingPax.cs" />
-    <Compile Include="Models\BookingResult.cs" />
     <Compile Include="Models\BookingSource.cs" />
     <Compile Include="Models\CabinType.cs" />
     <Compile Include="Models\PaymentSource.cs" />
@@ -192,7 +190,6 @@
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\ProductCount.cs" />
     <Compile Include="Models\ProductType.cs" />
-    <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />

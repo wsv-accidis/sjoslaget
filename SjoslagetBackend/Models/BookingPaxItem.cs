@@ -17,8 +17,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public string Nationality
 		{
-			get { return _nationality; }
-			set { _nationality = value?.ToUpperInvariant(); }
+			get => _nationality;
+			set => _nationality = value?.ToUpperInvariant();
 		}
 
 		public int Years { get; set; }
