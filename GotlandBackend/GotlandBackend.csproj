@@ -148,6 +148,7 @@
     <Compile Include="Models\BookingCandidateResponse.cs" />
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingPax.cs" />
+    <Compile Include="Models\BookingSource.cs" />
     <Compile Include="Models\CabinClass.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Trip.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Services\BookingCandidateRepository.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\EventRepository.cs" />
+    <Compile Include="Services\TripRepository.cs" />
     <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

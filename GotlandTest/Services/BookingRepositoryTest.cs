@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Accidis.Gotland.Test.Db;
 using Accidis.Gotland.WebService.Models;
@@ -22,7 +23,7 @@ namespace Accidis.Gotland.Test.Services
 			var repository = GetBookingRepositoryForTest();
 			var evnt = await EventRepositoryTest.GetEventForTestAsync();
 
-			var result = await repository.CreateFromCandidate(evnt, candidate, 1);
+			var result = await repository.CreateFromCandidateAsync(evnt, candidate, 1);
 
 			var candidateRepository = BookingCandidateRepositoryTest.CreateBookingCandidateRepositoryForTest();
 			await candidateRepository.DeleteAllAsync();
@@ -38,17 +39,32 @@ namespace Accidis.Gotland.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenUpdatedWithPax_ShouldUpdateBooking()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var evnt = await EventRepositoryTest.GetEventForTestAsync();
+			var booking = await GetNewlyCreatedBookingForTest(evnt, repository);
+
+			var source = new BookingSource
+			{
+				Reference = booking.Reference,
+				Pax = new List<BookingSource.PaxSource> { GetPaxSourceForTest(), GetPaxSourceForTest(), GetPaxSourceForTest() }
+			};
+
+			var result = await repository.UpdateAsync(evnt, source);
+			Assert.AreEqual(booking.Reference, result.Reference);
+
+			booking = await repository.FindByReferenceAsync(result.Reference);
+			var pax = await repository.GetPaxForBookingAsync(booking);
+
+			Assert.AreEqual(3, pax.Length);
+		}
+
+		[TestMethod]
 		public async Task GivenValidCandidate_WhenCreatingBooking_ShouldGetDetailsFromCandidate()
 		{
 			var candidateRepository = BookingCandidateRepositoryTest.CreateBookingCandidateRepositoryForTest();
-			var newCandidate = new BookingCandidate
-			{
-				FirstName = "Student",
-				LastName = "Studentsson",
-				Email = "test@example.com",
-				PhoneNo = "123456",
-				TeamName = "Team Student",
-			};
+			var newCandidate = BookingCandidateRepositoryTest.GetBookingCandidateForTest();
 
 			const int placeInQueue = 1;
 			var candidateId = await candidateRepository.CreateAsync(newCandidate);
@@ -57,7 +73,7 @@ namespace Accidis.Gotland.Test.Services
 			var evnt = await EventRepositoryTest.GetEventForTestAsync();
 
 			var candidate = await candidateRepository.FindByIdAsync(candidateId);
-			var result = await repository.CreateFromCandidate(evnt, candidate, placeInQueue);
+			var result = await repository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
 			var booking = await repository.FindByReferenceAsync(result.Reference);
 
 			Assert.IsNotNull(booking);
@@ -87,9 +103,36 @@ namespace Accidis.Gotland.Test.Services
 
 			var sut = new BookingRepository(
 				new AecCredentialsGenerator(),
+				new TripRepository(),
 				userManagerMock.Object);
 
 			return sut;
+		}
+
+		internal static async Task<Booking> GetNewlyCreatedBookingForTest(Event evnt, BookingRepository repository)
+		{
+			var candidate = BookingCandidateRepositoryTest.GetBookingCandidateForTest();
+			var result = await repository.CreateFromCandidateAsync(evnt, candidate, 1);
+			return await repository.FindByReferenceAsync(result.Reference);
+		}
+
+		static BookingSource.PaxSource GetPaxSourceForTest()
+		{
+			return new BookingSource.PaxSource
+			{
+				FirstName = "Party",
+				LastName = "Partysson",
+				Gender = "X",
+				Dob = "830412",
+				Nationality = "se",
+				OutboundTripId = GotlandDbExtensions.OutboundTripId,
+				InboundTripId = GotlandDbExtensions.InboundTripId,
+				IsStudent = true,
+				CabinClassMin = 0,
+				CabinClassPreferred = 2,
+				CabinClassMax = 3,
+				SpecialFood = "Pizza"
+			};
 		}
 	}
 }

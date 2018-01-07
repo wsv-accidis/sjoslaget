@@ -355,8 +355,7 @@ namespace Accidis.Sjoslaget.Test.Services
 		internal static async Task<Booking> GetNewlyCreatedBookingForTestAsync(Cruise cruise, BookingRepository repository)
 		{
 			var source = GetBookingForTest(GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetPaxForTest(firstName: "Förnamn1", lastName: "Efternamn1")));
-			BookingResult result = await repository.CreateAsync(cruise, source);
-
+			var result = await repository.CreateAsync(cruise, source);
 			return await repository.FindByReferenceAsync(result.Reference);
 		}
 

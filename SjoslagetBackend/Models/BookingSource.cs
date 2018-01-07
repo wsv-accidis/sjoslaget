@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Accidis.WebServices.Models;
 
 namespace Accidis.Sjoslaget.WebService.Models
@@ -128,8 +127,6 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public sealed class Pax
 		{
-			static string DefaultNationality = "se";
-
 			public string Group { get; set; }
 			public string FirstName { get; set; }
 			public string LastName { get; set; }
@@ -138,7 +135,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 			public string Nationality { get; set; }
 			public int Years { get; set; }
 
-			public static void ValidateAndSetDefaults(List<Pax> paxList, bool isFirstCabin, ref string defaultGroup)
+			internal static void ValidateAndSetDefaults(List<Pax> paxList, bool isFirstCabin, ref string defaultGroup)
 			{
 				bool isFirstPax = isFirstCabin;
 				foreach(Pax pax in paxList)
@@ -160,22 +157,13 @@ namespace Accidis.Sjoslaget.WebService.Models
 						throw new BookingException("Last name must be set.");
 					if(!DateOfBirth.IsValid(pax.Dob))
 						throw new BookingException("Date of birth must be set and a valid date.");
-
-					if(String.IsNullOrWhiteSpace(pax.Nationality))
-						pax.Nationality = DefaultNationality;
-					else if(!TryValidateNationality(pax.Nationality))
+					if(!IsoNationality.TryValidateOrSetDefault(pax.Nationality, out var nationality))
 						throw new BookingException("Nationality must be a 2-letter ISO country code.");
-					else
-						pax.Nationality = pax.Nationality.ToLowerInvariant();
+					pax.Nationality = nationality;
 
 					if(pax.Years < 0)
 						throw new BookingException("Years must be greater than or equal to zero.");
 				}
-			}
-
-			static bool TryValidateNationality(string nationality)
-			{
-				return Regex.IsMatch(nationality, "^[a-z]{2}$", RegexOptions.IgnoreCase);
 			}
 		}
 

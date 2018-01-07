@@ -60,8 +60,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = DbUtil.Open())
 			{
-				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
-				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise);
+				var cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
+				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 				await CheckAvailability(db, cruise, source.Cabins, cabinTypes);
@@ -146,8 +146,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = DbUtil.Open())
 			{
-				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
-				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise);
+				var cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
+				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
@@ -185,8 +185,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				Cruise cruise = await _cruiseRepository.FindByIdAsync(db, booking.CruiseId);
-				IEnumerable<CruiseCabinWithType> cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
-				IEnumerable<CruiseProductWithType> productTypes = await _productRepository.GetActiveAsync(db, cruise);
+				var cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
+				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
 				var bookingCabins = (await db.QueryAsync<BookingSource.Cabin>("select [CabinTypeId] [TypeId] from [BookingCabin] where [BookingId] = @Id", new {Id = booking.Id})).ToList();
 				var bookingProducts = (await db.QueryAsync<BookingSource.Product>("select [ProductTypeId] [TypeId], [Quantity] from [BookingProduct] where [BookingId] = @Id", new {Id = booking.Id})).ToList();
 
@@ -208,8 +208,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		async Task CheckAvailability(SqlConnection db, Cruise cruise, List<BookingSource.Cabin> sourceList, IEnumerable<CabinType> cruiseCabins)
 		{
-			Dictionary<Guid, CabinType> typeDict = cruiseCabins.ToDictionary(c => c.Id, c => c);
-			Dictionary<Guid, CruiseCabinAvailability> availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruise)).ToDictionary(c => c.CabinTypeId, c => c);
+			var typeDict = cruiseCabins.ToDictionary(c => c.Id, c => c);
+			var availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruise)).ToDictionary(c => c.CabinTypeId, c => c);
 
 			foreach(BookingSource.Cabin cabinSource in sourceList)
 			{

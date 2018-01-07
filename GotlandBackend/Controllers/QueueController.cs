@@ -151,7 +151,7 @@ namespace Accidis.Gotland.WebService.Controllers
 					}
 				}
 
-				BookingResult result = await _bookingRepository.CreateFromCandidate(evnt, candidate, placeInQueue);
+				BookingResult result = await _bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
 				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id, placeInQueue);
 
 				// TODO Send e-mail

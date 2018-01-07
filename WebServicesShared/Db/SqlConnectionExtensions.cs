@@ -31,6 +31,8 @@ namespace Accidis.WebServices.Db
 					throw new InvalidOperationException("The lock request was canceled.");
 				case -3:
 					throw new InvalidOperationException("The lock request was chosen as a deadlock victim.");
+				case -999:
+					throw new InvalidOperationException("The lock request was invalid, possibly because a transaction is not in progress.");
 				default:
 					throw new InvalidOperationException($"Acquiring the lock failed with error {result}.");
 			}

@@ -26,7 +26,8 @@ namespace Accidis.Gotland.Test.Services
 			// Create hundreds of candidates
 			for(int i = 0; i < numberOfCandidates; i++)
 			{
-				var candidate = new BookingCandidate {FirstName = "Candidate " + i, LastName = "Lastname"};
+				var candidate = GetBookingCandidateForTest();
+				candidate.FirstName = "Candidate " + i;
 				Guid id = await repository.CreateAsync(candidate);
 				candidates.Add(id);
 			}
@@ -73,15 +74,23 @@ namespace Accidis.Gotland.Test.Services
 			return new BookingCandidateRepository();
 		}
 
+		internal static BookingCandidate GetBookingCandidateForTest()
+		{
+			return new BookingCandidate
+			{
+				FirstName = "Student",
+				LastName = "Studentsson",
+				Email = "test@example.com",
+				PhoneNo = "123456",
+				TeamName = "Team Student",
+				TeamSize = 20
+			};
+		}
+
 		internal static async Task<BookingCandidate> GetNewlyCreatedBookingCandidateForTest()
 		{
 			var candidateRepository = CreateBookingCandidateRepositoryForTest();
-			var newCandidate = new BookingCandidate
-			{
-				FirstName = "Test1",
-				LastName = "Test2",
-			};
-
+			var newCandidate = GetBookingCandidateForTest();
 			Guid candidateId = await candidateRepository.CreateAsync(newCandidate);
 			return await candidateRepository.FindByIdAsync(candidateId);
 		}
