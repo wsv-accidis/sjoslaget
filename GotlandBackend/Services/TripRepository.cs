@@ -8,6 +8,16 @@ namespace Accidis.Gotland.WebService.Services
 {
 	public sealed class TripRepository
 	{
+		public async Task<Trip[]> GetByDirectionAndEventAsync(Event evnt, bool getInbound)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<Trip>("select * from [Trip] where [EventId] = @Id and [IsInbound] = @IsInbound order by [Departure]",
+					new {Id = evnt.Id, IsInbound = getInbound});
+				return result.ToArray();
+			}
+		}
+
 		public async Task<Trip[]> GetByEventAsync(Event evnt)
 		{
 			using(var db = DbUtil.Open())

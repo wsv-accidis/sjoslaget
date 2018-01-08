@@ -85,6 +85,7 @@ namespace Accidis.Gotland.WebService
 			container.Register<AecUserSupport>();
 			container.Register<BookingRepository>();
 			container.Register<BookingCandidateRepository>();
+			container.Register<CabinRepository>();
 			container.Register<EventRepository>();
 			container.Register<TripRepository>();
 
