@@ -110,19 +110,19 @@ namespace Accidis.Gotland.WebService
 			HttpConfiguration config = new HttpConfiguration();
 			config.MapHttpAttributeRoutes();
 
-			//config.Routes.MapHttpRoute(
-			//	name: "ControllerActionIdApi",
-			//	routeTemplate: "api/{controller}/{action}/{reference}",
-			//	defaults: new { },
-			//	constraints: new {reference = BookingConfig.BookingReferencePattern}
-			//);
+			config.Routes.MapHttpRoute(
+				name: "ControllerActionIdApi",
+				routeTemplate: "api/{controller}/{action}/{reference}",
+				defaults: new { },
+				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
+			);
 
-			//config.Routes.MapHttpRoute(
-			//	name: "ControllerIdApi",
-			//	routeTemplate: "api/{controller}/{reference}",
-			//	defaults: new { },
-			//	constraints: new {reference = BookingConfig.BookingReferencePattern}
-			//);
+			config.Routes.MapHttpRoute(
+				name: "ControllerIdApi",
+				routeTemplate: "api/{controller}/{reference}",
+				defaults: new { },
+				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
+			);
 
 			config.Routes.MapHttpRoute(
 				name: "ControllerActionApi",

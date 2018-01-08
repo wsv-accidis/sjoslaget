@@ -16,6 +16,35 @@ namespace Accidis.Gotland.WebService.Models
 		public string SpecialRequests { get; set; }
 		public List<PaxSource> Pax { get; set; }
 
+		public static BookingSource FromBooking(Booking booking, BookingPax[] pax)
+		{
+			return new BookingSource
+			{
+				Reference = booking.Reference,
+				FirstName = booking.FirstName,
+				LastName = booking.LastName,
+				Email = booking.Email,
+				PhoneNo = booking.PhoneNo,
+				TeamName = booking.TeamName,
+				SpecialRequests = booking.SpecialRequests,
+				Pax = pax.Select(p => new PaxSource
+				{
+					FirstName = p.FirstName,
+					LastName = p.LastName,
+					Gender = p.Gender.ToString(),
+					Dob = p.Dob.ToString(),
+					Nationality = p.Nationality.ToUpperInvariant(),
+					OutboundTripId = p.OutboundTripId,
+					InboundTripId = p.InboundTripId,
+					IsStudent = p.IsStudent,
+					CabinClassMin = p.CabinClassMin,
+					CabinClassPreferred = p.CabinClassPreferred,
+					CabinClassMax = p.CabinClassMax,
+					SpecialFood = p.SpecialFood
+				}).ToList()
+			};
+		}
+
 		public static void Validate(BookingSource bookingSource, IEnumerable<Trip> trips)
 		{
 			if(null == bookingSource)

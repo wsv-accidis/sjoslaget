@@ -39,8 +39,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 						Group = p.Group,
 						FirstName = p.FirstName,
 						LastName = p.LastName,
-						Dob = p.Dob.ToString(),
 						Gender = p.Gender.ToString(),
+						Dob = p.Dob.ToString(),
 						Nationality = p.Nationality.ToUpperInvariant(),
 						Years = p.Years
 					}).ToList()
