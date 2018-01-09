@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math' show Random;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/model.dart';
 
 import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
@@ -21,6 +23,8 @@ import '../util/countdown_state.dart';
 class CountdownPage implements OnInit, OnDestroy {
 	static const MAX_SUBMIT_ATTEMPTS = 3;
 	static const PING_INTERVAL = 60000;
+	static const RANDOM_DELAY_MIN = 5000;
+	static const RANDOM_DELAY_MAX = 10000;
 	static const TICK_INTERVAL = 100;
 
 	final ClientFactory _clientFactory;
@@ -30,17 +34,22 @@ class CountdownPage implements OnInit, OnDestroy {
 	final _countdown = new CountdownState();
 	Timer _countdownTimer;
 	Timer _pingTimer;
-	int _submitAttempts = 0;
+	final _random = new Random();
 
+	BookingResult bookingResult;
 	String countdownFormatted;
+	bool hasBookingError = false;
+	bool hasError = false;
 	QueueResponse queueResponse;
-	bool waitingForResponse = false;
+	bool waitingForServer = false;
 
 	bool get countdownIsElapsed => _countdown.isElapsed;
 
-	bool get hasResponse => null != queueResponse;
+	bool get hasCreatedBooking => null != bookingResult;
 
-	bool get shouldShowCountdown => !waitingForResponse && !hasResponse;
+	bool get shouldDisableButton => !countdownIsElapsed || waitingForServer;
+
+	bool get shouldShowCountdown => !waitingForServer && !hasCreatedBooking && !hasBookingError;
 
 	CountdownPage(this._clientFactory, this._queueRepository, this._router);
 
@@ -61,23 +70,54 @@ class CountdownPage implements OnInit, OnDestroy {
 		_pingTimer = new Timer.periodic(new Duration(milliseconds: PING_INTERVAL), _ping);
 	}
 
+	Future<Null> createBooking() async {
+		try {
+			final client = _clientFactory.getClient();
+			bookingResult = await _queueRepository.toBooking(client, _countdown.candidateId);
+			_clearErrors();
+		} on BookingException catch (e) {
+			// If we end up here the booking was created on the backend already, so
+			// everything is OK after all
+			print('Conflict when creating booking: ' + e.toString());
+			hasBookingError = true;
+		} catch (e) {
+			// We have a queue position but failed to create a booking
+			print('Failed to create booking: ' + e.toString());
+			hasError = true;
+		}
+	}
+
 	Future<Null> submitCandidate() async {
-		waitingForResponse = true;
-		while (waitingForResponse) {
-			await trySubmitCandidate();
+		_cancelTimers();
+		_clearErrors();
+
+		waitingForServer = true;
+		try {
+			int retries = 0;
+
+			while (null == queueResponse && retries < MAX_SUBMIT_ATTEMPTS) {
+				await trySubmitCandidate();
+				retries++;
+			}
+
+			if (null != queueResponse) {
+				// Add a random delay. This has NO impact on the queue position that this user
+				// gets, as one has already been assigned. It only serves to reduce server load.
+				final int delay = RANDOM_DELAY_MIN + _random.nextInt(RANDOM_DELAY_MAX - RANDOM_DELAY_MIN);
+				print('Claimed queue position ' + queueResponse.placeInQueue.toString() + ', creating booking after ' + delay.toString() + ' ms.');
+				await new Future<Null>.delayed(new Duration(milliseconds: delay), createBooking);
+			} else {
+				hasError = true;
+			}
+		} finally {
+			waitingForServer = false;
 		}
 	}
 
 	Future<Null> trySubmitCandidate() async {
-		if (_submitAttempts++ > MAX_SUBMIT_ATTEMPTS) {
-			// Gave up, if we couldn't do this after several attempts it's a lost cause
-			throw new BookingException();
-		}
-
 		try {
 			final client = _clientFactory.getClient();
 			queueResponse = await _queueRepository.go(client, _countdown.candidateId);
-			waitingForResponse = false;
 		}
 		on BookingException catch (e) {
 			print('Failed to submit candidate because countdown had not elapsed!');
@@ -95,6 +135,11 @@ class CountdownPage implements OnInit, OnDestroy {
 			_pingTimer.cancel();
 			_pingTimer = null;
 		}
+	}
+
+	void _clearErrors() {
+		hasBookingError = false;
+		hasError = false;
 	}
 
 	Future<Null> _ping(Timer ignored) async {

@@ -7,8 +7,10 @@ class BookingDetails {
 	String lastName;
 	String phoneNo;
 	String email;
+	String teamName;
+	int teamSize;
 
-	BookingDetails(this.firstName, this.lastName, this.phoneNo, this.email);
+	BookingDetails(this.firstName, this.lastName, this.phoneNo, this.email, this.teamName, this.teamSize);
 
 	String toJson() {
 		return JSON.encode({
@@ -16,6 +18,8 @@ class BookingDetails {
 			LASTNAME: lastName,
 			PHONE_NO: phoneNo,
 			EMAIL: email,
+			TEAM_NAME: teamName,
+			TEAM_SIZE: teamSize
 		});
 	}
 }

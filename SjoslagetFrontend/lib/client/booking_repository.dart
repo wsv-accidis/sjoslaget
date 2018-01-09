@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:angular/angular.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/client.dart';
+import 'package:frontend_shared/model.dart';
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
@@ -16,7 +17,6 @@ import '../model/booking_details.dart';
 import '../model/booking_overview_item.dart';
 import '../model/booking_pax_item.dart';
 import '../model/booking_product.dart';
-import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/json_field.dart';
 import '../model/payment_summary.dart';

@@ -6,7 +6,8 @@
 	<p>
 	{{ eventName }} öppnar {{ eventOpening }}!
 	</p>
-
+</div>
+<div *ngIf="isLoaded && hasOpeningTime">
 	<form #candidateForm="ngForm" (submit)="submitDetails()">
 		<input type="submit" class="hidden-submit"/>
 
@@ -52,6 +53,23 @@
 							tel="email">
 			</material-input>
 		</div>
+		<div>
+			<material-input [(ngModel)]="teamName"
+							ngControl="teamName"
+							floatingLabel
+							label="Lagnamn"
+							required
+							requiredErrorMsg="Ange lagets namn."
+							style="width: 290px; margin-right: 20px">
+			</material-input>
+
+			<material-dropdown-select [buttonText]="teamSizeToString(teamSize)"
+									  [options]="teamSizeOptions"
+									  [itemRenderer]="teamSizeToString"
+									  [selection]="teamSizeSelection"
+									  width="2">
+			</material-dropdown-select>
+		</div>
 		<p class="super-important" style="margin-top: 0">
 			Dubbelkolla att e-postadressen stämmer!
 		</p>
@@ -64,7 +82,7 @@
 			</material-checkbox>
 		</div>
 		<div style="margin-top: 10px">
-			<material-button [disabled]="!candidateForm.valid || !acceptToc"
+			<material-button [disabled]="!candidateForm.valid || !acceptToc || !hasOpeningTime"
 							 class="control-blue"
 							 raised
 							 (trigger)="submitDetails()">
@@ -72,4 +90,10 @@
 			</material-button>
 		</div>
 	</form>
+</div>
+<div *ngIf="hasError">
+	<p>
+		Hoppsan! Någonting är väldigt trasigt just nu. Du kan försöka ladda om sidan, eller
+		komma tillbaka igen senare.
+	</p>
 </div>

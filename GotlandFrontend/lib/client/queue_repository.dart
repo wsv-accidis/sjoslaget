@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
+import 'package:frontend_shared/model.dart';
 import 'package:http/http.dart';
 
 import 'booking_exception.dart';
@@ -37,7 +38,7 @@ class QueueRepository {
 	Future<QueueResponse> go(Client client, String candidateId) async {
 		Response response;
 		try {
-			response = await client.put(_apiRoot + '/queue/go?c=' + candidateId);
+			response = await client.put(_apiRoot + '/queue/claim?c=' + candidateId);
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}
@@ -63,6 +64,23 @@ class QueueRepository {
 			return new CandidateResponse.fromJson(response.body);
 		else if (HttpStatus.NOT_FOUND == response.statusCode)
 			// The candidate has timed out
+			throw new BookingException();
+		else
+			throw new IOException.fromResponse(response);
+	}
+
+	Future<BookingResult> toBooking(Client client, String candidateId) async {
+		Response response;
+		try {
+			response = await client.post(_apiRoot + '/queue/toBooking?c=' + candidateId);
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
+			return new BookingResult.fromJson(response.body);
+		else if (HttpStatus.CONFLICT == response.statusCode)
+			// There is already a booking for this candidate
 			throw new BookingException();
 		else
 			throw new IOException.fromResponse(response);

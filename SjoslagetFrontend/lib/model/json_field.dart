@@ -1,3 +1,5 @@
+export 'package:frontend_shared/model/json_field.dart';
+
 const AMOUNT = 'Amount';
 const AMOUNT_PAID = 'AmountPaid';
 const CABINS = 'Cabins';
@@ -25,7 +27,6 @@ const NATIONALITY = 'Nationality';
 const NEW_PASSWORD = 'NewPassword';
 const NUMBER_OF_CABINS = 'NumberOfCabins';
 const NUMBER_OF_PAX = 'NumberOfPax';
-const PASSWORD = 'Password';
 const PAX = 'Pax';
 const PAYMENT = 'Payment';
 const PHONE_NO = 'PhoneNo';
@@ -34,7 +35,6 @@ const PRICE_PER_PAX = 'PricePerPax';
 const PRODUCTS = 'Products';
 const PRODUCT_TYPE_ID = 'TypeId';
 const QUANTITY = 'Quantity';
-const REFERENCE = 'Reference';
 const TOTAL = 'Total';
 const TOTAL_PRICE = 'TotalPrice';
 const TYPE_ID = 'TypeId';

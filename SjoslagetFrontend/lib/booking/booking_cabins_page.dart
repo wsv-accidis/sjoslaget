@@ -5,6 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/model.dart';
 import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
 import 'booking_component.dart';
@@ -20,7 +21,6 @@ import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
 import '../model/booking_product.dart';
 import '../model/booking_product_view.dart';
-import '../model/booking_result.dart';
 import '../model/booking_source.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';

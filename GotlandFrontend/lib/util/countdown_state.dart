@@ -11,11 +11,11 @@ class CountdownState {
 	int _countdown = 0;
 	DateTime _countdownFrom;
 
-	String candidateId;
-
 	int get _currentOffsetMs {
 		return (new DateTime.now().difference(_countdownFrom)).inMilliseconds;
 	}
+
+	String candidateId;
 
 	int get inHours => inMilliseconds ~/ Duration.MILLISECONDS_PER_HOUR;
 

@@ -5,6 +5,7 @@ import 'package:angular_router/angular_router.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:frontend_shared/util.dart';
+import 'package:quiver/iterables.dart';
 
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
@@ -22,6 +23,10 @@ import '../util/countdown_state.dart';
 	providers: const <dynamic>[materialProviders]
 )
 class StartPage implements OnInit {
+	static const TEAM_SIZE_MIN = 1;
+	static const TEAM_SIZE_MAX = 20;
+	static const TEAM_SIZE_DEFAULT = TEAM_SIZE_MAX;
+
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 	final QueueRepository _queueRepository;
@@ -33,14 +38,24 @@ class StartPage implements OnInit {
 	String lastName;
 	String phoneNo;
 	String email;
+	String teamName;
+	SelectionModel<int> teamSizeSelection = new SelectionModel.withList(selectedValues: [TEAM_SIZE_DEFAULT]);
 	bool acceptToc = false;
+	bool hasError = false;
 
 	String get eventName => _evnt.name;
 
-	String get eventOpening => null != _evnt.opening ? DateTimeFormatter.format(_evnt.opening)
-		: 'någon gång i en avlägsen framtid';
+	String get eventOpening =>
+		null != _evnt.opening ? DateTimeFormatter.format(_evnt.opening)
+			: 'någon gång i en avlägsen framtid';
+
+	bool get hasOpeningTime => null != _evnt.opening;
 
 	bool get isLoaded => null != _evnt;
+
+	int get teamSize => teamSizeSelection.selectedValues.first;
+
+	SelectionOptions<int> get teamSizeOptions => new SelectionOptions.fromList(range(TEAM_SIZE_MIN, TEAM_SIZE_MAX + 1, 1).toList(growable: false));
 
 	StartPage(this._clientFactory, this._eventRepository, this._queueRepository, this._router);
 
@@ -50,11 +65,12 @@ class StartPage implements OnInit {
 			_evnt = await _eventRepository.getActiveEvent(client);
 		} catch (e) {
 			print('Failed to load active event: ' + e.toString());
+			hasError = true;
 		}
 	}
 
 	Future<Null> submitDetails() async {
-		final candidate = new BookingDetails(firstName, lastName, phoneNo, email);
+		final candidate = new BookingDetails(firstName, lastName, phoneNo, email, teamName, teamSize);
 		CandidateResponse response;
 
 		try {
@@ -63,12 +79,20 @@ class StartPage implements OnInit {
 			response = await _queueRepository.createCandidate(client, candidate);
 		} catch (e) {
 			print('Failed to create booking candidate: ' + e.toString());
-			return; // TODO Error message to user
+			hasError = true;
+			return;
 		}
 
 		final state = new CountdownState();
 		state.update(response);
 
 		_router.navigate(<dynamic>['/Content/Countdown']);
+	}
+
+	String teamSizeToString(int size) {
+		if(1 == size)
+			return '1 person';
+		else
+			return size.toString() + ' personer';
 	}
 }
