@@ -1,4 +1,4 @@
-import 'package:frontend_shared/util.dart';
+import 'package:frontend_shared/util.dart' show ValueConverter;
 
 import 'json_field.dart';
 

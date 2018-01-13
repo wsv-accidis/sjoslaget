@@ -38,9 +38,11 @@ namespace Accidis.Gotland.Test.Db
 			_outTripId = db.ExecuteScalar<Guid>("insert into [Trip] ([EventId], [Name], [IsInbound], [Departure], [Price]) output inserted.[Id] values (@Id, 'Test Outbound', 0, '2018-01-01', 0)",
 				new {Id = _eventId});
 			_inTripId = db.ExecuteScalar<Guid>("insert into [Trip] ([EventId], [Name], [IsInbound], [Departure], [Price]) output inserted.[Id] values (@Id, 'Test Inbound', 1, '2018-01-02', 0)",
-				new { Id = _eventId });
+				new {Id = _eventId});
 
-			db.Execute("insert into [CabinClass] ([No], [Name], [Description], [Price]) values (0, 'Camping', '', 1199), (1, 'Logipaket 1', '', 1349), (2, 'Logipaket 2', '', 1449), (3, 'Logipaket 3', '', 1549)");
+			db.Execute("insert into [CabinClass] ([No], [Name], [Description]) values (0, 'Camping', ''), (1, 'Logipaket 1', ''), (2, 'Logipaket 2', ''), (3, 'Logipaket 3', '')");
+			db.Execute("insert into [EventCabinClass] ([No], [EventId], [PricePerPax]) values (0, @Id, 1199), (1, @Id, 1349), (2, @Id, 1449), (3, @Id, 1549)",
+				new {Id = _eventId});
 		}
 	}
 }
