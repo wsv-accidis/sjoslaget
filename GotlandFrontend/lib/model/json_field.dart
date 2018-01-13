@@ -14,6 +14,7 @@ const OPENING = 'Opening';
 const PHONE_NO = 'PhoneNo';
 const PLACE_IN_QUEUE = 'PlaceInQueue';
 const PRICE = 'Price';
+const PRICE_PER_PAX = 'PricePerPax';
 const QUEUE_SIZE = 'QueueSize';
 const TEAM_NAME = 'TeamName';
 const TEAM_SIZE = 'TeamSize';

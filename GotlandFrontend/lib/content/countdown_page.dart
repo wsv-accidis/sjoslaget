@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' show Random;
+import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
@@ -87,6 +88,21 @@ class CountdownPage implements OnInit, OnDestroy {
 		}
 	}
 
+	Future<Null> finishCreateBooking() async {
+		await createBooking();
+		if(null == bookingResult)
+			return;
+
+		try {
+			await _clientFactory.authenticate(bookingResult.reference, bookingResult.password);
+		} catch (e) {
+			print('Booking was created but failed to authenticate: ' + e.toString());
+			return;
+		}
+
+		_router.navigate(<dynamic>['/Booking/Booking']);
+	}
+
 	Future<Null> submitCandidate() async {
 		_cancelTimers();
 		_clearErrors();
@@ -105,7 +121,7 @@ class CountdownPage implements OnInit, OnDestroy {
 				// gets, as one has already been assigned. It only serves to reduce server load.
 				final int delay = RANDOM_DELAY_MIN + _random.nextInt(RANDOM_DELAY_MAX - RANDOM_DELAY_MIN);
 				print('Claimed queue position ' + queueResponse.placeInQueue.toString() + ', creating booking after ' + delay.toString() + ' ms.');
-				await new Future<Null>.delayed(new Duration(milliseconds: delay), createBooking);
+				await new Future<Null>.delayed(new Duration(milliseconds: delay), finishCreateBooking);
 			} else {
 				hasError = true;
 			}

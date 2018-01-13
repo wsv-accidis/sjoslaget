@@ -31,7 +31,7 @@ class EventRepository {
 		return new Event.fromJson(response.body);
 	}
 
-	Future<CabinClass> getCabinClasses(Client client) async {
+	Future<List<CabinClass>> getCabinClasses(Client client) async {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + '/cabins/classes');
@@ -47,15 +47,15 @@ class EventRepository {
 			.toList();
 	}
 
-	Future<Trip> getInboundTrips(Client client) async {
-		return _getTrips(client, 'trips/inbound');
+	Future<List<Trip>> getInboundTrips(Client client) async {
+		return await _getTrips(client, '/trips/inbound');
 	}
 
-	Future<Trip> getOutboundTrips(Client client) async {
-		return _getTrips(client, 'trips/outbound');
+	Future<List<Trip>> getOutboundTrips(Client client) async {
+		return await _getTrips(client, '/trips/outbound');
 	}
 
-	Future<Trip> _getTrips(Client client, String uri) async {
+	Future<List<Trip>> _getTrips(Client client, String uri) async {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + uri);
