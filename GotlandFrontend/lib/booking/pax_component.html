@@ -1,1 +1,122 @@
-Hello, is pax.
+<div *ngIf="!isReadOnly">
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tbody *ngFor="let pax of paxViews; let p = index">
+		<tr>
+			<td rowspan="3">
+				<a class="pax-delete"
+				   (click)="deletePax(p)"
+				   href="javascript:"
+				   title="Ta bort raden">
+					<glyph icon="clear"></glyph>
+				</a>
+			</td>
+			<td class="name-field-cell">
+				<material-input [(ngModel)]="pax.firstName"
+								[class]="pax.hasFirstNameError ? 'error-marker' : ''"
+								[error]="pax.firstNameError"
+								(keyup)="validate($event)"
+								label="Förnamn"
+								[ngControl]="uniqueId('firstName', p)">
+				</material-input>
+			</td>
+			<td class="name-field-cell">
+				<material-input [(ngModel)]="pax.lastName"
+								[class]="pax.hasLastNameError ? 'error-marker' : ''"
+								[error]="pax.lastNameError"
+								(keyup)="validate($event)"
+								label="Efternamn"
+								[ngControl]="uniqueId('lastName', p)">
+				</material-input>
+			</td>
+			<td class="gender-field-cell">
+				<material-dropdown-select [buttonText]="genderToString(pax.gender)"
+										  [options]="genderOptions"
+										  [itemRenderer]="genderToString"
+										  [selection]="pax.genderSelection"
+										  width="2">
+				</material-dropdown-select>
+			</td>
+			<td class="dob-field-cell">
+				<material-input [(ngModel)]="pax.dob"
+								[class]="pax.hasDobError ? 'error-marker' : ''"
+								[error]="pax.dobError"
+								(keyup)="validate($event)"
+								label="ÅÅMMDD"
+								[ngControl]="uniqueId('dob', p)"
+								type="number">
+				</material-input>
+			</td>
+			<td class="nationality-field-cell">
+				<material-input [(ngModel)]="pax.nationality"
+								[class]="pax.hasNationalityError ? 'error-marker' : ''"
+								[error]="pax.nationalityError"
+								(keyup)="validate($event)"
+								label="Nationalitet"
+								[ngControl]="uniqueId('nationality', p)">
+				</material-input>
+			</td>
+		</tr>
+		<tr>
+			<td class="trips-and-classes-field-cell" colspan="5">
+				<div>
+					<material-dropdown-select [buttonText]="tripToStringLabel(pax.outboundTrip, false)"
+											  class="trip-select"
+											  [options]="outboundTripOptions"
+											  [itemRenderer]="tripToString"
+											  [selection]="pax.outboundTripSelection"
+											  width="5">
+					</material-dropdown-select>
+				</div>
+				<div>
+					<material-dropdown-select [buttonText]="tripToStringLabel(pax.inboundTrip, true)"
+											  class="trip-select"
+											  [options]="inboundTripOptions"
+											  [itemRenderer]="tripToString"
+											  [selection]="pax.inboundTripSelection"
+											  width="5">
+					</material-dropdown-select>
+				</div>
+				<div>
+					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMin, 'min')"
+											  class="cabin-class-select"
+											  [options]="cabinClassOptions"
+											  [itemRenderer]="cabinClassToString"
+											  [selection]="pax.cabinClassMinSelection"
+											  width="4">
+					</material-dropdown-select>
+				</div>
+				<div>
+					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassPreferred, 'pref')"
+											  class="cabin-class-select"
+											  [options]="cabinClassOptions"
+											  [itemRenderer]="cabinClassToString"
+											  [selection]="pax.cabinClassPreferredSelection"
+											  width="4">
+					</material-dropdown-select>
+				</div>
+				<div>
+					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMax, 'max')"
+											  class="cabin-class-select"
+											  [options]="cabinClassOptions"
+											  [itemRenderer]="cabinClassToString"
+											  [selection]="pax.cabinClassMaxSelection"
+											  width="4">
+					</material-dropdown-select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="is-student-field-cell" colspan="2">
+				<material-checkbox [checked]="pax.isStudent"
+								   label="Är studerande/under 26 år">
+				</material-checkbox>
+			</td>
+			<td class="special-food-field-cell" colspan="3">
+				<material-input [(ngModel)]="pax.specialFood"
+								label="Särskild kost, allergier med mera">
+				</material-input>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

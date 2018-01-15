@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/util.dart' show ValueConverter;
 
 import 'json_field.dart';
 
@@ -11,5 +12,5 @@ class Trip {
 	Trip(this.id, this.name, this.departure, this.price);
 
 	factory Trip.fromMap(Map<String, dynamic> json) =>
-		new Trip(json[ID], json[NAME], DateTime.parse(json[DEPARTURE]), Decimal.parse(json[PRICE].toString()));
+		new Trip(json[ID], json[NAME], ValueConverter.parseDateTime(json[DEPARTURE]), Decimal.parse(json[PRICE].toString()));
 }

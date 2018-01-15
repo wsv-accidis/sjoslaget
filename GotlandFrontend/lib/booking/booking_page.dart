@@ -21,14 +21,17 @@ class BookingPage implements OnInit {
 	final EventRepository _eventRepository;
 	final Router _router;
 
+	@ViewChild('pax')
+	PaxComponent pax;
+
 	BookingPage(this._clientFactory, this._eventRepository, this._router);
 
 	Future<Null> ngOnInit() async {
-		if(!_clientFactory.hasCredentials){
+		/*if(!_clientFactory.hasCredentials){
 			print('Booking page opened without credentials.');
 			_router.navigate(<dynamic>['/Content/Start']);
 			return;
-		}
+		}*/
 
 		// TODO Load the actual booking in case it already has stuff in it
 		try {
@@ -36,5 +39,7 @@ class BookingPage implements OnInit {
 		} catch (e) {
 
 		}
+
+		pax.initialEmptyPax = 1;
 	}
 }

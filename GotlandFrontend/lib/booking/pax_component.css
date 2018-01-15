@@ -1,0 +1,35 @@
+.cabin-class-select {
+	width: 150px;
+}
+
+td.trips-and-classes-field-cell > div {
+	display: inline-block;
+}
+
+td.trips-and-classes-field-cell > div:first-child > material-dropdown-select {
+	margin-left: 0;
+}
+
+td.trips-and-classes-field-cell > div:nth-child(3) > material-dropdown-select {
+	/* Spacing between trip and cabin class fields */
+	margin-left: 60px;
+}
+
+td.trips-and-classes-field-cell > div > material-dropdown-select {
+	margin-left: 20px;
+}
+
+.trip-select {
+	width: 200px;
+}
+
+material-input {
+	padding: 0;
+	margin-bottom: -8px;
+	width: 100%;
+}
+
+material-input.error-marker {
+	margin-bottom: 10px;
+}
+

@@ -11,7 +11,6 @@ class BookingPaxView {
 	String lastName;
 	String lastNameError;
 	String gender;
-	bool genderError = false;
 	String dob;
 	String dobError;
 	String nationality;
@@ -60,7 +59,6 @@ class BookingPaxView {
 		groupError = null;
 		firstNameError = null;
 		lastNameError = null;
-		genderError = false;
 		dobError = null;
 		nationalityError = null;
 		yearsError = null;
