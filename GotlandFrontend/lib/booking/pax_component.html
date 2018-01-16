@@ -3,7 +3,7 @@
 		<tbody *ngFor="let pax of paxViews; let p = index">
 		<tr>
 			<td rowspan="3" class="pax-header-cell">
-				{{ 1 + p }}<br />
+				{{ 1 + p }}<br/>
 				<a class="pax-delete"
 				   (click)="deletePax(p)"
 				   href="javascript:"
@@ -31,6 +31,7 @@
 			</td>
 			<td class="gender-field-cell">
 				<material-dropdown-select [buttonText]="genderToString(pax.gender)"
+										  class="gender-select"
 										  [options]="genderOptions"
 										  [itemRenderer]="genderToString"
 										  [selection]="pax.genderSelection"
@@ -56,12 +57,19 @@
 								[ngControl]="uniqueId('nationality', p)">
 				</material-input>
 			</td>
+			<td class="is-student-field-cell">
+				<material-checkbox [checked]="pax.isStudent"
+								   label="Är studerande/under 26 år">
+				</material-checkbox>
+			</td>
 		</tr>
 		<tr>
 			<td class="trips-and-classes-field-cell" colspan="5">
 				<div>
+					<glyph icon="directions_boat"></glyph>
 					<material-dropdown-select [buttonText]="tripToStringLabel(pax.outboundTrip, false)"
 											  class="trip-select"
+											  [error]="pax.outboundTripError"
 											  [options]="outboundTripOptions"
 											  [itemRenderer]="tripToString"
 											  [selection]="pax.outboundTripSelection"
@@ -71,6 +79,7 @@
 				<div>
 					<material-dropdown-select [buttonText]="tripToStringLabel(pax.inboundTrip, true)"
 											  class="trip-select"
+											  [error]="pax.inboundTripError"
 											  [options]="inboundTripOptions"
 											  [itemRenderer]="tripToString"
 											  [selection]="pax.inboundTripSelection"
@@ -78,45 +87,49 @@
 					</material-dropdown-select>
 				</div>
 				<div>
-					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMin, 'min')"
-											  class="cabin-class-select"
-											  [options]="cabinClassOptions"
-											  [itemRenderer]="cabinClassToString"
-											  [selection]="pax.cabinClassMinSelection"
-											  width="4">
-					</material-dropdown-select>
-				</div>
-				<div>
+					<glyph icon="hotel"></glyph>
 					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassPreferred, 'pref')"
 											  class="cabin-class-select"
+											  [error]="pax.cabinClassPreferredError"
 											  [options]="cabinClassOptions"
 											  [itemRenderer]="cabinClassToString"
 											  [selection]="pax.cabinClassPreferredSelection"
 											  width="4">
 					</material-dropdown-select>
 				</div>
-				<div>
-					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMax, 'max')"
-											  class="cabin-class-select"
-											  [options]="cabinClassOptions"
-											  [itemRenderer]="cabinClassToString"
-											  [selection]="pax.cabinClassMaxSelection"
-											  width="4">
-					</material-dropdown-select>
-				</div>
+			</td>
+			<td class="cabin-class-field-cell">
+				<glyph icon="vertical_align_top"></glyph>
+				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMax, 'max')"
+										  class="cabin-class-select"
+										  [error]="pax.cabinClassMaxError"
+										  [options]="cabinClassOptions"
+										  [itemRenderer]="cabinClassToString"
+										  [selection]="pax.cabinClassMaxSelection"
+										  width="4">
+				</material-dropdown-select>
 			</td>
 		</tr>
 		<tr>
-			<td class="is-student-field-cell" colspan="2">
-				<material-checkbox [checked]="pax.isStudent"
-								   label="Är studerande/under 26 år">
-				</material-checkbox>
-			</td>
-			<td class="special-food-field-cell" colspan="3">
+			<td class="special-food-field-cell" colspan="5">
 				<material-input [(ngModel)]="pax.specialFood"
-								label="Särskild kost, allergier med mera">
+								label="Särskild kost, allergier och andra speciella önskemål">
 				</material-input>
 			</td>
+			<td class="cabin-class-field-cell">
+				<glyph icon="vertical_align_bottom"></glyph>
+				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMin, 'min')"
+										  class="cabin-class-select"
+										  [error]="pax.cabinClassMinError"
+										  [options]="cabinClassOptions"
+										  [itemRenderer]="cabinClassToString"
+										  [selection]="pax.cabinClassMinSelection"
+										  width="4">
+				</material-dropdown-select>
+			</td>
+		</tr>
+		<tr>
+			<td class="spacing-cell" colspan="7"></td>
 		</tr>
 		</tbody>
 	</table>

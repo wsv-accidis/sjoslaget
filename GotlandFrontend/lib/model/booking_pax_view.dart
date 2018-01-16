@@ -15,12 +15,16 @@ class BookingPaxView {
 	String nationality;
 	String nationalityError;
 	SelectionModel<Trip> outboundTripSelection;
+	String outboundTripError;
 	SelectionModel<Trip> inboundTripSelection;
+	String inboundTripError;
 	bool isStudent;
 	SelectionModel<CabinClass> cabinClassMinSelection;
+	String cabinClassMinError;
 	SelectionModel<CabinClass> cabinClassPreferredSelection;
+	String cabinClassPreferredError;
 	SelectionModel<CabinClass> cabinClassMaxSelection;
-	String cabinClassError;
+	String cabinClassMaxError;
 	String specialFood;
 
 	CabinClass get cabinClassMax => _selectedOrNull(cabinClassMaxSelection);
@@ -39,13 +43,15 @@ class BookingPaxView {
 
 	bool get hasNationalityError => str.isNotEmpty(nationalityError);
 
-	bool get hasCabinClassError => str.isNotEmpty(cabinClassError);
+	bool get hasCabinClassError => str.isNotEmpty(cabinClassMinError) || str.isNotEmpty(cabinClassPreferredError) || str.isNotEmpty(cabinClassMaxError);
+
+	bool get hasTripError => str.isNotEmpty(inboundTripError) || str.isNotEmpty(outboundTripError);
 
 	Trip get inboundTrip => _selectedOrNull(inboundTripSelection);
 
 	bool get isEmpty => str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
 
-	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasDobError && !hasNationalityError && !hasCabinClassError;
+	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasDobError && !hasNationalityError && !hasCabinClassError && !hasTripError;
 
 	Trip get outboundTrip => _selectedOrNull(outboundTripSelection);
 
@@ -63,7 +69,11 @@ class BookingPaxView {
 		lastNameError = null;
 		dobError = null;
 		nationalityError = null;
-		cabinClassError = null;
+		outboundTripError = null;
+		inboundTripError = null;
+		cabinClassMinError = null;
+		cabinClassPreferredError = null;
+		cabinClassMaxError = null;
 	}
 
 	T _selectedOrNull<T>(SelectionModel<T> selection) {

@@ -4,6 +4,8 @@ import 'dart:html' show Event;
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:frontend_shared/util.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
@@ -23,6 +25,8 @@ class PaxComponent implements OnInit {
 	static const GENDER_MALE = 'm';
 	static const GENDER_OTHER = 'x';
 	static const MAX_NO_OF_PAX = 20;
+
+	static final DateFormat _tripDateFormat = new DateFormat('d/M kk:mm');
 
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
@@ -65,8 +69,7 @@ class PaxComponent implements OnInit {
 	}
 
 	String cabinClassToString(CabinClass c) {
-		// TODO Format moar
-		return c.name;
+		return c.name + ' (' + CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax) + ')';
 	}
 
 	String cabinClassToStringLabel(CabinClass c, String which) {
@@ -97,8 +100,10 @@ class PaxComponent implements OnInit {
 	}
 
 	String tripToString(Trip t) {
-		// TODO Format moar
-		return t.name;
+		if(null == t.departure)
+			return t.name;
+
+		return _tripDateFormat.format(t.departure) + ' ' + t.name;
 	}
 
 	String tripToStringLabel(Trip t, bool isInbound) {

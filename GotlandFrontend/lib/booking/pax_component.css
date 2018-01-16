@@ -1,20 +1,86 @@
+table {
+	margin-bottom: 20px;
+	max-width: 1100px;
+}
+
+td {
+	white-space: nowrap;
+}
+
+material-dropdown-select.cabin-class-select {
+	width: 200px;
+}
+
+td.cabin-class-field-cell {
+	text-align: right;
+}
+
+td.cabin-class-field-cell > material-dropdown-select {
+	text-align: left;
+}
+
+td.dob-field-cell, th.dob-field-cell {
+	padding-right: 10px;
+	width: 110px;
+}
+
+td.gender-field-cell, th.gender-field-cell {
+	padding-right: 10px;
+	width: 110px;
+}
+
+material-dropdown-select.gender-select {
+	width: 100px;
+}
+
+td.is-student-field-cell > material-checkbox {
+	margin: 0;
+}
+
+td.name-field-cell, th.name-field-cell {
+	padding-right: 10px;
+	width: 170px;
+}
+
+td.nationality-field-cell, th.nationality-field-cell {
+	padding-right: 15px;
+	width: 100px;
+}
+
 a.pax-delete {
 	text-decoration: none !important;
 }
 
 a.pax-delete glyph {
 	color: darkred;
-}
-
-.cabin-class-select {
-	width: 150px;
+	margin-left: -6px;
 }
 
 td.pax-header-cell {
 	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
-	font-size: 18px;
+	font-size: 24px;
 	vertical-align: top !important;
-	width: 90px;
+	min-width: 45px;
+}
+
+td.spacing-cell {
+	height: 30px;
+}
+
+td.special-food-field-cell {
+	padding-right: 15px;
+	padding-top: 8px;
+}
+
+td.trips-and-classes-field-cell {
+	padding-bottom: 10px;
+	padding-right: 15px;
+}
+
+td.trips-and-classes-field-cell glyph, td.cabin-class-field-cell glyph {
+	margin-bottom: -2px;
+	margin-right: 3px;
+	margin-top: 2px;
 }
 
 td.trips-and-classes-field-cell > div {
@@ -25,17 +91,14 @@ td.trips-and-classes-field-cell > div:first-child > material-dropdown-select {
 	margin-left: 0;
 }
 
-td.trips-and-classes-field-cell > div:nth-child(3) > material-dropdown-select {
+td.trips-and-classes-field-cell > div:nth-child(2) > material-dropdown-select {
 	/* Spacing between trip and cabin class fields */
-	margin-left: 60px;
+	margin-right: 20px;
 }
 
-td.trips-and-classes-field-cell > div > material-dropdown-select {
+material-dropdown-select.trip-select {
+	width: 250px;
 	margin-left: 20px;
-}
-
-.trip-select {
-	width: 200px;
 }
 
 material-input {

@@ -40,6 +40,6 @@ class BookingPage implements OnInit {
 
 		}
 
-		pax.initialEmptyPax = 1;
+		pax.initialEmptyPax = 5;
 	}
 }
