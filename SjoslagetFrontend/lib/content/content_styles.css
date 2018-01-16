@@ -53,16 +53,6 @@ img {
 	max-width: 100%;
 }
 
-img.spinner {
-	border: 0;
-	box-shadow: none;
-	display: block;
-	height: 80px;
-	margin-left: auto;
-	margin-right: auto;
-	width: 80px;
-}
-
 iframe {
 	border: 0;
 	margin-left: -10px;
@@ -115,8 +105,4 @@ glyph {
 .control-red {
 	background-color: darkred;
 	color: white;
-}
-
-#booking_ref_field {
-	width: 100px;
 }

@@ -1,0 +1,19 @@
+:host {
+}
+
+div.page {
+	background-color: white;
+	min-height: 100vh;
+	min-width: 1050px;
+	margin: 0 20px;
+}
+
+div.content {
+	padding: 20px 40px;
+}
+
+@media (max-width: 700px) {
+	div.content {
+		padding: 10px;
+	}
+}

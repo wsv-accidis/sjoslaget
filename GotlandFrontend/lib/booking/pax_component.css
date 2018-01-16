@@ -1,5 +1,20 @@
+a.pax-delete {
+	text-decoration: none !important;
+}
+
+a.pax-delete glyph {
+	color: darkred;
+}
+
 .cabin-class-select {
 	width: 150px;
+}
+
+td.pax-header-cell {
+	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	vertical-align: top !important;
+	width: 90px;
 }
 
 td.trips-and-classes-field-cell > div {

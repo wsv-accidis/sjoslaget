@@ -1,0 +1,122 @@
+:host {
+}
+
+div.page {
+	background-color: white;
+	max-width: 800px;
+	min-height: 100vh;
+	min-width: 700px;
+	margin: 0 auto;
+	padding: 20px 40px;
+}
+
+div.navigation {
+	display: flex;
+	width: 100%;
+}
+
+div.logo {
+	border-radius: 15px 0 0 15px;
+}
+
+div.logo img {
+	padding: 5px 15px 5px 0;
+	height: 75px;
+}
+
+div.menu {
+	width: 100%;
+	padding-top: 10px;
+}
+
+div.menu-item {
+	border-left: 2px solid white;
+	box-sizing: border-box;
+	float: left;
+	height: 60px;
+	width: 25%;
+}
+
+div.menu-item a {
+	align-items: center;
+	background-color: #0F76BC;
+	color: white;
+	display: flex;
+	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
+	font-size: large;
+	height: 100%;
+	justify-content: center;
+	line-height: 1.1;
+	text-align: center;
+	text-decoration: none;
+}
+
+div.menu-item a:hover {
+	background-color: #0A507F;
+}
+
+div.menu > div.menu-item:first-child > a {
+	border-radius: 15px 0 0 15px;
+}
+
+div.menu > div.menu-item:last-child > a {
+	border-radius: 0 15px 15px 0;
+}
+
+div.content {
+	margin: 10px 5px;
+}
+
+@media (max-width: 700px) {
+	div.page {
+		min-width: 320px;
+		padding: 0 0 20px 0;
+	}
+
+	div.logo {
+		background-color: #0F76BC;
+		border-radius: 0;
+		width: 100%;
+	}
+
+	div.logo img {
+		/* TODO Use different artwork for logo */
+		height: auto;
+		padding: 5px;
+		width: 90px !important;
+	}
+
+	div.navigation {
+		display: block;
+	}
+
+	div.menu {
+		height: 60px;
+		border-top: 2px solid white;
+		padding-top: 0;
+	}
+
+	div.menu > div.menu-item:first-child {
+		border-left: none;
+	}
+
+	div.menu > div.menu-item:first-child > a {
+		border-radius: 0 0 0 15px;
+	}
+
+	div.menu > div.menu-item:last-child > a {
+		border-radius: 0 0 15px 0;
+	}
+
+	div.menu-item {
+		height: 100%;
+	}
+
+	div.menu-item a {
+		font-size: small !important;
+	}
+
+	div.content {
+		margin: 10px;
+	}
+}
