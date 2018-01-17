@@ -2,6 +2,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
 import 'booking/booking_component.dart';
+import 'booking/booking_validator.dart';
 import 'client/client_factory.dart';
 import 'client/event_repository.dart';
 import 'client/queue_repository.dart';
@@ -13,6 +14,7 @@ import 'content/content_component.dart';
 	<router-outlet></router-outlet>
 	''',
 	providers: const <dynamic>[
+		BookingValidator,
 		ClientFactory,
 		EventRepository,
 		QueueRepository

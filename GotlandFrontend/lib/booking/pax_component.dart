@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:html' show Event;
+import 'dart:html' show Event, HtmlElement;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
@@ -7,6 +7,7 @@ import 'package:angular_forms/angular_forms.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import '../booking/booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
@@ -28,6 +29,7 @@ class PaxComponent implements OnInit {
 
 	static final DateFormat _tripDateFormat = new DateFormat('d/M kk:mm');
 
+	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 
@@ -46,7 +48,7 @@ class PaxComponent implements OnInit {
 
 	bool get isLoaded => null != cabinClasses && null != inboundTrips && null != outboundTrips;
 
-	PaxComponent(this._clientFactory, this._eventRepository);
+	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
 	Future<Null> ngOnInit() async {
 		try {
@@ -85,6 +87,14 @@ class PaxComponent implements OnInit {
 			return cabinClassToString(c);
 	}
 
+	void deletePax(int idx) {
+		final BookingPaxView pax = paxViews[idx];
+
+		// TODO Pending delete
+
+		paxViews.removeAt(idx);
+	}
+
 	String genderToString(String g) {
 		if (null == g)
 			return 'Kön';
@@ -120,15 +130,39 @@ class PaxComponent implements OnInit {
 	}
 
 	void validate(Event event) {
-		//final bookingIdx = _findBookingIndex(event.target);
-		//if (bookingIdx >= 0 && bookingIdx < bookingCabins.length) {
-		//	_bookingValidator.validateCabin(bookingCabins[bookingIdx]);
-		//}
+		final idx = _findBookingIndex(event.target);
+		if (idx >= 0 && idx < paxViews.length) {
+			_bookingValidator.validatePax(paxViews[idx]);
+		}
+	}
+
+	void validateAll(dynamic ignored) {
+		for(BookingPaxView pax in paxViews) {
+			_bookingValidator.validatePax(pax);
+		}
 	}
 
 	void _createInitialEmptyPax(int count) {
 		paxViews.clear();
 		for (int i = 0; i < count; i++)
-			paxViews.add(new BookingPaxView.createEmpty());
+		{
+			BookingPaxView view = new BookingPaxView.createEmpty();
+
+			// Change detection for <material-dropdown-select> is annoying
+			view.outboundTripSelection.selectionChanges.listen(validateAll);
+			view.inboundTripSelection.selectionChanges.listen(validateAll);
+			view.cabinClassMinSelection.selectionChanges.listen(validateAll);
+			view.cabinClassPreferredSelection.selectionChanges.listen(validateAll);
+			view.cabinClassMaxSelection.selectionChanges.listen(validateAll);
+
+			paxViews.add(view);
+		}
+	}
+
+	int _findBookingIndex(HtmlElement target) {
+		if (!target.dataset.containsKey('idx')) {
+			return null == target.parent ? -1 : _findBookingIndex(target.parent);
+		}
+		return int.parse(target.dataset['idx']);
 	}
 }

@@ -1,6 +1,6 @@
 <div *ngIf="!isReadOnly">
 	<table cellpadding="0" cellspacing="0" border="0">
-		<tbody *ngFor="let pax of paxViews; let p = index">
+		<tbody *ngFor="let pax of paxViews; let p = index" [attr.data-idx]="p">
 		<tr>
 			<td rowspan="3" class="pax-header-cell">
 				{{ 1 + p }}<br/>
