@@ -6,7 +6,7 @@ import 'package:Sjoslaget/client/client_factory.dart' show SJOSLAGET_API_ROOT;
 
 void main() {
 	// false for testing on local, true for production builds
-	final release = false;
+	final release = true;
 
 	List<dynamic> providers;
 	if (release) {
