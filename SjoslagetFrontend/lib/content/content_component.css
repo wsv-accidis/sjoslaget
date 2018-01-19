@@ -67,6 +67,11 @@ div.content {
 	margin: 10px 5px;
 }
 
+#sjoslaget-logo {
+	content: url(gfx/Logo.png);
+	vertical-align: middle;
+}
+
 @media (max-width: 700px) {
 	div.page {
 		min-width: 320px;
@@ -118,5 +123,9 @@ div.content {
 
 	div.content {
 		margin: 10px;
+	}
+
+	#sjoslaget-logo {
+		content: url(gfx/LogoSmall.png);
 	}
 }
