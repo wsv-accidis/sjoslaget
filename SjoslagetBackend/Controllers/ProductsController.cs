@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
@@ -41,6 +42,20 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		public async Task<IHttpActionResult> All()
 		{
 			return this.OkCacheControl(await _productRepository.GetAllAsync(), WebConfig.StaticDataMaxAge);
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Availability()
+		{
+			var activeCruise = await _cruiseRepository.GetActiveAsync();
+			if(null == activeCruise)
+				return NotFound();
+
+			CruiseProductAvailability[] availabilities = await _productRepository.GetAvailabilityAsync(activeCruise);
+			return this.OkCacheControl(availabilities.ToDictionary(
+				a => a.ProductTypeId,
+				a => a.IsLimited ? Math.Max(0, a.Count - a.TotalQuantity) : CruiseProductAvailability.NotLimited), 
+				WebConfig.DynamicDataMaxAge);
 		}
 
 		[Authorize(Roles = Roles.Admin)]

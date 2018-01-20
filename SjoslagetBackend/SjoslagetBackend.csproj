@@ -175,6 +175,7 @@
     <Compile Include="Models\BookingOverviewItem.cs" />
     <Compile Include="Models\BookingPaxItem.cs" />
     <Compile Include="Models\BookingProduct.cs" />
+    <Compile Include="Models\CruiseProductAvailability.cs" />
     <Compile Include="Models\CruiseProductWithType.cs" />
     <Compile Include="Models\DeletedBooking.cs" />
     <Compile Include="Models\IsLockedResult.cs" />

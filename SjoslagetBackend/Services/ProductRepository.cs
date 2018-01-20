@@ -35,6 +35,21 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return result.ToArray();
 		}
 
+		public async Task<CruiseProductAvailability[]> GetAvailabilityAsync(Cruise cruise)
+		{
+			using(var db = DbUtil.Open())
+				return await GetAvailabilityAsync(db, cruise);
+		}
+
+		public async Task<CruiseProductAvailability[]> GetAvailabilityAsync(SqlConnection db, Cruise cruise)
+		{
+			var result = await db.QueryAsync<CruiseProductAvailability>("select [ProductTypeId], [Count], " +
+																		"(select SUM([Quantity]) from [BookingProduct] where [ProductTypeId] = CC.[ProductTypeId]) [TotalQuantity] " +
+																		"from [CruiseProduct] CC " +
+																		"where [CruiseId] = @CruiseId", new {CruiseId = cruise.Id});
+			return result.ToArray();
+		}
+
 		public async Task<BookingProduct[]> GetProductsForBookingAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
