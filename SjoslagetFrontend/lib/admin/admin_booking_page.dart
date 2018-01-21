@@ -5,21 +5,18 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
+import '../booking/booking_support_utils.dart';
 import '../booking/cabins_component.dart';
 import '../booking/products_component.dart';
-import '../client/availability_exception.dart';
-import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
 import '../client/cruise_repository.dart';
 import '../client/user_repository.dart';
-import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
-import '../model/booking_product.dart';
-import '../model/booking_product_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
@@ -212,37 +209,24 @@ class AdminBookingPage implements OnInit {
 		bookingError = null;
 
 		try {
-			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
-			final List<BookingProduct> productsToSave = BookingProductView.listToListOfBookingProduct(products.bookingProducts);
-			final client = _clientFactory.getClient();
+			var tuple = await BookingSupportUtils.saveBooking(
+				_clientFactory,
+				_bookingRepository,
+				booking,
+				cabins,
+				products,
+				new BookingResult(booking.reference, null)
+			);
 
-			try {
-				await _bookingRepository.saveOrUpdateBooking(client, booking, cabinsToSave, productsToSave);
-			} catch (e) {
-				if (e is AvailabilityException) {
-					await cabins.refreshAvailability();
-					List<BookingCabin> savedCabins = null;
-					// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
-					try {
-						final BookingSource lastSavedBooking = await _bookingRepository.findBooking(client, booking.reference);
-						savedCabins = lastSavedBooking.cabins;
-					} catch (e) {
-						print('Failed to retrieve prior booking for checking availability: ' + e.toString());
-					}
-					bookingError = _getAvailabilityError(savedCabins);
-				}
-				else if (e is BookingException) {
-					// Exception from backend, validation error (should not happen as we validate locally, but oh well)
-					bookingError = 'Någonting gick fel när bokningen skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen.';
-				} else {
-					// Exception which is not coming from backend, potentially bad network
-					bookingError = 'Någonting gick fel när bokningen skulle sparas. Kontrollera att du är ansluten till internet och försök igen.';
-				}
-				print('Failed to save booking: ' + e.toString());
+			// item1 is BookingResult
+			// item2 is String (bookingError)
+			if (null == tuple.item1) {
+				bookingError = tuple.item2;
 				return;
 			}
 
 			await cabins.refreshAvailability();
+			await products.refreshAvailability();
 			cabins.onSaved();
 		} finally {
 			cabins.disableAddCabins = false;
@@ -282,32 +266,6 @@ class AdminBookingPage implements OnInit {
 		} finally {
 			isSaving = false;
 		}
-	}
-
-	String _getAvailabilityError(List<BookingCabin> savedCabins) {
-		// Calling this depends on having refreshed availability first
-
-		String error = 'Det finns inte tillräckligt många lediga hytter för att spara.';
-		for (CruiseCabin cabin in cabins.cruiseCabins) {
-			final int available = cabins.getTotalAvailability(cabin.id);
-			final int inBooking = cabins.getNumberOfCabinsInBooking(cabin.id);
-			final int inSavedBooking = _getNumberOfCabinsOfType(savedCabins, cabin.id);
-
-			if (available < inBooking)
-				error += ' Det finns $inBooking hytt(er) av typen ${cabin.name} i bokningen, men det finns ${available + inSavedBooking} kvar att boka.';
-		}
-
-		error += ' Ta bort hytter från bokningen eller byt till en annan typ och försök igen.';
-		return error;
-	}
-
-	static int _getNumberOfCabinsOfType(List<BookingCabin> cabins, String id) {
-		if (null == cabins)
-			return 0;
-
-		return cabins
-			.where((b) => b.cabinTypeId == id)
-			.length;
 	}
 
 	void _refreshPayment() {

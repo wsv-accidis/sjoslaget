@@ -86,6 +86,10 @@ ul.undecorated-list li {
 	font-style: italic;
 }
 
+.super-important glyph {
+	color: red;
+}
+
 glyph {
 	color: #0F75BC;
 	padding-top: 3px;

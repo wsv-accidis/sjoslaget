@@ -64,7 +64,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
-				await CheckAvailability(db, cruise, source.Cabins, cabinTypes);
+				await CheckCabinsAvailability(db, cruise, source.Cabins, cabinTypes);
+				await CheckProductsAvailability(db, cruise, source.Products);
 				await CreateBooking(db, booking);
 				await CreateCabins(db, booking, source.Cabins);
 				await CreateProducts(db, booking, source.Products);
@@ -158,10 +159,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
 				await DeleteCabins(db, booking);
-				await CheckAvailability(db, cruise, source.Cabins, cabinTypes);
+				await CheckCabinsAvailability(db, cruise, source.Cabins, cabinTypes);
 				await CreateCabins(db, booking, source.Cabins);
 
 				await DeleteProducts(db, booking);
+				await CheckProductsAvailability(db, cruise, source.Products);
 				await CreateProducts(db, booking, source.Products);
 
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
@@ -206,26 +208,37 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		async Task CheckAvailability(SqlConnection db, Cruise cruise, List<BookingSource.Cabin> sourceList, IEnumerable<CabinType> cruiseCabins)
+		async Task CheckCabinsAvailability(SqlConnection db, Cruise cruise, List<BookingSource.Cabin> sourceList, IEnumerable<CabinType> cruiseCabins)
 		{
 			var typeDict = cruiseCabins.ToDictionary(c => c.Id, c => c);
 			var availabilityDict = (await _cabinRepository.GetAvailabilityAsync(db, cruise)).ToDictionary(c => c.CabinTypeId, c => c);
 
 			foreach(BookingSource.Cabin cabinSource in sourceList)
 			{
-				CabinType type;
-				if(!typeDict.TryGetValue(cabinSource.TypeId, out type))
+				if(!typeDict.TryGetValue(cabinSource.TypeId, out var type))
 					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an existing type.");
 				if(cabinSource.Pax.Count > type.Capacity)
 					throw new BookingException($"Cabin of type \"{cabinSource.TypeId}\" is overbooked, capacity is {type.Capacity}, got {cabinSource.Pax.Count} pax.");
 
-				CruiseCabinAvailability availability;
-				if(!availabilityDict.TryGetValue(cabinSource.TypeId, out availability))
+				if(!availabilityDict.TryGetValue(cabinSource.TypeId, out var availability))
 					throw new BookingException($"Cabin type \"{cabinSource.TypeId}\" does not refer to an active type.");
 
 				availability.Available--;
 				if(availability.Available < 0)
 					throw new AvailabilityException($"No more cabins of type \"{cabinSource.TypeId}\" are available on this cruise.");
+			}
+		}
+
+		async Task CheckProductsAvailability(SqlConnection db, Cruise cruise, List<BookingSource.Product> sourceList)
+		{
+			var availabilityDict = (await _productRepository.GetAvailabilityAsync(db, cruise)).ToDictionary(p => p.ProductTypeId, p => p);
+
+			foreach(BookingSource.Product prodSource in sourceList)
+			{
+				if(!availabilityDict.TryGetValue(prodSource.TypeId, out var availability))
+					throw new BookingException($"Product type \"{prodSource.TypeId}\" does not refer to an active type.");
+				if(availability.IsLimited && availability.Availability < prodSource.Quantity)
+					throw new AvailabilityException($"Not enough products of type \"{prodSource.TypeId}\" are available. Had {availability.Availability}, needed {prodSource.Quantity}.");
 			}
 		}
 

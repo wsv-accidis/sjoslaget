@@ -131,7 +131,7 @@
 	<spinner-widget *ngIf="isSaving"></spinner-widget>
 
 	<p class="super-important" *ngIf="hasBookingError">
-		{{ bookingError }}
+		<glyph icon="error"></glyph> {{ bookingError }}
 	</p>
 </form>
 

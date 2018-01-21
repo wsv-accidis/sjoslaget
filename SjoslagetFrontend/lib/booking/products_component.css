@@ -23,6 +23,11 @@ img.product-image-vk {
 	width: 150px;
 }
 
+.product-limit {
+	color: darkgray;
+	margin-left: 5px;
+}
+
 .product-note {
 	margin-top: 0;
 }

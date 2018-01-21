@@ -39,7 +39,7 @@ class AvailabilityComponent implements OnInit {
 	Future<Null> refresh() async {
 		try {
 			final client = _clientFactory.getClient();
-			availability = await _cruiseRepository.getAvailability(client);
+			availability = await _cruiseRepository.getCabinsAvailability(client);
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		} catch (e) {
 			print('Failed to load cabins and availability: ' + e.toString());

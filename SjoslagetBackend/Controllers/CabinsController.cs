@@ -46,7 +46,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				return NotFound();
 
 			CruiseCabinAvailability[] availabilities = await _cabinRepository.GetAvailabilityAsync(activeCruise);
-			return this.OkCacheControl(availabilities.ToDictionary(a => a.CabinTypeId, a => a.Available), WebConfig.DynamicDataMaxAge);
+			return this.OkNoCache(availabilities.ToDictionary(a => a.CabinTypeId, a => a.Available));
 		}
 
 		[Authorize(Roles = Roles.Admin)]

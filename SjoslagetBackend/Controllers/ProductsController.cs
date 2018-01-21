@@ -52,10 +52,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				return NotFound();
 
 			CruiseProductAvailability[] availabilities = await _productRepository.GetAvailabilityAsync(activeCruise);
-			return this.OkCacheControl(availabilities.ToDictionary(
+			return this.OkNoCache(availabilities.ToDictionary(
 				a => a.ProductTypeId,
-				a => a.IsLimited ? Math.Max(0, a.Count - a.TotalQuantity) : CruiseProductAvailability.NotLimited), 
-				WebConfig.DynamicDataMaxAge);
+				a => a.Availability));
 		}
 
 		[Authorize(Roles = Roles.Admin)]

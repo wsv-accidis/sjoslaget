@@ -11,6 +11,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_product.dart';
 import '../model/booking_product_view.dart';
+import '../model/cruise_product.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
@@ -21,13 +22,17 @@ import '../widgets/spinner_widget.dart';
 	providers: const <dynamic>[materialProviders]
 )
 class ProductsComponent implements BookingAddonProvider, OnInit {
+	static const NOT_LIMITED = -1;
+
 	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
+	Map<String, int> _availability;
 	List<BookingProduct> _quantitiesFromBooking;
 
 	List<BookingProductView> bookingProducts;
+	List<CruiseProduct> cruiseProducts;
 	bool readOnly = false;
 	bool showProductNote = true;
 
@@ -44,15 +49,39 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 
 	ProductsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
 
+	bool isLimited(BookingProductView product) => getAvailability(product.id) > NOT_LIMITED;
+
+	int getAvailability(String id) {
+		if (null == _availability || !_availability.containsKey(id))
+			return NOT_LIMITED;
+		return _availability[id];
+	}
+
+	int getQuantity(String id) {
+		BookingProductView product = bookingProducts.firstWhere((p) => p.id == id, orElse: () => null);
+		return product != null ? int.parse(product.quantity) : 0;
+	}
+
 	Future<Null> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
-			final cruiseProducts = await _cruiseRepository.getActiveCruiseProducts(client);
+			cruiseProducts = await _cruiseRepository.getActiveCruiseProducts(client);
 			bookingProducts = cruiseProducts.map((c) => new BookingProductView.fromCruiseProduct(c)).toList(growable: false);
+			_availability = await _cruiseRepository.getProductsAvailability(client);
 			_setQuantitiesFromBooking();
 		} catch (e) {
 			print('Failed to get products due to an exception: ' + e.toString());
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
+		}
+	}
+
+	Future<Null> refreshAvailability() async {
+		try {
+			final client = _clientFactory.getClient();
+			_availability = await _cruiseRepository.getProductsAvailability(client);
+		} catch (e) {
+			print('Failed to refresh availability due to an exception: ' + e.toString());
+			// Ignore this here, keep using old availability
 		}
 	}
 

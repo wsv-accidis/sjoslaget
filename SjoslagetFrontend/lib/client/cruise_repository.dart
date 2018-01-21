@@ -62,10 +62,22 @@ class CruiseRepository {
 			.toList();
 	}
 
-	Future<Map<String, int>> getAvailability(Client client) async {
+	Future<Map<String, int>> getCabinsAvailability(Client client) async {
 		Response response;
 		try {
 			response = await client.get(_apiRoot + '/cabins/availability');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return JSON.decode(response.body);
+	}
+
+	Future<Map<String, int>> getProductsAvailability(Client client) async {
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/products/availability');
 		} catch (e) {
 			throw new IOException.fromException(e);
 		}

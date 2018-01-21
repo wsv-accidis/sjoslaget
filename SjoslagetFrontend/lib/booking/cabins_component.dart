@@ -134,7 +134,7 @@ class CabinsComponent implements OnInit {
 		try {
 			final client = _clientFactory.getClient();
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-			_availability = await _cruiseRepository.getAvailability(client);
+			_availability = await _cruiseRepository.getCabinsAvailability(client);
 		} catch (e) {
 			print('Failed to get cabins or availability due to an exception: ' + e.toString());
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
@@ -150,7 +150,7 @@ class CabinsComponent implements OnInit {
 	Future<Null> refreshAvailability() async {
 		try {
 			final client = _clientFactory.getClient();
-			_availability = await _cruiseRepository.getAvailability(client);
+			_availability = await _cruiseRepository.getCabinsAvailability(client);
 		} catch (e) {
 			print('Failed to refresh availability due to an exception: ' + e.toString());
 			// Ignore this here, keep using old availability
@@ -184,13 +184,11 @@ class CabinsComponent implements OnInit {
 		return int.parse(target.dataset['idx']);
 	}
 
-	Iterable<BookingCabinView> _getCabinsInBooking(String id) {
-		return bookingCabins.where((b) => b.id == id);
-	}
+	Iterable<BookingCabinView> _getCabinsInBooking(String id) =>
+		bookingCabins.where((b) => b.id == id);
 
-	CruiseCabin _getCruiseCabin(String id) {
-		return cruiseCabins.firstWhere((c) => c.id == id);
-	}
+	CruiseCabin _getCruiseCabin(String id) =>
+		cruiseCabins.firstWhere((c) => c.id == id);
 
 	int _getNumberOfSavedCabinsInBooking(String id) =>
 		_getCabinsInBooking(id)

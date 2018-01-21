@@ -28,6 +28,9 @@
 							type="number">
 			</material-input>
 			× {{ product.priceFormatted }}
+			<span class="product-limit" *ngIf="isLimited(product)">
+				({{ getAvailability(product.id) }} plats{{ 1 != getAvailability(product.id) ? 'er' : '' }} kvar)
+			</span>
 		</td>
 	</tr>
 	<tr *ngIf="readOnly">

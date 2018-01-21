@@ -9,18 +9,14 @@ import 'package:frontend_shared/model.dart';
 import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
 import 'booking_component.dart';
+import 'booking_support_utils.dart';
 import 'cabins_component.dart';
 import 'products_component.dart';
-import '../client/availability_exception.dart';
-import '../client/booking_exception.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
-import '../model/booking_cabin.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
-import '../model/booking_product.dart';
-import '../model/booking_product_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
@@ -142,36 +138,20 @@ class BookingCabinsPage implements OnInit {
 		window.sessionStorage.remove(BookingComponent.BOOKING);
 
 		try {
-			final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
-			final List<BookingProduct> productsToSave = BookingProductView.listToListOfBookingProduct(products.bookingProducts);
-			final client = _clientFactory.getClient();
-			BookingResult result;
+			var tuple = await BookingSupportUtils.saveBooking(
+				_clientFactory,
+				_bookingRepository,
+				bookingDetails,
+				cabins,
+				products,
+				bookingResult,
+			);
 
-			try {
-				result = await _bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave, productsToSave);
-			} catch (e) {
-				if (e is AvailabilityException) {
-					await cabins.refreshAvailability();
-					List<BookingCabin> savedCabins = null;
-					if (isSaved) {
-						// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
-						try {
-							final BookingSource lastSavedBooking = await _bookingRepository.findBooking(client, bookingResult.reference);
-							savedCabins = lastSavedBooking.cabins;
-						} catch (e) {
-							print('Failed to retrieve prior booking for checking availability: ' + e.toString());
-						}
-					}
-					bookingError = _getAvailabilityError(savedCabins);
-				}
-				else if (e is BookingException) {
-					// Exception from backend, validation error (should not happen as we validate locally, but oh well)
-					bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
-				} else {
-					// Exception which is not coming from backend, potentially bad network
-					bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att du är ansluten till internet och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
-				}
-				print('Failed to save booking: ' + e.toString());
+			// item1 is BookingResult
+			// item2 is String (bookingError)
+			BookingResult result = tuple.item1;
+			if (null == result) {
+				bookingError = tuple.item2;
 				return;
 			}
 
@@ -183,6 +163,7 @@ class BookingCabinsPage implements OnInit {
 			bookingDetails.reference = result.reference;
 
 			await cabins.refreshAvailability();
+			await products.refreshAvailability();
 			cabins.onSaved();
 
 			if (!equalsIgnoreCase(_clientFactory.authenticatedUser, bookingResult.reference) && isNotEmpty(bookingResult.password)) {
@@ -199,34 +180,5 @@ class BookingCabinsPage implements OnInit {
 			cabins.disableAddCabins = false;
 			isSaving = false;
 		}
-	}
-
-	String _getAvailabilityError(List<BookingCabin> savedCabins) {
-		// Calling this depends on having refreshed availability first
-
-		String error = 'Det finns inte tillräckligt många lediga hytter för att spara din bokning.';
-		for (CruiseCabin cabin in cabins.cruiseCabins) {
-			final int available = cabins.getTotalAvailability(cabin.id);
-			final int inBooking = cabins.getNumberOfCabinsInBooking(cabin.id);
-			final int inSavedBooking = _getNumberOfCabinsOfType(savedCabins, cabin.id);
-
-			if (available < inBooking)
-				error += ' Du har $inBooking hytt(er) av typen ${cabin.name} i din bokning, men det finns ${available + inSavedBooking} kvar att boka.';
-		}
-
-		error += ' Ta bort hytter från din bokning eller byt till en annan typ och försök igen.';
-		if (isSaved)
-			error += ' Du har fortfarande kvar alla hytter som ingick i din senast sparade bokning.';
-
-		return error;
-	}
-
-	static int _getNumberOfCabinsOfType(List<BookingCabin> cabins, String id) {
-		if (null == cabins)
-			return 0;
-
-		return cabins
-			.where((b) => b.cabinTypeId == id)
-			.length;
 	}
 }
