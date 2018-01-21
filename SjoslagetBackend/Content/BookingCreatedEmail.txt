@@ -1,6 +1,6 @@
 ﻿Hej!
 
-Det här är en bekräftelse på att din bokning till Sjöslaget är mottagen.
+Det här är en bekräftelse på att din bokning till Vårkryssen är mottagen.
 
 Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
 
@@ -26,7 +26,7 @@ Välkommen ombord!
 ------------------------------------------------------------------------------
 
 Det här är ett automatiskt genererat meddelande som du får därför att den
-här e-postadressen har använts i en bokning till Sjöslaget. Det här är
+här e-postadressen har använts i en bokning till Vårkryssen. Det här är
 inte spam, någon (antagligen du) har bett om att få det här mailet skickat
 till den här e-postadressen.
 

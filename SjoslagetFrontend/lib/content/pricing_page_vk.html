@@ -1,7 +1,55 @@
 <h1>Priser</h1>
 
 <p>
-	Priserna är på gång!
+	Biljettens pris beror bara på vilken slags hytt du vill bo i.
+</p>
+
+<table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
+	<tr>
+		<th></th>
+		<th>Pris/person</th>
+		<th>Beskrivning</th>
+	</tr>
+	<tr *ngFor="let cabin of cabins">
+		<td class="border">
+			{{cabin.name}}
+		</td>
+		<td class="border">
+			{{cabin.pricePerPax}} kr
+		</td>
+		<td class="border">
+			{{cabin.description}}
+		</td>
+	</tr>
+</table>
+<spinner-widget *ngIf="null == cabins"></spinner-widget>
+
+<p>
+	Ni betalar alltid för hela hytter så priserna ovan gäller under förutsättning att hytten är full.
+	Om pris per person exempelvis är 300 kr, och hytten rymmer fyra personer, så betalar ni 1 200 kr
+	oavsett hur många som bor i hytten.
+</p>
+
+<img src="gfx/cabins/Isabelle_A4.jpg" alt="A4-hytt" title="A4-hytt">
+
+<p>
+	Skillnaden mellan hytterna är främst antalet sängar och om det finns fönster. C-hytterna
+	är billigare eftersom de ligger längst ner i fartyget, men i övrigt är standarden samma
+	för A, B och C-hytterna.
+</p>
+
+<img src="gfx/cabins/Isabelle_Deluxe.jpg" alt="DeLuxe-hytt" title="DeLuxe-hytt">
+
+<p>
+	B2pre och Deluxe har dubbelsängar som sitter ihop. Deluxe har också en minibar laddad med några
+	öl, vin och läsk som ingår i biljettpriset. Du som bor i Deluxe får även specialfrukost inklusive
+	ett glas mousserande vin per person.
+</p>
+
+<p>
+	Till skillnad från Sjöslaget ingår det ingen mat i biljettpriset. Vi förhandlar med Silja för att
+	få bättre priser på maten ombord, men i övrigt föreslår vi att äta ett skrovmål på land före avgång från
+	Stockholm respektive Riga.
 </p>
 
 <p>

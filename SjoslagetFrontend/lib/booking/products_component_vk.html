@@ -4,14 +4,17 @@
 	<tr>
 		<td *ngFor="let product of bookingProducts">
 			<img [alt]="product.name"
-				 class="product-image"
+				 class="product-image-vk"
 				 [src]="product.image"
 			     [title]="product.description" />
 		</td>
 	</tr>
 	<tr>
-		<td *ngFor="let product of bookingProducts" class="product-title">
-			<span [title]="product.description">{{ product.name }}</span>
+		<td *ngFor="let product of bookingProducts">
+			<div class="product-title">{{ product.name }}</div>
+			<div class="product-description">
+				{{ product.description }}
+			</div>
 		</td>
 	</tr>
 	<tr *ngIf="!readOnly">
@@ -33,7 +36,3 @@
 		</td>
 	</tr>
 </table>
-
-<p class="product-note" *ngIf="showProductNote">
-	Alla paket innehåller 4 x 33 cl av vald dryck, 2 x 50 cl vatten och Pringles Originalchips.
-</p>

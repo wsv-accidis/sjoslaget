@@ -6,6 +6,7 @@ import 'package:angular_router/angular_router.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
+import 'package:quiver/strings.dart' as str show isEmpty;
 
 import '../booking/booking_component.dart';
 import '../booking/booking_login_component.dart';
@@ -64,6 +65,11 @@ class BookingPage implements OnInit {
 	}
 
 	void submitDetails() {
+		if(str.isEmpty(lunch)) {
+			// Vårkryssen doesn't use lunch so just set a dummy value
+			lunch = '-';
+		}
+
 		final bookingDetails = new BookingDetails(firstName, lastName, phoneNo, email, lunch, null);
 		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
 		_router.navigate(<dynamic>['/MyBooking/EditCabins']);

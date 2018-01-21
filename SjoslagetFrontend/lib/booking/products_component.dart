@@ -15,7 +15,7 @@ import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'products-component',
-	templateUrl: 'products_component.html',
+	templateUrl: 'products_component_vk.html',
 	styleUrls: const ['../content/content_styles.css', 'products_component.css'],
 	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget],
 	providers: const <dynamic>[materialProviders]
