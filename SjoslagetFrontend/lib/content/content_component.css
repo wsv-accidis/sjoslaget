@@ -63,10 +63,12 @@ div.content {
 }
 
 #sjoslaget-logo {
-	content: url(gfx/Logo.png);
-	max-height: 75px;
+	background-image: url(gfx/Logo.png);
+	background-repeat: no-repeat;
+	background-size: contain;
 	height: 75px;
-	padding: 5px 15px 5px 0;
+	width: 136px;
+	margin: 5px 15px 5px 0;
 	vertical-align: middle;
 }
 
@@ -79,6 +81,7 @@ div.content {
 	div.logo {
 		background-color: #0F76BC;
 		border-radius: 0;
+		padding: 5px;
 		width: 100%;
 	}
 
@@ -117,10 +120,9 @@ div.content {
 	}
 
 	#sjoslaget-logo {
-		content: url(gfx/LogoSmall.png);
-		height: auto;
-		max-width: 90px !important;
-		padding: 5px;
-		width: 90px !important;
+		background-image: url(gfx/LogoSmall.png);
+		margin: 0;
+		height: 50px;
+		width: 90px;
 	}
 }
