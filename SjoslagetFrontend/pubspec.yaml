@@ -10,6 +10,7 @@ dependencies:
   angular_components: ^0.8.0
   angular_forms: ^1.0.0
   angular_router: ^1.0.0
+  chartjs:
   decimal:
   frontend_shared:
     path: ../FrontendShared
@@ -23,5 +24,7 @@ dev_dependencies:
 
 transformers:
 - angular:
-    entry_points: web/main.dart
+    entry_points:
+      - web/main.dart
+      - web/stats/stats.dart
 - dart_to_js_script_rewriter

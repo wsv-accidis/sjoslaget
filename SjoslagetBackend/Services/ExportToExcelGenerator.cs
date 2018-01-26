@@ -30,7 +30,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_productRepository = productRepository;
 		}
 
-		public async Task<Workbook> ExportToWorkbook(Cruise cruise, bool onlyFullyPaid, DateTime? updatedSince)
+		public async Task<Workbook> ExportToWorkbookAsync(Cruise cruise, bool onlyFullyPaid, DateTime? updatedSince)
 		{
 			_cruise = cruise;
 			_onlyFullyPaid = onlyFullyPaid;

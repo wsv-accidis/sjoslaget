@@ -26,6 +26,7 @@ databas i [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-201
 Klientsidan utvecklas i [Dart](https://webdev.dartlang.org/). Den använder följande bibliotek och ramverk:
 
 * [AngularDart](https://webdev.dartlang.org/angular)
+* [ChartJS.dart](https://github.com/google/chartjs.dart)
 * [Corsac JWT](https://github.com/corsac-dart/jwt)
 * [Dart Decimals](https://pub.dartlang.org/packages/decimal)
 * [Material Design components for AngularDart](https://github.com/dart-lang/angular_components)

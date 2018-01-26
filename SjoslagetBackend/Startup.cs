@@ -90,6 +90,8 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<PriceCalculator>();
 			container.Register<ProductRepository>();
 			container.Register<PaymentRepository>();
+			container.Register<ReportingService>();
+			container.Register<ReportRepository>();
 
 			return container;
 		}

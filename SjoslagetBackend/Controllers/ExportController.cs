@@ -42,7 +42,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				: new DateTime?(DateTime.ParseExact(updatedSince, UpdatedSinceFormat, CultureInfo.InvariantCulture));
 
 			var exportToExcelGenerator = new ExportToExcelGenerator(_cabinRepository, _productRepository);
-			Workbook workbook = await exportToExcelGenerator.ExportToWorkbook(activeCruise, onlyFullyPaid, updatedSinceDate);
+			Workbook workbook = await exportToExcelGenerator.ExportToWorkbookAsync(activeCruise, onlyFullyPaid, updatedSinceDate);
 
 			return CreateHttpResponseMessage(workbook);
 		}
