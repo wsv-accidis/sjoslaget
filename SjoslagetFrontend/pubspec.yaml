@@ -26,5 +26,6 @@ transformers:
 - angular:
     entry_points:
       - web/main.dart
+      - web/admin/admin.dart
       - web/stats/stats.dart
 - dart_to_js_script_rewriter

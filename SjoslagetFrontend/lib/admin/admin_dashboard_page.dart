@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
@@ -48,12 +49,12 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 	void logOut() {
 		_clientFactory.clear();
-		_router.navigate(<dynamic>['/Content/Start']);
+		window.location.href = '/';
 	}
 
 	Future<Null> ngOnInit() async {
 		if (!_clientFactory.isAdmin) {
-			_router.navigate(<dynamic>['/Admin/Login']);
+			_router.navigate(<dynamic>['/Login']);
 			return;
 		}
 
@@ -100,7 +101,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		} on ExpirationException catch (e) {
 			print(e.toString());
 			_clientFactory.clear();
-			_router.navigate(<dynamic>['/Admin/Login']);
+			_router.navigate(<dynamic>['/Login']);
 		} catch (e) {
 			print('Failed to load recently updated bookings: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes

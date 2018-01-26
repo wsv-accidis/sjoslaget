@@ -1,7 +1,7 @@
 <h1>Logga in</h1>
 
 <p>
-	Logga in här för att administrera bokningar. Vilse? <a [routerLink]="['/Content/Start']">Gå tillbaka till startsidan.</a>
+	Logga in här för att administrera bokningar. Vilse? <a href="javascript:" (click)="leave()">Gå tillbaka till startsidan.</a>
 </p>
 
 <form #loginForm="ngForm" (submit)="logIn()">

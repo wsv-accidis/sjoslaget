@@ -9,12 +9,26 @@ import 'admin_export_page.dart';
 import 'admin_login_page.dart';
 import 'admin_pax_list_page.dart';
 import 'admin_user_page.dart';
+
+import '../booking/booking_validator.dart';
+import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
+import '../client/cruise_repository.dart';
+import '../client/deleted_booking_repository.dart';
+import '../client/user_repository.dart';
 
 @Component(
-	selector: 'admin-component',
+	selector: 'sjoslaget-admin-app',
 	styleUrls: const ['../booking/booking_component.css'],
 	templateUrl: '../booking/booking_component.html',
+	providers: const<dynamic>[
+		BookingRepository,
+		BookingValidator,
+		ClientFactory,
+		CruiseRepository,
+		DeletedBookingRepository,
+		UserRepository
+	],
 	directives: const<dynamic>[ROUTER_DIRECTIVES]
 )
 @RouteConfig(const [
@@ -41,8 +55,8 @@ class AdminComponent implements OnInit {
 		 * There is no point in trying to make this watertight as a savvy user can always fool the client side into
 		 * thinking they are an admin, but they can't do anything since they lack the necessary access server side.
 		 */
-		if (!_clientFactory.isAdmin && !(_router.currentInstruction.component.componentType is AdminLoginPage)) {
-			_router.navigate(<dynamic>['/Admin/Login']);
+		if (!_clientFactory.isAdmin && (null == _router.currentInstruction || !(_router.currentInstruction.component.componentType is AdminLoginPage))) {
+			_router.navigate(<dynamic>['/Login']);
 		}
 	}
 }

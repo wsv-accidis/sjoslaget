@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
@@ -38,7 +39,12 @@ class AdminLoginPage {
 			_clientFactory.clear();
 			loginFailedDialog.open();
 		} else {
-			_router.navigate(<dynamic>['/Admin/Dashboard']);
+			_router.navigate(<dynamic>['/Dashboard']);
 		}
+	}
+
+	void leave() {
+		_clientFactory.clear();
+		window.location.href = '/';
 	}
 }

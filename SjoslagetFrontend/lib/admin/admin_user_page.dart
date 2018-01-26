@@ -45,7 +45,7 @@ class AdminUserPage {
 
 		if (null == error) {
 			_clientFactory.clear();
-			_router.navigate(<dynamic>['/Admin/Login']);
+			_router.navigate(<dynamic>['/Login']);
 		}
 	}
 }
