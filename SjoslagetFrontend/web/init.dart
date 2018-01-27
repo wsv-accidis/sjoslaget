@@ -5,7 +5,7 @@ import 'package:Sjoslaget/client/client_factory.dart' show SJOSLAGET_API_ROOT;
 
 class Init {
 	// false for testing on local, true for production builds
-	static final release = false;
+	static final release = true;
 
 	static List<dynamic> getProviders(String baseHref) {
 		if (release) {

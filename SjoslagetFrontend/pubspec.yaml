@@ -29,3 +29,6 @@ transformers:
       - web/admin/admin.dart
       - web/stats/stats.dart
 - dart_to_js_script_rewriter
+- $dart2js:
+    commandLineOptions: [--trust-primitives, --trust-type-annotations]
+    verbose: true

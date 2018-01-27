@@ -2,7 +2,7 @@
 
 namespace Accidis.Sjoslaget.WebService.Models
 {
-	public class Report
+	public sealed class Report
 	{
 		public Guid Id { get; set; }
 		public Guid CruiseId { get; set; }

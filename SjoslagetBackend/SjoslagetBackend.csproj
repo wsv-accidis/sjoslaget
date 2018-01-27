@@ -193,6 +193,7 @@
     <Compile Include="Models\ProductCount.cs" />
     <Compile Include="Models\ProductType.cs" />
     <Compile Include="Models\Report.cs" />
+    <Compile Include="Models\ReportSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Db;
 using Dapper;
@@ -16,6 +17,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 				await db.ExecuteAsync("insert into [Report] ([CruiseId], [Date], [BookingsCreated], [BookingsTotal], [CabinsTotal], [PaxTotal], [CapacityTotal]) values (@CruiseId, @Date, @BookingsCreated, @BookingsTotal, @CabinsTotal, @PaxTotal, @CapacityTotal)",
 					new {report.CruiseId, report.Date, report.BookingsCreated, report.BookingsTotal, report.CabinsTotal, report.PaxTotal, report.CapacityTotal});
+			}
+		}
+
+		public async Task<Report[]> GetActiveAsync(Cruise cruise)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<Report>("select * from [Report] where [CruiseId] = @Id order by [Date]",
+					new {Id = cruise.Id});
+				return result.ToArray();
 			}
 		}
 	}

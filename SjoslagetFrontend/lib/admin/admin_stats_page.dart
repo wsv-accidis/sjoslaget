@@ -1,3 +1,6 @@
+import 'dart:html';
+import 'dart:js' as js;
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
@@ -10,4 +13,12 @@ import 'package:angular_router/angular_router.dart';
 	providers: const<dynamic>[materialProviders]
 )
 class AdminStatsPage {
+	void refresh() {
+		var element = querySelector('#stats-frame') as IFrameElement;
+		if(null != element) {
+			// Dart does not expose the reload() method for some reason, so need to proxy through JS :(
+			var jsObj = new js.JsObject.fromBrowserObject(element.contentWindow.location);
+			jsObj.callMethod('reload');
+		}
+	}
 }
