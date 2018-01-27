@@ -5,7 +5,7 @@ import 'package:Sjoslaget/client/client_factory.dart' show SJOSLAGET_API_ROOT;
 
 class Init {
 	// false for testing on local, true for production builds
-	static final release = true;
+	static final release = false;
 
 	static List<dynamic> getProviders(String baseHref) {
 		if (release) {
@@ -18,7 +18,7 @@ class Init {
 			return <dynamic>[
 				ROUTER_PROVIDERS,
 				provide(APP_BASE_HREF, useValue: '/'),
-				provide(SJOSLAGET_API_ROOT, useValue: baseHref),
+				provide(SJOSLAGET_API_ROOT, useValue: 'http://localhost:61796/api'),
 				const Provider<dynamic>(LocationStrategy, useClass: HashLocationStrategy)
 			];
 		}

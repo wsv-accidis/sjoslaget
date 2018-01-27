@@ -21,6 +21,10 @@ div.admin-menu span {
 	margin-left: 15px;
 }
 
+div.second-line {
+	margin-top: 5px;
+}
+
 div.page-end-block {
 	clear: both;
 	height: 50px;

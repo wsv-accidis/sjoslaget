@@ -9,3 +9,8 @@ body {
 	background: white;
 	margin: 0;
 }
+
+div.loading {
+	padding: 5vw;
+	margin: 0 auto;
+}
