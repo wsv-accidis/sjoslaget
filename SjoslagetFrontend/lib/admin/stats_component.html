@@ -1,12 +1,88 @@
-<div class="chart">
+<div class="chart half-width">
 	<canvas id="bookings-created-chart" height="320" width="640"></canvas>
 </div>
-<div class="chart">
+<div class="chart half-width">
 	<canvas id="bookings-total-chart" height="320" width="640"></canvas>
 </div>
-<div class="chart">
+<div class="chart half-width">
 	<canvas id="cabins-total-chart" height="320" width="640"></canvas>
 </div>
-<div class="chart">
+<div class="chart half-width">
 	<canvas id="pax-total-chart" height="320" width="640"></canvas>
+</div>
+<div class="chart onethird-width">
+	<canvas id="genders-chart" height="480" width="480"></canvas>
+</div>
+<div class="chart onethird-width">
+</div>
+<div class="chart onethird-width">
+</div>
+<div class="chart onethird-width">
+	<h2>Bokade hytter</h2>
+	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasCabins">
+		<tr>
+			<th>
+				Typ
+			</th>
+			<th>
+				Antal
+			</th>
+			<th>
+				Bokade
+			</th>
+		</tr>
+		<tr *ngFor="let cabin of cabins">
+			<td>
+				{{ cabin.name }}
+			</td>
+			<td>
+				{{ cabin.count }}
+			</td>
+			<td>
+				{{ getBookedCount(cabin) }}
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="chart onethird-width">
+	<h2>Största grupper</h2>
+	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasTopGroups">
+		<tr>
+			<th>
+				Grupp
+			</th>
+			<th>
+				Antal
+			</th>
+		</tr>
+		<tr *ngFor="let pair of current.topGroups">
+			<td>
+				{{ pair.key }}
+			</td>
+			<td>
+				{{ pair.value }}
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="chart onethird-width">
+	<h2>Största bokare</h2>
+	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasTopContacts">
+		<tr>
+			<th>
+				Namn
+			</th>
+			<th>
+				Antal
+			</th>
+		</tr>
+		<tr *ngFor="let pair of current.topContacts">
+			<td>
+				{{ pair.key }}
+			</td>
+			<td>
+				{{ pair.value }}
+			</td>
+		</tr>
+	</table>
 </div>

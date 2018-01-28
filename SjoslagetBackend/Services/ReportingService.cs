@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Db;
 using Dapper;
 using NLog;
+using KeyValuePair = System.Collections.Generic.KeyValuePair<string, int>;
 
 namespace Accidis.Sjoslaget.WebService.Services
 {
@@ -36,6 +38,39 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				_log.Error(ex, "An unexpected exception occurred while generating a report.");
 			}
+		}
+
+		public async Task<KeyValuePair[]> GetGenders(SqlConnection db, Cruise cruise)
+		{
+			var result = await db.QueryAsync<KeyValuePair>("select BP.[Gender] [Key], COUNT(*) [Value] " +
+														   "from [BookingPax] BP " +
+														   "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+														   "where BC.[CruiseId] = @CruiseId " +
+														   "group by BP.[Gender]", new {CruiseId = cruise.Id});
+			return result.ToArray();
+		}
+
+		public async Task<KeyValuePair[]> GetTopContacts(SqlConnection db, Cruise cruise, int top)
+		{
+			var result = await db.QueryAsync<KeyValuePair>("select top (@Top) concat(B.[FirstName], ' ', B.[LastName]) [Key], COUNT(*) [Value] " +
+														   "from [BookingPax] BP " +
+														   "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+														   "left join [Booking] B on BC.[BookingId] = B.[Id] " +
+														   "where B.[CruiseId] = @CruiseId " +
+														   "group by B.[FirstName], B.[LastName] " +
+														   "order by COUNT(*) desc", new {Top = top, CruiseId = cruise.Id});
+			return result.ToArray();
+		}
+
+		public async Task<KeyValuePair[]> GetTopGroups(SqlConnection db, Cruise cruise, int top)
+		{
+			var result = await db.QueryAsync<KeyValuePair>("select top (@Top) BP.[Group] [Key], COUNT(*) [Value] " +
+														   "from [BookingPax] BP " +
+														   "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+														   "where BC.[CruiseId] = @CruiseId " +
+														   "group by BP.[Group] " +
+														   "order by COUNT(*) desc", new {Top = top, CruiseId = cruise.Id});
+			return result.ToArray();
 		}
 
 		async Task<Report> CreateReportForDate(Cruise cruise, DateTime today)

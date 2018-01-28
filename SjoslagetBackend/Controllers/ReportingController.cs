@@ -5,6 +5,7 @@ using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Db;
 using Accidis.WebServices.Web;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
@@ -24,13 +25,34 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Active()
+		public async Task<IHttpActionResult> Current()
 		{
 			var cruise = await _cruiseRepository.GetActiveAsync();
-			if (null == cruise)
+			if(null == cruise)
 				return NotFound();
 
-			return this.OkCacheControl(await _reportRepository.GetActiveAsync(cruise), WebConfig.DynamicDataMaxAge);
+			using(var db = DbUtil.Open())
+			{
+				return this.OkCacheControl(new
+					{
+						Genders = await _reportingService.GetGenders(db, cruise),
+						TopContacts = await _reportingService.GetTopContacts(db, cruise, 10),
+						TopGroups = await _reportingService.GetTopGroups(db, cruise, 10)
+					},
+					WebConfig.DynamicDataMaxAge);
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Summary()
+		{
+			var cruise = await _cruiseRepository.GetActiveAsync();
+			if(null == cruise)
+				return NotFound();
+
+			Report[] reports = await _reportRepository.GetActiveAsync(cruise);
+			return this.OkCacheControl(ReportSummary.FromReports(reports), WebConfig.DynamicDataMaxAge);
 		}
 
 		// This is a GET so we can trigger it from a scheduled monitoring task
@@ -39,18 +61,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			HostingEnvironment.QueueBackgroundWorkItem(ct => _reportingService.GenerateReportsAsync());
 			return this.OkNoCache(String.Empty);
-		}
-
-		[Authorize(Roles = Roles.Admin)]
-		[HttpGet]
-		public async Task<IHttpActionResult> Summary()
-		{
-			var cruise = await _cruiseRepository.GetActiveAsync();
-			if (null == cruise)
-				return NotFound();
-
-			Report[] reports = await _reportRepository.GetActiveAsync(cruise);
-			return this.OkCacheControl(ReportSummary.FromReports(reports), WebConfig.DynamicDataMaxAge);
 		}
 	}
 }
