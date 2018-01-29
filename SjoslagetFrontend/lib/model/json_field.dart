@@ -1,7 +1,9 @@
 export 'package:frontend_shared/model/json_field.dart';
 
+const AGE_DISTRIBUTION = 'AgeDistribution';
 const AMOUNT = 'Amount';
 const AMOUNT_PAID = 'AmountPaid';
+const BOOKINGS_BY_PAYMENT = 'BookingsByPayment';
 const BOOKINGS_CREATED = 'BookingsCreated';
 const BOOKINGS_TOTAL = 'BookingsTotal';
 const CABINS = 'Cabins';

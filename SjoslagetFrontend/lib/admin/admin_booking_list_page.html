@@ -29,6 +29,8 @@
 					style="width: 250px">
 	</material-input>
 
+	<!-- Not used for Vårkryssen -->
+	<!--
 	Sittning
 
 	<material-radio-group [(ngModel)]="filterLunch">
@@ -45,6 +47,7 @@
 			15:00
 		</material-radio>
 	</material-radio-group>
+	-->
 
 	<br/>Status
 
@@ -103,9 +106,12 @@
 		<th style="width: 100px">
 			<sortable-column-header key="noOfCabins" title="Hytter"></sortable-column-header>
 		</th>
+		<!-- Not used for Vårkryssen -->
+		<!--
 		<th style="width: 100px">
 			<sortable-column-header key="lunch" title="Sittning"></sortable-column-header>
 		</th>
+		-->
 		<th style="width: 130px">
 			<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
 		</th>
@@ -153,9 +159,12 @@
 		<td>
 			{{ booking.numberOfCabins }}
 		</td>
+		<!-- Not used for Vårkryssen -->
+		<!--
 		<td>
 			{{ booking.lunchFormatted }}
 		</td>
+		-->
 		<td>
 			{{ formatCurrency(booking.amountPaid) }}
 		</td>

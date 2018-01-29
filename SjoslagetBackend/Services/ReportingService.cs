@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
@@ -13,6 +15,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class ReportingService
 	{
+		const int HighestAgeTreshold = 85;
+
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(ReportingService).Name);
 		readonly ReportRepository _reportRepository;
@@ -40,6 +44,37 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		public async Task<KeyValuePair[]> GetAgeDistribution(SqlConnection db, Cruise cruise)
+		{
+			var result = await db.QueryAsync<KeyValuePair>("select substring([Dob], 1, 2) [Key], count(*) [Value] from [BookingPax] " +
+														   "where [BookingCabinId] in (select [Id] from [BookingCabin] where [CruiseId] = @CruiseId) " +
+														   "group by substring([Dob], 1, 2) " +
+														   "order by substring([Dob], 1, 2)", new {CruiseId = cruise.Id});
+			KeyValuePair[] sourceList = result.ToArray();
+			if(!sourceList.Any())
+				return new KeyValuePair[0];
+
+			int thisYear = DateTime.Now.Year % 100;
+			int maxYear = int.Parse(sourceList.Last().Key, NumberStyles.Integer);
+
+			var buckets = new Dictionary<int, int>();
+			for(int year = HighestAgeTreshold; year <= maxYear; year++)
+				buckets[year] = 0;
+
+			foreach(KeyValuePair pair in sourceList)
+			{
+				int year = int.Parse(pair.Key, NumberStyles.None);
+				if(year > thisYear && year <= HighestAgeTreshold)
+					year = HighestAgeTreshold;
+
+				buckets[year] += pair.Value;
+			}
+
+			return buckets.Select(k => new KeyValuePair(
+				k.Key == HighestAgeTreshold ? $"≤{HighestAgeTreshold}" : k.Key.ToString(),
+				k.Value)).ToArray();
+		}
+
 		public async Task<KeyValuePair[]> GetGenders(SqlConnection db, Cruise cruise)
 		{
 			var result = await db.QueryAsync<KeyValuePair>("select BP.[Gender] [Key], COUNT(*) [Value] " +
@@ -48,6 +83,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 														   "where BC.[CruiseId] = @CruiseId " +
 														   "group by BP.[Gender]", new {CruiseId = cruise.Id});
 			return result.ToArray();
+		}
+
+		public async Task<KeyValuePair[]> GetNumberOfBookingsByPaymentStatus(SqlConnection db, Cruise cruise)
+		{
+			return new[]
+			{
+				new KeyValuePair("unpaid", await GetNumberOfBookingByPaymentStatus(db, cruise, "<")),
+				new KeyValuePair("paid", await GetNumberOfBookingByPaymentStatus(db, cruise, ">="))
+			};
 		}
 
 		public async Task<KeyValuePair[]> GetTopContacts(SqlConnection db, Cruise cruise, int top)
@@ -93,6 +137,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			return await db.ExecuteScalarAsync<int>("select count(*) from [Booking] where [CruiseId] = @CruiseId and CAST([Created] as date) = CAST(@Date as date)",
 				new {CruiseId = cruise.Id, Date = date.Date});
+		}
+
+		async Task<int> GetNumberOfBookingByPaymentStatus(SqlConnection db, Cruise cruise, string oper)
+		{
+			return await db.ExecuteScalarAsync<int>("select count(*) from [Booking] B where [CruiseId] = @CruiseId and " +
+													$"isnull((select sum(BP.[Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id]), 0) {oper} B.[TotalPrice]",
+				new {CruiseId = cruise.Id});
 		}
 
 		async Task<int> GetTotalBookings(SqlConnection db, Cruise cruise)

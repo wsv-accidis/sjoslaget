@@ -14,12 +14,12 @@ class BookingProductView extends CruiseProduct {
 
 	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
 
-	BookingProductView(String id, String name, String description, String image, int price)
-		: super(id, name, description, image, price) {
+	BookingProductView(String id, String name, String description, int count, String image, int price)
+		: super(id, name, description, count, image, price) {
 	}
 
 	BookingProductView.fromCruiseProduct(CruiseProduct product)
-		: super(product.id, product.name, product.description, product.image, product.price) {
+		: super(product.id, product.name, product.description, product.count, product.image, product.price) {
 	}
 
 	static List<BookingProduct> listToListOfBookingProduct(List<BookingProductView> list) {

@@ -14,8 +14,10 @@
 	<canvas id="genders-chart" height="480" width="480"></canvas>
 </div>
 <div class="chart onethird-width">
+	<canvas id="ages-chart" height="480" width="480"></canvas>
 </div>
 <div class="chart onethird-width">
+	<canvas id="payment-chart" height="480" width="480"></canvas>
 </div>
 <div class="chart onethird-width">
 	<h2>Bokade hytter</h2>
@@ -40,6 +42,32 @@
 			</td>
 			<td>
 				{{ getBookedCount(cabin) }}
+			</td>
+		</tr>
+	</table>
+
+	<h2 style="margin-top: 25px">Bokade tillägg</h2>
+	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasProducts">
+		<tr>
+			<th>
+				Typ
+			</th>
+			<th>
+				Antal
+			</th>
+			<th>
+				Bokade
+			</th>
+		</tr>
+		<tr *ngFor="let prod of products">
+			<td>
+				{{ prod.name }}
+			</td>
+			<td>
+				{{ prod.count }}
+			</td>
+			<td>
+				{{ getProductCount(prod) }}
 			</td>
 		</tr>
 	</table>

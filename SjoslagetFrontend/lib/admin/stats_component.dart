@@ -8,6 +8,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../client/report_repository.dart';
 import '../model/cruise_cabin.dart';
+import '../model/cruise_product.dart';
 import '../model/report_data.dart';
 import '../model/report_summary.dart';
 import '../model/string_pair.dart';
@@ -28,12 +29,16 @@ class StatsComponent implements OnInit {
 	final CruiseRepository _cruiseRepository;
 	final ReportRepository _reportRepository;
 
-	Map<String, int> availability;
+	Map<String, int> cabinsAvailability;
 	List<CruiseCabin> cabins;
 	ReportData current;
+	Map<String, int> productsAvailability;
+	List<CruiseProduct> products;
 	ReportSummary summary;
 
-	bool get hasCabins => null != cabins && null != availability;
+	bool get hasCabins => null != cabins && null != cabinsAvailability;
+
+	bool get hasProducts => null != products && null != productsAvailability;
 
 	bool get hasTopContacts => null != current && current.topGroups.isNotEmpty;
 
@@ -44,8 +49,12 @@ class StatsComponent implements OnInit {
 	Future<Null> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
-			availability = await _cruiseRepository.getCabinsAvailability(client);
+			cabinsAvailability = await _cruiseRepository.getCabinsAvailability(client);
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
+
+			products = await _cruiseRepository.getActiveCruiseProducts(client);
+			productsAvailability = await _cruiseRepository.getProductsAvailability(client);
+
 			current = await _reportRepository.getCurrent(client);
 			summary = await _reportRepository.getSummary(client);
 		} catch (e) {
@@ -56,9 +65,15 @@ class StatsComponent implements OnInit {
 	}
 
 	int getBookedCount(CruiseCabin cabin) {
-		if (null == availability || !availability.containsKey(cabin.id))
+		if (null == cabinsAvailability || !cabinsAvailability.containsKey(cabin.id))
 			return cabin.count;
-		return cabin.count - availability[cabin.id];
+		return cabin.count - cabinsAvailability[cabin.id];
+	}
+
+	int getProductCount(CruiseProduct prod) {
+		if (null == productsAvailability || !productsAvailability.containsKey(prod.id))
+			return prod.count;
+		return prod.count - productsAvailability[prod.id];
 	}
 
 	void _createCharts() {
@@ -71,39 +86,84 @@ class StatsComponent implements OnInit {
 
 		if (null != current) {
 			_createGendersChart('#genders-chart');
+			_createAgeChart('#ages-chart');
+			_createPaymentsChart('#payment-chart');
 		}
 	}
 
-	void _createGendersChart(String selector) {
-		if (null == current || current.genders.isEmpty)
+	void _createAgeChart(String selector) {
+		if (current.ageDistribution.isEmpty)
 			return;
 
-		int getGender(String g) {
-			KeyValuePair pair = current.genders.firstWhere((KeyValuePair gender) => gender.key == g, orElse: null);
-			return null != pair ? pair.value : 0;
-		}
-
 		var data = new LinearChartData(
-			labels: ['Män', 'Övriga', 'Kvinnor'],
+			labels: current.ageDistribution.map((pair) => pair.key).toList(growable: false),
 			datasets: <ChartDataSets>[
 				new ChartDataSets(
-					backgroundColor: <String>['rgb(119,158,203)', 'rgb(203,119,200)', 'rgb(203,122,119)'],
-					data: <int>[getGender('m'), getGender('x'), getGender('f')]
+					backgroundColor: 'rgba(21,33,112,0.8)',
+					data: current.ageDistribution.map((pair) => pair.value).toList(growable: false)
 				)
 			]
 		);
 
 		var config = new ChartConfiguration(
 			data: data,
-			type: 'doughnut',
+			type: 'bar',
 			options: new ChartOptions(
-				legend: new ChartLegendOptions(position: 'bottom'),
+				legend: new ChartLegendOptions(display: false),
 				responsive: true,
-				title: _createTitle('Kön')
+				title: _createTitle('Åldersfördelning')
 			)
 		);
 
 		new Chart(querySelector(selector) as CanvasElement, config);
+	}
+
+	void _createDoughnutChart(LinearChartData data, String label, String selector) {
+		var config = new ChartConfiguration(
+			data: data,
+			type: 'doughnut',
+			options: new ChartOptions(
+				legend: new ChartLegendOptions(position: 'bottom'),
+				responsive: true,
+				title: _createTitle(label)
+			)
+		);
+
+		new Chart(querySelector(selector) as CanvasElement, config);
+	}
+
+	void _createGendersChart(String selector) {
+		if (current.genders.isEmpty)
+			return;
+
+		var data = new LinearChartData(
+			labels: ['Män', 'Övriga', 'Kvinnor'],
+			datasets: <ChartDataSets>[
+				new ChartDataSets(
+					backgroundColor: <String>['rgb(119,158,203)', 'rgb(203,119,200)', 'rgb(203,122,119)'],
+					data: <int>[_getValue(current.genders, 'm'), _getValue(current.genders, 'x'), _getValue(current.genders, 'f')]
+				)
+			]
+		);
+
+		_createDoughnutChart(data, 'Kön', selector);
+	}
+
+	void _createPaymentsChart(String selector) {
+		if (current.bookingsByPayment.isEmpty)
+			return;
+
+		var data = new LinearChartData(
+			labels: ['Ej betalade', 'Betalade'],
+			datasets: <ChartDataSets>[
+				new ChartDataSets(
+					backgroundColor: <String>['rgb(203,122,119)', 'rgb(166,212,182)'],
+					data: <int>[_getValue(current.bookingsByPayment, 'unpaid'), _getValue(current.bookingsByPayment, 'paid')]
+				)
+			]
+		);
+
+		_createDoughnutChart(data, 'Betalningsstatus', selector);
 	}
 
 	void _createLineChart(LinearChartData data, String label, String selector) {
@@ -156,5 +216,10 @@ class StatsComponent implements OnInit {
 			padding: 15,
 			text: label
 		);
+	}
+
+	int _getValue(List<KeyValuePair> source, String key) {
+		KeyValuePair pair = source.firstWhere((KeyValuePair pair) => pair.key == key, orElse: null);
+		return null != pair ? pair.value : 0;
 	}
 }
