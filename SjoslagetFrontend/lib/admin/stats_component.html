@@ -23,14 +23,14 @@
 	<h2>Bokade hytter</h2>
 	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasCabins">
 		<tr>
-			<th>
+			<th class="first-column">
 				Typ
 			</th>
 			<th>
 				Antal
 			</th>
-			<th>
-				Bokade
+			<th class="last-column">
+				Bokade (%)
 			</th>
 		</tr>
 		<tr *ngFor="let cabin of cabins">
@@ -41,7 +41,7 @@
 				{{ cabin.count }}
 			</td>
 			<td>
-				{{ getBookedCount(cabin) }}
+				{{ getBookedCount(cabin) }} ({{ getBookedPercent(cabin) }}%)
 			</td>
 		</tr>
 	</table>
@@ -49,14 +49,14 @@
 	<h2 style="margin-top: 25px">Bokade tillägg</h2>
 	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasProducts">
 		<tr>
-			<th>
+			<th class="first-column">
 				Typ
 			</th>
 			<th>
 				Antal
 			</th>
-			<th>
-				Bokade
+			<th class="last-column">
+				Bokade (per delt.)
 			</th>
 		</tr>
 		<tr *ngFor="let prod of products">
@@ -67,7 +67,7 @@
 				{{ prod.count }}
 			</td>
 			<td>
-				{{ getProductCount(prod) }}
+				{{ getProductCount(prod) }} ({{ getProductRatio(prod) }})
 			</td>
 		</tr>
 	</table>

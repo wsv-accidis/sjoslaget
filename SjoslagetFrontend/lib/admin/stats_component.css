@@ -55,3 +55,11 @@ tr > td:last-child {
 tbody > tr:last-child > td {
 	border-bottom: 1px solid #608BA8;
 }
+
+th.first-column {
+	width: 100px;
+}
+
+th.last-column {
+	width: 140px;
+}

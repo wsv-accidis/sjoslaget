@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 import 'package:chartjs/chartjs.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
@@ -25,6 +26,8 @@ import '../model/string_pair.dart';
 	directives: const <dynamic>[CORE_DIRECTIVES]
 )
 class StatsComponent implements OnInit {
+	static final NumberFormat _fpNumFormat = new NumberFormat('0.00');
+
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 	final ReportRepository _reportRepository;
@@ -70,10 +73,23 @@ class StatsComponent implements OnInit {
 		return cabin.count - cabinsAvailability[cabin.id];
 	}
 
+	int getBookedPercent(CruiseCabin cabin) {
+		return 100 * getBookedCount(cabin) ~/ cabin.count;
+	}
+
 	int getProductCount(CruiseProduct prod) {
 		if (null == productsAvailability || !productsAvailability.containsKey(prod.id))
 			return prod.count;
 		return prod.count - productsAvailability[prod.id];
+	}
+
+	String getProductRatio(CruiseProduct prod) {
+		if (null == summary || summary.paxTotal.isEmpty) {
+			return '-';
+		}
+
+		final int currentPaxTotal = summary.paxTotal.last;
+		return _fpNumFormat.format(getProductCount(prod) / currentPaxTotal);
 	}
 
 	void _createCharts() {
@@ -111,7 +127,7 @@ class StatsComponent implements OnInit {
 			options: new ChartOptions(
 				legend: new ChartLegendOptions(display: false),
 				responsive: true,
-				title: _createTitle('Åldersfördelning')
+				title: _createTitle('Födelseår')
 			)
 		);
 
@@ -157,13 +173,13 @@ class StatsComponent implements OnInit {
 			labels: ['Ej betalade', 'Betalade'],
 			datasets: <ChartDataSets>[
 				new ChartDataSets(
-					backgroundColor: <String>['rgb(203,122,119)', 'rgb(166,212,182)'],
+					backgroundColor: <String>['rgb(201,136,98)', 'rgb(117,209,132)'],
 					data: <int>[_getValue(current.bookingsByPayment, 'unpaid'), _getValue(current.bookingsByPayment, 'paid')]
 				)
 			]
 		);
 
-		_createDoughnutChart(data, 'Betalningsstatus', selector);
+		_createDoughnutChart(data, 'Betalning', selector);
 	}
 
 	void _createLineChart(LinearChartData data, String label, String selector) {
