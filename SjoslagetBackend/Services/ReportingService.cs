@@ -46,6 +46,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<KeyValuePair[]> GetAgeDistribution(SqlConnection db, Cruise cruise)
 		{
+			// TODO This will no longer work once we start seeing participants born >99 and needs a refactor
 			var result = await db.QueryAsync<KeyValuePair>("select substring([Dob], 1, 2) [Key], count(*) [Value] from [BookingPax] " +
 														   "where [BookingCabinId] in (select [Id] from [BookingCabin] where [CruiseId] = @CruiseId) " +
 														   "group by substring([Dob], 1, 2) " +
@@ -64,8 +65,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 			foreach(KeyValuePair pair in sourceList)
 			{
 				int year = int.Parse(pair.Key, NumberStyles.None);
+
+				// Put everyone who is older than HighestAgeTreshold into one bucket
 				if(year > thisYear && year <= HighestAgeTreshold)
 					year = HighestAgeTreshold;
+
+				// Don't crash if we encounter a year that is out of range
+				if(!buckets.ContainsKey(year))
+					continue;
 
 				buckets[year] += pair.Value;
 			}
