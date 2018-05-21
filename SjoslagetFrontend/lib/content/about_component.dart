@@ -4,6 +4,7 @@ import 'package:angular_router/angular_router.dart';
 import 'about_booking_page.dart';
 import 'about_faq_page.dart';
 import 'about_history_page.dart';
+import 'about_privacy_page.dart';
 import 'about_program_page.dart';
 import 'about_rules_page.dart';
 import 'about_start_page.dart';
@@ -22,7 +23,8 @@ import 'about_start_page.dart';
 	const Route(path: '/vanliga-fragor', name: 'Faq', component: AboutFaqPage),
 	const Route(path: '/historik', name: 'History', component: AboutHistoryPage),
 	const Route(path: '/program', name: 'Program', component: AboutProgramPage),
-	const Route(path: '/regler-ombord', name: 'Rules', component: AboutRulesPage)
+	const Route(path: '/regler-ombord', name: 'Rules', component: AboutRulesPage),
+	const Route(path: '/integritet', name: 'Privacy', component: AboutPrivacyPage)
 ])
 class AboutComponent {
 }

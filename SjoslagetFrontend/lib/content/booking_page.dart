@@ -65,6 +65,9 @@ class BookingPage implements OnInit {
 	}
 
 	void submitDetails() {
+		if(!acceptToc) {
+			return;
+		}
 		if(str.isEmpty(lunch)) {
 			// Vårkryssen doesn't use lunch so just set a dummy value
 			lunch = '-';

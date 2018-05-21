@@ -26,7 +26,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
 	styleUrls: const ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
+	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
 	providers: const <dynamic>[materialProviders]
 )
 class BookingCabinsPage implements OnInit {
