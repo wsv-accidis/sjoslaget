@@ -11,7 +11,7 @@ import 'about_rules_page.dart';
 @Component(
 	selector: 'about-start-page',
 	styleUrls: const ['content_styles.css'],
-	templateUrl: 'about_start_page_vk.html',
+	templateUrl: 'about_start_page_sj.html',
 	directives: const <dynamic>[ROUTER_DIRECTIVES, materialDirectives, AboutBookingPage, AboutFaqPage, AboutHistoryPage, AboutProgramPage, AboutRulesPage]
 )
 class AboutStartPage {
