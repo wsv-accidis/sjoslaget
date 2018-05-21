@@ -1,5 +1,6 @@
 
 td.gender-field-cell {
+	vertical-align: top;
 	white-space: nowrap;
 	width: 165px;
 }

@@ -83,7 +83,7 @@
 	</tr>
 	<tr *ngFor="let pax of paxView">
 		<td>
-			<a [routerLink]="['Booking', {'ref': pax.reference}]">
+			<a [routerLink]="['Booking', {'ref': pax.reference}]" class="mono">
 				{{ pax.reference }}
 			</a>
 		</td>

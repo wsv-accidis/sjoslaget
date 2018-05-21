@@ -21,6 +21,10 @@ div.popup-container {
 	width: 400px;
 }
 
+div.popup-container h1 {
+	margin-bottom: 10px;
+}
+
 ul {
 	list-style-type: none;
 	margin: 0;

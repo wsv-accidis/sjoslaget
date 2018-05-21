@@ -62,7 +62,7 @@
 	</th>
 	<tr *ngFor="let booking of recentlyUpdatedBookings">
 		<td>
-			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+			<a [routerLink]="['Booking', {'ref': booking.reference}]" class="mono">
 				{{ booking.reference }}
 			</a>
 		</td>

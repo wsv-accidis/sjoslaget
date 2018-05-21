@@ -31,7 +31,7 @@ th {
 }
 
 td {
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 td.border {
@@ -94,6 +94,10 @@ glyph {
 	color: #0F75BC;
 	padding-top: 3px;
 	vertical-align: text-bottom;
+}
+
+.mono {
+	font-family: 'Roboto Mono', monospace;
 }
 
 .control-blue {

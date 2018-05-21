@@ -9,7 +9,7 @@ namespace Accidis.WebServices.Auth
 		public const string BookingReferencePattern = @"[0-9][A-Z0-9]{5}";
 		public const int PinCodeLength = 4;
 
-		const string Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		const string Letters = "ABCDEFGHJKLMNPQRSTUVWX";
 		const string LettersAndNumbers = Letters + Numbers;
 		const string Numbers = "0123456789";
 
