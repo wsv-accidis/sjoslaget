@@ -35,7 +35,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 				if(null == cruise || cruise.IsLocked)
 					return; // nothing to do
 
-				Report report = await CreateReportForDate(cruise, DateTime.Now);
+				Report report = await CreateReport(cruise);
 				await _reportRepository.CreateOrUpdateAsync(report);
 			}
 			catch(Exception ex)
@@ -124,8 +124,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return result.ToArray();
 		}
 
-		async Task<Report> CreateReportForDate(Cruise cruise, DateTime today)
+		async Task<Report> CreateReport(Cruise cruise)
 		{
+			DateTime today = DateTime.Today;			
 			Report report = new Report {CruiseId = cruise.Id, Date = today.Date};
 
 			using(var db = DbUtil.Open())

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
@@ -21,19 +22,22 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
 		readonly PaymentRepository _paymentRepository;
 		readonly ProductRepository _productRepository;
+		readonly ReportingService _reportingService;
 
 		public BookingsController(
 			BookingRepository bookingRepository,
 			CruiseRepository cruiseRepository,
 			DeletedBookingRepository deletedBookingRepository,
 			PaymentRepository paymentRepository,
-			ProductRepository productRepository)
+			ProductRepository productRepository,
+			ReportingService reportingService)
 		{
 			_bookingRepository = bookingRepository;
 			_cruiseRepository = cruiseRepository;
 			_deletedBookingRepository = deletedBookingRepository;
 			_paymentRepository = paymentRepository;
 			_productRepository = productRepository;
+			_reportingService = reportingService;
 		}
 
 		[HttpPost]
@@ -45,23 +49,27 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				if(null == activeCruise)
 					return NotFound();
 
+				BookingResult result;
 				if(!String.IsNullOrEmpty(bookingSource.Reference))
 				{
 					if(!AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, bookingSource.Reference, StringComparison.InvariantCultureIgnoreCase))
 						return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
 
-					BookingResult result = await _bookingRepository.UpdateAsync(activeCruise, bookingSource, allowUpdateDetails: AuthContext.IsAdmin, allowUpdateIfLocked: AuthContext.IsAdmin);
+					result = await _bookingRepository.UpdateAsync(activeCruise, bookingSource, allowUpdateDetails: AuthContext.IsAdmin, allowUpdateIfLocked: AuthContext.IsAdmin);
 					_log.Info("Updated booking {0}.", result.Reference);
-					return Ok(result);
 				}
 				else
 				{
-					BookingResult result = await _bookingRepository.CreateAsync(activeCruise, bookingSource, allowCreateIfLocked: AuthContext.IsAdmin);
+					result = await _bookingRepository.CreateAsync(activeCruise, bookingSource, allowCreateIfLocked: AuthContext.IsAdmin);
 					_log.Info("Created booking {0}.", result.Reference);
 
 					await SendBookingCreatedMailAsync(bookingSource, result);
-					return Ok(result);
 				}
+
+				// Ensure we update reporting after each change
+				HostingEnvironment.QueueBackgroundWorkItem(ct => _reportingService.GenerateReportsAsync());
+
+				return Ok(result);
 			}
 			catch(AvailabilityException ex)
 			{
@@ -92,6 +100,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				await _bookingRepository.DeleteAsync(booking);
 				_log.Info("Deleted booking {0}.", booking.Reference);
+
+				// Ensure we update reporting after each change
+				HostingEnvironment.QueueBackgroundWorkItem(ct => _reportingService.GenerateReportsAsync());
 
 				return Ok();
 			}
@@ -257,7 +268,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 			catch(Exception ex)
 			{
-				_log.Error(ex, $"An unexpected exception occurred while creating a paymenty for the booking with reference {reference}.");
+				_log.Error(ex, $"An unexpected exception occurred while creating a payment for the booking with reference {reference}.");
 				throw;
 			}
 

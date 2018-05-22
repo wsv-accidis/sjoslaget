@@ -58,6 +58,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		}
 
 		// This is a GET so we can trigger it from a scheduled monitoring task
+		// We also generate reports from BookingsController
 		[HttpGet]
 		public IHttpActionResult Update()
 		{
