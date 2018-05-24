@@ -10,9 +10,12 @@ import 'package:quiver/strings.dart' as str show equalsIgnoreCase;
 import 'io_exception.dart';
 
 class ClientFactoryBase {
+	static const NAME_KEY = 'client_name';
 	static const ROLE_KEY = 'client_role';
 	static const TOKEN_KEY = 'client_jwt';
-	static const UNIQUE_NAME_KEY = 'client_name';
+
+	static const NAME_CLAIM = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+	static const ROLE_CLAIM = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
 	final String _apiRoot;
 	oauth2.Client _clientInstance;
@@ -27,8 +30,8 @@ class ClientFactoryBase {
 
 			final jwt = new JWT.parse(client.credentials.accessToken);
 			final credsJson = client.credentials.toJson();
-			final String role = jwt.getClaim('role');
-			final String uniqueName = jwt.getClaim('unique_name');
+			final String role = jwt.getClaim(ROLE_CLAIM);
+			final String name = jwt.getClaim(NAME_CLAIM);
 
 			print('Authentication successful.');
 
@@ -37,7 +40,7 @@ class ClientFactoryBase {
 				: window.sessionStorage;
 
 			storage[TOKEN_KEY] = credsJson;
-			storage[UNIQUE_NAME_KEY] = uniqueName;
+			storage[NAME_KEY] = name;
 			storage[ROLE_KEY] = role;
 
 			return client;
@@ -73,7 +76,7 @@ class ClientFactoryBase {
 
 	String get authenticatedRole => _getValue(ROLE_KEY);
 
-	String get authenticatedUser => _getValue(UNIQUE_NAME_KEY);
+	String get authenticatedUser => _getValue(NAME_KEY);
 
 	bool get hasCredentials => _hasValue(TOKEN_KEY);
 
@@ -84,11 +87,11 @@ class ClientFactoryBase {
 
 		window.localStorage.remove(ROLE_KEY);
 		window.localStorage.remove(TOKEN_KEY);
-		window.localStorage.remove(UNIQUE_NAME_KEY);
+		window.localStorage.remove(NAME_KEY);
 
 		window.sessionStorage.remove(ROLE_KEY);
 		window.sessionStorage.remove(TOKEN_KEY);
-		window.sessionStorage.remove(UNIQUE_NAME_KEY);
+		window.sessionStorage.remove(NAME_KEY);
 	}
 
 	String _getValue(String key) {
