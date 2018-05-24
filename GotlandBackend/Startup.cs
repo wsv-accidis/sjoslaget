@@ -68,7 +68,7 @@ namespace Accidis.Gotland.WebService
 			{
 				AuthenticationMode = AuthenticationMode.Active,
 				AllowedAudiences = new[] {AuthConfig.Audience},
-				IssuerSecurityTokenProviders = new[] {new SymmetricKeyIssuerSecurityTokenProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
+				IssuerSecurityKeyProviders = new[] {new SymmetricKeyIssuerSecurityKeyProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
 			};
 
 			app.UseOAuthAuthorizationServer(oauthOptions);

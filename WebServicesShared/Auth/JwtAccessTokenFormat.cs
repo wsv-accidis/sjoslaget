@@ -1,5 +1,6 @@
 ﻿using System;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 
 namespace Accidis.WebServices.Auth
@@ -7,8 +8,8 @@ namespace Accidis.WebServices.Auth
 	public sealed class JwtAccessTokenFormat : ISecureDataFormat<AuthenticationTicket>
 	{
 		readonly string _audience;
-		readonly byte[] _keyBytes;
 		readonly string _issuer;
+		readonly byte[] _keyBytes;
 
 		public JwtAccessTokenFormat(string audienceSecret, string audience, string issuer)
 		{
@@ -19,7 +20,7 @@ namespace Accidis.WebServices.Auth
 
 		public string Protect(AuthenticationTicket data)
 		{
-			var signingCredentials = new SigningCredentials(new InMemorySymmetricSecurityKey(_keyBytes), SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
+			var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(_keyBytes), SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
 
 			var token = new JwtSecurityToken(
 				issuer: _issuer,
