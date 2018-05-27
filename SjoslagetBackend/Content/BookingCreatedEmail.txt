@@ -1,6 +1,6 @@
 ﻿Hej!
 
-Det här är en bekräftelse på att din bokning till Vårkryssen är mottagen.
+Det här är en bekräftelse på att din bokning till {CRUISE_NAME} är mottagen.
 
 Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
 
@@ -26,11 +26,11 @@ Välkommen ombord!
 ------------------------------------------------------------------------------
 
 Det här är ett automatiskt genererat meddelande som du får därför att den
-här e-postadressen har använts i en bokning till Vårkryssen. Det här är
+här e-postadressen har använts i en bokning till {CRUISE_NAME}. Det här är
 inte spam, någon (antagligen du) har bett om att få det här mailet skickat
 till den här e-postadressen.
 
 Om du inte har gjort någon bokning ber vi dig snarast kontakta
 oss på info@sjoslaget.se så att vi kan avhjälpa problemet.
 
-Besök sjoslaget.se för mer information om Sjöslaget.
+Besök sjoslaget.se för mer information om våra evenemang.

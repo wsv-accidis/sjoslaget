@@ -231,6 +231,7 @@
     <EmbeddedResource Include="Content\Emails.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Emails.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

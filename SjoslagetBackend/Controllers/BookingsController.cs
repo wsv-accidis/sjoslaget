@@ -63,7 +63,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					result = await _bookingRepository.CreateAsync(activeCruise, bookingSource, allowCreateIfLocked: AuthContext.IsAdmin);
 					_log.Info("Created booking {0}.", result.Reference);
 
-					await SendBookingCreatedMailAsync(bookingSource, result);
+					await SendBookingCreatedMailAsync(activeCruise, bookingSource, result);
 				}
 
 				// Ensure we update reporting after each change
@@ -298,12 +298,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 		}
 
-		async Task SendBookingCreatedMailAsync(BookingSource bookingSource, BookingResult result)
+		async Task SendBookingCreatedMailAsync(Cruise cruise, BookingSource bookingSource, BookingResult result)
 		{
 			try
 			{
 				using(var emailSender = new EmailSender())
-					await emailSender.SendBookingCreatedMailAsync(bookingSource.Email, result.Reference, result.Password);
+					await emailSender.SendBookingCreatedMailAsync(cruise.Name, bookingSource.Email, result.Reference, result.Password);
 			}
 			catch(Exception ex)
 			{

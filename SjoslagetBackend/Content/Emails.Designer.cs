@@ -19,7 +19,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Emails {
@@ -63,7 +63,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
         /// <summary>
         ///   Looks up a localized string similar to Hej!
         ///
-        ///Det här är en bekräftelse på att din bokning till Sjöslaget är mottagen.
+        ///Det här är en bekräftelse på att din bokning till {CRUISE_NAME} är mottagen.
         ///
         ///Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
         ///
@@ -74,7 +74,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
         ///din bokning och se det totala beloppet att betala.
         ///
         ///Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
-        ///Betala så sna [rest of string was truncated]&quot;;.
+        ///Betala så [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BookingCreatedEmail {
             get {
@@ -83,7 +83,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Din bokning till Sjöslaget.
+        ///   Looks up a localized string similar to Din bokning till {CRUISE_NAME}.
         /// </summary>
         internal static string BookingCreatedSubject {
             get {

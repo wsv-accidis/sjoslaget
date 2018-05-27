@@ -8,6 +8,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class EmailSender : IDisposable
 	{
+		const string CruiseNameKey = "{CRUISE_NAME}";
+		const string BookingRefKey = "{BOOKING_REF}";
+		const string PinCodeKey = "{PIN_CODE}";
+
 		readonly SmtpClient _client = new SmtpClient {EnableSsl = true};
 
 		public void Dispose()
@@ -15,13 +19,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_client?.Dispose();
 		}
 
-		public async Task SendBookingCreatedMailAsync(string recipient, string bookingRef, string pinCode)
+		public async Task SendBookingCreatedMailAsync(string cruiseName, string recipient, string bookingRef, string pinCode)
 		{
 			var buffer = new StringBuilder(Emails.BookingCreatedEmail);
-			buffer.Replace("{BOOKING_REF}", bookingRef);
-			buffer.Replace("{PIN_CODE}", pinCode);
+			buffer.Replace(CruiseNameKey, cruiseName);
+			buffer.Replace(BookingRefKey, bookingRef);
+			buffer.Replace(PinCodeKey, pinCode);
 
-			await SendMailAsync(recipient, Emails.BookingCreatedSubject, buffer.ToString());
+			var subject = Emails.BookingCreatedSubject.Replace(CruiseNameKey, cruiseName);
+
+			await SendMailAsync(recipient, subject, buffer.ToString());
 		}
 
 		public async Task SendMailAsync(string recipient, string subject, string body)

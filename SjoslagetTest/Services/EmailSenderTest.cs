@@ -28,9 +28,10 @@ namespace Accidis.Sjoslaget.Test.Services
 			const string recipient = "wilhelm.svenselius@gmail.com";
 			const string bookingRef = "ABC123";
 			const string pinCode = "4567";
+			const string cruiseName = "Absolut Turku";
 
 			using (var sender = new EmailSender())
-				await sender.SendBookingCreatedMailAsync(recipient, bookingRef, pinCode);
+				await sender.SendBookingCreatedMailAsync(cruiseName, recipient, bookingRef, pinCode);
 		}
 	}
 }
