@@ -64,10 +64,10 @@
 				{{ prod.name }}
 			</td>
 			<td>
-				{{ prod.count }}
+				{{ getProductCount(prod) }}
 			</td>
 			<td>
-				{{ getProductCount(prod) }} ({{ getProductRatio(prod) }})
+				{{ getProductBookedCount(prod) }} ({{ getProductRatio(prod) }})
 			</td>
 		</tr>
 	</table>

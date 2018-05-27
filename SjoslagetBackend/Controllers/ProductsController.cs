@@ -5,7 +5,6 @@ using System.Web.Http;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
-using Accidis.WebServices.Db;
 using Accidis.WebServices.Web;
 
 namespace Accidis.Sjoslaget.WebService.Controllers
@@ -59,18 +58,16 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Stats(bool onlyFullyPaid = false)
+		public async Task<IHttpActionResult> Quantity()
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
 			if(null == activeCruise)
 				return NotFound();
 
-			using(var db = DbUtil.Open())
-			{
-				ProductCount[] counts = await _productRepository.GetSumOfOrdersByProductAsync(db, activeCruise, onlyFullyPaid);
-				// TODO Add more stats here later
-				return this.OkCacheControl(new {OrderedCount = counts}, WebConfig.DynamicDataMaxAge);
-			}
+			CruiseProductAvailability[] availabilities = await _productRepository.GetAvailabilityAsync(activeCruise);
+			return this.OkNoCache(availabilities.ToDictionary(
+				a => a.ProductTypeId,
+				a => a.TotalQuantity));
 		}
 	}
 }

@@ -26,6 +26,7 @@ import '../model/string_pair.dart';
 	directives: const <dynamic>[CORE_DIRECTIVES]
 )
 class StatsComponent implements OnInit {
+	static const NOT_LIMITED = -1;
 	static final NumberFormat _fpNumFormat = new NumberFormat('0.00');
 
 	final ClientFactory _clientFactory;
@@ -35,13 +36,13 @@ class StatsComponent implements OnInit {
 	Map<String, int> cabinsAvailability;
 	List<CruiseCabin> cabins;
 	ReportData current;
-	Map<String, int> productsAvailability;
+	Map<String, int> productsQuantity;
 	List<CruiseProduct> products;
 	ReportSummary summary;
 
 	bool get hasCabins => null != cabins && null != cabinsAvailability;
 
-	bool get hasProducts => null != products && null != productsAvailability;
+	bool get hasProducts => null != products && null != productsQuantity;
 
 	bool get hasTopContacts => null != current && current.topGroups.isNotEmpty;
 
@@ -56,7 +57,7 @@ class StatsComponent implements OnInit {
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 
 			products = await _cruiseRepository.getActiveCruiseProducts(client);
-			productsAvailability = await _cruiseRepository.getProductsAvailability(client);
+			productsQuantity = await _cruiseRepository.getProductsQuantity(client);
 
 			current = await _reportRepository.getCurrent(client);
 			summary = await _reportRepository.getSummary(client);
@@ -77,10 +78,16 @@ class StatsComponent implements OnInit {
 		return 100 * getBookedCount(cabin) ~/ cabin.count;
 	}
 
-	int getProductCount(CruiseProduct prod) {
-		if (null == productsAvailability || !productsAvailability.containsKey(prod.id))
-			return prod.count;
-		return prod.count - productsAvailability[prod.id];
+	int getProductBookedCount(CruiseProduct prod) {
+		if (null == productsQuantity || !productsQuantity.containsKey(prod.id))
+			return 0;
+		return productsQuantity[prod.id];
+	}
+
+	String getProductCount(CruiseProduct prod) {
+		if (NOT_LIMITED == prod.count)
+			return 'Obegr.';
+		return prod.count.toString();
 	}
 
 	String getProductRatio(CruiseProduct prod) {
@@ -89,7 +96,7 @@ class StatsComponent implements OnInit {
 		}
 
 		final int currentPaxTotal = summary.paxTotal.last;
-		return _fpNumFormat.format(getProductCount(prod) / currentPaxTotal);
+		return _fpNumFormat.format(getProductBookedCount(prod) / currentPaxTotal);
 	}
 
 	void _createCharts() {

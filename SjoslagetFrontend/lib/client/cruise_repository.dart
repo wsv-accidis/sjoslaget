@@ -86,6 +86,18 @@ class CruiseRepository {
 		return JSON.decode(response.body);
 	}
 
+	Future<Map<String, int>> getProductsQuantity(Client client) async {
+		Response response;
+		try {
+			response = await client.get(_apiRoot + '/products/quantity');
+		} catch (e) {
+			throw new IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		return JSON.decode(response.body);
+	}
+
 	Future<bool> lockUnlockCruise(Client client) async {
 		Response response;
 		try {
