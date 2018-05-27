@@ -15,7 +15,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class ReportingService
 	{
-		const int HighestAgeTreshold = 85;
+		const int AgeDistributionStartYear = 1985;
+		const int AgeDistributionMinAge = 18;
 
 		readonly CruiseRepository _cruiseRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(ReportingService).Name);
@@ -46,39 +47,39 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		public async Task<KeyValuePair[]> GetAgeDistribution(SqlConnection db, Cruise cruise)
 		{
-			// TODO This will no longer work once we start seeing participants born >99 and needs a refactor
 			var result = await db.QueryAsync<KeyValuePair>("select substring([Dob], 1, 2) [Key], count(*) [Value] from [BookingPax] " +
 														   "where [BookingCabinId] in (select [Id] from [BookingCabin] where [CruiseId] = @CruiseId) " +
-														   "group by substring([Dob], 1, 2) " +
-														   "order by substring([Dob], 1, 2)", new {CruiseId = cruise.Id});
-			KeyValuePair[] sourceList = result.ToArray();
+														   "group by substring([Dob], 1, 2)", new {CruiseId = cruise.Id});
+
+			int thisYear = DateTime.Now.Year;
+			int thisYearTwoDigits = thisYear % 100;
+
+			Tuple<int, int>[] sourceList = result
+				.Select(k => Tuple.Create(ToFourDigitYear(int.Parse(k.Key, NumberStyles.None), thisYearTwoDigits), k.Value))
+				.Where(t => t.Item1 <= thisYear - AgeDistributionMinAge) // if underage, assume fake or placeholder data
+				.ToArray();
+
 			if(!sourceList.Any())
 				return new KeyValuePair[0];
 
-			int thisYear = DateTime.Now.Year % 100;
-			int maxYear = int.Parse(sourceList.Last().Key, NumberStyles.Integer);
-
+			int ageDistributionEndYear = sourceList.Max(k => k.Item1);
 			var buckets = new Dictionary<int, int>();
-			for(int year = HighestAgeTreshold; year <= maxYear; year++)
+			for(int year = AgeDistributionStartYear; year <= ageDistributionEndYear; year++)
 				buckets[year] = 0;
 
-			foreach(KeyValuePair pair in sourceList)
+			foreach(Tuple<int, int> pair in sourceList)
 			{
-				int year = int.Parse(pair.Key, NumberStyles.None);
+				// Put everyone who is older than AgeDistributionStartYear into one bucket
+				int year = pair.Item1 <= AgeDistributionStartYear
+					? AgeDistributionStartYear
+					: pair.Item1;
 
-				// Put everyone who is older than HighestAgeTreshold into one bucket
-				if(year > thisYear && year <= HighestAgeTreshold)
-					year = HighestAgeTreshold;
-
-				// Don't crash if we encounter a year that is out of range
-				if(!buckets.ContainsKey(year))
-					continue;
-
-				buckets[year] += pair.Value;
+				if(buckets.ContainsKey(year))
+					buckets[year] += pair.Item2;
 			}
 
 			return buckets.Select(k => new KeyValuePair(
-				k.Key == HighestAgeTreshold ? $"≤{HighestAgeTreshold}" : k.Key.ToString(),
+				k.Key == AgeDistributionStartYear ? $"≤{ToPaddedTwoDigitYear(AgeDistributionStartYear)}" : ToPaddedTwoDigitYear(k.Key).ToString(),
 				k.Value)).ToArray();
 		}
 
@@ -126,7 +127,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		async Task<Report> CreateReport(Cruise cruise)
 		{
-			DateTime today = DateTime.Today;			
+			DateTime today = DateTime.Today;
 			Report report = new Report {CruiseId = cruise.Id, Date = today.Date};
 
 			using(var db = DbUtil.Open())
@@ -184,6 +185,25 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			return await db.ExecuteScalarAsync<int>("select count(*) from [BookingPax] where [BookingCabinId] in (select [Id] from [BookingCabin] where [CruiseId] = @CruiseId)",
 				new {CruiseId = cruise.Id});
+		}
+
+		static int ToFourDigitYear(int twoDigitYear, int cutOff)
+		{
+			/*
+			 * If cutOff = last two digits of current year, this will make a good guess
+			 * for anyone who is not >100 years old or born in the future.
+			 * Let's say cutoff is 18, giving us the following result:
+			 * 00-18 -> assume 2000-2018
+			 * 19-99 -> assume 1919-1999
+			 */
+			return twoDigitYear < cutOff
+				? 2000 + twoDigitYear
+				: 1900 + twoDigitYear;
+		}
+
+		static string ToPaddedTwoDigitYear(int fourDigitYear)
+		{
+			return (fourDigitYear % 100).ToString().PadLeft(2, '0');
 		}
 	}
 }
