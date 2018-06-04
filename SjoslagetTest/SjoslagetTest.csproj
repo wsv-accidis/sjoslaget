@@ -82,6 +82,7 @@
     <Compile Include="Db\SjoslagetDbTest.cs" />
     <Compile Include="Db\SjoslagetDbTestConfig.cs" />
     <Compile Include="Model\DateOfBirthTest.cs" />
+    <Compile Include="Services\BookingCabinsComparerTest.cs" />
     <Compile Include="Services\BookingRepositoryTest.cs" />
     <Compile Include="Services\CruiseRepositoryTest.cs" />
     <Compile Include="Services\DeletedBookingRepositoryTest.cs" />
