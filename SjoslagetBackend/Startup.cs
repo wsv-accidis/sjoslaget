@@ -83,6 +83,7 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<AecOAuthProvider>();
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecUserSupport>();
+			container.Register<BookingCabinsComparer>();
 			container.Register<BookingRepository>();
 			container.Register<CabinRepository>();
 			container.Register<CruiseRepository>();

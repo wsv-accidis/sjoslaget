@@ -17,6 +17,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		const string LockResource = "Booking";
 		const int LockTimeout = 10000;
 
+		readonly BookingCabinsComparer _bookingComparer;
 		readonly CabinRepository _cabinRepository;
 		readonly AecCredentialsGenerator _credentialsGenerator;
 		readonly CruiseRepository _cruiseRepository;
@@ -26,6 +27,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		readonly AecUserManager _userManager;
 
 		public BookingRepository(
+			BookingCabinsComparer bookingComparer,
 			CabinRepository cabinRepository,
 			CruiseRepository cruiseRepository,
 			DeletedBookingRepository deletedBookingRepository,
@@ -34,6 +36,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			AecCredentialsGenerator credentialsGenerator,
 			AecUserManager userManager)
 		{
+			_bookingComparer = bookingComparer;
 			_cabinRepository = cabinRepository;
 			_cruiseRepository = cruiseRepository;
 			_deletedBookingRepository = deletedBookingRepository;
@@ -118,20 +121,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		public async Task<BookingCabinWithPax[]> GetCabinsForBookingAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
-			{
-				var result = await db.QueryAsync<BookingCabinWithPax>("select * from [BookingCabin] where [BookingId] = @BookingId order by [Order]",
-					new {BookingId = booking.Id});
-
-				BookingCabinWithPax[] bookingCabins = result.ToArray();
-				foreach(BookingCabinWithPax cabin in bookingCabins)
-				{
-					var pax = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingCabinId] = @BookingCabinId order by [Order]",
-						new {BookingCabinId = cabin.Id});
-					cabin.Pax.AddRange(pax);
-				}
-
-				return bookingCabins;
-			}
+				return await GetCabinsForBooking(db, booking.Id);
 		}
 
 		public async Task<BookingResult> UpdateAsync(Cruise cruise, BookingSource source, bool allowUpdateDetails = false, bool allowUpdateIfLocked = false)
@@ -158,6 +148,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 				if((cruise.IsLocked || booking.IsLocked) && !allowUpdateIfLocked)
 					throw new BookingException($"Booking with reference {source.Reference} is locked, may not update.");
 
+				// Get the booking contents before deleting it so we can detect changes
+				BookingCabinWithPax[] originalCabins = await GetCabinsForBooking(db, booking.Id);
+
 				await DeleteCabins(db, booking);
 				await CheckCabinsAvailability(db, cruise, source.Cabins, cabinTypes);
 				await CreateCabins(db, booking, source.Cabins);
@@ -166,8 +159,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 				await CheckProductsAvailability(db, cruise, source.Products);
 				await CreateProducts(db, booking, source.Products);
 
-				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
+				await CreateChanges(db, booking, originalCabins, source.Cabins);
 
+				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
 				if(allowUpdateDetails)
 				{
 					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
@@ -282,6 +276,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		async Task CreateChanges(SqlConnection db, Booking booking, BookingCabinWithPax[] originalCabins, List<BookingSource.Cabin> updatedCabins)
+		{
+			IEnumerable<BookingChange> changes = _bookingComparer.FindChanges(originalCabins.ToList(), updatedCabins);
+			foreach(BookingChange change in changes)
+			{
+				await db.ExecuteAsync("insert into [BookingChange] ([BookingId], [CabinIndex], [PaxIndex], [FieldName]) values (@BookingId, @CabinIndex, @PaxIndex, @FieldName)",
+					new {BookingId = booking.Id, CabinIndex = change.CabinIndex, PaxIndex = change.PaxIndex, FieldName = change.FieldName});
+			}
+		}
+
 		async Task CreateProducts(SqlConnection db, Booking booking, List<BookingSource.Product> sourceList)
 		{
 			if(null == sourceList || !sourceList.Any())
@@ -302,6 +306,22 @@ namespace Accidis.Sjoslaget.WebService.Services
 		async Task DeleteProducts(SqlConnection db, Booking booking)
 		{
 			await db.ExecuteAsync("delete from [BookingProduct] where [BookingId] = @BookingId", new {BookingId = booking.Id});
+		}
+
+		async Task<BookingCabinWithPax[]> GetCabinsForBooking(SqlConnection db, Guid bookingId)
+		{
+			var result = await db.QueryAsync<BookingCabinWithPax>("select * from [BookingCabin] where [BookingId] = @BookingId order by [Order]",
+				new {BookingId = bookingId});
+
+			BookingCabinWithPax[] bookingCabins = result.ToArray();
+			foreach(BookingCabinWithPax cabin in bookingCabins)
+			{
+				var pax = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingCabinId] = @BookingCabinId order by [Order]",
+					new {BookingCabinId = cabin.Id});
+				cabin.Pax.AddRange(pax);
+			}
+
+			return bookingCabins;
 		}
 	}
 }

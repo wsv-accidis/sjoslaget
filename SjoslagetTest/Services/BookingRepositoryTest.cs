@@ -335,6 +335,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<AecUser>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
 			var sut = new BookingRepository(
+				new BookingCabinsComparer(),
 				new CabinRepository(),
 				CruiseRepositoryTest.GetCruiseRepositoryForTest(),
 				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
