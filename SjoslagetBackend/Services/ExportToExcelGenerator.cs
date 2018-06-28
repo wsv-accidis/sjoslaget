@@ -60,9 +60,6 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet[row, 5] = CreateHeaderCell("Kön");
 			sheet[row, 6] = CreateHeaderCell("Nationalitet");
 			sheet[row, 7] = CreateHeaderCell("Bokningsref");
-
-			if(_updatedSince.HasValue)
-				sheet[row, 8] = CreateHeaderCell("Uppdaterad");
 		}
 
 		static Worksheet CreateCabinsWorksheet()
@@ -78,7 +75,6 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet.ColumnWidths[5] = 4;
 			sheet.ColumnWidths[6] = 12;
 			sheet.ColumnWidths[7] = 12;
-			sheet.ColumnWidths[8] = 12;
 
 			return sheet;
 		}
@@ -124,27 +120,27 @@ namespace Accidis.Sjoslaget.WebService.Services
 			string nationality,
 			string reference,
 			bool isCreated,
-			bool isUpdated
+			ChangeDbRow[] changes
 		)
 		{
-			sheet[row, 0] = cabinNo;
-			sheet[row, 1] = cabinTypeName;
-			sheet[row, 2] = lastName;
-			sheet[row, 3] = firstName;
-			sheet[row, 4] = dob.Format(DobFormat);
-			sheet[row, 5] = gender.ToString().ToUpperInvariant();
-			sheet[row, 6] = nationality.ToUpperInvariant();
-			sheet[row, 7] = reference;
+			// TODO Handle removed rows somehow
 
-			if(_updatedSince.HasValue && (isCreated || isUpdated))
-				sheet[row, 8] = isCreated ? "NY" : "ÄNDRAD";
+			SetCell(sheet, row, 0, cabinNo.ToString(), null, isCreated, changes);
+			SetCell(sheet, row, 1, cabinTypeName, null, isCreated, changes);
+			SetCell(sheet, row, 2, lastName, nameof(BookingPax.LastName), isCreated, changes);
+			SetCell(sheet, row, 3, firstName, nameof(BookingPax.FirstName), isCreated, changes);
+			SetCell(sheet, row, 4, dob.Format(DobFormat), nameof(BookingPax.Dob), isCreated, changes);
+			SetCell(sheet, row, 5, gender.ToString().ToUpperInvariant(), nameof(BookingPax.Gender), isCreated, changes);
+			SetCell(sheet, row, 6, nationality.ToUpperInvariant(), nameof(BookingPax.Nationality), isCreated, changes);
+			SetCell(sheet, row, 7, reference, null, isCreated, changes);
 		}
 
 		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
-			Dictionary<Guid, string> cabinTypes)
+			Dictionary<Guid, string> cabinTypes, ChangeDbRow[] changes)
 		{
 			Guid cabinId = Guid.Empty;
 			string cabinTypeName = String.Empty;
+			int cabinIndex = -1, paxIndex = -1;
 
 			foreach(PaxDbRow pax in paxInBooking)
 			{
@@ -152,9 +148,19 @@ namespace Accidis.Sjoslaget.WebService.Services
 				{
 					cabinId = pax.CabinId;
 					cabinTypeName = cabinTypes[pax.CabinTypeId];
+
+					// Holds the cabin index within the whole sheet
 					_cabinNo++;
-					_rowNo++; // inserts a blank row into the sheet
+
+					// Inserts a blank row into the sheet
+					_rowNo++; 
+
+					// Hold the cabin/pax indexes within the booking
+					cabinIndex++;
+					paxIndex = 0;
 				}
+
+				ChangeDbRow[] changesInThisRow = changes.Where(c => c.CabinIndex == cabinIndex && c.PaxIndex == paxIndex).ToArray();
 
 				CreateRow(
 					sheet,
@@ -168,8 +174,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 					pax.Nationality,
 					booking.Reference,
 					booking.IsCreated,
-					booking.IsUpdated
+					changesInThisRow
 				);
+
+				paxIndex++;
 			}
 		}
 
@@ -188,7 +196,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 			var bookingsResult = await db.QueryAsync<BookingDbRow>("select [Id], [Reference], [TotalPrice], " +
 																   "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid, " +
-																   "iif([Created] > @UpdatedSince, 1, 0) IsCreated, iif([Updated] > @UpdatedSince, 1, 0) IsUpdated " +
+																   "iif([Created] > @UpdatedSince, 1, 0) IsCreated " +
 																   "from [Booking] B where [CruiseId] = @CruiseId " +
 																   "order by [Reference]",
 				new
@@ -211,7 +219,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 															  "order by BC.[Order], BP.[Order]",
 					new {BookingId = booking.Id});
 
-				CreateRowsForBooking(sheet, booking, paxResult.ToArray(), cabinTypes);
+				var bookingChanges = await db.QueryAsync<ChangeDbRow>("select [CabinIndex], [PaxIndex], [FieldName] from [BookingChange] " +
+																	  "where [BookingId] = @BookingId and [Updated] > @UpdatedSince",
+					new
+					{
+						BookingId = booking.Id,
+						UpdatedSince = _updatedSince
+					});
+
+				CreateRowsForBooking(sheet, booking, paxResult.ToArray(), cabinTypes, bookingChanges.ToArray());
 			}
 		}
 
@@ -231,6 +247,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		static void SetCell(Worksheet sheet, int row, int col, string content, string fieldName, bool isCreated, ChangeDbRow[] changes)
+		{
+			sheet[row, col] = content;
+			if(isCreated || changes.Any(c => BookingChange.Added.Equals(c.FieldName) || c.FieldName.Equals(fieldName, StringComparison.Ordinal)))
+				sheet[row, col].Fill.BackgroundColor = Color.Yellow;
+		}
+
 		// ReSharper disable UnusedAutoPropertyAccessor.Local, ClassNeverInstantiated.Local, MemberCanBePrivate.Local
 		sealed class BookingDbRow
 		{
@@ -239,8 +262,14 @@ namespace Accidis.Sjoslaget.WebService.Services
 			public decimal TotalPrice { get; set; }
 			public decimal AmountPaid { get; set; }
 			public bool IsCreated { get; set; }
-			public bool IsUpdated { get; set; }
 			public bool IsFullyPaid => AmountPaid >= TotalPrice;
+		}
+
+		sealed class ChangeDbRow
+		{
+			public int CabinIndex { get; set; }
+			public int PaxIndex { get; set; }
+			public string FieldName { get; set; }
 		}
 
 		sealed class PaxDbRow
