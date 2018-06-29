@@ -108,7 +108,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return sheet;
 		}
 
-		void CreateRow(
+		static void CreateRow(
 			Worksheet sheet,
 			int row,
 			int cabinNo,
@@ -120,11 +120,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			string nationality,
 			string reference,
 			bool isCreated,
-			ChangeDbRow[] changes
+			string[] changes
 		)
 		{
-			// TODO Handle removed rows somehow
-
 			SetCell(sheet, row, 0, cabinNo.ToString(), null, isCreated, changes);
 			SetCell(sheet, row, 1, cabinTypeName, null, isCreated, changes);
 			SetCell(sheet, row, 2, lastName, nameof(BookingPax.LastName), isCreated, changes);
@@ -135,49 +133,56 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 7, reference, null, isCreated, changes);
 		}
 
-		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
-			Dictionary<Guid, string> cabinTypes, ChangeDbRow[] changes)
+		static void CreateRowForRemovedPax(Worksheet sheet, int row, int cabinNo, string cabinTypeName, string reference)
 		{
-			Guid cabinId = Guid.Empty;
-			string cabinTypeName = String.Empty;
-			int cabinIndex = -1, paxIndex = -1;
+			SetCell(sheet, row, 0, cabinNo.ToString(), null, true, null);
+			SetCell(sheet, row, 1, cabinTypeName, null, true, null);
+			SetCell(sheet, row, 2, String.Empty, null, true, null);
+			SetCell(sheet, row, 3, String.Empty, null, true, null);
+			SetCell(sheet, row, 4, String.Empty, null, true, null);
+			SetCell(sheet, row, 5, String.Empty, null, true, null);
+			SetCell(sheet, row, 6, String.Empty, null, true, null);
+			SetCell(sheet, row, 7, reference, null, true, null);
+		}
 
-			foreach(PaxDbRow pax in paxInBooking)
+		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
+			Dictionary<Guid, CabinType> cabinTypes, ChangeDbRow[] changes)
+		{
+			var cabins = paxInBooking.GroupBy(g => g.CabinIndex).OrderBy(g => g.Key);
+			foreach(IGrouping<int, PaxDbRow> cabin in cabins)
 			{
-				if(!cabinId.Equals(pax.CabinId))
+				_rowNo++; // insert a blank row
+				_cabinNo++; // holds the cabin index within the whole sheet
+
+				CabinType cabinType = cabinTypes[cabin.First().CabinTypeId];
+
+				foreach(PaxDbRow pax in cabin.OrderBy(g => g.PaxIndex))
 				{
-					cabinId = pax.CabinId;
-					cabinTypeName = cabinTypes[pax.CabinTypeId];
+					string[] changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == pax.PaxIndex).Select(c => c.FieldName).ToArray();
 
-					// Holds the cabin index within the whole sheet
-					_cabinNo++;
-
-					// Inserts a blank row into the sheet
-					_rowNo++; 
-
-					// Hold the cabin/pax indexes within the booking
-					cabinIndex++;
-					paxIndex = 0;
+					CreateRow(
+						sheet,
+						_rowNo++,
+						_cabinNo,
+						cabinType.Name,
+						pax.LastName,
+						pax.FirstName,
+						pax.Dob,
+						pax.Gender,
+						pax.Nationality,
+						booking.Reference,
+						booking.IsCreated,
+						changesInThisRow
+					);
 				}
 
-				ChangeDbRow[] changesInThisRow = changes.Where(c => c.CabinIndex == cabinIndex && c.PaxIndex == paxIndex).ToArray();
-
-				CreateRow(
-					sheet,
-					_rowNo++,
-					_cabinNo,
-					cabinTypeName,
-					pax.LastName,
-					pax.FirstName,
-					pax.Dob,
-					pax.Gender,
-					pax.Nationality,
-					booking.Reference,
-					booking.IsCreated,
-					changesInThisRow
-				);
-
-				paxIndex++;
+				// Add empty highlighted rows for pax who were removed (but not if they were also added in the same timespan)
+				for(int emptyPaxIdx = cabin.Count(); emptyPaxIdx < cabinType.Capacity; emptyPaxIdx++)
+				{
+					string[] changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == emptyPaxIdx).Select(c => c.FieldName).ToArray();
+					if(changesInThisRow.Contains(BookingChange.Removed, StringComparer.Ordinal) && !changesInThisRow.Contains(BookingChange.Added, StringComparer.Ordinal))
+						CreateRowForRemovedPax(sheet, _rowNo++, _cabinNo, cabinType.Name, booking.Reference);
+				}
 			}
 		}
 
@@ -209,10 +214,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 				? bookingsResult.Where(b => b.IsFullyPaid).ToArray()
 				: bookingsResult.ToArray();
 
-			Dictionary<Guid, string> cabinTypes = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c.Name);
+			Dictionary<Guid, CabinType> cabinTypes = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
 			foreach(BookingDbRow booking in allBookings)
 			{
-				var paxResult = await db.QueryAsync<PaxDbRow>("select BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
+				var paxResult = await db.QueryAsync<PaxDbRow>("select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
 															  "from [BookingPax] BP " +
 															  "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
 															  "where BC.[BookingId] = @BookingId " +
@@ -247,10 +252,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		static void SetCell(Worksheet sheet, int row, int col, string content, string fieldName, bool isCreated, ChangeDbRow[] changes)
+		static void SetCell(Worksheet sheet, int row, int col, string content, string fieldName, bool mustHighlight, string[] changedFields)
 		{
 			sheet[row, col] = content;
-			if(isCreated || changes.Any(c => BookingChange.Added.Equals(c.FieldName) || c.FieldName.Equals(fieldName, StringComparison.Ordinal)))
+			if(mustHighlight || changedFields.Contains(BookingChange.Added, StringComparer.Ordinal) || changedFields.Contains(fieldName, StringComparer.Ordinal))
 				sheet[row, col].Fill.BackgroundColor = Color.Yellow;
 		}
 
@@ -274,12 +279,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		sealed class PaxDbRow
 		{
+			public int CabinIndex { get; set; }
+			public int PaxIndex { get; set; }
 			public string FirstName { get; set; }
 			public string LastName { get; set; }
 			public Gender Gender { get; set; }
 			public DateOfBirth Dob { get; set; }
 			public string Nationality { get; set; }
-			public Guid CabinId { get; set; }
 			public Guid CabinTypeId { get; set; }
 		}
 		// ReSharper restore UnusedAutoPropertyAccessor.Local, ClassNeverInstantiated.Local, MemberCanBePrivate.Local
