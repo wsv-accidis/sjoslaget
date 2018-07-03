@@ -60,6 +60,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet[row, 5] = CreateHeaderCell("Kön");
 			sheet[row, 6] = CreateHeaderCell("Nationalitet");
 			sheet[row, 7] = CreateHeaderCell("Bokningsref");
+
+			if(_updatedSince.HasValue)
+				sheet[row, 8] = CreateHeaderCell("Ändrad");
 		}
 
 		static Worksheet CreateCabinsWorksheet()
@@ -75,6 +78,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet.ColumnWidths[5] = 4;
 			sheet.ColumnWidths[6] = 12;
 			sheet.ColumnWidths[7] = 12;
+			sheet.ColumnWidths[8] = 12;
 
 			return sheet;
 		}
@@ -108,7 +112,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return sheet;
 		}
 
-		static void CreateRow(
+		void CreateRow(
 			Worksheet sheet,
 			int row,
 			int cabinNo,
@@ -131,9 +135,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 5, gender.ToString().ToUpperInvariant(), nameof(BookingPax.Gender), isCreated, changes);
 			SetCell(sheet, row, 6, nationality.ToUpperInvariant(), nameof(BookingPax.Nationality), isCreated, changes);
 			SetCell(sheet, row, 7, reference, null, isCreated, changes);
+
+			if(_updatedSince.HasValue && (isCreated || changes.Any()))
+				SetCell(sheet, row, 8, isCreated ? "Ny" : "Ändrad", null, true, null);
 		}
 
-		static void CreateRowForRemovedPax(Worksheet sheet, int row, int cabinNo, string cabinTypeName, string reference)
+		void CreateRowForRemovedPax(Worksheet sheet, int row, int cabinNo, string cabinTypeName, string reference)
 		{
 			SetCell(sheet, row, 0, cabinNo.ToString(), null, true, null);
 			SetCell(sheet, row, 1, cabinTypeName, null, true, null);
@@ -143,6 +150,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 5, String.Empty, null, true, null);
 			SetCell(sheet, row, 6, String.Empty, null, true, null);
 			SetCell(sheet, row, 7, reference, null, true, null);
+
+			if(_updatedSince.HasValue)
+				SetCell(sheet, row, 8, "Borttagen", null, true, null);
 		}
 
 		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
@@ -224,15 +234,22 @@ namespace Accidis.Sjoslaget.WebService.Services
 															  "order by BC.[Order], BP.[Order]",
 					new {BookingId = booking.Id});
 
-				var bookingChanges = await db.QueryAsync<ChangeDbRow>("select [CabinIndex], [PaxIndex], [FieldName] from [BookingChange] " +
-																	  "where [BookingId] = @BookingId and [Updated] > @UpdatedSince",
-					new
-					{
-						BookingId = booking.Id,
-						UpdatedSince = _updatedSince
-					});
+				ChangeDbRow[] bookingChanges;
+				if(_updatedSince.HasValue)
+				{
+					var bookingChangesResult = await db.QueryAsync<ChangeDbRow>("select [CabinIndex], [PaxIndex], [FieldName] from [BookingChange] " +
+																				"where [BookingId] = @BookingId and [Updated] > @UpdatedSince",
+						new
+						{
+							BookingId = booking.Id,
+							UpdatedSince = _updatedSince
+						});
+					bookingChanges = bookingChangesResult.ToArray();
+				}
+				else
+					bookingChanges = new ChangeDbRow[0];
 
-				CreateRowsForBooking(sheet, booking, paxResult.ToArray(), cabinTypes, bookingChanges.ToArray());
+				CreateRowsForBooking(sheet, booking, paxResult.ToArray(), cabinTypes, bookingChanges);
 			}
 		}
 
