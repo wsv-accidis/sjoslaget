@@ -12,22 +12,25 @@ import com.brother.ptouch.sdk.Printer;
 import com.brother.ptouch.sdk.PrinterInfo;
 import com.brother.ptouch.sdk.PrinterStatus;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import se.accidis.sjoslaget.printerapp.R;
 import se.accidis.sjoslaget.printerapp.model.BookingLabel;
 import se.accidis.sjoslaget.printerapp.util.LocalBroadcasts;
+import se.accidis.sjoslaget.printerapp.util.SjoslagetApiClient;
 
 public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
     private static final String TAG = PrinterRelayTask.class.getSimpleName();
 
+    private final SjoslagetApiClient mApiClient;
     private LocalBroadcastManager mBroadcasts;
     private CompletionListener mCompletionListener;
     private Resources mResources;
     private Printer mPrinter;
 
-    PrinterRelayTask(Context context, Printer printer, CompletionListener completionListener) {
+    PrinterRelayTask(Context context, Printer printer, SjoslagetApiClient apiClient, CompletionListener completionListener) {
+        mApiClient = apiClient;
         mBroadcasts = LocalBroadcastManager.getInstance(context);
         mResources = context.getResources();
         mPrinter = printer;
@@ -54,7 +57,12 @@ public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
     }
 
     private List<BookingLabel> pollPrinterQueue() {
-        return new ArrayList<>();
+        try {
+            return mApiClient.tryAuthenticateAndPollPrinterQueue();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while trying to authenticate and poll the printer queue.", e);
+            return Collections.emptyList();
+        }
     }
 
     private void printLabel(BookingLabel label) {

@@ -1,7 +1,10 @@
 package se.accidis.sjoslaget.printerapp.model;
 
-import io.norberg.automatter.AutoMatter;
+import java.util.List;
 
-@AutoMatter
-public interface BookingLabel {
+public final class BookingLabel {
+    public String reference;
+    public String fullName;
+    public List<NameCountPair> cabins;
+    public List<NameCountPair> products;
 }

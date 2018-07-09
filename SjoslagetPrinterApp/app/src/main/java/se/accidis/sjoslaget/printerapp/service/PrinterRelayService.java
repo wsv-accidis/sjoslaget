@@ -15,6 +15,7 @@ import com.brother.ptouch.sdk.Printer;
 import com.brother.ptouch.sdk.PrinterInfo;
 
 import se.accidis.sjoslaget.printerapp.util.LocalBroadcasts;
+import se.accidis.sjoslaget.printerapp.util.SjoslagetApiClient;
 
 public final class PrinterRelayService extends Service {
     private static final String TAG = PrinterRelayService.class.getSimpleName();
@@ -25,6 +26,7 @@ public final class PrinterRelayService extends Service {
     private final Runnable mPrinterRelayRunnable = new PrinterRelayRunnable();
     private final PrinterRelayTaskCompletionListener mTaskCompletionListener = new PrinterRelayTaskCompletionListener();
 
+    private SjoslagetApiClient mApiClient;
     private LocalBroadcastManager mBroadcasts;
     private UsbManager mUsbManager;
 
@@ -38,6 +40,7 @@ public final class PrinterRelayService extends Service {
         super.onCreate();
         Log.d(TAG, "Service created.");
 
+        mApiClient = new SjoslagetApiClient(this);
         mBroadcasts = LocalBroadcastManager.getInstance(this);
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
@@ -75,7 +78,7 @@ public final class PrinterRelayService extends Service {
         public void run() {
             final UsbDevice usbDevice = mPrinter.getUsbDevice(mUsbManager);
             if (null != usbDevice && mUsbManager.hasPermission(usbDevice)) {
-                final PrinterRelayTask task = new PrinterRelayTask(getApplicationContext(), mPrinter, mTaskCompletionListener);
+                final PrinterRelayTask task = new PrinterRelayTask(getApplicationContext(), mPrinter, mApiClient, mTaskCompletionListener);
                 task.execute();
             } else {
                 Log.d(TAG, "Printer disconnected, service is stopping itself.");
