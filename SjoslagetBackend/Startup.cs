@@ -79,20 +79,20 @@ namespace Accidis.Sjoslaget.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
-			container.Register<AecCredentialsGenerator>();
-			container.Register<AecOAuthProvider>();
+			container.Register<AecCredentialsGenerator>(Reuse.Singleton);
+			container.Register<AecOAuthProvider>(Reuse.Singleton);
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
-			container.Register<AecUserSupport>();
-			container.Register<BookingCabinsComparer>();
-			container.Register<BookingRepository>();
-			container.Register<CabinRepository>();
-			container.Register<CruiseRepository>();
-			container.Register<DeletedBookingRepository>();
-			container.Register<PriceCalculator>();
-			container.Register<ProductRepository>();
-			container.Register<PaymentRepository>();
-			container.Register<ReportingService>();
-			container.Register<ReportRepository>();
+			container.Register<AecUserSupport>(Reuse.Singleton);
+			container.Register<BookingCabinsComparer>(Reuse.Singleton);
+			container.Register<BookingRepository>(Reuse.Singleton);
+			container.Register<CabinRepository>(Reuse.Singleton);
+			container.Register<CruiseRepository>(Reuse.Singleton);
+			container.Register<DeletedBookingRepository>(Reuse.Singleton);
+			container.Register<PriceCalculator>(Reuse.Singleton);
+			container.Register<ProductRepository>(Reuse.Singleton);
+			container.Register<PaymentRepository>(Reuse.Singleton);
+			container.Register<ReportingService>(Reuse.Singleton);
+			container.Register<ReportRepository>(Reuse.Singleton);
 
 			return container;
 		}
