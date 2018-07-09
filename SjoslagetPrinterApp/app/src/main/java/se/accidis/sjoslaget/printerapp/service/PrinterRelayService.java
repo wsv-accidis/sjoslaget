@@ -70,6 +70,7 @@ public final class PrinterRelayService extends Service {
         printerInfo.port = PrinterInfo.Port.USB;
         printerInfo.labelNameIndex = LabelInfo.QL700.W29H90.ordinal();
         printerInfo.workPath = getCacheDir().getPath();
+
         mPrinter.setPrinterInfo(printerInfo);
     }
 
