@@ -58,9 +58,9 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			return;
 		}
 
-		await refreshRecentlyUpdated();
-		tick(null);
-		_timer = new Timer.periodic(new Duration(milliseconds: 250), tick);
+		await _refreshRecentlyUpdated();
+		_tick(null);
+		_timer = new Timer.periodic(new Duration(milliseconds: 250), _tick);
 	}
 
 	void ngOnDestroy() {
@@ -85,15 +85,15 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	}
 
 	void refresh() {
-		refreshRecentlyUpdated();
-		refreshAvailability();
+		_refreshRecentlyUpdated();
+		_refreshAvailability();
 	}
 
-	Future<Null> refreshAvailability() async {
+	Future<Null> _refreshAvailability() async {
 		await availabilityComponent.refresh();
 	}
 
-	Future<Null> refreshRecentlyUpdated() async {
+	Future<Null> _refreshRecentlyUpdated() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);
@@ -108,7 +108,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		}
 	}
 
-	void tick(Timer ignored) {
+	void _tick(Timer ignored) {
 		if (null == recentlyUpdatedBookings)
 			return;
 

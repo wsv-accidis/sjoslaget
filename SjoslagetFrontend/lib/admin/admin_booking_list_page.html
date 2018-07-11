@@ -90,7 +90,7 @@
 	   [sortColumn]="sort.column"
 	   [sortDesc]="sort.desc">
 	<tr>
-		<th style="width: 130px">
+		<th style="width: 100px">
 			<sortable-column-header key="status" title="Status"></sortable-column-header>
 		</th>
 		<th style="width: 30px"></th>
@@ -138,6 +138,9 @@
 		<td class="bookings-preview-cell">
 			<a (click)="openPreviewPopup(booking)" href="javascript:">
 				<glyph icon="zoom_in"></glyph>
+			</a>
+			<a (click)="printBooking(booking)" href="javascript:" *ngIf="printerIsAvailable">
+				<glyph icon="print"></glyph>
 			</a>
 		</td>
 		<td>
