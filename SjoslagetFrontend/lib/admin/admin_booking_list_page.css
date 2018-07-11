@@ -23,7 +23,9 @@ div.bookings-paging {
 }
 
 td.bookings-preview-cell {
-	padding: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+	white-space: nowrap;
 }
 
 td.bookings-preview-cell a:hover {

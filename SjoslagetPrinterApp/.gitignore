@@ -1,0 +1,15 @@
+# Build output
+build
+/captures
+
+# Local settings
+/local.properties
+
+# IDEs and build tools
+.externalNativeBuild
+/.idea
+/.gradle
+*.iml
+
+# Private strings
+private_strings.xml

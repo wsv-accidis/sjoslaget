@@ -16,6 +16,7 @@ import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../client/deleted_booking_repository.dart';
+import '../client/printer_repository.dart';
 import '../client/user_repository.dart';
 
 @Component(
@@ -28,6 +29,7 @@ import '../client/user_repository.dart';
 		ClientFactory,
 		CruiseRepository,
 		DeletedBookingRepository,
+		PrinterRepository,
 		UserRepository
 	],
 	directives: const<dynamic>[ROUTER_DIRECTIVES]

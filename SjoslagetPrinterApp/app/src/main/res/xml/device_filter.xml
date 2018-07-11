@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- Brother QL-810W -->
+    <usb-device
+        class="0"
+        product-id="8348"
+        protocol="0"
+        subclass="0"
+        vendor-id="1273"/>
+</resources>

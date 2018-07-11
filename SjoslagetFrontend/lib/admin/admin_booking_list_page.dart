@@ -10,6 +10,7 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 import 'booking_preview_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
+import '../client/printer_repository.dart';
 import '../model/booking_overview_item.dart';
 import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
@@ -34,20 +35,23 @@ class AdminBookingListPage implements OnInit {
 
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
+	final PrinterRepository _printerRepository;
 
 	List<BookingOverviewItem> _bookings;
 	String _filterLunch = '';
 	String _filterStatus = 'none';
 	String _filterText = '';
+	Timer _timer;
 
 	@ViewChild('bookingPreview')
 	BookingPreviewComponent bookingPreview;
 
 	List<BookingOverviewItem> bookingsView;
 	final PagingSupport paging = new PagingSupport(PageLimit);
+	bool printerIsAvailable = false;
 	SortableState sort = new SortableState('reference', false);
 
-	AdminBookingListPage(this._bookingRepository, this._clientFactory);
+	AdminBookingListPage(this._bookingRepository, this._clientFactory, this._printerRepository);
 
 	String get filterLunch => _filterLunch;
 
@@ -77,15 +81,15 @@ class AdminBookingListPage implements OnInit {
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
 	String getStatus(BookingOverviewItem item) {
-		if(item.isLocked)
+		if (item.isLocked)
 			return LOCKED;
-		if(item.isFullyPaid)
+		if (item.isFullyPaid)
 			return FULLY_PAID;
-		if(item.isPartiallyPaid)
+		if (item.isPartiallyPaid)
 			return PARTIALLY_PAID;
-		if(item.isOverPaid)
+		if (item.isOverPaid)
 			return OVER_PAID;
-		if(item.isUnpaid)
+		if (item.isUnpaid)
 			return NOT_PAID;
 
 		return NONE;
@@ -93,7 +97,16 @@ class AdminBookingListPage implements OnInit {
 
 	Future<Null> ngOnInit() async {
 		paging.refreshCallback = _refreshView;
+
 		await refresh();
+		await _refreshPrinterState();
+
+		_timer = new Timer.periodic(new Duration(seconds: 30), _tick);
+	}
+
+	void ngOnDestroy() {
+		if (null != _timer)
+			_timer.cancel();
 	}
 
 	void onFilterChanged() {
@@ -109,26 +122,31 @@ class AdminBookingListPage implements OnInit {
 		bookingPreview.open(booking);
 	}
 
+	Future<Null> printBooking(BookingOverviewItem booking) async {
+		final client = _clientFactory.getClient();
+		await _printerRepository.enqueue(client, booking.reference);
+	}
+
 	Future<Null> refresh() async {
 		try {
 			final client = _clientFactory.getClient();
 			_bookings = await _bookingRepository.getOverview(client);
 			_refreshView();
-		} catch(e) {
+		} catch (e) {
 			print('Failed to load list of bookings: ' + e.toString());
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 
 	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
-		if(sort.desc) {
+		if (sort.desc) {
 			// Swap the items when using descending sort, so we can keep the rest identical
 			BookingOverviewItem temp = two;
 			two = one;
 			one = temp;
 		}
 
-		switch(sort.column) {
+		switch (sort.column) {
 			case 'status':
 				return _statusToInt(one) - _statusToInt(two);
 			case 'reference':
@@ -151,17 +169,22 @@ class AdminBookingListPage implements OnInit {
 		}
 	}
 
+	Future<Null> _refreshPrinterState() async {
+		final client = _clientFactory.getClient();
+		printerIsAvailable = await _printerRepository.isAvailable(client);
+	}
+
 	void _refreshView() {
 		Iterable<BookingOverviewItem> filtered = _bookings;
 
-		if(isNotEmpty(_filterText)) {
+		if (isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
 			filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
 		}
-		if(NONE != _filterStatus) {
+		if (NONE != _filterStatus) {
 			filtered = filtered.where((b) => getStatus(b) == _filterStatus);
 		}
-		if(isNotEmpty(_filterLunch)) {
+		if (isNotEmpty(_filterLunch)) {
 			filtered = filtered.where((b) => b.lunch == _filterLunch);
 		}
 
@@ -173,17 +196,21 @@ class AdminBookingListPage implements OnInit {
 	}
 
 	static int _statusToInt(BookingOverviewItem item) {
-		if(item.isLocked)
+		if (item.isLocked)
 			return 4;
-		if(item.isFullyPaid)
+		if (item.isFullyPaid)
 			return 3;
-		if(item.isPartiallyPaid)
+		if (item.isPartiallyPaid)
 			return 2;
-		if(item.isOverPaid)
+		if (item.isOverPaid)
 			return 1;
-		if(item.isUnpaid)
+		if (item.isUnpaid)
 			return 0;
 
 		return 5;
+	}
+
+	Future<Null> _tick(Timer ignored) async {
+		await _refreshPrinterState();
 	}
 }
