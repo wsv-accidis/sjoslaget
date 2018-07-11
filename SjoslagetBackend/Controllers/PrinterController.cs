@@ -63,6 +63,13 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			return Ok();
 		}
 
+		[HttpGet]
+		[Authorize(Roles = Roles.Admin)]
+		public IHttpActionResult IsAvailable()
+		{
+			return this.OkNoCache(!PrinterHasTimedOut);
+		}
+
 		[HttpPut]
 		[Authorize(Roles = Roles.Admin)]
 		public IHttpActionResult Poll()
