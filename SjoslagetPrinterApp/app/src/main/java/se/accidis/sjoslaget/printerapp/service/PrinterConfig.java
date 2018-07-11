@@ -6,6 +6,8 @@ import com.brother.ptouch.sdk.LabelInfo;
 import com.brother.ptouch.sdk.Printer;
 import com.brother.ptouch.sdk.PrinterInfo;
 
+import se.accidis.sjoslaget.printerapp.R;
+
 public final class PrinterConfig {
     public static final String PRINT_CHARSET = "ISO-8859-1";
 
@@ -34,7 +36,7 @@ public final class PrinterConfig {
             printerInfo.labelNameIndex = mLabelIndex;
 
             if (!mPrinter.setPrinterInfo(printerInfo)) {
-                throw new PrinterException("Failed to configure printer.");
+                throw new PrinterException("Failed to configure printer.", R.string.error_communication);
             }
         }
     }
@@ -59,7 +61,7 @@ public final class PrinterConfig {
         printerInfo.workPath = mWorkPath;
 
         if (!mPrinter.setPrinterInfo(printerInfo)) {
-            throw new PrinterException("Failed to configure printer.");
+            throw new PrinterException("Failed to configure printer.", R.string.error_communication);
         }
 
         mHasInitialConfig = true;
@@ -77,7 +79,7 @@ public final class PrinterConfig {
         } else if (labelIndex == LabelInfo.QL700.W62RB.ordinal()) {
             return 3; // 62 mm continuous red/black
         } else {
-            throw new PrinterException("No supported labels in printer.");
+            throw new PrinterException("No supported labels in printer.", R.string.error_labels);
         }
     }
 }

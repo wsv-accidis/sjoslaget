@@ -9,23 +9,23 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.StringRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import com.brother.ptouch.sdk.Printer;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import ca.mimic.oauth2library.OAuth2Client;
-import ca.mimic.oauth2library.OAuthResponse;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import se.accidis.sjoslaget.printerapp.util.LocalBroadcasts;
 import se.accidis.sjoslaget.printerapp.R;
 import se.accidis.sjoslaget.printerapp.service.PrinterRelayService;
+import se.accidis.sjoslaget.printerapp.util.LocalBroadcasts;
 
 public final class MainActivity extends AppCompatActivity {
     private static final String ACTION_USB_PERMISSION = "se.accidis.sjoslaget.printerapp.USB_PERMISSION";
@@ -34,13 +34,16 @@ public final class MainActivity extends AppCompatActivity {
 
     private final Runnable mFindUsbPrinterRunnable = new FindUsbPrinterRunnable();
     private final Handler mHandler = new Handler();
+    private final List<String> mLog = new ArrayList<>();
     private final BroadcastReceiver mPrinterRelayBroadcastReceiver = new PrinterRelayServiceBroadcastReceiver();
     private final BroadcastReceiver mUsbPermissionBroadcastReceiver = new UsbPermissionBroadcastReceiver();
 
+    private View mActiveLayout;
     private LocalBroadcastManager mBroadcasts;
     private boolean mIsActive;
     private boolean mIsPaused;
     private boolean mIsPendingUsbPermission;
+    private BaseAdapter mLogListAdapter;
     private View mPrintingLayout;
     private UsbManager mUsbManager;
     private View mWaitingForPrinterLayout;
@@ -57,8 +60,13 @@ public final class MainActivity extends AppCompatActivity {
         mBroadcasts = LocalBroadcastManager.getInstance(this);
         mBroadcasts.registerReceiver(mPrinterRelayBroadcastReceiver, LocalBroadcasts.createIntentFilter());
 
-        mPrintingLayout = findViewById(R.id.layout_printing);
+        mActiveLayout = findViewById(R.id.layout_active);
+        mPrintingLayout = findViewById(R.id.layout_active_printing);
         mWaitingForPrinterLayout = findViewById(R.id.layout_waiting_for_printer);
+
+        final ListView logListView = findViewById(R.id.listview_log);
+        mLogListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mLog);
+        logListView.setAdapter(mLogListAdapter);
     }
 
     @Override
@@ -93,8 +101,14 @@ public final class MainActivity extends AppCompatActivity {
         mPrintingLayout.setVisibility(View.VISIBLE);
     }
 
-    private void onPrintingDone() {
-        mPrintingLayout.setVisibility(View.GONE);
+    private void onPrintingDone(String reference) {
+        writeLog(R.string.print_done, reference);
+        mPrintingLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void onPrintingFailed(@StringRes int errorResId) {
+        writeLog(errorResId);
+        mPrintingLayout.setVisibility(View.INVISIBLE);
     }
 
     private void onUsbPrinterConnected() {
@@ -104,20 +118,31 @@ public final class MainActivity extends AppCompatActivity {
 
     private void setActiveUiState() {
         mWaitingForPrinterLayout.setVisibility(View.GONE);
+        mActiveLayout.setVisibility(View.VISIBLE);
         mHandler.removeCallbacks(mFindUsbPrinterRunnable); // prob not needed
         mIsActive = true;
     }
 
     private void setInitialUiState() {
         mIsActive = false;
+        mActiveLayout.setVisibility(View.GONE);
+        mPrintingLayout.setVisibility(View.INVISIBLE);
         mWaitingForPrinterLayout.setVisibility(View.VISIBLE);
-        mPrintingLayout.setVisibility(View.GONE);
         mHandler.post(mFindUsbPrinterRunnable);
     }
 
     private void startRelayService() {
         final Intent intent = new Intent(this, PrinterRelayService.class);
         startService(intent);
+    }
+
+    private void writeLog(String message) {
+        mLog.add(0, message);
+        mLogListAdapter.notifyDataSetChanged();
+    }
+
+    private void writeLog(@StringRes int resId, Object... args) {
+        writeLog(String.format(getString(resId), args));
     }
 
     private final class FindUsbPrinterRunnable implements Runnable {
@@ -132,6 +157,8 @@ public final class MainActivity extends AppCompatActivity {
 
             if (null != usbDevice) {
                 Log.i(TAG, "Printer found!");
+                writeLog(R.string.waiting_for_job);
+
                 if (!mIsPendingUsbPermission) {
                     final PendingIntent permissionIntent = PendingIntent.getBroadcast(MainActivity.this, 0, new Intent(ACTION_USB_PERMISSION), 0);
                     mUsbManager.requestPermission(usbDevice, permissionIntent);
@@ -155,16 +182,23 @@ public final class MainActivity extends AppCompatActivity {
 
             switch (intent.getAction()) {
                 case LocalBroadcasts.ACTION_PRINTING_STARTED:
-                    if(mIsActive) {
-                        Log.d(TAG, "Printing started");
+                    if (mIsActive) {
+                        Log.d(TAG, "Printing started.");
                         onPrintingStarted();
                     }
                     break;
 
                 case LocalBroadcasts.ACTION_PRINTING_DONE:
-                    if(mIsActive) {
-                        Log.d(TAG, "Printing done");
-                        onPrintingDone();
+                    if (mIsActive) {
+                        Log.d(TAG, "Printing done.");
+                        onPrintingDone(intent.getStringExtra(LocalBroadcasts.EXTRA_BOOKING_REF));
+                    }
+                    break;
+
+                case LocalBroadcasts.ACTION_PRINTING_FAILED:
+                    if (mIsActive) {
+                        Log.d(TAG, "Printing failed.");
+                        onPrintingFailed(intent.getIntExtra(LocalBroadcasts.EXTRA_ERROR_RES, 0));
                     }
                     break;
 

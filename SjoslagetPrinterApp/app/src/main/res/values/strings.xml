@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sjöslaget Etikettskrivare</string>
-    <string name="waiting_for_printer">Väntar på skrivare ...</string>
+    <string name="error_communication">Ett kommunikationsfel uppstod.</string>
+    <string name="error_labels">Fel eller inget papper i skrivaren.</string>
+    <string name="error_printing">Skrivaren kunde inte skriva ut.</string>
+    <string name="error_unknown">Ett okänt fel inträffade.</string>
+    <string name="print_done">Skrev ut %s.</string>
+    <string name="waiting_for_printer">Väntar på skrivare …</string>
+    <string name="waiting_for_job">Skrivaren ansluten.</string>
 </resources>

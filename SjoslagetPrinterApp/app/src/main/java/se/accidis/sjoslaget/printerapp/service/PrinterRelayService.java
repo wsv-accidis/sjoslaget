@@ -10,9 +10,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.brother.ptouch.sdk.LabelInfo;
 import com.brother.ptouch.sdk.Printer;
-import com.brother.ptouch.sdk.PrinterInfo;
 
 import se.accidis.sjoslaget.printerapp.util.LocalBroadcasts;
 import se.accidis.sjoslaget.printerapp.util.SjoslagetApiClient;
