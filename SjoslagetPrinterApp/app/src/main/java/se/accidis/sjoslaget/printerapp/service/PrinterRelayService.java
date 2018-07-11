@@ -28,6 +28,7 @@ public final class PrinterRelayService extends Service {
 
     private SjoslagetApiClient mApiClient;
     private LocalBroadcastManager mBroadcasts;
+    private PrinterConfig mPrinterConfig;
     private UsbManager mUsbManager;
 
     @Override
@@ -42,9 +43,8 @@ public final class PrinterRelayService extends Service {
 
         mApiClient = new SjoslagetApiClient(this);
         mBroadcasts = LocalBroadcastManager.getInstance(this);
+        mPrinterConfig = new PrinterConfig(mPrinter, this);
         mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-        configurePrinter();
 
         mHandler.post(mPrinterRelayRunnable);
     }
@@ -63,23 +63,12 @@ public final class PrinterRelayService extends Service {
         return START_STICKY;
     }
 
-    private void configurePrinter() {
-        // Lots of hardcoded printer settings here, it would be nice to just autodetect these
-        final PrinterInfo printerInfo = new PrinterInfo();
-        printerInfo.printerModel = PrinterInfo.Model.QL_810W;
-        printerInfo.port = PrinterInfo.Port.USB;
-        printerInfo.labelNameIndex = LabelInfo.QL700.W29H90.ordinal();
-        printerInfo.workPath = getCacheDir().getPath();
-
-        mPrinter.setPrinterInfo(printerInfo);
-    }
-
     private final class PrinterRelayRunnable implements Runnable {
         @Override
         public void run() {
             final UsbDevice usbDevice = mPrinter.getUsbDevice(mUsbManager);
             if (null != usbDevice && mUsbManager.hasPermission(usbDevice)) {
-                final PrinterRelayTask task = new PrinterRelayTask(getApplicationContext(), mPrinter, mApiClient, mTaskCompletionListener);
+                final PrinterRelayTask task = new PrinterRelayTask(getApplicationContext(), mPrinter, mPrinterConfig, mApiClient, mTaskCompletionListener);
                 task.execute();
             } else {
                 Log.d(TAG, "Printer disconnected, service is stopping itself.");

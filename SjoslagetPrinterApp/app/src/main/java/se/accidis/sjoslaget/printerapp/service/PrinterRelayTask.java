@@ -20,30 +20,40 @@ import se.accidis.sjoslaget.printerapp.util.SjoslagetApiClient;
 public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
     private static final String TAG = PrinterRelayTask.class.getSimpleName();
 
-    // This is the key assigned in the "Brother P-touch Transfer Manager" for the template to use
-    private static final int PRINT_TEMPLATE_KEY = 1;
-    // The printer doesn't support UTF-8 directly so we need to convert
-    private static final String PRINT_CHARSET = "ISO-8859-1";
-
     private final SjoslagetApiClient mApiClient;
     private LocalBroadcastManager mBroadcasts;
     private CompletionListener mCompletionListener;
     private Printer mPrinter;
+    private PrinterConfig mPrinterConfig;
 
-    PrinterRelayTask(Context context, Printer printer, SjoslagetApiClient apiClient, CompletionListener completionListener) {
+    PrinterRelayTask(Context context, Printer printer, PrinterConfig printerConfig, SjoslagetApiClient apiClient, CompletionListener completionListener) {
         mApiClient = apiClient;
         mBroadcasts = LocalBroadcastManager.getInstance(context);
-        mPrinter = printer;
         mCompletionListener = completionListener;
+        mPrinter = printer;
+        mPrinterConfig = printerConfig;
     }
 
     @Override
     protected Void doInBackground(Void... ignored) {
-        List<BookingLabel> toPrint = pollPrinterQueue();
-        for (BookingLabel label : toPrint) {
-            Log.i(TAG, "Printing label ...");
-            printLabel(label);
+        try {
+            mPrinterConfig.ensureConfigured();
+
+            List<BookingLabel> toPrint = pollPrinterQueue();
+
+            if (!toPrint.isEmpty()) {
+                mPrinterConfig.configurePrePrint();
+
+                for (BookingLabel label : toPrint) {
+                    Log.i(TAG, "Printing label ...");
+                    printLabel(label);
+                }
+            }
+        } catch (Throwable t) {
+            // TODO Broadcast error
+            Log.e(TAG, "Exception while running task.", t);
         }
+
         return null;
     }
 
@@ -65,15 +75,14 @@ public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void printLabel(BookingLabel label) {
+    private void printLabel(BookingLabel label) throws PrinterException {
         mBroadcasts.sendBroadcast(new Intent(LocalBroadcasts.ACTION_PRINTING_STARTED));
         try {
             if (!mPrinter.startCommunication()) {
-                Log.e(TAG, "Printer.startCommunication failed.");
-                return;
+                throw new PrinterException("Failed to start communication.");
             }
 
-            mPrinter.startPTTPrint(PRINT_TEMPLATE_KEY, PRINT_CHARSET);
+            mPrinter.startPTTPrint(mPrinterConfig.getTemplateIndex(), PrinterConfig.PRINT_CHARSET);
             mPrinter.replaceTextName(label.reference, "Reference");
             mPrinter.replaceTextName(label.fullName, "FullName");
             mPrinter.replaceTextName(label.getCabinsText(), "Cabins");
@@ -82,16 +91,16 @@ public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
             final PrinterStatus status = mPrinter.flushPTTPrint();
 
             if (status.errorCode != PrinterInfo.ErrorCode.ERROR_NONE) {
-                Log.e(TAG, String.format("Printer returned error code: %s", status.errorCode.toString()));
+                final String error = String.format("Printer returned error: %s", status.errorCode.toString());
+                Log.e(TAG, error);
+                throw new PrinterException(error);
             } else {
                 Log.d(TAG, "Printer returned success.");
             }
 
             if (!mPrinter.endCommunication()) {
-                Log.e(TAG, "Printer.endCommunication failed.");
+                throw new PrinterException("Failed to finish communication.");
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Exception while trying to print.", e);
         } finally {
             mBroadcasts.sendBroadcast(new Intent(LocalBroadcasts.ACTION_PRINTING_DONE));
         }
