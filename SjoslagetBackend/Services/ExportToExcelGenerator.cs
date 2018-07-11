@@ -15,6 +15,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 	{
 		const string DobFormat = "dd.MM.yyyy";
 
+		static readonly string[] ExportedFields = new[]
+		{
+			nameof(BookingPax.LastName),
+			nameof(BookingPax.FirstName),
+			nameof(BookingPax.Dob),
+			nameof(BookingPax.Gender),
+			nameof(BookingPax.Nationality)
+		};
+
 		readonly CabinRepository _cabinRepository;
 		readonly ProductRepository _productRepository;
 		int _cabinNo;
@@ -136,7 +145,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 6, nationality.ToUpperInvariant(), nameof(BookingPax.Nationality), isCreated, changes);
 			SetCell(sheet, row, 7, reference, null, isCreated, changes);
 
-			if(_updatedSince.HasValue && (isCreated || changes.Any()))
+			if(_updatedSince.HasValue && (isCreated || changes.Any(IsExportedField)))
 				SetCell(sheet, row, 8, isCreated ? "Ny" : "Ändrad", null, true, null);
 		}
 
@@ -268,6 +277,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				sheet[row, 2] = type.Description;
 			}
 		}
+
+		static bool IsExportedField(string fieldName) => ExportedFields.Contains(fieldName);
 
 		static void SetCell(Worksheet sheet, int row, int col, string content, string fieldName, bool mustHighlight, string[] changedFields)
 		{
