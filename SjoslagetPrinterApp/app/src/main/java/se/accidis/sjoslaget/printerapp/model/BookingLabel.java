@@ -30,7 +30,7 @@ public final class BookingLabel {
     @SuppressLint("DefaultLocale")
     private static String concatNameCountPairs(List<NameCountPair> list) {
         if (null == list || list.isEmpty()) {
-            return "";
+            return "-";
         }
         boolean first = true;
         final StringBuilder builder = new StringBuilder();
