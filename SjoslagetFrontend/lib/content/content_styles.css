@@ -64,6 +64,11 @@ iframe.twitter-box {
 	height: 800px;
 }
 
+iframe.youtube-box {
+	height: 273px;
+	margin-left: 1px;
+}
+
 .mono {
 	font-family: 'Roboto Mono', monospace;
 }
