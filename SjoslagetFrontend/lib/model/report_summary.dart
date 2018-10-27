@@ -11,15 +11,19 @@ class ReportSummary {
 
 	ReportSummary(this.labels, this.bookingsCreated, this.bookingsTotal, this.cabinsTotal, this.paxTotal, this.capacityTotal);
 
-	factory ReportSummary.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new ReportSummary(
-			map[LABELS],
-			map[BOOKINGS_CREATED],
-			map[BOOKINGS_TOTAL],
-			map[CABINS_TOTAL],
-			map[PAX_TOTAL],
-			map[CAPACITY_TOTAL]
+	factory ReportSummary.fromJson(String jsonStr) {
+		final Map map = json.decode(jsonStr);
+		return ReportSummary(
+			_getStrings(map[LABELS]),
+			_getInts(map[BOOKINGS_CREATED]),
+			_getInts(map[BOOKINGS_TOTAL]),
+			_getInts(map[CABINS_TOTAL]),
+			_getInts(map[PAX_TOTAL]),
+			_getInts(map[CAPACITY_TOTAL])
 		);
 	}
+
+	static List<int> _getInts(List list) => list.cast<int>().toList();
+
+	static List<String> _getStrings(List list) => list.cast<String>().toList();
 }

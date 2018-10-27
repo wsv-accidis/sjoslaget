@@ -8,26 +8,29 @@ import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/model.dart';
 import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
-import 'booking_component.dart';
-import 'booking_support_utils.dart';
-import 'cabins_component.dart';
-import 'products_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
+import '../content/about_routes.dart';
+import '../content/content_routes.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
 import '../model/booking_source.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
+import 'booking_component.dart';
+import 'booking_support_utils.dart';
+import 'cabins_component.dart';
+import 'products_component.dart';
 
 @Component(
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
-	styleUrls: const ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'booking_cabins_styles.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AboutRoutes]
 )
 class BookingCabinsPage implements OnInit {
 	final BookingRepository _bookingRepository;
@@ -48,6 +51,8 @@ class BookingCabinsPage implements OnInit {
 	String loadingError;
 	bool isNewBooking;
 
+	BookingCabinsPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
+
 	bool get canFinish => !cabins.isEmpty && isSaved && cabins.isValid && products.isValid && !isSaving;
 
 	bool get canSave => !cabins.isEmpty && cabins.isValid && products.isValid && !isSaving;
@@ -64,14 +69,13 @@ class BookingCabinsPage implements OnInit {
 
 	bool get isSaved => null != bookingResult;
 
-	BookingCabinsPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
-
+	@override
 	Future<Null> ngOnInit() async {
 		if (window.sessionStorage.containsKey(BookingComponent.BOOKING)) {
 			/*
 			 * Initialize a new booking where the previously supplied details are in session storage.
 			 */
-			bookingDetails = new BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
+			bookingDetails = BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
 			cabins.registerAddonProvider(products);
 			isNewBooking = true;
 		} else if (_clientFactory.hasCredentials && !_clientFactory.isAdmin) {
@@ -89,13 +93,13 @@ class BookingCabinsPage implements OnInit {
 				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 				booking = await _bookingRepository.findBooking(client, reference);
 			} catch (e) {
-				print('Failed to get cabins or booking due to an exception: ' + e.toString());
+				print('Failed to get cabins or booking due to an exception: ${e.toString()}');
 				loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta Sjöslaget.';
 				cabins.disableAddCabins = true;
 				return;
 			}
 
-			bookingResult = new BookingResult(reference, null);
+			bookingResult = BookingResult(reference, null);
 			bookingDetails = booking;
 
 			cabins.amountPaid = booking.payment.total;
@@ -116,14 +120,14 @@ class BookingCabinsPage implements OnInit {
 			 * Failure case, navigate out of here. User is an admin, or has no booking.
 			 * TODO Handle the case where an admin tries to create a booking through the normal user interface.
 			 */
-			_router.navigate(<dynamic>['/Content/Booking']);
+			await _router.navigateByUrl(ContentRoutes.booking.toUrl());
 		}
 	}
 
 	void finishBooking() {
 		_clientFactory.clear();
 		window.sessionStorage.remove(BookingComponent.BOOKING);
-		_router.navigate(<dynamic>['/Content/Booking']);
+		_router.navigateByUrl(ContentRoutes.booking.toUrl());
 	}
 
 	Future<Null> saveBooking() async {
@@ -138,7 +142,7 @@ class BookingCabinsPage implements OnInit {
 		window.sessionStorage.remove(BookingComponent.BOOKING);
 
 		try {
-			var tuple = await BookingSupportUtils.saveBooking(
+			final tuple = await BookingSupportUtils.saveBooking(
 				_clientFactory,
 				_bookingRepository,
 				bookingDetails,
@@ -149,7 +153,7 @@ class BookingCabinsPage implements OnInit {
 
 			// item1 is BookingResult
 			// item2 is String (bookingError)
-			BookingResult result = tuple.item1;
+			final BookingResult result = tuple.item1;
 			if (null == result) {
 				bookingError = tuple.item2;
 				return;
@@ -172,7 +176,7 @@ class BookingCabinsPage implements OnInit {
 				} catch (e) {
 					// If we are here then saving succeeded but then logging in failed for some reason. Odd.
 					// Force-finish the booking so we don't end up in an unknown state.
-					print('Authentication failed after booking was successfully saved: ' + e.toString());
+					print('Authentication failed after booking was successfully saved: ${e.toString()}');
 					finishBooking();
 				}
 			}

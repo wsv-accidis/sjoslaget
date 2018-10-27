@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:tuple/tuple.dart';
 
-import 'cabins_component.dart';
-import 'products_component.dart';
 import '../client/availability_exception.dart';
 import '../client/booking_exception.dart';
 import '../client/booking_repository.dart';
@@ -17,6 +15,8 @@ import '../model/booking_product_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/cruise_product.dart';
+import 'cabins_component.dart';
+import 'products_component.dart';
 
 class BookingSupportUtils {
 	static Future<Tuple2<BookingResult, String>> saveBooking(ClientFactory clientFactory, BookingRepository bookingRepository,
@@ -30,14 +30,14 @@ class BookingSupportUtils {
 
 		try {
 			result = await bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave, productsToSave);
-			return new Tuple2(result, null);
+			return Tuple2(result, null);
 		} catch (e) {
 			if (e is AvailabilityException) {
 				await cabins.refreshAvailability();
 				await products.refreshAvailability();
 
-				List<BookingCabin> savedCabins = null;
-				List<BookingProduct> savedProducts = null;
+				List<BookingCabin> savedCabins;
+				List<BookingProduct> savedProducts;
 				if (null != bookingResult) {
 					// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
 					try {
@@ -45,7 +45,7 @@ class BookingSupportUtils {
 						savedCabins = lastSavedBooking.cabins;
 						savedProducts = lastSavedBooking.products;
 					} catch (e) {
-						print('Failed to retrieve prior booking for checking availability: ' + e.toString());
+						print('Failed to retrieve prior booking for checking availability: ${e.toString()}');
 					}
 				}
 
@@ -58,8 +58,8 @@ class BookingSupportUtils {
 				// Exception which is not coming from backend, potentially bad network
 				bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att du är ansluten till internet och försök igen. Om problemet kvarstår, kontakta Sjöslaget.';
 			}
-			print('Failed to save booking: ' + e.toString());
-			return new Tuple2(null, bookingError);
+			print('Failed to save booking: ${e.toString()}');
+			return Tuple2(null, bookingError);
 		}
 	}
 
@@ -81,8 +81,7 @@ class BookingSupportUtils {
 		}
 
 		if (hasCabinAvailabilityError) {
-			return 'Det finns inte tillräckligt många lediga hytter för att spara.' + error +
-				' Ta bort hytter från bokningen eller byt till en annan typ och försök igen.';
+			return 'Det finns inte tillräckligt många lediga hytter för att spara.$error Ta bort hytter från bokningen eller byt till en annan typ och försök igen.';
 		}
 
 		bool hasProductAvailabilityError = false;
@@ -99,7 +98,7 @@ class BookingSupportUtils {
 		}
 
 		if (hasProductAvailabilityError) {
-			return error + ' Ta bort tillägget från bokningen eller minska antalet.';
+			return '$error Ta bort tillägget från bokningen eller minska antalet.';
 		} else {
 			// Potential race condition, perhaps we have availability now but didn't when we tried to save
 			return 'Någonting gick fel när bokningen skulle sparas. Försök igen.';
@@ -121,7 +120,7 @@ class BookingSupportUtils {
 		if (null == products)
 			return 0;
 
-		BookingProduct product = products.firstWhere((p) => p.productTypeId == id, orElse: () => null);
+		final BookingProduct product = products.firstWhere((p) => p.productTypeId == id, orElse: () => null);
 		return product != null ? product.quantity : 0;
 	}
 }

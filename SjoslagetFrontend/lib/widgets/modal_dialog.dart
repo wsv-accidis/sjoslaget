@@ -7,8 +7,8 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 @Component(
 	selector: 'modal-dialog',
 	templateUrl: 'modal_dialog.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives],
-	providers: const <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, MaterialDialogComponent, MaterialButtonComponent, ModalComponent],
+	providers: <dynamic>[materialProviders]
 )
 class ModalDialog {
 	Completer _completer;
@@ -45,7 +45,7 @@ class ModalDialog {
 	}
 
 	Future<bool> openAsync() {
-		_completer = new Completer<bool>();
+		_completer = Completer<bool>();
 		wrappingModal.open();
 		return _completer.future;
 	}

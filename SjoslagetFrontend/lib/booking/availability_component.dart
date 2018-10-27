@@ -11,9 +11,9 @@ import '../widgets/spinner_widget.dart';
 @Component(
 	selector: 'availability-component',
 	templateUrl: 'availability_component.html',
-	styleUrls: const ['../content/content_styles.css', 'availability_component.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, materialDirectives, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'availability_component.css'],
+	directives: <dynamic>[coreDirectives, materialDirectives, SpinnerWidget],
+	providers: <dynamic>[materialProviders]
 )
 class AvailabilityComponent implements OnInit {
 	final ClientFactory _clientFactory;
@@ -22,10 +22,11 @@ class AvailabilityComponent implements OnInit {
 	Map<String, int> availability;
 	List<CruiseCabin> cabins;
 
-	bool get isLoading => null == cabins;
-
 	AvailabilityComponent(this._clientFactory, this._cruiseRepository);
 
+	bool get isLoading => null == cabins;
+
+	@override
 	Future<Null> ngOnInit() async {
 		await refresh();
 	}
@@ -42,7 +43,7 @@ class AvailabilityComponent implements OnInit {
 			availability = await _cruiseRepository.getCabinsAvailability(client);
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 		} catch (e) {
-			print('Failed to load cabins and availability: ' + e.toString());
+			print('Failed to load cabins and availability: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}

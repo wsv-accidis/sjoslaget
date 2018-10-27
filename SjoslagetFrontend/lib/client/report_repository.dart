@@ -4,9 +4,9 @@ import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
-import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import '../model/report_data.dart';
 import '../model/report_summary.dart';
+import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 
 @Injectable()
 class ReportRepository {
@@ -17,24 +17,24 @@ class ReportRepository {
 	Future<ReportData> getCurrent(Client client) async {
 		Response response;
 		try {
-			response = await client.get(_apiRoot + '/reporting/current');
+			response = await client.get('$_apiRoot/reporting/current');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);
-		return new ReportData.fromJson(response.body);
+		return ReportData.fromJson(response.body);
 	}
 
 	Future<ReportSummary> getSummary(Client client) async {
 		Response response;
 		try {
-			response = await client.get(_apiRoot + '/reporting/summary');
+			response = await client.get('$_apiRoot/reporting/summary');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);
-		return new ReportSummary.fromJson(response.body);
+		return ReportSummary.fromJson(response.body);
 	}
 }

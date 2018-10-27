@@ -14,19 +14,24 @@ class BookingSource extends BookingDetails {
 	List<BookingProduct> products;
 
 	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.discount, this.isLocked, this.cabins, this.products, this.payment)
-		: super(firstName, lastName, phoneNo, email, lunch, reference) {
-	}
+		: super(firstName, lastName, phoneNo, email, lunch, reference);
 
 	BookingSource.fromDetails(BookingDetails details, this.cabins, this.products)
-		: super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference) {
-	}
+		: super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference);
 
-	factory BookingSource.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		final List<BookingCabin> cabins = map[CABINS].map((Map<String, dynamic> value) => new BookingCabin.fromMap(value)).toList(growable: false);
-		final List<BookingProduct> products = map[PRODUCTS].map((Map<String, dynamic> value) => new BookingProduct.fromMap(value)).toList(growable: false);
+	factory BookingSource.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		final List<BookingCabin> cabins = map[CABINS]
+			.map((dynamic value) => BookingCabin.fromMap(value))
+			.cast<BookingCabin>()
+			.toList(growable: false);
 
-		return new BookingSource(
+		final List<BookingProduct> products = map[PRODUCTS]
+			.map((dynamic value) => BookingProduct.fromMap(value))
+			.cast<BookingProduct>()
+			.toList(growable: false);
+
+		return BookingSource(
 			map[FIRSTNAME],
 			map[LASTNAME],
 			map[PHONE_NO],
@@ -37,15 +42,16 @@ class BookingSource extends BookingDetails {
 			map[IS_LOCKED],
 			cabins,
 			products,
-			new PaymentSummary.fromMap(map[PAYMENT])
+			PaymentSummary.fromMap(map[PAYMENT])
 		);
 	}
 
+	@override
 	String toJson() {
 		final cabinsMap = null == cabins ? null : cabins.map((c) => c.toMap()).toList(growable: false);
 		final productsMap = null == products ? null : products.where((p) => p.quantity > 0).map((p) => p.toMap()).toList(growable: false);
 
-		return JSON.encode({
+		return json.encode({
 			FIRSTNAME: firstName,
 			LASTNAME: lastName,
 			PHONE_NO: phoneNo,

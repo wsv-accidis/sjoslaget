@@ -175,7 +175,9 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\PublishProfiles\Beebyte WebDeploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Beebyte WebDeploy.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

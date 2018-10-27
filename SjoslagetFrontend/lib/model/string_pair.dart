@@ -8,6 +8,6 @@ class KeyValuePair {
 
 	KeyValuePair(this.key, this.value);
 
-	factory KeyValuePair.fromMap(Map<String, dynamic> map) =>
-		new KeyValuePair(map[KEY], ValueConverter.toInt(map[VALUE]));
+	factory KeyValuePair.fromMap(Map map) =>
+		KeyValuePair(map[KEY], ValueConverter.toInt(map[VALUE]));
 }

@@ -13,7 +13,7 @@ class CruiseProduct {
 	CruiseProduct(this.id, this.name, this.description, this.count, this.image, this.price);
 
 	factory CruiseProduct.fromMap(Map<String, dynamic> json) =>
-		new CruiseProduct(json[ID], json[NAME], json[DESCRIPTION], _toInt(json[COUNT]), json[IMAGE], _toInt(json[PRICE]));
+		CruiseProduct(json[ID], json[NAME], json[DESCRIPTION], _toInt(json[COUNT]), json[IMAGE], _toInt(json[PRICE]));
 
 	static int _toInt(dynamic id) => ValueConverter.toInt(id);
 }

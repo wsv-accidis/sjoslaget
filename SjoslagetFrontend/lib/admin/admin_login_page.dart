@@ -8,13 +8,14 @@ import 'package:angular_router/angular_router.dart';
 
 import '../client/client_factory.dart';
 import '../widgets/modal_dialog.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'admin-login-page',
-	styleUrls: const ['../content/content_styles.css'],
+	styleUrls: ['../content/content_styles.css'],
 	templateUrl: 'admin_login_page.html',
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, ModalDialog],
-	providers: const<dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, ModalDialog],
+	providers: <dynamic>[materialProviders]
 )
 class AdminLoginPage {
 	final ClientFactory _clientFactory;
@@ -39,7 +40,7 @@ class AdminLoginPage {
 			_clientFactory.clear();
 			loginFailedDialog.open();
 		} else {
-			_router.navigate(<dynamic>['/Dashboard']);
+			await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
 		}
 	}
 

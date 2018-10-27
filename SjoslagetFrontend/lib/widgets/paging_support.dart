@@ -1,10 +1,12 @@
-import 'dart:math' as Math show min;
+import 'dart:math' as math show min;
 
 class PagingSupport {
 	int _numberOfResults = 0;
 	int _pageNo = 0;
 	final int _pageLimit;
 	Function _refreshView;
+
+	PagingSupport(this._pageLimit);
 
 	bool get hasMultiplePages => numberOfResults > _pageLimit;
 
@@ -18,23 +20,21 @@ class PagingSupport {
 
 	int get pageOffsetStart => 1 + (_pageLimit * _pageNo);
 
-	int get pageOffsetEnd => Math.min(pageOffsetStart + _pageLimit - 1, numberOfResults);
+	int get pageOffsetEnd => math.min(pageOffsetStart + _pageLimit - 1, numberOfResults);
 
 	set pageNo(int value) {
-		if(value < 0)
+		if (value < 0)
 			_pageNo = 0;
-		else if(value > numberOfPages)
+		else if (value > numberOfPages)
 			_pageNo = numberOfPages - 1;
 		else
 			_pageNo = value - 1;
 
-		if(null != _refreshView)
+		if (null != _refreshView)
 			_refreshView();
 	}
 
-	List<int> get pages => new List.generate(numberOfPages, (int i) => 1 + i);
-
-	PagingSupport(this._pageLimit);
+	List<int> get pages => List.generate(numberOfPages, (int i) => 1 + i);
 
 	set refreshCallback(Function fun) => _refreshView = fun;
 
@@ -42,7 +42,7 @@ class PagingSupport {
 		_numberOfResults = list.length;
 
 		// If the list changed so the current page no longer exists, go back to 0
-		if(numberOfResults <= _pageNo * _pageLimit)
+		if (numberOfResults <= _pageNo * _pageLimit)
 			_pageNo = 0;
 
 		return list

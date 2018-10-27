@@ -10,12 +10,12 @@ class CruiseCabin {
 	final String name;
 	final int pricePerPax;
 
-	int get pricePerCabin => pricePerPax * capacity;
-
 	CruiseCabin(this.id, this.name, this.description, this.capacity, this.count, this.pricePerPax);
 
 	factory CruiseCabin.fromMap(Map<String, dynamic> json) =>
-		new CruiseCabin(json[ID], json[NAME], json[DESCRIPTION], _toInt(json[CAPACITY]), _toInt(json[COUNT]), _toInt(json[PRICE_PER_PAX]));
+		CruiseCabin(json[ID], json[NAME], json[DESCRIPTION], _toInt(json[CAPACITY]), _toInt(json[COUNT]), _toInt(json[PRICE_PER_PAX]));
+
+	int get pricePerCabin => pricePerPax * capacity;
 
 	static int _toInt(dynamic id) => ValueConverter.toInt(id);
 }

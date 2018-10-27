@@ -6,16 +6,17 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 
-import 'booking_component.dart';
 import '../client/client_factory.dart';
 import '../widgets/modal_dialog.dart';
+import 'booking_component.dart';
+import 'booking_routes.dart';
 
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
-	styleUrls: const ['booking_login_component.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, ModalDialog],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['booking_login_component.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, ModalDialog],
+	providers: <dynamic>[materialProviders]
 )
 class BookingLoginComponent {
 	final ClientFactory _clientFactory;
@@ -27,11 +28,11 @@ class BookingLoginComponent {
 	String bookingRef;
 	String pinCode;
 
+	BookingLoginComponent(this._clientFactory, this._router);
+
 	bool get isLoggedIn => _clientFactory.hasCredentials;
 
 	String get loggedInUser => _clientFactory.authenticatedUser;
-
-	BookingLoginComponent(this._clientFactory, this._router);
 
 	Future<Null> logIn() async {
 		try {
@@ -44,7 +45,7 @@ class BookingLoginComponent {
 		if (isLoggedIn) {
 			// Ensure we do not have booking details in session storage before going into edit mode
 			window.sessionStorage.remove(BookingComponent.BOOKING);
-			_router.navigate(<dynamic>['/MyBooking/EditCabins']);
+			await _router.navigateByUrl(BookingRoutes.editBooking.toUrl());
 		}
 	}
 

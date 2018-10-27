@@ -11,35 +11,33 @@ class SortableState {
 	SortableState(this.column, this.desc);
 }
 
-@Directive(selector: '[sortableColumns]', inputs: const ['sortColumn', 'sortDesc'])
+@Directive(selector: '[sortableColumns]')
 class SortableColumns {
-	final _headers = new HashMap<String, SortableColumnHeader>();
-	final _onSortChange = new StreamController<SortableState>.broadcast();
-	SortableState _state = new SortableState('', false);
+	final _headers = HashMap<String, SortableColumnHeader>();
+	final _onSortChange = StreamController<SortableState>.broadcast();
+	SortableState _state = SortableState('', false);
 
 	@Output()
 	Stream get onSortChange => _onSortChange.stream;
 
-	String get sortColumn => _state.column;
-
+	@Input()
 	set sortColumn(String column) {
 		if (_state.column != column) {
-			_state = new SortableState(column, _state.desc);
+			_state = SortableState(column, _state.desc);
 			_refreshState();
 		}
 	}
 
-	bool get sortDesc => _state.desc;
-
+	@Input()
 	set sortDesc(bool desc) {
 		if (_state.desc != desc) {
-			_state = new SortableState(_state.column, desc);
+			_state = SortableState(_state.column, desc);
 			_refreshState();
 		}
 	}
 
 	void change(String column, bool desc) {
-		_state = new SortableState(column, desc);
+		_state = SortableState(column, desc);
 		_refreshState();
 	}
 
@@ -70,17 +68,18 @@ class SortableColumns {
 			<glyph *ngIf="mode == 'asc'" icon="arrow_downward"></glyph>
 			<glyph *ngIf="mode == 'desc'" icon="arrow_upward"></glyph>
 		</div>''',
-	directives: const <dynamic>[CORE_DIRECTIVES, materialDirectives]
+	directives: <dynamic>[coreDirectives, materialDirectives]
 )
 class SortableColumnHeader implements OnInit {
 	final SortableColumns _sortableColumns;
 
-	static const ASC = 'asc';
-	static const DESC = 'desc';
-	static const OFF = '';
+	static const String ASC = 'asc';
+	static const String DESC = 'desc';
+	static const String OFF = '';
 
 	SortableColumnHeader(@Host() this._sortableColumns);
 
+	@override
 	void ngOnInit() {
 		_sortableColumns.register(this);
 	}
@@ -95,7 +94,7 @@ class SortableColumnHeader implements OnInit {
 	String title = '';
 
 	void toggle() {
-		mode = (ASC == mode ? DESC : ASC);
+		mode = ASC == mode ? DESC : ASC;
 		_sortableColumns.change(key, mode == DESC);
 	}
 }

@@ -10,16 +10,15 @@ class PaymentSummary {
 
 	PaymentSummary(this.latest, this.total);
 
-	factory PaymentSummary.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new PaymentSummary.fromMap(map);
+	factory PaymentSummary.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		return PaymentSummary.fromMap(map);
 	}
 
-	factory PaymentSummary.fromMap(Map<String, dynamic> json) {
-		// TODO: JSON parser internally reads the decimal as a double. This may cause loss of precision although not very likely.
-		return new PaymentSummary(
+	// TODO: JSON parser internally reads the decimal as a double. This may cause loss of precision although not very likely.
+	factory PaymentSummary.fromMap(Map<String, dynamic> json) =>
+		PaymentSummary(
 			DateTime.parse(json[LATEST]),
 			Decimal.parse(json[TOTAL].toString())
 		);
-	}
 }

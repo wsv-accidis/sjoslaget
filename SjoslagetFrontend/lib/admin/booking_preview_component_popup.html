@@ -2,7 +2,7 @@
 	<spinner-widget *ngIf="!isLoaded"></spinner-widget>
 
 	<div *ngIf="isLoaded">
-		<a [routerLink]="['Booking', {'ref': booking.reference}]">
+		<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">
 			<h1 class="mono">{{ booking.reference }}</h1>
 		</a>
 

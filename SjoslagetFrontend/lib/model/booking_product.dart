@@ -6,14 +6,12 @@ class BookingProduct {
 
 	BookingProduct(this.productTypeId, this.quantity);
 
-	factory BookingProduct.fromMap(Map<String, dynamic> map) {
-		return new BookingProduct(map[PRODUCT_TYPE_ID], map[QUANTITY]);
-	}
+	factory BookingProduct.fromMap(Map<String, dynamic> map) =>
+		BookingProduct(map[PRODUCT_TYPE_ID], map[QUANTITY]);
 
-	Map<String, dynamic> toMap() {
-		return <String, dynamic>{
+	Map<String, dynamic> toMap() =>
+		<String, dynamic>{
 			PRODUCT_TYPE_ID: productTypeId,
 			QUANTITY: quantity
 		};
-	}
 }

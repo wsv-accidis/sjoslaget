@@ -14,22 +14,10 @@ class BookingOverviewItem {
 	final bool isLocked;
 	final DateTime updated;
 
-	Decimal get amountRemaining => totalPrice - amountPaid;
-
-	bool get isFullyPaid => amountRemaining.ceilToDouble() == 0;
-
-	bool get isPartiallyPaid => amountRemaining.toDouble() > 0 && amountRemaining < totalPrice;
-
-	bool get isOverPaid => amountRemaining.toDouble() < 0;
-
-	bool get isUnpaid => amountPaid.toDouble() <= 0;
-
-	String get lunchFormatted => str.isEmpty(lunch) ? '' : lunch + ':00';
-
 	BookingOverviewItem(this.reference, this.firstName, this.lastName, this.lunch, this.totalPrice, this.amountPaid, this.numberOfCabins, this.isLocked, this.updated);
 
-	factory BookingOverviewItem.fromMap(Map<String, dynamic> json) {
-		return new BookingOverviewItem(
+	factory BookingOverviewItem.fromMap(Map<String, dynamic> json) =>
+		BookingOverviewItem(
 			json[REFERENCE],
 			json[FIRSTNAME],
 			json[LASTNAME],
@@ -40,5 +28,16 @@ class BookingOverviewItem {
 			json[IS_LOCKED],
 			DateTime.parse(json[UPDATED])
 		);
-	}
+
+	Decimal get amountRemaining => totalPrice - amountPaid;
+
+	bool get isFullyPaid => amountRemaining.ceilToDouble() == 0;
+
+	bool get isPartiallyPaid => amountRemaining.toDouble() > 0 && amountRemaining < totalPrice;
+
+	bool get isOverPaid => amountRemaining.toDouble() < 0;
+
+	bool get isUnpaid => amountPaid.toDouble() <= 0;
+
+	String get lunchFormatted => str.isEmpty(lunch) ? '' : '$lunch:00';
 }

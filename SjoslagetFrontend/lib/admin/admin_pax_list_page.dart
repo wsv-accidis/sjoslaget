@@ -13,29 +13,33 @@ import '../model/cruise_cabin.dart';
 import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'admin-pax-list-page',
 	templateUrl: 'admin_pax_list_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_pax_list_page.css', '../booking/cabins_gender_field.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: const<dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_pax_list_page.css', '../booking/cabins_gender_field.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminPaxListPage implements OnInit {
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
 
-	static const GroupMaxLength = 30;
-	static const PageLimit = 60;
+	static const int GroupMaxLength = 30;
+	static const int PageLimit = 60;
 
 	String _filterText = '';
 	bool _filterYear5 = false;
 	List<BookingPaxItem> _pax;
 
-	final PagingSupport paging = new PagingSupport(PageLimit);
+	final PagingSupport paging = PagingSupport(PageLimit);
 	List<BookingPaxItem> paxView;
-	SortableState sort = new SortableState('reference', false);
+	SortableState sort = SortableState('reference', false);
+
+	AdminPaxListPage(this._bookingRepository, this._clientFactory, this._cruiseRepository);
 
 	String get filterText => _filterText;
 
@@ -53,8 +57,7 @@ class AdminPaxListPage implements OnInit {
 
 	bool get isLoading => null == paxView;
 
-	AdminPaxListPage(this._bookingRepository, this._clientFactory, this._cruiseRepository);
-
+	@override
 	Future<Null> ngOnInit() async {
 		paging.refreshCallback = _refreshView;
 		await refresh();
@@ -70,26 +73,26 @@ class AdminPaxListPage implements OnInit {
 			final client = _clientFactory.getClient();
 			final cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_pax = await _bookingRepository.getPax(client);
-			_pax.forEach((p) {
+			for (BookingPaxItem p in _pax) {
 				_limitTextLengths(p);
 				_populateCabinType(p, cruiseCabins);
-			});
+			}
 
 			_refreshView();
-		} catch(e) {
-			print('Failed to load list of bookings: ' + e.toString());
+		} catch (e) {
+			print('Failed to load list of bookings: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 
 	int _bookingComparator(BookingPaxItem one, BookingPaxItem two) {
-		if(sort.desc) {
-			BookingPaxItem temp = two;
+		if (sort.desc) {
+			final BookingPaxItem temp = two;
 			two = one;
 			one = temp;
 		}
 
-		switch(sort.column) {
+		switch (sort.column) {
 			case 'reference':
 				return one.reference.compareTo(two.reference);
 			case 'cabinType':
@@ -113,7 +116,7 @@ class AdminPaxListPage implements OnInit {
 	}
 
 	static String _ellipsify(String str, int length) {
-		if(isNotEmpty(str) && str.length > length - 3) {
+		if (isNotEmpty(str) && str.length > length - 3) {
 			return str.substring(0, length - 3).trimRight() + '...';
 		} else {
 			return str;
@@ -129,7 +132,7 @@ class AdminPaxListPage implements OnInit {
 			pax.cabinType = cruiseCabins
 				.firstWhere((c) => c.id == pax.cabinTypeId)
 				.name;
-		} catch(e) {
+		} catch (e) {
 			// Shouldn't happen, but can if cruiseCabins failed to initialize properly for some reason
 			pax.cabinType = '?';
 		}
@@ -138,16 +141,16 @@ class AdminPaxListPage implements OnInit {
 	void _refreshView() {
 		Iterable<BookingPaxItem> filtered = _pax;
 
-		if(_filterYear5) {
+		if (_filterYear5) {
 			filtered = filtered.where((b) => b.years == 4);
 		}
-		if(isNotEmpty(_filterText)) {
+		if (isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
 			filtered = filtered.where((b) => '${b.reference} ${b.group} ${b.name}'.toLowerCase().contains(filterText));
 		}
 
 		// Can't sort an iterable in Dart without turning it to a list first
-		List<BookingPaxItem> sorted = filtered.toList(growable: false);
+		final List<BookingPaxItem> sorted = filtered.toList(growable: false);
 		sorted.sort(_bookingComparator);
 
 		paxView = paging.apply(sorted);

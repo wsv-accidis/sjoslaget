@@ -12,12 +12,10 @@ class BookingPaxItem {
 	final String nationality;
 	final int years;
 
-	String get name => firstName + ' ' + lastName;
-
 	BookingPaxItem(this.cabinTypeId, this.reference, this.group, this.firstName, this.lastName, this.gender, this.dob, this.nationality, this.years);
 
-	factory BookingPaxItem.fromMap(Map<String, dynamic> json) {
-		return new BookingPaxItem(
+	factory BookingPaxItem.fromMap(Map<String, dynamic> json) =>
+		BookingPaxItem(
 			json[CABIN_TYPE_ID],
 			json[REFERENCE],
 			json[GROUP],
@@ -28,5 +26,6 @@ class BookingPaxItem {
 			json[NATIONALITY],
 			json[YEARS]
 		);
-	}
+
+	String get name => '$firstName $lastName';
 }

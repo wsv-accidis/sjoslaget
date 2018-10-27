@@ -1,5 +1,5 @@
-import 'dart:html' show querySelector, CanvasElement;
 import 'dart:async';
+import 'dart:html' show querySelector;
 
 import 'package:angular/angular.dart';
 import 'package:chartjs/chartjs.dart';
@@ -17,17 +17,17 @@ import '../model/string_pair.dart';
 @Component(
 	selector: 'sjoslaget-stats-app',
 	templateUrl: 'stats_component.html',
-	styleUrls: const ['stats_component.css'],
-	providers: const <dynamic>[
+	styleUrls: ['stats_component.css'],
+	providers: <dynamic>[
 		ClientFactory,
 		CruiseRepository,
 		ReportRepository
 	],
-	directives: const <dynamic>[CORE_DIRECTIVES]
+	directives: <dynamic>[coreDirectives]
 )
 class StatsComponent implements OnInit {
-	static const NOT_LIMITED = -1;
-	static final NumberFormat _fpNumFormat = new NumberFormat('0.00');
+	static const int NOT_LIMITED = -1;
+	static final NumberFormat _fpNumFormat = NumberFormat('0.00');
 
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
@@ -40,6 +40,8 @@ class StatsComponent implements OnInit {
 	List<CruiseProduct> products;
 	ReportSummary summary;
 
+	StatsComponent(this._clientFactory, this._cruiseRepository, this._reportRepository);
+
 	bool get hasCabins => null != cabins && null != cabinsAvailability;
 
 	bool get hasProducts => null != products && null != productsQuantity;
@@ -48,8 +50,7 @@ class StatsComponent implements OnInit {
 
 	bool get hasTopGroups => null != current && current.topContacts.isNotEmpty;
 
-	StatsComponent(this._clientFactory, this._cruiseRepository, this._reportRepository);
-
+	@override
 	Future<Null> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
@@ -62,7 +63,8 @@ class StatsComponent implements OnInit {
 			current = await _reportRepository.getCurrent(client);
 			summary = await _reportRepository.getSummary(client);
 		} catch (e) {
-			print('Failed to load stats: ' + e.toString());
+			print('Failed to load stats: ${e.toString()}');
+			rethrow;
 		}
 
 		_createCharts();
@@ -74,9 +76,7 @@ class StatsComponent implements OnInit {
 		return cabin.count - cabinsAvailability[cabin.id];
 	}
 
-	int getBookedPercent(CruiseCabin cabin) {
-		return 100 * getBookedCount(cabin) ~/ cabin.count;
-	}
+	int getBookedPercent(CruiseCabin cabin) => 100 * getBookedCount(cabin) ~/ cabin.count;
 
 	int getProductBookedCount(CruiseProduct prod) {
 		if (null == productsQuantity || !productsQuantity.containsKey(prod.id))
@@ -118,51 +118,51 @@ class StatsComponent implements OnInit {
 		if (current.ageDistribution.isEmpty)
 			return;
 
-		var data = new LinearChartData(
+		final data = LinearChartData(
 			labels: current.ageDistribution.map((pair) => pair.key).toList(growable: false),
 			datasets: <ChartDataSets>[
-				new ChartDataSets(
+				ChartDataSets(
 					backgroundColor: 'rgba(21,33,112,0.8)',
 					data: current.ageDistribution.map((pair) => pair.value).toList(growable: false)
 				)
 			]
 		);
 
-		var config = new ChartConfiguration(
+		final config = ChartConfiguration(
 			data: data,
 			type: 'bar',
-			options: new ChartOptions(
-				legend: new ChartLegendOptions(display: false),
+			options: ChartOptions(
+				legend: ChartLegendOptions(display: false),
 				responsive: true,
 				title: _createTitle('Födelseår')
 			)
 		);
 
-		new Chart(querySelector(selector) as CanvasElement, config);
+		Chart(querySelector(selector), config);
 	}
 
 	void _createDoughnutChart(LinearChartData data, String label, String selector) {
-		var config = new ChartConfiguration(
+		final config = ChartConfiguration(
 			data: data,
 			type: 'doughnut',
-			options: new ChartOptions(
-				legend: new ChartLegendOptions(position: 'bottom'),
+			options: ChartOptions(
+				legend: ChartLegendOptions(position: 'bottom'),
 				responsive: true,
 				title: _createTitle(label)
 			)
 		);
 
-		new Chart(querySelector(selector) as CanvasElement, config);
+		Chart(querySelector(selector), config);
 	}
 
 	void _createGendersChart(String selector) {
 		if (current.genders.isEmpty)
 			return;
 
-		var data = new LinearChartData(
-			labels: ['Män', 'Övriga', 'Kvinnor'],
+		final data = LinearChartData(
+			labels: <String>['Män', 'Övriga', 'Kvinnor'],
 			datasets: <ChartDataSets>[
-				new ChartDataSets(
+				ChartDataSets(
 					backgroundColor: <String>['rgb(119,158,203)', 'rgb(203,119,200)', 'rgb(203,122,119)'],
 					data: <int>[_getValue(current.genders, 'm'), _getValue(current.genders, 'x'), _getValue(current.genders, 'f')]
 				)
@@ -176,10 +176,10 @@ class StatsComponent implements OnInit {
 		if (current.bookingsByPayment.isEmpty)
 			return;
 
-		var data = new LinearChartData(
-			labels: ['Ej betalade', 'Betalade'],
+		final data = LinearChartData(
+			labels: <String>['Ej betalade', 'Betalade'],
 			datasets: <ChartDataSets>[
-				new ChartDataSets(
+				ChartDataSets(
 					backgroundColor: <String>['rgb(201,136,98)', 'rgb(117,209,132)'],
 					data: <int>[_getValue(current.bookingsByPayment, 'unpaid'), _getValue(current.bookingsByPayment, 'paid')]
 				)
@@ -190,26 +190,26 @@ class StatsComponent implements OnInit {
 	}
 
 	void _createLineChart(LinearChartData data, String label, String selector) {
-		var config = new ChartConfiguration(
+		final config = ChartConfiguration(
 			data: data,
 			type: 'line',
-			options: new ChartOptions(
-				legend: new ChartLegendOptions(display: false),
+			options: ChartOptions(
+				legend: ChartLegendOptions(display: false),
 				responsive: true,
 				title: _createTitle(label)
 			)
 		);
 
-		new Chart(querySelector(selector) as CanvasElement, config);
+		Chart(querySelector(selector), config);
 	}
 
 	void _createPaxAndCapacityChart(String selector) {
-		var data = new LinearChartData(labels: summary.labels, datasets: <ChartDataSets>[
-			new ChartDataSets(
+		final data = LinearChartData(labels: summary.labels, datasets: <ChartDataSets>[
+			ChartDataSets(
 				label: 'Totalt antal deltagare',
 				backgroundColor: 'rgba(58,199,151,0.6)',
 				data: summary.paxTotal),
-			new ChartDataSets(
+			ChartDataSets(
 				label: 'Total bokad kapacitet',
 				backgroundColor: 'rgba(21,112,98,0.2)',
 				data: summary.capacityTotal
@@ -220,8 +220,8 @@ class StatsComponent implements OnInit {
 	}
 
 	void _createSimpleLineChart(List<int> values, String label, String backgroundColor, String selector) {
-		var data = new LinearChartData(labels: summary.labels, datasets: <ChartDataSets>[
-			new ChartDataSets(
+		final data = LinearChartData(labels: summary.labels, datasets: <ChartDataSets>[
+			ChartDataSets(
 				backgroundColor: backgroundColor,
 				data: values,
 				label: label
@@ -231,18 +231,17 @@ class StatsComponent implements OnInit {
 		_createLineChart(data, label, selector);
 	}
 
-	ChartTitleOptions _createTitle(String label) {
-		return new ChartTitleOptions(display: true,
+	ChartTitleOptions _createTitle(String label) =>
+		ChartTitleOptions(display: true,
 			fontColor: 'black',
 			fontFamily: 'Carter One',
 			fontSize: 20,
 			padding: 15,
 			text: label
 		);
-	}
 
 	int _getValue(List<KeyValuePair> source, String key) {
-		KeyValuePair pair = source.firstWhere((KeyValuePair pair) => pair.key == key, orElse: null);
+		final pair = source.firstWhere((KeyValuePair pair) => pair.key == key, orElse: () => null);
 		return null != pair ? pair.value : 0;
 	}
 }

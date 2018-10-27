@@ -10,9 +10,9 @@ import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'pricing-page',
-	styleUrls: const ['content_styles.css'],
+	styleUrls: ['content_styles.css'],
 	templateUrl: 'pricing_page_sj.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, SpinnerWidget]
+	directives: <dynamic>[coreDirectives, SpinnerWidget]
 )
 class PricingPage implements OnInit {
 	final ClientFactory _clientFactory;
@@ -26,21 +26,22 @@ class PricingPage implements OnInit {
 		try {
 			final client = _clientFactory.getClient();
 			cabins = await _cruiseRepository.getActiveCruiseCabins(client);
-		} on ExpirationException catch(e) {
-			throw e;
-		} catch(e) {
-			print('Failed to load active cruise cabins: ' + e.toString());
+		} on ExpirationException {
+			rethrow;
+		} catch (e) {
+			print('Failed to load active cruise cabins: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 
+	@override
 	Future<Null> ngOnInit() async {
 		try {
 			await doInit();
-		} on ExpirationException catch(e) {
+		} on ExpirationException catch (e) {
 			print(e.toString());
 			_clientFactory.clear();
-			doInit();
+			await doInit();
 		}
 	}
 }

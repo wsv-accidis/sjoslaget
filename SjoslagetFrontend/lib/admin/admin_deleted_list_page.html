@@ -7,13 +7,13 @@
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
 	<glyph icon="view_list"></glyph>
-	<a [routerLink]="['BookingList']">Bokningar</a>
+	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
 	<span></span>
 	<glyph icon="people"></glyph>
-	<a [routerLink]="['PaxList']">Deltagare</a>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 	<span></span>
 	<glyph icon="arrow_back"></glyph>
-	<a [routerLink]="['Dashboard']">Huvudsidan</a>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 </div>
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>

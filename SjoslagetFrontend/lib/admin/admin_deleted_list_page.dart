@@ -12,13 +12,15 @@ import '../client/deleted_booking_repository.dart';
 import '../model/deleted_booking.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'admin-deleted-list-page',
 	templateUrl: 'admin_deleted_list_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminDeletedListPage implements OnInit {
 	final ClientFactory _clientFactory;
@@ -28,7 +30,7 @@ class AdminDeletedListPage implements OnInit {
 	String _filterText = '';
 
 	List<DeletedBooking> bookingsView;
-	SortableState sort = new SortableState('deleted', true);
+	SortableState sort = SortableState('deleted', true);
 
 	AdminDeletedListPage(this._clientFactory, this._deletedBookingRepository);
 
@@ -45,6 +47,7 @@ class AdminDeletedListPage implements OnInit {
 
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
+	@override
 	Future<Null> ngOnInit() async {
 		await refresh();
 	}
@@ -59,20 +62,20 @@ class AdminDeletedListPage implements OnInit {
 			final client = _clientFactory.getClient();
 			_bookings = await _deletedBookingRepository.getAll(client);
 			_refreshView();
-		} catch(e) {
-			print('Failed to load list of deleted bookings: ' + e.toString());
+		} catch (e) {
+			print('Failed to load list of deleted bookings: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
 
 	int _bookingComparator(DeletedBooking one, DeletedBooking two) {
-		if(sort.desc) {
-			DeletedBooking temp = two;
+		if (sort.desc) {
+			final DeletedBooking temp = two;
 			two = one;
 			one = temp;
 		}
 
-		switch(sort.column) {
+		switch (sort.column) {
 			case 'reference':
 				return one.reference.compareTo(two.reference);
 			case 'contact':
@@ -94,12 +97,12 @@ class AdminDeletedListPage implements OnInit {
 	void _refreshView() {
 		Iterable<DeletedBooking> filtered = _bookings;
 
-		if(isNotEmpty(_filterText)) {
+		if (isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
 			filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
 		}
 
-		List<DeletedBooking> sorted = filtered.toList(growable: false);
+		final List<DeletedBooking> sorted = filtered.toList(growable: false);
 		sorted.sort(_bookingComparator);
 
 		bookingsView = sorted.toList(growable: false);
