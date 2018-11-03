@@ -9,9 +9,9 @@ import '../model/cruise.dart';
 
 @Component(
 	selector: 'start-page',
-	styleUrls: const ['content_styles.css', 'start_page.css'],
+	styleUrls: ['content_styles.css', 'start_page.css'],
 	templateUrl: 'start_page.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, AvailabilityComponent]
+	directives: <dynamic>[coreDirectives, AvailabilityComponent]
 )
 class StartPage implements OnInit {
 	final ClientFactory _clientFactory;
@@ -21,13 +21,14 @@ class StartPage implements OnInit {
 
 	StartPage(this._clientFactory, this._cruiseRepository);
 
+	@override
 	Future<Null> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			final Cruise cruise = await _cruiseRepository.getActiveCruise(client);
 			cruiseIsUnlocked = !cruise.isLocked;
 		} catch (e) {
-			print('Failed to load active cruise: ' + e.toString());
+			print('Failed to load active cruise: ${e.toString()}');
 			// Safe to ignore as it just means we won't show the availability on the start page
 		}
 	}

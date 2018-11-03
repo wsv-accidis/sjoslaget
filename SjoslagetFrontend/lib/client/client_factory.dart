@@ -6,4 +6,4 @@ class ClientFactory extends ClientFactoryBase {
 	ClientFactory(@Inject(SJOSLAGET_API_ROOT) String apiRoot) : super(apiRoot);
 }
 
-const OpaqueToken SJOSLAGET_API_ROOT = const OpaqueToken('sjoslagetApiRoot');
+const OpaqueToken SJOSLAGET_API_ROOT = OpaqueToken<String>('sjoslagetApiRoot');

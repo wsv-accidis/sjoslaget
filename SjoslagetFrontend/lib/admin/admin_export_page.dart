@@ -11,6 +11,7 @@ import 'package:quiver/strings.dart' as str show isBlank, isNotEmpty;
 
 import '../client/client_factory.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 const String TRUE = 'true';
 const String FALSE = 'false';
@@ -18,9 +19,10 @@ const String FALSE = 'false';
 @Component(
 	selector: 'admin-export-page',
 	templateUrl: 'admin_export_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_export_page.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, SpinnerWidget],
-	providers: const<dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_export_page.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminExportPage {
 	final ClientFactory _clientFactory;
@@ -32,14 +34,14 @@ class AdminExportPage {
 	DateTime updatedSinceDate;
 	String updatedSinceError;
 
+	AdminExportPage(@Inject(SJOSLAGET_API_ROOT) this._apiRoot, this._clientFactory);
+
 	bool get canDownload => !isDownloading && !hasUpdatedSinceError;
 
 	bool get hasUpdatedSinceError => str.isNotEmpty(updatedSinceError);
 
-	AdminExportPage(@Inject(SJOSLAGET_API_ROOT) this._apiRoot, this._clientFactory);
-
 	Future<Null> doExport() async {
-		if(!canDownload)
+		if (!canDownload)
 			return;
 
 		isDownloading = true;
@@ -54,12 +56,12 @@ class AdminExportPage {
 			HttpStatus.throwIfNotSuccessful(response);
 
 			final fileName = _getFileName(response.headers['content-disposition']);
-			final blob = new Blob(<dynamic>[response.bodyBytes]);
-			final link = new AnchorElement(href: Url.createObjectUrlFromBlob(blob));
+			final blob = Blob(<dynamic>[response.bodyBytes]);
+			final link = AnchorElement(href: Url.createObjectUrlFromBlob(blob));
 			link.download = fileName;
 			link.click();
 		} catch (e) {
-			print('Failed to export: ' + e.toString());
+			print('Failed to export: ${e.toString()}');
 		} finally {
 			isDownloading = false;
 		}
@@ -68,20 +70,20 @@ class AdminExportPage {
 	void validate() {
 		updatedSinceError = null;
 
-		if(str.isBlank(updatedSince)) {
+		if (str.isBlank(updatedSince)) {
 			updatedSinceDate = null;
 			return;
 		}
 		try {
 			updatedSinceDate = DateTime.parse(updatedSince);
-		} catch(e) {
+		} catch (e) {
 			updatedSinceDate = null;
 			updatedSinceError = 'Ange korrekt datum.';
 		}
 	}
 
 	static String _getFileName(String contentDisp) {
-		final regEx = new RegExp(r'^attachment; filename=(.+)$');
+		final regEx = RegExp(r'^attachment; filename=(.+)$');
 		if (null != contentDisp && regEx.hasMatch(contentDisp)) {
 			return regEx.firstMatch(contentDisp).group(1);
 		} else {

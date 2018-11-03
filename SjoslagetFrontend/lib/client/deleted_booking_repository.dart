@@ -5,8 +5,8 @@ import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
-import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 import '../model/deleted_booking.dart';
+import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 
 @Injectable()
 class DeletedBookingRepository {
@@ -17,14 +17,15 @@ class DeletedBookingRepository {
 	Future<List<DeletedBooking>> getAll(Client client) async {
 		Response response;
 		try {
-			response = await client.get(_apiRoot + '/bookings/deleted');
+			response = await client.get('$_apiRoot/bookings/deleted');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);
-		return JSON.decode(response.body)
-			.map((Map<String, dynamic> value) => new DeletedBooking.fromMap(value))
+		final List jsonResult = json.decode(response.body);
+		return jsonResult
+			.map((dynamic value) => DeletedBooking.fromMap(value))
 			.toList();
 	}
 }

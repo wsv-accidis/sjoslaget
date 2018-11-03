@@ -2,7 +2,7 @@ import 'package:angular/angular.dart';
 
 @Component(
 	selector: 'spinner-widget',
-	styleUrls: const ['spinner_widget.css'],
+	styleUrls: ['spinner_widget.css'],
 	template: '''
 	<div class="spinner-container">
 		<div class="spinner-circle0"></div>

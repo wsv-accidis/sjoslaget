@@ -7,7 +7,6 @@ import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
-import 'booking_preview_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/printer_repository.dart';
@@ -15,23 +14,26 @@ import '../model/booking_overview_item.dart';
 import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
+import 'booking_preview_component.dart';
 
 @Component(
 	selector: 'admin-booking-list-page',
 	templateUrl: 'admin_booking_list_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminBookingListPage implements OnInit {
-	static final NONE = 'none';
-	static final LOCKED = 'locked';
-	static final FULLY_PAID = 'fully-paid';
-	static final PARTIALLY_PAID = 'partially-paid';
-	static final OVER_PAID = 'over-paid';
-	static final NOT_PAID = 'not-paid';
+	static const String NONE = 'none';
+	static const String LOCKED = 'locked';
+	static const String FULLY_PAID = 'fully-paid';
+	static const String PARTIALLY_PAID = 'partially-paid';
+	static const String OVER_PAID = 'over-paid';
+	static const String NOT_PAID = 'not-paid';
 
-	static const PageLimit = 20;
+	static const int PageLimit = 20;
 
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
@@ -47,9 +49,9 @@ class AdminBookingListPage implements OnInit {
 	BookingPreviewComponent bookingPreview;
 
 	List<BookingOverviewItem> bookingsView;
-	final PagingSupport paging = new PagingSupport(PageLimit);
+	final PagingSupport paging = PagingSupport(PageLimit);
 	bool printerIsAvailable = false;
-	SortableState sort = new SortableState('reference', false);
+	SortableState sort = SortableState('reference', false);
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory, this._printerRepository);
 
@@ -95,13 +97,14 @@ class AdminBookingListPage implements OnInit {
 		return NONE;
 	}
 
+	@override
 	Future<Null> ngOnInit() async {
 		paging.refreshCallback = _refreshView;
 
 		await refresh();
 		await _refreshPrinterState();
 
-		_timer = new Timer.periodic(new Duration(seconds: 30), _tick);
+		_timer = Timer.periodic(Duration(seconds: 30), _tick);
 	}
 
 	void ngOnDestroy() {
@@ -133,7 +136,7 @@ class AdminBookingListPage implements OnInit {
 			_bookings = await _bookingRepository.getOverview(client);
 			_refreshView();
 		} catch (e) {
-			print('Failed to load list of bookings: ' + e.toString());
+			print('Failed to load list of bookings: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
@@ -141,7 +144,7 @@ class AdminBookingListPage implements OnInit {
 	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
 		if (sort.desc) {
 			// Swap the items when using descending sort, so we can keep the rest identical
-			BookingOverviewItem temp = two;
+			final BookingOverviewItem temp = two;
 			two = one;
 			one = temp;
 		}
@@ -189,7 +192,7 @@ class AdminBookingListPage implements OnInit {
 		}
 
 		// Can't sort an iterable in Dart without turning it to a list first
-		List<BookingOverviewItem> sorted = filtered.toList(growable: false);
+		final List<BookingOverviewItem> sorted = filtered.toList(growable: false);
 		sorted.sort(_bookingComparator);
 
 		bookingsView = paging.apply(sorted);

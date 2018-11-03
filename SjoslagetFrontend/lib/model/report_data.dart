@@ -12,17 +12,21 @@ class ReportData {
 
 	ReportData(this.ageDistribution, this.bookingsByPayment, this.genders, this.topContacts, this.topGroups);
 
-	factory ReportData.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new ReportData(
-			getReportData(map, AGE_DISTRIBUTION),
-			getReportData(map, BOOKINGS_BY_PAYMENT),
-			getReportData(map, GENDERS),
-			getReportData(map, TOP_CONTACTS),
-			getReportData(map, TOP_GROUPS)
+	factory ReportData.fromJson(String jsonStr) {
+		final Map map = json.decode(jsonStr);
+		return ReportData(
+			_getReportData(map, AGE_DISTRIBUTION),
+			_getReportData(map, BOOKINGS_BY_PAYMENT),
+			_getReportData(map, GENDERS),
+			_getReportData(map, TOP_CONTACTS),
+			_getReportData(map, TOP_GROUPS)
 		);
 	}
 
-	static List<KeyValuePair> getReportData(Map<String, dynamic> map, String key) =>
-		map[key].map((Map<String, dynamic> value) => new KeyValuePair.fromMap(value)).toList(growable: false);
+	static List<KeyValuePair> _getReportData(Map map, String key) {
+		final List keyMap = map[key];
+		return keyMap
+			.map((dynamic value) => KeyValuePair.fromMap(value))
+			.toList(growable: false);
+	}
 }

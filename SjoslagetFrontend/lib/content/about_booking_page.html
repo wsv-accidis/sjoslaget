@@ -1,14 +1,14 @@
 <h1>Hur man bokar</h1>
 
 <p>
-	Du bokar direkt här på webbsajten, under <a [routerLink]="['/Content/Booking']">Bokning</a>. Du som bokar är
+	Du bokar direkt här på webbsajten, under <a [routerLink]="ContentRoutes.booking.toUrl()">Bokning</a>. Du som bokar är
 	<strong>kontaktperson</strong> för bokningen och ansvarar för att samla ihop personuppgifter och pengar från alla deltagare.
 	Du kommer att behöva följande information:
 </p>
 
 <ul>
 	<li>Namn, telefonnummer och e-postadress till den som är kontaktperson och står för bokningen.</li>
-	<li>Hur många ni är som ska åka, vilka <a [routerLink]="['/Content/Pricing']">typer av hytter</a> ni vill ha och vilka som ska bo tillsammans.</li>
+	<li>Hur många ni är som ska åka, vilka <a [routerLink]="ContentRoutes.pricing.toUrl()">typer av hytter</a> ni vill ha och vilka som ska bo tillsammans.</li>
 	<li>För varje deltagare: För- och efternamn, kön, födelsedatum, förening (se nedan) och antal tidigare åkta Sjöslag.</li>
 </ul>
 

@@ -12,19 +12,19 @@
 
 <p style="font-size: large">
 	<glyph icon="mood"></glyph>
-	&nbsp;<a [routerLink]="['Booking']">Hur man bokar</a><br/>
+	&nbsp;<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a><br/>
 	<glyph icon="date_range"></glyph>
-	&nbsp;<a [routerLink]="['Program']">Program och datum</a><br/>
+	&nbsp;<a [routerLink]="AboutRoutes.program.toUrl()">Program och datum</a><br/>
 	<glyph icon="security"></glyph>
-	&nbsp;<a [routerLink]="['Rules']">Regler ombord</a><br/>
+	&nbsp;<a [routerLink]="AboutRoutes.rules.toUrl()">Regler ombord</a><br/>
 	<glyph icon="chat_bubble_outline"></glyph>
-	&nbsp;<a [routerLink]="['Faq']">Vanliga frågor</a><br/>
+	&nbsp;<a [routerLink]="AboutRoutes.faq.toUrl()">Vanliga frågor</a><br/>
 	<glyph icon="import_contacts"></glyph>
-	&nbsp;<a [routerLink]="['History']">Historik</a><br />
+	&nbsp;<a [routerLink]="AboutRoutes.history.toUrl()">Historik</a><br />
 	<glyph icon="vpn_key"></glyph>
-	&nbsp;<a [routerLink]="['Privacy']">Integritetspolicy</a>
+	&nbsp;<a [routerLink]="AboutRoutes.privacy.toUrl()">Integritetspolicy</a>
 </p>
 
 <p>
-	Om det du behövde veta mot förmodan inte fanns på någon av sidorna så är det bara att du <a [routerLink]="['/Content/Contact']">hör av dig</a>!
+	Om det du behövde veta mot förmodan inte fanns på någon av sidorna så är det bara att du <a [routerLink]="ContentRoutes.contact.toUrl()">hör av dig</a>!
 </p>

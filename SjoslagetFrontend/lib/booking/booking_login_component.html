@@ -32,7 +32,7 @@
 
 <div *ngIf="isLoggedIn" class="login-notice">
 	Du är inloggad som {{ loggedInUser }}. <a href="javascript:" (click)="logOut()">Logga ut</a> när du är klar eller
-	<a [routerLink]="['/MyBooking/EditCabins']">fortsätt redigera din bokning</a>.
+	<!-- TODO <a [routerLink]="['/MyBooking/EditCabins']">fortsätt redigera din bokning</a>. -->
 </div>
 
 <modal-dialog #loginFailedDialog

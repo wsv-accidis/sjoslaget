@@ -274,11 +274,12 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
     cd $(SolutionDir)SjoslagetFrontend
-    pub build
-    cd $(SolutionDir)SjoslagetFrontend\build\web
+    webdev build
+    cd $(SolutionDir)SjoslagetFrontend\build
     rd /s /q packages
-)
-</PostBuildEvent>
+    del .build.manifest
+    del .packages
+)</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -12,8 +12,8 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 import '../booking/booking_support_utils.dart';
 import '../booking/cabins_component.dart';
 import '../booking/products_component.dart';
-import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
+import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../client/user_repository.dart';
 import '../model/booking_cabin_view.dart';
@@ -22,19 +22,20 @@ import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
 import '../widgets/modal_dialog.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, formDirectives, materialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
-	providers: const<dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
-class AdminBookingPage implements OnInit {
+class AdminBookingPage implements OnActivate {
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
-	final RouteParams _routeParams;
 	final Router _router;
 	final UserRepository _userRepository;
 
@@ -58,6 +59,8 @@ class AdminBookingPage implements OnInit {
 	String paymentError;
 	String resetPinCodeError;
 
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router, this._userRepository);
+
 	bool get canDelete => !isSaving;
 
 	bool get canLock => null != booking && !booking.isLocked;
@@ -80,8 +83,6 @@ class AdminBookingPage implements OnInit {
 
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._routeParams, this._router, this._userRepository);
-
 	Future<Null> deleteBooking() async {
 		if (isSaving)
 			return;
@@ -94,12 +95,12 @@ class AdminBookingPage implements OnInit {
 			final client = _clientFactory.getClient();
 			await _bookingRepository.deleteBooking(client, booking.reference);
 		} catch (e) {
-			print('Failed to delete booking: ' + e.toString());
+			print('Failed to delete booking: ${e.toString()}');
 		} finally {
 			isSaving = false;
 		}
 
-		_router.navigate(<dynamic>['Dashboard']);
+		await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
 	}
 
 	Future<Null> lockUnlockBooking() async {
@@ -112,14 +113,15 @@ class AdminBookingPage implements OnInit {
 			final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
 			booking.isLocked = isLocked;
 		} catch (e) {
-			print('Failed to lock/unlock booking: ' + e.toString());
+			print('Failed to lock/unlock booking: ${e.toString()}');
 		} finally {
 			_isLockingUnlocking = false;
 		}
 	}
 
-	Future<Null> ngOnInit() async {
-		final String reference = _routeParams.get('ref');
+	@override
+	void onActivate(_, RouterState routerState) async {
+		final String reference = routerState.parameters['ref'];
 
 		try {
 			final client = _clientFactory.getClient();
@@ -138,7 +140,7 @@ class AdminBookingPage implements OnInit {
 
 			_refreshPayment();
 		} catch (e) {
-			print('Failed to load booking: ' + e.toString());
+			print('Failed to load booking: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
@@ -155,7 +157,7 @@ class AdminBookingPage implements OnInit {
 			try {
 				paymentDec = Decimal.parse(payment.replaceAll(',', '.'));
 			} catch (e) {
-				print('Exception parsing payment amount: ' + e.toString());
+				print('Exception parsing payment amount: ${e.toString()}');
 				paymentError = 'Felaktigt belopp. Kontrollera att fältet bara innehåller siffror, eventuellt minustecken och decimalpunkt.';
 				return;
 			}
@@ -169,7 +171,7 @@ class AdminBookingPage implements OnInit {
 
 				_refreshPayment();
 			} catch (e) {
-				print('Failed to register payment: ' + e.toString());
+				print('Failed to register payment: ${e.toString()}');
 				paymentError = 'Någonting gick fel när betalningen skulle registreras. Försök igen.';
 			}
 		} finally {
@@ -191,7 +193,7 @@ class AdminBookingPage implements OnInit {
 			if (isNotEmpty(pinCode))
 				newPinCode = pinCode;
 		} catch (e) {
-			print('Failed to reset PIN code: ' + e.toString());
+			print('Failed to reset PIN code: ${e.toString()}');
 			resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
 		} finally {
 			isSaving = false;
@@ -209,13 +211,13 @@ class AdminBookingPage implements OnInit {
 		bookingError = null;
 
 		try {
-			var tuple = await BookingSupportUtils.saveBooking(
+			final tuple = await BookingSupportUtils.saveBooking(
 				_clientFactory,
 				_bookingRepository,
 				booking,
 				cabins,
 				products,
-				new BookingResult(booking.reference, null)
+				BookingResult(booking.reference, null)
 			);
 
 			// item1 is BookingResult
@@ -246,7 +248,7 @@ class AdminBookingPage implements OnInit {
 			try {
 				discountInt = int.parse(discount.replaceAll(',', '.').replaceAll('%', ''));
 			} catch (e) {
-				print('Exception parsing discount amount: ' + e.toString());
+				print('Exception parsing discount amount: ${e.toString()}');
 				paymentError = 'Felaktig rabatt. Kontrollera att fältet bara innehåller siffror.';
 				return;
 			}
@@ -260,7 +262,7 @@ class AdminBookingPage implements OnInit {
 
 				_refreshPayment();
 			} catch (e) {
-				print('Failed to update discount: ' + e.toString());
+				print('Failed to update discount: ${e.toString()}');
 				paymentError = 'Någonting gick fel när rabatten skulle sparas. Försök igen.';
 			}
 		} finally {

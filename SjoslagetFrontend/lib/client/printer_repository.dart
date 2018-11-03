@@ -8,7 +8,7 @@ import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 
 @Injectable()
 class PrinterRepository {
-	static final TRUE = 'true';
+	static const String TRUE = 'true';
 
 	final String _apiRoot;
 
@@ -17,9 +17,9 @@ class PrinterRepository {
 	Future<Null> enqueue(Client client, String reference) async {
 		Response response;
 		try {
-			response = await client.put(_apiRoot + '/printer/enqueue/' + reference);
+			response = await client.put('$_apiRoot/printer/enqueue/$reference');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);
@@ -28,9 +28,9 @@ class PrinterRepository {
 	Future<bool> isAvailable(Client client) async {
 		Response response;
 		try {
-			response = await client.get(_apiRoot + '/printer/isavailable');
+			response = await client.get('$_apiRoot/printer/isavailable');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);

@@ -12,13 +12,13 @@ class BookingDetails {
 
 	BookingDetails(this.firstName, this.lastName, this.phoneNo, this.email, this.lunch, this.reference);
 
-	factory BookingDetails.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new BookingDetails(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[LUNCH], map[REFERENCE]);
+	factory BookingDetails.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		return BookingDetails(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[LUNCH], map[REFERENCE]);
 	}
 
-	String toJson() {
-		return JSON.encode({
+	String toJson() =>
+		json.encode({
 			FIRSTNAME: firstName,
 			LASTNAME: lastName,
 			PHONE_NO: phoneNo,
@@ -26,5 +26,4 @@ class BookingDetails {
 			LUNCH: lunch,
 			REFERENCE: reference
 		});
-	}
 }

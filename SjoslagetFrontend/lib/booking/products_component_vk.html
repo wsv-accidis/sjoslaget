@@ -24,8 +24,7 @@
 							[error]="product.quantityError"
 							(keyup)="validate()"
 							label="Antal"
-							[ngControl]="'product_' + p.toString()"
-							type="number">
+							[ngControl]="'product_' + p.toString()">
 			</material-input>
 			× {{ product.priceFormatted }}
 			<span class="product-limit" *ngIf="isLimited(product)">

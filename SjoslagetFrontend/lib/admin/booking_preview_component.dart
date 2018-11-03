@@ -13,13 +13,15 @@ import '../model/cruise_cabin.dart';
 import '../model/cruise_product.dart';
 import '../model/summary_view.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'booking-preview-component-popup',
 	templateUrl: 'booking_preview_component_popup.html',
-	styleUrls: const ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, SpinnerWidget],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'booking_preview_component.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class BookingPreviewComponentPopup implements OnInit {
 	final BookingRepository _bookingRepository;
@@ -33,17 +35,19 @@ class BookingPreviewComponentPopup implements OnInit {
 	@Input()
 	BookingOverviewItem bookingItem;
 
+	BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository);
+
 	List<SummaryView> get cabinSummary {
-		final result = new List<SummaryView>();
-		if(null == booking || null == _cabins)
+		final result = <SummaryView>[];
+		if (null == booking || null == _cabins)
 			return result;
 
-		for(CruiseCabin cabinType in _cabins) {
+		for (CruiseCabin cabinType in _cabins) {
 			final count = booking.cabins
 				.where((bc) => bc.cabinTypeId == cabinType.id)
 				.length;
-			if(count > 0)
-				result.add(new SummaryView(cabinType.id, cabinType.name, count));
+			if (count > 0)
+				result.add(SummaryView(cabinType.id, cabinType.name, count));
 		}
 
 		return result;
@@ -52,15 +56,15 @@ class BookingPreviewComponentPopup implements OnInit {
 	bool get isLoaded => null != booking;
 
 	List<SummaryView> get productSummary {
-		final result = new List<SummaryView>();
-		if(null == booking || null == _products)
+		final result = <SummaryView>[];
+		if (null == booking || null == _products)
 			return result;
 
-		for(CruiseProduct productType in _products) {
+		for (CruiseProduct productType in _products) {
 			final bookingProduct = booking.products.firstWhere(
 					(bp) => bp.productTypeId == productType.id, orElse: () => null);
-			if(null != bookingProduct && bookingProduct.quantity > 0)
-				result.add(new SummaryView(productType.id, productType.name, bookingProduct.quantity));
+			if (null != bookingProduct && bookingProduct.quantity > 0)
+				result.add(SummaryView(productType.id, productType.name, bookingProduct.quantity));
 		}
 
 		return result;
@@ -68,10 +72,9 @@ class BookingPreviewComponentPopup implements OnInit {
 
 	bool get hasProducts => null != booking && booking.products.isNotEmpty;
 
-	BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository);
-
+	@override
 	Future<Null> ngOnInit() async {
-		if(null == bookingItem) {
+		if (null == bookingItem) {
 			print('Failed to initialize popup - no item!');
 			return;
 		}
@@ -81,8 +84,8 @@ class BookingPreviewComponentPopup implements OnInit {
 			_cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_products = await _cruiseRepository.getActiveCruiseProducts(client);
 			booking = await _bookingRepository.findBooking(client, bookingItem.reference);
-		} catch(e) {
-			print('Failed to load booking: ' + e.toString());
+		} catch (e) {
+			print('Failed to load booking: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state
 		}
 	}
@@ -91,9 +94,9 @@ class BookingPreviewComponentPopup implements OnInit {
 @Component(
 	selector: 'booking-preview-component',
 	templateUrl: 'booking_preview_component.html',
-	styleUrls: const ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: const <dynamic>[materialDirectives, BookingPreviewComponentPopup],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'booking_preview_component.css'],
+	directives: <dynamic>[materialDirectives, BookingPreviewComponentPopup],
+	providers: <dynamic>[materialProviders]
 )
 class BookingPreviewComponent {
 	BookingOverviewItem booking;

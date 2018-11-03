@@ -50,7 +50,7 @@
 <p>
 	Genom att logga in på en bokning med den bokningsreferens och PIN-kod som du fick då bokningen skapades kan du normalt se och ändra
 	uppgifterna som finns lagrade om personerna som ingår i bokningen. Om du av någon anledning inte kan göra detta, exempelvis för att
-	bokningen är stängd, eller om du är bokningsansvarig, <a [routerLink]="['/Content/Contact']">kontakta oss</a> så hjälper vi dig.
+	bokningen är stängd, eller om du är bokningsansvarig, <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a> så hjälper vi dig.
 </p>
 
 <h2>
@@ -60,7 +60,7 @@
 <p>
 	Om dina uppgifter finns på en bokning, be den som är bokningsansvarig att gå in och ta bort dig från bokningen - klart! Vi lagrar
 	inte uppgifter om vilka som tagits bort från bokningar. Om du är bokningsansvarig och vill ta bort dig själv, eller hela bokningen,
-	<a [routerLink]="['/Content/Contact']">kontakta oss</a> så hjälper vi dig.
+	<a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a> så hjälper vi dig.
 </p>
 
 <h2>
@@ -78,6 +78,6 @@
 </h2>
 
 <p>
-	Om du har frågor som inte täcks in av den här sidan kan du <a [routerLink]="['/Content/Contact']">kontakta Sjöslaget</a> för att få kontakt
+	Om du har frågor som inte täcks in av den här sidan kan du <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta Sjöslaget</a> för att få kontakt
 	med vår DPO (Data Protection Officer). Vi besvarar normalt alla förfrågningar skyndsamt.
 </p>

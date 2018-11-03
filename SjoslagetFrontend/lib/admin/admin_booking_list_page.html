@@ -7,13 +7,13 @@
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
 	<glyph icon="people"></glyph>
-	<a [routerLink]="['PaxList']">Deltagare</a>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 	<span></span>
 	<glyph icon="delete"></glyph>
-	<a [routerLink]="['DeletedList']">Papperskorg</a>
+	<a [routerLink]="AdminRoutes.deletedList.toUrl()">Papperskorg</a>
 	<span></span>
 	<glyph icon="arrow_back"></glyph>
-	<a [routerLink]="['Dashboard']">Huvudsidan</a>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 </div>
 
 <spinner-widget *ngIf="isLoading"></spinner-widget>
@@ -144,12 +144,12 @@
 			</a>
 		</td>
 		<td>
-			<a [routerLink]="['Booking', {'ref': booking.reference}]" class="mono">
+			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)" class="mono">
 				{{ booking.reference }}
 			</a>
 		</td>
 		<td>
-			<a [routerLink]="['Booking', {'ref': booking.reference}]">
+			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">
 				{{ booking.firstName }} {{ booking.lastName }}
 			</a>
 		</td>

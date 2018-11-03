@@ -64,8 +64,8 @@ class BookingPaxView {
 		yearsError = null;
 	}
 
-	BookingPax toBookingPax() {
-		return new BookingPax(
+	BookingPax toBookingPax() =>
+		BookingPax(
 			group,
 			firstName,
 			lastName,
@@ -73,7 +73,6 @@ class BookingPaxView {
 			dob,
 			nationality,
 			_toInt(years));
-	}
 
 	static int _toInt(dynamic id) => ValueConverter.toInt(id);
 }

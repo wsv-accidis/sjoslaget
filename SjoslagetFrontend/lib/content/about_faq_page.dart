@@ -1,11 +1,14 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
+import 'content_routes.dart';
+
 @Component(
 	selector: 'about-faq-page',
-	styleUrls: const ['content_styles.css'],
+	styleUrls: ['content_styles.css'],
 	templateUrl: 'about_faq_page_sj.html',
-	directives: const <dynamic>[ROUTER_DIRECTIVES]
+	directives: <dynamic>[routerDirectives],
+	exports: [ContentRoutes]
 )
 class AboutFaqPage {
 }

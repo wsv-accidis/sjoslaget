@@ -7,19 +7,19 @@ import 'package:angular_forms/angular_forms.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
 
-import 'booking_addon_provider.dart';
-import 'booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/cruise_cabin.dart';
+import 'booking_addon_provider.dart';
+import 'booking_validator.dart';
 
 @Component(
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
-	styleUrls: const ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
-	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives],
-	providers: const <dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
+	providers: <dynamic>[materialProviders]
 )
 class CabinsComponent implements OnInit {
 	final BookingValidator _bookingValidator;
@@ -27,21 +27,23 @@ class CabinsComponent implements OnInit {
 	final CruiseRepository _cruiseRepository;
 
 	Map<String, int> _availability;
-	List<BookingCabinView> _pendingDeleteCabins = new List<BookingCabinView>();
+	final List<BookingCabinView> _pendingDeleteCabins = <BookingCabinView>[];
 
 	Decimal amountPaid;
-	List<BookingAddonProvider> bookingAddons = new List<BookingAddonProvider>();
-	List<BookingCabinView> bookingCabins = new List<BookingCabinView>();
+	List<BookingAddonProvider> bookingAddons = <BookingAddonProvider>[];
+	List<BookingCabinView> bookingCabins = <BookingCabinView>[];
 	List<CruiseCabin> cruiseCabins;
 	bool disableAddCabins = false;
 	int discountPercent = 0;
 	bool readOnly = false;
 
+	CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
+
 	String get amountPaidFormatted => CurrencyFormatter.formatDecimalAsSEK(hasPayment ? amountPaid : 0);
 
 	Decimal get discount {
-		final priceAsDec = new Decimal.fromInt(priceOfCabins);
-		final discountAsDec = new Decimal.fromInt(discountPercent) / new Decimal.fromInt(100);
+		final priceAsDec = Decimal.fromInt(priceOfCabins);
+		final discountAsDec = Decimal.fromInt(discountPercent) / Decimal.fromInt(100);
 		return priceAsDec * discountAsDec;
 	}
 
@@ -77,15 +79,13 @@ class CabinsComponent implements OnInit {
 
 	String get priceRemainingFormatted => CurrencyFormatter.formatDecimalAsSEK(priceRemaining);
 
-	Decimal get priceWithDiscount => new Decimal.fromInt(price) - discount;
+	Decimal get priceWithDiscount => Decimal.fromInt(price) - discount;
 
 	String get priceWithDiscountFormatted => CurrencyFormatter.formatDecimalAsSEK(priceWithDiscount);
 
-	CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
-
 	void addCabin(String id) {
 		final cabin = _getCruiseCabin(id);
-		final bookingCabin = new BookingCabinView.fromCruiseCabin(cabin);
+		final bookingCabin = BookingCabinView.fromCruiseCabin(cabin);
 		if (bookingCabins.isEmpty) {
 			// First pax of the booking must have group set so it can be used as the default for everyone else
 			bookingCabin.pax[0].firstRow = true;
@@ -126,17 +126,16 @@ class CabinsComponent implements OnInit {
 		return _availability[id];
 	}
 
-	bool hasAvailability(String id) {
-		return getAvailability(id) > 0;
-	}
+	bool hasAvailability(String id) => getAvailability(id) > 0;
 
+	@override
 	Future<Null> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_availability = await _cruiseRepository.getCabinsAvailability(client);
 		} catch (e) {
-			print('Failed to get cabins or availability due to an exception: ' + e.toString());
+			print('Failed to get cabins or availability due to an exception: ${e.toString()}');
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
 		}
 	}
@@ -152,7 +151,7 @@ class CabinsComponent implements OnInit {
 			final client = _clientFactory.getClient();
 			_availability = await _cruiseRepository.getCabinsAvailability(client);
 		} catch (e) {
-			print('Failed to refresh availability due to an exception: ' + e.toString());
+			print('Failed to refresh availability due to an exception: ${e.toString()}');
 			// Ignore this here, keep using old availability
 		}
 	}
@@ -163,7 +162,7 @@ class CabinsComponent implements OnInit {
 
 	String uniqueId(String prefix, int cabin, int pax) {
 		final idx = (100 * cabin) + pax;
-		return prefix + '_' + idx.toString();
+		return '${prefix}_${idx.toString()}';
 	}
 
 	void validate(Event event) {
@@ -173,9 +172,8 @@ class CabinsComponent implements OnInit {
 		}
 	}
 
-	void validateAll() {
-		bookingCabins.forEach((b) => _bookingValidator.validateCabin(b));
-	}
+	void validateAll() =>
+		bookingCabins.forEach(_bookingValidator.validateCabin);
 
 	int _findBookingIndex(HtmlElement target) {
 		if (!target.dataset.containsKey('idx')) {

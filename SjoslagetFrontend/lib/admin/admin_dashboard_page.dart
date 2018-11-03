@@ -8,19 +8,21 @@ import 'package:frontend_shared/util.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../booking/availability_component.dart';
-import '../client/client_factory.dart';
 import '../client/booking_repository.dart';
+import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
 import '../widgets/spinner_widget.dart';
+import 'admin_routes.dart';
 
 @Component(
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
-	styleUrls: const ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
-	directives: const<dynamic>[CORE_DIRECTIVES, ROUTER_DIRECTIVES, materialDirectives, AvailabilityComponent, SpinnerWidget],
-	providers: const<dynamic>[materialProviders]
+	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
+	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, AvailabilityComponent, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
 	final BookingRepository _bookingRepository;
@@ -37,13 +39,13 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	Cruise cruise;
 	List<BookingDashboardItem> recentlyUpdatedBookings;
 
+	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
+
 	bool get cruiseIsLocked => null != cruise && cruise.isLocked;
 
 	bool get isLoadingCruise => null == cruise || _isLockingUnlocking;
 
 	bool get isLoadingBookings => null == recentlyUpdatedBookings;
-
-	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router);
 
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
@@ -52,17 +54,19 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		window.location.href = '/';
 	}
 
+	@override
 	Future<Null> ngOnInit() async {
 		if (!_clientFactory.isAdmin) {
-			_router.navigate(<dynamic>['/Login']);
+			await _router.navigateByUrl(AdminRoutes.login.toUrl());
 			return;
 		}
 
 		await _refreshRecentlyUpdated();
 		_tick(null);
-		_timer = new Timer.periodic(new Duration(milliseconds: 250), _tick);
+		_timer = Timer.periodic(Duration(milliseconds: 250), _tick);
 	}
 
+	@override
 	void ngOnDestroy() {
 		if (null != _timer)
 			_timer.cancel();
@@ -78,7 +82,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			final bool isLocked = await _cruiseRepository.lockUnlockCruise(client);
 			cruise.isLocked = isLocked;
 		} catch (e) {
-			print('Failed to lock/unlock cruise: ' + e.toString());
+			print('Failed to lock/unlock cruise: ${e.toString()}');
 		} finally {
 			_isLockingUnlocking = false;
 		}
@@ -101,9 +105,9 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		} on ExpirationException catch (e) {
 			print(e.toString());
 			_clientFactory.clear();
-			_router.navigate(<dynamic>['/Login']);
+			await _router.navigateByUrl(AdminRoutes.login.toUrl());
 		} catch (e) {
-			print('Failed to load recently updated bookings: ' + e.toString());
+			print('Failed to load recently updated bookings: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state until the user refreshes
 		}
 	}
@@ -112,7 +116,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		if (null == recentlyUpdatedBookings)
 			return;
 
-		final now = new DateTime.now();
+		final now = DateTime.now();
 		for (BookingDashboardItem item in recentlyUpdatedBookings)
 			item.update(now);
 	}
