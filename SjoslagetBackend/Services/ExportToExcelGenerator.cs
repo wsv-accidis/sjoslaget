@@ -145,8 +145,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 6, nationality.ToUpperInvariant(), nameof(BookingPax.Nationality), isCreated, changes);
 			SetCell(sheet, row, 7, reference, null, isCreated, changes);
 
-			if(_updatedSince.HasValue && (isCreated || changes.Any(IsExportedField)))
-				SetCell(sheet, row, 8, isCreated ? "Ny" : "Ändrad", null, true, null);
+			if(_updatedSince.HasValue && (isCreated || changes.Any(c => IsExportedField(c) || IsAddedPax(c))))
+			{
+				bool isNew = isCreated || changes.Any(IsAddedPax);
+				SetCell(sheet, row, 8, isNew ? "Ny" : "Ändrad", null, true, null);
+			}
 		}
 
 		void CreateRowForRemovedPax(Worksheet sheet, int row, int cabinNo, string cabinTypeName, string reference)
@@ -277,6 +280,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				sheet[row, 2] = type.Description;
 			}
 		}
+
+		static bool IsAddedPax(string fieldName) => BookingChange.Added.Equals(fieldName);
 
 		static bool IsExportedField(string fieldName) => ExportedFields.Contains(fieldName);
 
