@@ -22,9 +22,10 @@ a:hover {
 	color: white;
 }
 
-glyph {
+material-icon {
 	color: #0F75BC;
 	padding-top: 3px;
+	padding-right: 5px;
 	vertical-align: text-bottom;
 }
 
@@ -78,7 +79,7 @@ iframe.youtube-box {
 	font-style: italic;
 }
 
-.super-important glyph {
+.super-important material-icon {
 	color: red;
 }
 

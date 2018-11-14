@@ -3,30 +3,30 @@
 </h1>
 
 <div class="admin-menu">
-	<glyph icon="refresh"></glyph>
+	<material-icon icon="refresh"></material-icon>
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
-	<glyph icon="view_list"></glyph>
+	<material-icon icon="view_list"></material-icon>
 	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
 	<span></span>
-	<glyph icon="people"></glyph>
+	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 	<span></span>
-	<glyph icon="equalizer"></glyph>
+	<material-icon icon="equalizer"></material-icon>
 	<a [routerLink]="AdminRoutes.stats.toUrl()">Rapport</a>
 </div>
 
 <div class="admin-menu second-line">
-	<glyph icon="delete"></glyph>
+	<material-icon icon="delete"></material-icon>
 	<a [routerLink]="AdminRoutes.deletedList.toUrl()">Papperskorg</a>
 	<span></span>
-	<glyph icon="cloud_download"></glyph>
+	<material-icon icon="cloud_download"></material-icon>
 	<a [routerLink]="AdminRoutes.export.toUrl()">Exportera</a>
 	<span></span>
-	<glyph icon="lock_outline"></glyph>
+	<material-icon icon="lock_outline"></material-icon>
 	<a [routerLink]="AdminRoutes.user.toUrl()">Byt lösenord</a>
 	<span></span>
-	<glyph icon="exit_to_app"></glyph>
+	<material-icon icon="exit_to_app"></material-icon>
 	<a href="javascript:" (click)="logOut()">Logga ut</a>
 </div>
 

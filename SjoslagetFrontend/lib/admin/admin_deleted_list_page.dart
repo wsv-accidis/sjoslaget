@@ -18,7 +18,7 @@ import 'admin_routes.dart';
 	selector: 'admin-deleted-list-page',
 	templateUrl: 'admin_deleted_list_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget], // TODO: Replace GlyphComponent
+	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminDeletedListPage implements OnInit {

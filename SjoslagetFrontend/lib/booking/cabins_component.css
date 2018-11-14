@@ -21,7 +21,7 @@ a.cabin-delete {
 	text-decoration: none !important;
 }
 
-a.cabin-delete glyph {
+a.cabin-delete material-icon {
 	color: darkred;
 }
 

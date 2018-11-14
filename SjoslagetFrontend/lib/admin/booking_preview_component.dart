@@ -20,7 +20,7 @@ import 'admin_routes.dart';
 	selector: 'booking-preview-component-popup',
 	templateUrl: 'booking_preview_component_popup.html',
 	styleUrls: ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, GlyphComponent, SpinnerWidget], // TODO Replace GlyphComponent
+	directives: <dynamic>[coreDirectives, routerDirectives, MaterialIconComponent, SpinnerWidget],
 	exports: <dynamic>[AdminRoutes]
 )
 class BookingPreviewComponentPopup implements OnInit {

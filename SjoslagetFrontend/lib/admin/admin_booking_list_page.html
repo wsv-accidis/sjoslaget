@@ -3,16 +3,16 @@
 </h1>
 
 <div class="admin-menu">
-	<glyph icon="refresh"></glyph>
+	<material-icon icon="refresh"></material-icon>
 	<a href="javascript:" (click)="refresh()">Uppdatera</a>
 	<span></span>
-	<glyph icon="people"></glyph>
+	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 	<span></span>
-	<glyph icon="delete"></glyph>
+	<material-icon icon="delete"></material-icon>
 	<a [routerLink]="AdminRoutes.deletedList.toUrl()">Papperskorg</a>
 	<span></span>
-	<glyph icon="arrow_back"></glyph>
+	<material-icon icon="arrow_back"></material-icon>
 	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 </div>
 
@@ -137,10 +137,10 @@
 		</td>
 		<td class="bookings-preview-cell">
 			<a (click)="openPreviewPopup(booking)" href="javascript:">
-				<glyph icon="zoom_in"></glyph>
+				<material-icon icon="zoom_in"></material-icon>
 			</a>
 			<a (click)="printBooking(booking)" href="javascript:" *ngIf="printerIsAvailable">
-				<glyph icon="print"></glyph>
+				<material-icon icon="print"></material-icon>
 			</a>
 		</td>
 		<td>

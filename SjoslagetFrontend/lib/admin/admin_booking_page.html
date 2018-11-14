@@ -3,13 +3,13 @@
 </h1>
 
 <div class="admin-menu">
-	<glyph icon="arrow_back"></glyph>
+	<material-icon icon="arrow_back"></material-icon>
 	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 	<span></span>
-	<glyph icon="view_list"></glyph>
+	<material-icon icon="view_list"></material-icon>
 	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
 	<span></span>
-	<glyph icon="people"></glyph>
+	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 </div>
 
@@ -128,7 +128,7 @@
 	<spinner-widget *ngIf="isSaving"></spinner-widget>
 
 	<p class="super-important" *ngIf="hasBookingError">
-		<glyph icon="error"></glyph> {{ bookingError }}
+		<material-icon icon="error"></material-icon> {{ bookingError }}
 	</p>
 </form>
 

@@ -65,10 +65,10 @@ class SortableColumns {
 	template: '''
 		<div style="display: inline-flex; align-items: center">
 			<a href="javascript:" (click)="toggle()">{{ title }}</a>
-			<glyph *ngIf="mode == 'asc'" icon="arrow_downward"></glyph>
-			<glyph *ngIf="mode == 'desc'" icon="arrow_upward"></glyph>
+			<material-icon *ngIf="mode == 'asc'" icon="arrow_downward"></material-icon>
+			<material-icon *ngIf="mode == 'desc'" icon="arrow_upward"></material-icon>
 		</div>''',
-	directives: <dynamic>[coreDirectives, GlyphComponent] // TODO Replace GlyphComponent
+	directives: <dynamic>[coreDirectives, MaterialIconComponent]
 )
 class SortableColumnHeader implements OnInit {
 	final SortableColumns _sortableColumns;
