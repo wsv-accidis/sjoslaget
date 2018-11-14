@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:html' show Event, HtmlElement;
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
@@ -11,6 +10,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/cruise_cabin.dart';
+import '../widgets/components.dart';
 import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
 
@@ -18,8 +18,7 @@ import 'booking_validator.dart';
 	selector: 'cabins-component',
 	templateUrl: 'cabins_component.html',
 	styleUrls: ['../content/content_styles.css', 'cabins_component.css', 'cabins_gender_field.css'],
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, sjoslagetMaterialDirectives]
 )
 class CabinsComponent implements OnInit {
 	final BookingValidator _bookingValidator;

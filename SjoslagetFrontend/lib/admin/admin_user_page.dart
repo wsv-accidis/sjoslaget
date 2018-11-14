@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/client_factory.dart';
 import '../client/user_repository.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
@@ -15,8 +15,7 @@ import 'admin_routes.dart';
 	selector: 'admin-user-page',
 	templateUrl: 'admin_user_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, SpinnerWidget],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, SpinnerWidget]
 )
 class AdminUserPage {
 	final ClientFactory _clientFactory;

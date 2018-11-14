@@ -15,6 +15,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_details.dart';
 import '../model/cruise.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'about_routes.dart';
 import 'content_routes.dart';
@@ -23,7 +24,7 @@ import 'content_routes.dart';
 	selector: 'booking-page',
 	styleUrls: ['content_styles.css'],
 	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, BookingLoginComponent, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, BookingLoginComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: [AboutRoutes, ContentRoutes]
 )

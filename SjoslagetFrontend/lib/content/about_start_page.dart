@@ -14,7 +14,7 @@ import 'content_routes.dart';
 	selector: 'about-start-page',
 	styleUrls: ['content_styles.css'],
 	templateUrl: 'about_start_page_sj.html',
-	directives: <dynamic>[routerDirectives, materialDirectives, AboutBookingPage, AboutFaqPage, AboutHistoryPage, AboutProgramPage, AboutRulesPage],
+	directives: <dynamic>[routerDirectives, GlyphComponent, AboutBookingPage, AboutFaqPage, AboutHistoryPage, AboutProgramPage, AboutRulesPage], // TODO Replace GlyphComponent
 	exports: [AboutRoutes, ContentRoutes]
 )
 class AboutStartPage {

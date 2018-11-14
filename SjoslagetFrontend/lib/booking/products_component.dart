@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:frontend_shared/util.dart';
 
@@ -10,6 +9,7 @@ import '../client/cruise_repository.dart';
 import '../model/booking_product.dart';
 import '../model/booking_product_view.dart';
 import '../model/cruise_product.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'booking_addon_provider.dart';
 import 'booking_validator.dart';
@@ -18,8 +18,7 @@ import 'booking_validator.dart';
 	selector: 'products-component',
 	templateUrl: 'products_component_sj.html',
 	styleUrls: ['../content/content_styles.css', 'products_component.css'],
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, SpinnerWidget],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, sjoslagetMaterialDirectives, SpinnerWidget]
 )
 class ProductsComponent implements BookingAddonProvider, OnInit {
 	static const int NOT_LIMITED = -1;

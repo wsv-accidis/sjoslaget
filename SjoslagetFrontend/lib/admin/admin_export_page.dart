@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/client.dart';
@@ -10,6 +9,7 @@ import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' as str show isBlank, isNotEmpty;
 
 import '../client/client_factory.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
@@ -20,8 +20,7 @@ const String FALSE = 'false';
 	selector: 'admin-export-page',
 	templateUrl: 'admin_export_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_export_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, SpinnerWidget],
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminExportPage {

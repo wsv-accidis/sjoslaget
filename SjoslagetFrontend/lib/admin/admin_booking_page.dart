@@ -20,6 +20,7 @@ import '../model/booking_cabin_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
+import '../widgets/components.dart';
 import '../widgets/modal_dialog.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -28,7 +29,7 @@ import 'admin_routes.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes]
 )

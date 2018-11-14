@@ -11,6 +11,7 @@ import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/printer_repository.dart';
 import '../model/booking_overview_item.dart';
+import '../widgets/components.dart';
 import '../widgets/paging_support.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
@@ -21,7 +22,7 @@ import 'booking_preview_component.dart';
 	selector: 'admin-booking-list-page',
 	templateUrl: 'admin_booking_list_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes]
 )

@@ -18,6 +18,7 @@ import '../model/booking_details.dart';
 import '../model/booking_source.dart';
 import '../model/cruise.dart';
 import '../model/cruise_cabin.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'booking_component.dart';
 import 'booking_support_utils.dart';
@@ -28,7 +29,7 @@ import 'products_component.dart';
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
 	styleUrls: ['../content/content_styles.css', 'booking_cabins_styles.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, SpinnerWidget, CabinsComponent, ProductsComponent],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ProductsComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AboutRoutes]
 )

@@ -9,7 +9,6 @@ import 'admin_routes.dart';
 	templateUrl: 'admin_stats_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_stats_page.css'],
 	directives: <dynamic>[coreDirectives, routerDirectives, GlyphComponent],
-	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminStatsPage {

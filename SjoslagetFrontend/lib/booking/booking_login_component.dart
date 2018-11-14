@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 
 import '../client/client_factory.dart';
+import '../widgets/components.dart';
 import '../widgets/modal_dialog.dart';
 import 'booking_component.dart';
 import 'booking_routes.dart';
@@ -15,8 +15,8 @@ import 'booking_routes.dart';
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
 	styleUrls: ['booking_login_component.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, ModalDialog],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, ModalDialog],
+	exports: <dynamic>[BookingRoutes]
 )
 class BookingLoginComponent {
 	final ClientFactory _clientFactory;

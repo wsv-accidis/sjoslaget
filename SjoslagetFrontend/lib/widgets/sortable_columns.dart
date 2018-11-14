@@ -68,7 +68,7 @@ class SortableColumns {
 			<glyph *ngIf="mode == 'asc'" icon="arrow_downward"></glyph>
 			<glyph *ngIf="mode == 'desc'" icon="arrow_upward"></glyph>
 		</div>''',
-	directives: <dynamic>[coreDirectives, materialDirectives]
+	directives: <dynamic>[coreDirectives, GlyphComponent] // TODO Replace GlyphComponent
 )
 class SortableColumnHeader implements OnInit {
 	final SortableColumns _sortableColumns;

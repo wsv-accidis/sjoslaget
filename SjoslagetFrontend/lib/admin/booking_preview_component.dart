@@ -12,6 +12,7 @@ import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/cruise_product.dart';
 import '../model/summary_view.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
@@ -19,8 +20,7 @@ import 'admin_routes.dart';
 	selector: 'booking-preview-component-popup',
 	templateUrl: 'booking_preview_component_popup.html',
 	styleUrls: ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
+	directives: <dynamic>[coreDirectives, routerDirectives, GlyphComponent, SpinnerWidget], // TODO Replace GlyphComponent
 	exports: <dynamic>[AdminRoutes]
 )
 class BookingPreviewComponentPopup implements OnInit {
@@ -95,8 +95,7 @@ class BookingPreviewComponentPopup implements OnInit {
 	selector: 'booking-preview-component',
 	templateUrl: 'booking_preview_component.html',
 	styleUrls: ['../content/content_styles.css', 'booking_preview_component.css'],
-	directives: <dynamic>[materialDirectives, BookingPreviewComponentPopup],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[BookingPreviewComponentPopup, sjoslagetMaterialDirectives, ModalComponent]
 )
 class BookingPreviewComponent {
 	BookingOverviewItem booking;

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
@@ -10,6 +9,7 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 import '../client/client_factory.dart';
 import '../client/deleted_booking_repository.dart';
 import '../model/deleted_booking.dart';
+import '../widgets/components.dart';
 import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -18,8 +18,7 @@ import 'admin_routes.dart';
 	selector: 'admin-deleted-list-page',
 	templateUrl: 'admin_deleted_list_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
+	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget], // TODO: Replace GlyphComponent
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminDeletedListPage implements OnInit {

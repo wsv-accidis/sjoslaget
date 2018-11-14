@@ -7,7 +7,7 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 @Component(
 	selector: 'modal-dialog',
 	templateUrl: 'modal_dialog.html',
-	directives: <dynamic>[coreDirectives, MaterialDialogComponent, MaterialButtonComponent, ModalComponent],
+	directives: <dynamic>[coreDirectives, MaterialButtonComponent, MaterialDialogComponent, ModalComponent],
 	providers: <dynamic>[materialProviders]
 )
 class ModalDialog {

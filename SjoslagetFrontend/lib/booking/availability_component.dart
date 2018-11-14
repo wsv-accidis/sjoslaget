@@ -12,8 +12,7 @@ import '../widgets/spinner_widget.dart';
 	selector: 'availability-component',
 	templateUrl: 'availability_component.html',
 	styleUrls: ['../content/content_styles.css', 'availability_component.css'],
-	directives: <dynamic>[coreDirectives, materialDirectives, SpinnerWidget],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, MaterialProgressComponent, SpinnerWidget]
 )
 class AvailabilityComponent implements OnInit {
 	final ClientFactory _clientFactory;

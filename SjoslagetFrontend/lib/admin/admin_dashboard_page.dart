@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
@@ -13,6 +12,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
@@ -20,8 +20,7 @@ import 'admin_routes.dart';
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, materialDirectives, AvailabilityComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
+	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, AvailabilityComponent, SpinnerWidget],
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
