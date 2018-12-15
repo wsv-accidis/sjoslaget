@@ -11,9 +11,8 @@ dependencies:
   angular_forms: ^2.0.0
   angular_router: ^2.0.0-alpha
   chartjs:
-    git: # TODO Temporary to fix missing ChartLegendOptions factory, change back to official later
-      url: https://github.com/ntaoo/chartjs.dart.git
-      ref: missing_constructors
+    git:
+      url: https://github.com/google/chartjs.dart.git
   decimal:
   frontend_shared:
     path: ../FrontendShared
