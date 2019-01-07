@@ -16,12 +16,6 @@ div.navigation {
 }
 
 div.logo {
-	border-radius: 15px 0 0 15px;
-}
-
-div.logo img {
-	padding: 5px 15px 5px 0;
-	height: 75px;
 }
 
 div.menu {
@@ -30,33 +24,43 @@ div.menu {
 }
 
 div.menu-item {
-	border-left: 2px solid white;
+	background-color: #0F75BC;
 	box-sizing: border-box;
 	float: left;
+	padding: 4px 0 4px 4px;
 	height: 60px;
 	width: 25%;
 }
 
 div.menu-item a {
 	align-items: center;
-	background-color: #0F76BC;
-	color: white;
+	background-color: white;
+	color: black;
 	display: flex;
-	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
-	font-size: large;
+	font-family: 'Carter One', Helvetica, Arial, sans-serif;
+	font-size: 130%;
 	height: 100%;
 	justify-content: center;
-	line-height: 1.1;
 	text-align: center;
 	text-decoration: none;
 }
 
 div.menu-item a:hover {
+	color: white;
 	background-color: #0A507F;
+}
+
+div.menu > div.menu-item:first-child {
+	border-radius: 19px 0 0 19px;
 }
 
 div.menu > div.menu-item:first-child > a {
 	border-radius: 15px 0 0 15px;
+}
+
+div.menu > div.menu-item:last-child {
+	border-radius: 0 19px 19px 0;
+	padding: 4px;
 }
 
 div.menu > div.menu-item:last-child > a {
@@ -67,6 +71,16 @@ div.content {
 	margin: 10px 5px;
 }
 
+#gotland-logo {
+	background-image: url(gfx/Logo.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	height: 75px;
+	width: 193px;
+	margin: 5px 15px 5px 0;
+	vertical-align: middle;
+}
+
 @media (max-width: 700px) {
 	div.page {
 		min-width: 320px;
@@ -74,16 +88,7 @@ div.content {
 	}
 
 	div.logo {
-		background-color: #0F76BC;
-		border-radius: 0;
 		width: 100%;
-	}
-
-	div.logo img {
-		/* TODO Use different artwork for logo */
-		height: auto;
-		padding: 5px;
-		width: 90px !important;
 	}
 
 	div.navigation {
@@ -91,25 +96,31 @@ div.content {
 	}
 
 	div.menu {
-		height: 60px;
-		border-top: 2px solid white;
+		height: 40px;
 		padding-top: 0;
 	}
 
 	div.menu > div.menu-item:first-child {
-		border-left: none;
+		border-radius: 0;
+		padding-left: 0;
 	}
 
 	div.menu > div.menu-item:first-child > a {
-		border-radius: 0 0 0 15px;
+		border-radius: 0;
+	}
+
+	div.menu > div.menu-item:last-child {
+		border-radius: 0;
+		padding: 2px 0 2px 2px;
 	}
 
 	div.menu > div.menu-item:last-child > a {
-		border-radius: 0 0 15px 0;
+		border-radius: 0;
 	}
 
 	div.menu-item {
 		height: 100%;
+		padding: 2px 0 2px 2px;
 	}
 
 	div.menu-item a {
@@ -118,5 +129,11 @@ div.content {
 
 	div.content {
 		margin: 10px;
+	}
+
+	#gotland-logo {
+		height: 35px;
+		width: 90px !important;
+		margin: 5px;
 	}
 }

@@ -1,7 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
-import 'booking_page.template.dart';
+import 'booking_edit_page.template.dart';
 import 'booking_routes.dart';
 
 @Component(
@@ -12,6 +12,6 @@ import 'booking_routes.dart';
 )
 class BookingComponent {
 	final List<RouteDefinition> routes = [
-		RouteDefinition(routePath: BookingRoutes.editBooking, component: BookingPageNgFactory)
+		RouteDefinition(routePath: BookingRoutes.editBooking, component: BookingEditPageNgFactory)
 	];
 }

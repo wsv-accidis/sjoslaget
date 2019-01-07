@@ -11,12 +11,12 @@ import '../client/event_repository.dart';
 
 @Component(
 	selector: 'booking-page',
-	styleUrls: ['../content/content_styles.css', 'booking_page.css'],
-	templateUrl: 'booking_page.html',
+	styleUrls: ['../content/content_styles.css', 'booking_edit_page.css'],
+	templateUrl: 'booking_edit_page.html',
 	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, PaxComponent],
 	providers: <dynamic>[materialProviders]
 )
-class BookingPage implements OnInit {
+class BookingEditPage implements OnInit {
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 	final Router _router;
@@ -24,7 +24,7 @@ class BookingPage implements OnInit {
 	@ViewChild('pax')
 	PaxComponent pax;
 
-	BookingPage(this._clientFactory, this._eventRepository, this._router);
+	BookingEditPage(this._clientFactory, this._eventRepository, this._router);
 
 	@override
 	Future<void> ngOnInit() async {

@@ -8,8 +8,8 @@ a:hover {
 }
 
 h1, h2, h3 {
-	color: darkgreen;
-	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
+	color: #0F75BC;
+	font-family: 'Carter One', Helvetica, Arial, sans-serif;
 }
 
 h1 {
@@ -86,9 +86,10 @@ ul.undecorated-list li {
 	font-style: italic;
 }
 
-glyph {
+material-icon {
 	color: #0F75BC;
 	padding-top: 3px;
+	padding-right: 5px;
 	vertical-align: text-bottom;
 }
 
