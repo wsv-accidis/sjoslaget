@@ -12,5 +12,5 @@ class Trip {
 	Trip(this.id, this.name, this.departure, this.price);
 
 	factory Trip.fromMap(Map<String, dynamic> json) =>
-		new Trip(json[ID], json[NAME], ValueConverter.parseDateTime(json[DEPARTURE]), Decimal.parse(json[PRICE].toString()));
+		Trip(json[ID], json[NAME], ValueConverter.parseDateTime(json[DEPARTURE]), Decimal.parse(json[PRICE].toString()));
 }

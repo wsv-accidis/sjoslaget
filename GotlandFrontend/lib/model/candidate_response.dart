@@ -9,8 +9,8 @@ class CandidateResponse {
 
 	CandidateResponse(this.id, this.queueSize, this.countdown);
 
-	factory CandidateResponse.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new CandidateResponse(map[ID], map[QUEUE_SIZE], map[COUNTDOWN]);
+	factory CandidateResponse.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		return CandidateResponse(map[ID], map[QUEUE_SIZE], map[COUNTDOWN]);
 	}
 }

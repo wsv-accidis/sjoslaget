@@ -1,30 +1,31 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
-import 'booking/booking_component.dart';
+import 'app_routes.dart';
+import 'booking/booking_component.template.dart';
 import 'booking/booking_validator.dart';
 import 'client/client_factory.dart';
 import 'client/event_repository.dart';
 import 'client/queue_repository.dart';
-import 'content/content_component.dart';
+import 'content/content_component.template.dart';
 
 @Component(
 	selector: 'gotland-app',
 	template: '''
-	<router-outlet></router-outlet>
+	<router-outlet [routes]="routes"></router-outlet>
 	''',
-	providers: const <dynamic>[
+	providers: <dynamic>[
 		BookingValidator,
 		ClientFactory,
 		EventRepository,
-		QueueRepository
+		QueueRepository,
+		routerProviders
 	],
-	directives: const <dynamic>[ROUTER_DIRECTIVES]
+	directives: <dynamic>[routerDirectives]
 )
-@RouteConfig(const [
-	//const Route(path: '/admin/...', name: 'Admin', component: AdminComponent),
-	const Route(path: '/bokning/...', name: 'Booking', component: BookingComponent),
-	const Route(path: '/...', name: 'Content', component: ContentComponent, useAsDefault: true)
-])
 class AppComponent {
+	final List<RouteDefinition> routes = [
+		RouteDefinition(routePath: AppRoutes.booking, component: BookingComponentNgFactory),
+		RouteDefinition(routePath: AppRoutes.content, component: ContentComponentNgFactory)
+	];
 }

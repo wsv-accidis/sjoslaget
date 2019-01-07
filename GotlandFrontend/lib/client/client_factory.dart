@@ -6,4 +6,4 @@ class ClientFactory extends ClientFactoryBase {
 	ClientFactory(@Inject(GOTLAND_API_ROOT) String apiRoot) : super(apiRoot);
 }
 
-const OpaqueToken GOTLAND_API_ROOT = const OpaqueToken('gotlandApiRoot');
+const OpaqueToken GOTLAND_API_ROOT = OpaqueToken<String>('gotlandApiRoot');

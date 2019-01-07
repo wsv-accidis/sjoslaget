@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' show Random;
-import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
@@ -8,34 +7,36 @@ import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/model.dart';
 
+import '../booking/booking_routes.dart';
 import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
 import '../client/queue_repository.dart';
 import '../model/queue_response.dart';
 import '../util/countdown_state.dart';
+import 'content_routes.dart';
 
 @Component(
 	selector: 'countdown-page',
-	styleUrls: const ['content_styles.css', 'countdown_page.css'],
+	styleUrls: ['content_styles.css', 'countdown_page.css'],
 	templateUrl: 'countdown_page.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives],
-	providers: const <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
+	providers: <dynamic>[materialProviders]
 )
 class CountdownPage implements OnInit, OnDestroy {
-	static const MAX_SUBMIT_ATTEMPTS = 3;
-	static const PING_INTERVAL = 60000;
-	static const RANDOM_DELAY_MIN = 5000;
-	static const RANDOM_DELAY_MAX = 10000;
-	static const TICK_INTERVAL = 100;
+	static const int MAX_SUBMIT_ATTEMPTS = 3;
+	static const int PING_INTERVAL = 60000;
+	static const int RANDOM_DELAY_MIN = 5000;
+	static const int RANDOM_DELAY_MAX = 10000;
+	static const int TICK_INTERVAL = 100;
 
 	final ClientFactory _clientFactory;
 	final QueueRepository _queueRepository;
 	final Router _router;
 
-	final _countdown = new CountdownState();
+	final _countdown = CountdownState();
 	Timer _countdownTimer;
 	Timer _pingTimer;
-	final _random = new Random();
+	final _random = Random();
 
 	BookingResult bookingResult;
 	String countdownFormatted;
@@ -54,24 +55,26 @@ class CountdownPage implements OnInit, OnDestroy {
 
 	CountdownPage(this._clientFactory, this._queueRepository, this._router);
 
+	@override
 	void ngOnDestroy() {
 		_cancelTimers();
 	}
 
-	Future<Null> ngOnInit() async {
+	@override
+	Future<void> ngOnInit() async {
 		if (!_countdown.hasState) {
-			_router.navigate(<dynamic>['/Content/Start']);
+			await _router.navigateByUrl(ContentRoutes.start.toUrl());
 			return;
 		}
 
 		_tick(null);
-		_countdownTimer = new Timer.periodic(new Duration(milliseconds: TICK_INTERVAL), _tick);
+		_countdownTimer = Timer.periodic(Duration(milliseconds: TICK_INTERVAL), _tick);
 
 		await _ping(null);
-		_pingTimer = new Timer.periodic(new Duration(milliseconds: PING_INTERVAL), _ping);
+		_pingTimer = Timer.periodic(Duration(milliseconds: PING_INTERVAL), _ping);
 	}
 
-	Future<Null> createBooking() async {
+	Future<void> createBooking() async {
 		try {
 			final client = _clientFactory.getClient();
 			bookingResult = await _queueRepository.toBooking(client, _countdown.candidateId);
@@ -79,16 +82,16 @@ class CountdownPage implements OnInit, OnDestroy {
 		} on BookingException catch (e) {
 			// If we end up here the booking was created on the backend already, so
 			// everything is OK after all
-			print('Conflict when creating booking: ' + e.toString());
+			print('Conflict when creating booking: ${e.toString()}');
 			hasBookingError = true;
 		} catch (e) {
 			// We have a queue position but failed to create a booking
-			print('Failed to create booking: ' + e.toString());
+			print('Failed to create booking: ${e.toString()}');
 			hasError = true;
 		}
 	}
 
-	Future<Null> finishCreateBooking() async {
+	Future<void> finishCreateBooking() async {
 		await createBooking();
 		if(null == bookingResult)
 			return;
@@ -96,14 +99,14 @@ class CountdownPage implements OnInit, OnDestroy {
 		try {
 			await _clientFactory.authenticate(bookingResult.reference, bookingResult.password);
 		} catch (e) {
-			print('Booking was created but failed to authenticate: ' + e.toString());
+			print('Booking was created but failed to authenticate: ${e.toString()}');
 			return;
 		}
 
-		_router.navigate(<dynamic>['/Booking/Booking']);
+		await _router.navigateByUrl(BookingRoutes.editBooking.toUrl());
 	}
 
-	Future<Null> submitCandidate() async {
+	Future<void> submitCandidate() async {
 		_cancelTimers();
 		_clearErrors();
 
@@ -120,8 +123,8 @@ class CountdownPage implements OnInit, OnDestroy {
 				// Add a random delay. This has NO impact on the queue position that this user
 				// gets, as one has already been assigned. It only serves to reduce server load.
 				final int delay = RANDOM_DELAY_MIN + _random.nextInt(RANDOM_DELAY_MAX - RANDOM_DELAY_MIN);
-				print('Claimed queue position ' + queueResponse.placeInQueue.toString() + ', creating booking after ' + delay.toString() + ' ms.');
-				await new Future<Null>.delayed(new Duration(milliseconds: delay), finishCreateBooking);
+				print('Claimed queue position ${queueResponse.placeInQueue.toString()}, creating booking after ${delay.toString()} ms.');
+				await Future<void>.delayed(Duration(milliseconds: delay), finishCreateBooking);
 			} else {
 				hasError = true;
 			}
@@ -130,15 +133,15 @@ class CountdownPage implements OnInit, OnDestroy {
 		}
 	}
 
-	Future<Null> trySubmitCandidate() async {
+	Future<void> trySubmitCandidate() async {
 		try {
 			final client = _clientFactory.getClient();
 			queueResponse = await _queueRepository.go(client, _countdown.candidateId);
 		}
-		on BookingException catch (e) {
+		on BookingException {
 			print('Failed to submit candidate because countdown had not elapsed!');
 		} catch (e) {
-			print('Failed to submit candidate: ' + e.toString());
+			print('Failed to submit candidate: ${e.toString()}');
 		}
 	}
 
@@ -158,17 +161,17 @@ class CountdownPage implements OnInit, OnDestroy {
 		hasError = false;
 	}
 
-	Future<Null> _ping(Timer ignored) async {
+	Future<void> _ping(Timer ignored) async {
 		try {
 			final client = _clientFactory.getClient();
 			final response = await _queueRepository.ping(client, _countdown.candidateId);
 			_countdown.update(response);
-		} on BookingException catch (e) {
+		} on BookingException {
 			// TODO Show inactivity error message
 			print('Failed to ping queue because candidate had timed out.');
 			_cancelTimers();
 		} catch (e) {
-			print('Failed to ping queue: ' + e.toString());
+			print('Failed to ping queue: ${e.toString()}');
 		}
 	}
 

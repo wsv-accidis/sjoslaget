@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:angular_router/angular_router.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 
 import '../booking/pax_component.dart';
 import '../client/client_factory.dart';
@@ -11,10 +11,10 @@ import '../client/event_repository.dart';
 
 @Component(
 	selector: 'booking-page',
-	styleUrls: const ['../content/content_styles.css', 'booking_page.css'],
+	styleUrls: ['../content/content_styles.css', 'booking_page.css'],
 	templateUrl: 'booking_page.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives, PaxComponent],
-	providers: const <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, PaxComponent],
+	providers: <dynamic>[materialProviders]
 )
 class BookingPage implements OnInit {
 	final ClientFactory _clientFactory;
@@ -26,7 +26,8 @@ class BookingPage implements OnInit {
 
 	BookingPage(this._clientFactory, this._eventRepository, this._router);
 
-	Future<Null> ngOnInit() async {
+	@override
+	Future<void> ngOnInit() async {
 		/*if(!_clientFactory.hasCredentials){
 			print('Booking page opened without credentials.');
 			_router.navigate(<dynamic>['/Content/Start']);

@@ -7,8 +7,8 @@ class QueueResponse {
 
 	QueueResponse(this.placeInQueue);
 
-	factory QueueResponse.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new QueueResponse(map[PLACE_IN_QUEUE]);
+	factory QueueResponse.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		return QueueResponse(map[PLACE_IN_QUEUE]);
 	}
 }

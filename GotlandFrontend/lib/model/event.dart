@@ -11,8 +11,8 @@ class Event {
 
 	Event(this.name, this.isOpen, this.opening);
 
-	factory Event.fromJson(String json) {
-		final Map<String, dynamic> map = JSON.decode(json);
-		return new Event(map[NAME], map[IS_OPEN], ValueConverter.parseDateTime(map[OPENING]));
+	factory Event.fromJson(String jsonStr) {
+		final Map<String, dynamic> map = json.decode(jsonStr);
+		return Event(map[NAME], map[IS_OPEN], ValueConverter.parseDateTime(map[OPENING]));
 	}
 }

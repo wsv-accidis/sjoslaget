@@ -16,18 +16,18 @@ import '../model/trip.dart';
 
 @Component(
 	selector: 'pax-component',
-	styleUrls: const ['../content/content_styles.css', 'pax_component.css'],
+	styleUrls: ['../content/content_styles.css', 'pax_component.css'],
 	templateUrl: 'pax_component.html',
-	directives: const <dynamic>[CORE_DIRECTIVES, formDirectives, materialDirectives],
-	providers: const <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
+	providers: <dynamic>[materialProviders]
 )
 class PaxComponent implements OnInit {
-	static const GENDER_FEMALE = 'f';
-	static const GENDER_MALE = 'm';
-	static const GENDER_OTHER = 'x';
-	static const MAX_NO_OF_PAX = 20;
+	static const String GENDER_FEMALE = 'f';
+	static const String GENDER_MALE = 'm';
+	static const String GENDER_OTHER = 'x';
+	static const int MAX_NO_OF_PAX = 20;
 
-	static final DateFormat _tripDateFormat = new DateFormat('d/M kk:mm');
+	static final DateFormat _tripDateFormat = DateFormat('d/M kk:mm');
 
 	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
@@ -36,7 +36,7 @@ class PaxComponent implements OnInit {
 	int initialEmptyPax = 0;
 	bool isReadOnly = false; // TODO Support this
 
-	List<BookingPaxView> paxViews = new List<BookingPaxView>();
+	List<BookingPaxView> paxViews = <BookingPaxView>[];
 	List<CabinClass> cabinClasses;
 	SelectionOptions<CabinClass> cabinClassOptions;
 	List<Trip> inboundTrips;
@@ -44,13 +44,14 @@ class PaxComponent implements OnInit {
 	List<Trip> outboundTrips;
 	SelectionOptions<Trip> outboundTripOptions;
 
-	SelectionOptions<String> get genderOptions => new SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
+	SelectionOptions<String> get genderOptions => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
 
 	bool get isLoaded => null != cabinClasses && null != inboundTrips && null != outboundTrips;
 
 	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
-	Future<Null> ngOnInit() async {
+	@override
+	Future<void> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cabinClasses = await _eventRepository.getCabinClasses(client);
@@ -58,21 +59,19 @@ class PaxComponent implements OnInit {
 			outboundTrips = await _eventRepository.getOutboundTrips(client);
 		} catch (e) {
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
-			print('Failed to get data due to an exception: ' + e.toString());
+			print('Failed to get data due to an exception: ${e.toString()}');
 			return;
 		}
 
-		cabinClassOptions = new SelectionOptions.fromList(cabinClasses);
-		inboundTripOptions = new SelectionOptions.fromList(inboundTrips);
-		outboundTripOptions = new SelectionOptions.fromList(outboundTrips);
+		cabinClassOptions = SelectionOptions.fromList(cabinClasses);
+		inboundTripOptions = SelectionOptions.fromList(inboundTrips);
+		outboundTripOptions = SelectionOptions.fromList(outboundTrips);
 
 		if (initialEmptyPax > 0)
 			_createInitialEmptyPax(initialEmptyPax);
 	}
 
-	String cabinClassToString(CabinClass c) {
-		return c.name + ' (' + CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax) + ')';
-	}
+	String cabinClassToString(CabinClass c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
 
 	String cabinClassToStringLabel(CabinClass c, String which) {
 		if (null == c) {
@@ -113,7 +112,7 @@ class PaxComponent implements OnInit {
 		if(null == t.departure)
 			return t.name;
 
-		return _tripDateFormat.format(t.departure) + ' ' + t.name;
+		return '${_tripDateFormat.format(t.departure)} ${t.name}';
 	}
 
 	String tripToStringLabel(Trip t, bool isInbound) {
@@ -125,9 +124,7 @@ class PaxComponent implements OnInit {
 			return tripToString(t);
 	}
 
-	String uniqueId(String prefix, int pax) {
-		return prefix + '_' + pax.toString();
-	}
+	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
 
 	void validate(Event event) {
 		final idx = _findBookingIndex(event.target);
@@ -137,16 +134,14 @@ class PaxComponent implements OnInit {
 	}
 
 	void validateAll(dynamic ignored) {
-		for(BookingPaxView pax in paxViews) {
-			_bookingValidator.validatePax(pax);
-		}
+		paxViews.forEach(_bookingValidator.validatePax);
 	}
 
 	void _createInitialEmptyPax(int count) {
 		paxViews.clear();
 		for (int i = 0; i < count; i++)
 		{
-			BookingPaxView view = new BookingPaxView.createEmpty();
+			final BookingPaxView view = BookingPaxView.createEmpty();
 
 			// Change detection for <material-dropdown-select> is annoying
 			view.outboundTripSelection.selectionChanges.listen(validateAll);

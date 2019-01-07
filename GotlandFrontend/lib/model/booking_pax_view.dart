@@ -56,12 +56,12 @@ class BookingPaxView {
 	Trip get outboundTrip => _selectedOrNull(outboundTripSelection);
 
 	BookingPaxView.createEmpty() {
-		genderSelection = new SelectionModel<String>.withList();
-		outboundTripSelection = new SelectionModel<Trip>.withList();
-		inboundTripSelection = new SelectionModel<Trip>.withList();
-		cabinClassMinSelection = new SelectionModel<CabinClass>.withList();
-		cabinClassPreferredSelection = new SelectionModel<CabinClass>.withList();
-		cabinClassMaxSelection = new SelectionModel<CabinClass>.withList();
+		genderSelection = SelectionModel<String>.single();
+		outboundTripSelection = SelectionModel<Trip>.single();
+		inboundTripSelection = SelectionModel<Trip>.single();
+		cabinClassMinSelection = SelectionModel<CabinClass>.single();
+		cabinClassPreferredSelection = SelectionModel<CabinClass>.single();
+		cabinClassMaxSelection = SelectionModel<CabinClass>.single();
 	}
 
 	void clearErrors() {
@@ -76,7 +76,5 @@ class BookingPaxView {
 		cabinClassMaxError = null;
 	}
 
-	T _selectedOrNull<T>(SelectionModel<T> selection) {
-		return selection.isNotEmpty ? selection.selectedValues.first : null;
-	}
+	T _selectedOrNull<T>(SelectionModel<T> selection) => selection.isNotEmpty ? selection.selectedValues.first : null;
 }

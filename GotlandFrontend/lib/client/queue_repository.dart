@@ -5,11 +5,11 @@ import 'package:frontend_shared/client.dart';
 import 'package:frontend_shared/model.dart';
 import 'package:http/http.dart';
 
-import 'booking_exception.dart';
-import 'client_factory.dart' show GOTLAND_API_ROOT;
 import '../model/booking_details.dart';
 import '../model/candidate_response.dart';
 import '../model/queue_response.dart';
+import 'booking_exception.dart';
+import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
 class QueueRepository {
@@ -22,72 +22,72 @@ class QueueRepository {
 
 		Response response;
 		try {
-			response = await client.post(_apiRoot + '/queue/create', headers: headers, body: candidate.toJson());
+			response = await client.post('$_apiRoot/queue/create', headers: headers, body: candidate.toJson());
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		if (HttpStatus.OK == response.statusCode)
-			return new CandidateResponse.fromJson(response.body);
+			return CandidateResponse.fromJson(response.body);
 		else if (HttpStatus.BAD_REQUEST == response.statusCode)
-			throw new BookingException();
+			throw BookingException();
 		else
-			throw new IOException.fromResponse(response);
+			throw IOException.fromResponse(response);
 	}
 
 	Future<QueueResponse> go(Client client, String candidateId) async {
 		Response response;
 		try {
-			response = await client.put(_apiRoot + '/queue/claim?c=' + candidateId);
+			response = await client.put('$_apiRoot/queue/claim?c=$candidateId');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		if (HttpStatus.OK == response.statusCode)
-			return new QueueResponse.fromJson(response.body);
+			return QueueResponse.fromJson(response.body);
 		else if (HttpStatus.BAD_REQUEST == response.statusCode)
 			// Countdown not elapsed yet
-			throw new BookingException();
+			throw BookingException();
 		else
-			throw new IOException.fromResponse(response);
+			throw IOException.fromResponse(response);
 	}
 
 	Future<CandidateResponse> ping(Client client, String candidateId) async {
 		Response response;
 		try {
-			response = await client.put(_apiRoot + '/queue/ping?c=' + candidateId);
+			response = await client.put('$_apiRoot/queue/ping?c=$candidateId');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		if (HttpStatus.OK == response.statusCode)
-			return new CandidateResponse.fromJson(response.body);
+			return CandidateResponse.fromJson(response.body);
 		else if (HttpStatus.NOT_FOUND == response.statusCode)
 			// The candidate has timed out
-			throw new BookingException();
+			throw BookingException();
 		else
-			throw new IOException.fromResponse(response);
+			throw IOException.fromResponse(response);
 	}
 
 	Future<BookingResult> toBooking(Client client, String candidateId) async {
 		Response response;
 		try {
-			response = await client.post(_apiRoot + '/queue/toBooking?c=' + candidateId);
+			response = await client.post('$_apiRoot/queue/toBooking?c=$candidateId');
 		} catch (e) {
-			throw new IOException.fromException(e);
+			throw IOException.fromException(e);
 		}
 
 		if (HttpStatus.OK == response.statusCode)
-			return new BookingResult.fromJson(response.body);
+			return BookingResult.fromJson(response.body);
 		else if (HttpStatus.CONFLICT == response.statusCode)
 			// There is already a booking for this candidate
-			throw new BookingException();
+			throw BookingException();
 		else
-			throw new IOException.fromResponse(response);
+			throw IOException.fromResponse(response);
 	}
 
 	static Map<String, String> _createJsonHeaders() {
-		final headers = new Map<String, String>();
+		final headers = <String, String>{};
 		headers['content-type'] = 'application/json';
 		return headers;
 	}

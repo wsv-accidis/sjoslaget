@@ -12,8 +12,8 @@ class BookingDetails {
 
 	BookingDetails(this.firstName, this.lastName, this.phoneNo, this.email, this.teamName, this.teamSize);
 
-	String toJson() {
-		return JSON.encode({
+	String toJson() =>
+		json.encode({
 			FIRSTNAME: firstName,
 			LASTNAME: lastName,
 			PHONE_NO: phoneNo,
@@ -21,5 +21,4 @@ class BookingDetails {
 			TEAM_NAME: teamName,
 			TEAM_SIZE: teamSize
 		});
-	}
 }
