@@ -1,0 +1,7 @@
+table.ferries-table {
+	width: 60%;
+}
+
+table.ferries-table > thead > tr > td {
+	font-weight: bold;
+}

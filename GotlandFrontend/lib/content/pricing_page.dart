@@ -1,9 +1,9 @@
 import 'package:angular/angular.dart';
 
 @Component(
-	selector: 'contact-page',
+	selector: 'pricing-page',
 	styleUrls: ['content_styles.css'],
-	templateUrl: 'contact_page.html'
+	templateUrl: 'pricing_page.html'
 )
-class ContactPage {
+class PricingPage {
 }

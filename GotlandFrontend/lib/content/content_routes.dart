@@ -8,8 +8,8 @@ class ContentRoutes {
 		useAsDefault: true
 	);
 	static final RoutePath countdown = RoutePath(path: 'nedrakning', parent: AppRoutes.content);
-	//static final RoutePath about = RoutePath(path: 'allt-om', parent: AppRoutes.content);
+	static final RoutePath about = RoutePath(path: 'allt-om', parent: AppRoutes.content);
 	static final RoutePath booking = RoutePath(path: 'bokning', parent: AppRoutes.content);
-	//static final RoutePath contact = RoutePath(path: 'kontakt', parent: AppRoutes.content);
-	//static final RoutePath pricing = RoutePath(path: 'priser', parent: AppRoutes.content);
+	static final RoutePath contact = RoutePath(path: 'kontakt', parent: AppRoutes.content);
+	static final RoutePath pricing = RoutePath(path: 'priser', parent: AppRoutes.content);
 }

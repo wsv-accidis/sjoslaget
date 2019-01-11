@@ -4,7 +4,7 @@ import 'content_routes.dart';
 
 class AboutRoutes {
 	static final RoutePath start = RoutePath(
-		path: 'sjoslaget',
+		path: 'ag',
 		useAsDefault: true,
 		parent: ContentRoutes.about
 	);
