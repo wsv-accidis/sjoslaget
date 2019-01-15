@@ -1,5 +1,5 @@
 a, a:visited {
-	color: #0068A5;
+	color: #006000;
 	text-decoration: none;
 }
 
@@ -23,14 +23,14 @@ a:hover {
 }
 
 material-icon {
-	color: #0F75BC;
+	color: #009900;
 	padding-top: 3px;
 	padding-right: 5px;
 	vertical-align: text-bottom;
 }
 
 h1, h2, h3 {
-	color: #0F75BC;
+	color: #009900;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
 }
 
@@ -92,16 +92,16 @@ td {
 }
 
 td.border {
-	border-left: 1px solid #608BA8;
-	border-top: 1px solid #608BA8;
+	border-left: 1px solid #006000;
+	border-top: 1px solid #006000;
 }
 
 tr > td.border:last-child {
-	border-right: 1px solid #608BA8;
+	border-right: 1px solid #006000;
 }
 
 tbody > tr:last-child > td.border {
-	border-bottom: 1px solid #608BA8;
+	border-bottom: 1px solid #006000;
 }
 
 ul.undecorated-list {

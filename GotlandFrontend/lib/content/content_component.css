@@ -24,7 +24,7 @@ div.menu {
 }
 
 div.menu-item {
-	background-color: #0F75BC;
+	background-color: #009900;
 	box-sizing: border-box;
 	float: left;
 	padding: 4px 0 4px 4px;
@@ -34,7 +34,7 @@ div.menu-item {
 
 div.menu-item a {
 	align-items: center;
-	background-color: #0A507F;
+	background-color: #006000;
 	color: white;
 	display: flex;
 	font-family: 'Carter One', Helvetica, Arial, sans-serif;
@@ -47,7 +47,7 @@ div.menu-item a {
 
 div.menu-item a:hover {
 	color: white;
-	background-color: #0F75BC;
+	background-color: #009900;
 }
 
 div.menu > div.menu-item:first-child {
