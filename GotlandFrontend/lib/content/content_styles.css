@@ -96,12 +96,12 @@ td.border {
 	border-top: 1px solid #006000;
 }
 
-tr > td.border:last-child {
-	border-right: 1px solid #006000;
-}
-
 tbody > tr:last-child > td.border {
 	border-bottom: 1px solid #006000;
+}
+
+td.nowrap {
+	white-space: nowrap;
 }
 
 ul.undecorated-list {

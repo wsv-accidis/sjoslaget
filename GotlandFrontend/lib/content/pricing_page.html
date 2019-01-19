@@ -1,8 +1,28 @@
 <h1>Priser</h1>
 
 <p>
-	Vi kommer att informera om priserna inom kort!
+	Läs nedanför tabellen om vad som ingår i priset och hur du väljer logi när du bokar!
 </p>
+
+<table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
+	<tr>
+		<th>Paket</th>
+		<th>Pris</th>
+		<th>Beskrivning</th>
+	</tr>
+	<tr *ngFor="let cabin of cabins">
+		<td class="border nowrap">
+			{{cabin.name}}
+		</td>
+		<td class="border nowrap">
+			{{cabin.pricePerPax}} kr
+		</td>
+		<td class="border">
+			{{cabin.description}}
+		</td>
+	</tr>
+</table>
+<spinner-widget *ngIf="null == cabins"></spinner-widget>
 
 <p>
 	Priserna är per person och under förutsättning att stugan är full. Vi kommer att göra vårt bästa för att alla ska få plats så om ni absolut
@@ -13,24 +33,10 @@
 	I priset ingår boende från torsdag till söndag, transfer till och från Visby hamn, tre frukostar, två sittningar och alla aktiviteter som äger rum på Kneippbyn.
 </p>
 
-<h2>Boende</h2>
-
-<p>
-	För att så många som möjligt ska få plats väljer du den lägsta respektive högsta nivån du kan tänka dig att bo i vid bokning. Vi har följande boenden:
-</p>
-
-<ul>
-	<li><strong>Camping</strong> - plats på gräsmatta där du slår upp ditt eget tält. Det billigaste sättet att uppleva AG, men somliga hävdar att det ändå är det bästa.</li>
-	<li><strong>Nivå 1</strong> - ...</li>
-	<li><strong>Nivå 2</strong> - ...</li>
-	<li><strong>Nivå 3</strong> - ...</li>
-	<li><strong>Nivå 4</strong> - ...</li>
-</ul>
-
 <h2>Resor</h2>
 
 <p>
-	Till skillnad från tidigare AG så <strong>ingår inte resan i biljetten</strong>. Du väljer och bokar din resa själv. Vi föreslår att du gör det
+	Till skillnad från tidigare AG så <strong>ingår inte resan till Visby i biljetten</strong>. Du väljer och bokar din resa själv. Vi föreslår att du gör det
 	så fort din bokning är bekräftad! Du kan boka båtbiljett med <a href="https://www.destinationgotland.se/">Destination Gotland</a> eller
 	flygbiljett med antingen <a href="https://braathens.flygbra.se/">Braathens</a> eller <a href="https://www.sas.se/resmal/sverige/visby/">SAS</a>.
 </p>
@@ -38,3 +44,20 @@
 <p>
 	Vi kommer att erbjuda gratis transfer med buss från Visby hamn till Kneippbyn för de närmaste ankommande/avgående fartygen på torsdag respektive söndag.
 </p>
+
+<h2>Boende</h2>
+
+<p>
+	För att så många som möjligt ska få plats väljer du den lägsta respektive högsta nivån du kan tänka dig att bo i vid bokning. Har du särskilda önskemål
+	(t ex en favoritstuga) kan du fylla i dem också. Vi gör vårt bästa för att uppfylla allas önskemål och hålla ihop lagen så långt det är möjligt.
+	Ju fler olika nivåer du kan tänka dig desto större är din chans att få plats. Naturligtvis betalar du bara för den nivå du faktiskt bor i.
+</p>
+
+<p>
+	Hotellet och de flesta stugorna ligger i den östra delen av området. Villavagnarna, lägenheterna, en del stugor och campingen
+	ligger i den västra delen. Säg till när du bokar om du föredrar ett visst område. Du kan klicka på kartan nedan för att zooma in.
+</p>
+
+<a href="/gfx/karta/karta.png">
+	<img src="/gfx/karta/karta-liten.png" alt="Karta över Kneippbyn" title="Karta över Kneippbyn" />
+</a>

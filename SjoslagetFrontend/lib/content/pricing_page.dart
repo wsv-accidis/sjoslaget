@@ -35,7 +35,7 @@ class PricingPage implements OnInit {
 	}
 
 	@override
-	Future<Null> ngOnInit() async {
+	Future<void> ngOnInit() async {
 		try {
 			await doInit();
 		} on ExpirationException catch (e) {

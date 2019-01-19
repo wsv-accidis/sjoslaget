@@ -14,14 +14,16 @@ import '../model/booking_details.dart';
 import '../model/candidate_response.dart';
 import '../model/event.dart';
 import '../util/countdown_state.dart';
+import 'about_routes.dart';
 import 'content_routes.dart';
 
 @Component(
 	selector: 'start-page',
 	styleUrls: ['content_styles.css', 'booking_page.css'],
 	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, routerDirectives],
+	providers: <dynamic>[materialProviders],
+	exports: [AboutRoutes]
 )
 class BookingPage implements OnInit {
 	static const int TEAM_SIZE_MIN = 1;
@@ -42,15 +44,14 @@ class BookingPage implements OnInit {
 	String teamName;
 	SelectionModel<int> teamSizeSelection = SelectionModel.single(selected: TEAM_SIZE_DEFAULT);
 	bool acceptToc = false;
+	bool acceptRules = false;
 	bool hasError = false;
 
 	String get eventName => _evnt.name;
 
-	String get eventOpening =>
-		null != _evnt.opening ? DateTimeFormatter.format(_evnt.opening)
-			: 'någon gång i en avlägsen framtid';
+	String get eventOpening => DateTimeFormatter.format(_evnt.opening);
 
-	bool get hasOpeningTime => null != _evnt.opening;
+	bool get hasOpening => false; //null != _evnt.opening;
 
 	bool get isLoaded => null != _evnt;
 

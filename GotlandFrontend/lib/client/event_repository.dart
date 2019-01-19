@@ -31,10 +31,10 @@ class EventRepository {
 		return Event.fromJson(response.body);
 	}
 
-	Future<List<CabinClass>> getCabinClasses(Client client) async {
+	Future<List<CabinClass>> getActiveCabinClasses(Client client) async {
 		Response response;
 		try {
-			response = await client.get('$_apiRoot/cabins/classes');
+			response = await client.get('$_apiRoot/cabins/active');
 		} on ExpirationException {
 			rethrow; // special case for OAuth2 expiration
 		} catch (e) {

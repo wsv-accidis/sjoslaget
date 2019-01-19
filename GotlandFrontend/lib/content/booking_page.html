@@ -1,13 +1,18 @@
 <h1>
-	Bokningstest
+	Bokning
 </h1>
 
-<div *ngIf="isLoaded">
+<p>
+	Bokningen till Absolut Gotland går till så här: Du som lagledare fyller i god tid innan bokningen öppnar i ditt namn
+	och kontaktuppgifter, lagets namn och storlek här på sidan. Då får du tillgång till <strong>nedräkningen</strong>
+	och sedan gäller det att vara orimligt snabb på knappen när räknaren når noll. 	Läs igenom
+	<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> i god tid innan bokningen faktiskt öppnar!
+</p>
+
+<div *ngIf="isLoaded && hasOpening">
 	<p>
-		{{ eventName }} öppnar {{ eventOpening }}!
+		Bokingen för <strong>{{ eventName }}</strong> öppnar {{ eventOpening }}.
 	</p>
-</div>
-<div *ngIf="isLoaded && hasOpeningTime">
 	<form #candidateForm="ngForm" (submit)="submitDetails()">
 		<input type="submit" class="hidden-submit"/>
 
@@ -74,15 +79,22 @@
 			Dubbelkolla att e-postadressen stämmer!
 		</p>
 		<div>
+			<material-checkbox [(ngModel)]="acceptRules"
+							   ngControl="acceptRules"
+							   style="font-size: smaller; margin-left: 0">
+				Jag har läst och förstått <a [routerLink]="AboutRoutes.rules.toUrl()">Reglerna som gäller på Absolut Gotland</a>.
+			</material-checkbox>
+		</div>
+		<div>
 			<material-checkbox [(ngModel)]="acceptToc"
 							   ngControl="acceptToc"
 							   style="font-size: smaller; margin-left: 0">
-				Jag godkänner att de personuppgifter jag anger i bokningen får lagras och användas av ___ och dess samarbetspartners.
-				Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med ___ att göra.
+				Jag godkänner att de personuppgifter jag anger i bokningen får lagras och användas av Rindi, Sjöslagsgruppen och deras samarbetspartners.
+				Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Absolut Gotland att göra.
 			</material-checkbox>
 		</div>
 		<div style="margin-top: 10px">
-			<material-button [disabled]="!candidateForm.valid || !acceptToc || !hasOpeningTime"
+			<material-button [disabled]="!candidateForm.valid || !acceptToc || !acceptRules"
 							 class="control-blue"
 							 raised
 							 (trigger)="submitDetails()">
@@ -90,7 +102,18 @@
 			</material-button>
 		</div>
 	</form>
+
+	<p *ngIf="!candidateForm.valid || !acceptToc || !acceptRules">
+		Är knappen grå? Kolla så att du har fyllt i allting.
+	</p>
 </div>
+
+<div *ngIf="isLoaded && !hasOpening">
+	Du är tidigt ute - vi har inte satt ett datum för bokningens öppnande ännu. Kom igen senare!
+</div>
+
+<spinner-widget *ngIf="!isLoaded"></spinner-widget>
+
 <div *ngIf="hasError">
 	<p>
 		Hoppsan! Någonting är väldigt trasigt just nu. Du kan försöka ladda om sidan, eller

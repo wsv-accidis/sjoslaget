@@ -54,7 +54,7 @@ class PaxComponent implements OnInit {
 	Future<void> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
-			cabinClasses = await _eventRepository.getCabinClasses(client);
+			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			inboundTrips = await _eventRepository.getInboundTrips(client);
 			outboundTrips = await _eventRepository.getOutboundTrips(client);
 		} catch (e) {

@@ -18,7 +18,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IHttpActionResult> Classes()
+		public async Task<IHttpActionResult> Active()
 		{
 			Event evnt = await _eventRepository.GetActiveAsync();
 			if (null == evnt)

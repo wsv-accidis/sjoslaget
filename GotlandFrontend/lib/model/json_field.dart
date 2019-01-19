@@ -1,5 +1,6 @@
 export 'package:frontend_shared/model/json_field.dart';
 
+const String COUNT = 'Count';
 const String COUNTDOWN = 'Countdown';
 const String DEPARTURE = 'Departure';
 const String DESCRIPTION = 'Description';
