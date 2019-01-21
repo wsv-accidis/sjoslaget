@@ -2,6 +2,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
 @import url(https://fonts.googleapis.com/css?family=Material+Icons);
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
 
 * {
 	font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -22,6 +23,11 @@ input.hidden-submit {
 	left: -9999px;
 	width: 1px;
 	height: 1px;
+}
+
+material-dropdown-select > dropdown-button > div.error-text {
+	/* fix for broken default styling */
+	margin-top: 4px;
 }
 
 @media (max-width: 700px) {

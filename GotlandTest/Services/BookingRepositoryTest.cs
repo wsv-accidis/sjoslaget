@@ -86,7 +86,7 @@ namespace Accidis.Gotland.Test.Services
 			Assert.AreEqual(booking.PhoneNo, newCandidate.PhoneNo);
 			Assert.AreEqual(booking.TeamName, newCandidate.TeamName);
 			Assert.AreEqual(placeInQueue, booking.QueueNo);
-			Assert.AreEqual(String.Empty, booking.SpecialRequests);
+			Assert.AreEqual(String.Empty, booking.SpecialRequest);
 			Assert.AreEqual(0.0m, booking.TotalPrice);
 		}
 

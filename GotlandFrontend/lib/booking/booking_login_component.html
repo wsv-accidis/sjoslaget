@@ -1,0 +1,39 @@
+<form #loginForm="ngForm" (submit)="logIn()">
+	<input type="submit" class="hidden-submit"/>
+
+	<material-input [(ngModel)]="bookingRef"
+					ngControl="bookingRef"
+					class="login-input"
+					floatingLabel
+					label="Referens"
+					required
+					requiredErrorMsg="Ange bokningsreferens.">
+	</material-input>
+
+	<material-input [(ngModel)]="pinCode"
+					ngControl="pinCode"
+					class="login-input"
+					floatingLabel
+					label="PIN-kod"
+					required
+					requiredErrorMsg="Ange PIN-kod."
+					type="password">
+	</material-input>
+
+	<material-button (trigger)="logIn()"
+					 [disabled]="!loginForm.valid"
+					 class="control-blue login-button"
+					 raised>
+Logga in
+</material-button>
+</form>
+
+<div *ngIf="isLoggedIn" class="login-notice">
+	Du är inloggad som {{ loggedInUser }}. <a href="javascript:" (click)="logOut()">Logga ut</a> när du är klar eller
+	<a [routerLink]="BookingRoutes.editBooking.toUrl()">fortsätt redigera din bokning</a>.
+</div>
+
+<modal-dialog #loginFailedDialog
+			  title="Inloggningen misslyckades"
+			  message="Kontrollera att du skrev rätt bokningsreferens och PIN-kod.">
+</modal-dialog>

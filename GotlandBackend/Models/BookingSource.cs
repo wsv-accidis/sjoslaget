@@ -13,7 +13,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
-		public string SpecialRequests { get; set; }
+		public string SpecialRequest { get; set; }
 		public List<PaxSource> Pax { get; set; }
 
 		public static BookingSource FromBooking(Booking booking, BookingPax[] pax)
@@ -26,32 +26,28 @@ namespace Accidis.Gotland.WebService.Models
 				Email = booking.Email,
 				PhoneNo = booking.PhoneNo,
 				TeamName = booking.TeamName,
-				SpecialRequests = booking.SpecialRequests,
+				SpecialRequest = booking.SpecialRequest,
 				Pax = pax.Select(p => new PaxSource
 				{
 					FirstName = p.FirstName,
 					LastName = p.LastName,
 					Gender = p.Gender.ToString(),
 					Dob = p.Dob.ToString(),
-					Nationality = p.Nationality.ToUpperInvariant(),
-					OutboundTripId = p.OutboundTripId,
-					InboundTripId = p.InboundTripId,
-					IsStudent = p.IsStudent,
 					CabinClassMin = p.CabinClassMin,
 					CabinClassPreferred = p.CabinClassPreferred,
 					CabinClassMax = p.CabinClassMax,
-					SpecialFood = p.SpecialFood
+					SpecialRequest = p.SpecialRequest
 				}).ToList()
 			};
 		}
 
-		public static void Validate(BookingSource bookingSource, IEnumerable<Trip> trips)
+		public static void Validate(BookingSource bookingSource)
 		{
 			if(null == bookingSource)
 				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
 
 			bookingSource.ValidateDetails();
-			bookingSource.ValidatePax(trips);
+			bookingSource.ValidatePax();
 		}
 
 		public void ValidateDetails()
@@ -68,15 +64,15 @@ namespace Accidis.Gotland.WebService.Models
 				throw new BookingException("Team name must be set.");
 		}
 
-		public static void ValidatePax(BookingSource bookingSource, IEnumerable<Trip> trips)
+		public static void ValidatePax(BookingSource bookingSource)
 		{
 			if(null == bookingSource)
 				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
 
-			bookingSource.ValidatePax(trips);
+			bookingSource.ValidatePax();
 		}
 
-		public void ValidatePax(IEnumerable<Trip> trips)
+		public void ValidatePax()
 		{
 			if(null == Pax)
 				return;
@@ -84,7 +80,6 @@ namespace Accidis.Gotland.WebService.Models
 			foreach(PaxSource pax in Pax)
 			{
 				pax.ValidateDetailsAndSetDefaults();
-				pax.ValidateTrips(trips.ToDictionary(t => t.Id));
 				pax.ValidateCabinClasses();
 			}
 		}
@@ -95,14 +90,10 @@ namespace Accidis.Gotland.WebService.Models
 			public string LastName { get; set; }
 			public string Gender { get; set; }
 			public string Dob { get; set; }
-			public string Nationality { get; set; }
-			public Guid OutboundTripId { get; set; }
-			public Guid InboundTripId { get; set; }
-			public bool IsStudent { get; set; }
 			public int CabinClassMin { get; set; }
 			public int CabinClassPreferred { get; set; }
 			public int CabinClassMax { get; set; }
-			public string SpecialFood { get; set; }
+			public string SpecialRequest { get; set; }
 
 			internal void ValidateCabinClasses()
 			{
@@ -120,22 +111,6 @@ namespace Accidis.Gotland.WebService.Models
 					throw new BookingException("Last name must be set.");
 				if(!DateOfBirth.IsValid(Dob))
 					throw new BookingException("Date of birth must be set and a valid date.");
-				if(!IsoNationality.TryValidateOrSetDefault(Nationality, out var nationality))
-					throw new BookingException("Nationality must be a 2-letter ISO country code.");
-				Nationality = nationality;
-			}
-
-			internal void ValidateTrips(Dictionary<Guid, Trip> trips)
-			{
-				if(!trips.TryGetValue(OutboundTripId, out Trip outTrip))
-					throw new BookingException("Outbound trip does not exist.");
-				if(outTrip.IsInbound)
-					throw new BookingException("Outbound trip refers to an inbound trip.");
-
-				if(!trips.TryGetValue(InboundTripId, out Trip inTrip))
-					throw new BookingException("Inbound trip does not exist");
-				if(!inTrip.IsInbound)
-					throw new BookingException("Inbound trip refers to an outbound trip.");
 			}
 		}
 	}

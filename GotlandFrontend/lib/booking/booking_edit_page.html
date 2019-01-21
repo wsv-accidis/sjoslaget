@@ -1,7 +1,66 @@
-<h1>Bokning</h1>
+<h1>
+	{{ null != booking ? 'Hej, ' + booking.firstName + '!' : 'Hej!' }}
+</h1>
 
-<p>Text här</p>
+<p *ngIf="hasQueueStats">
+	Du har nummer <strong>{{ queueStats.queueNo }}</strong> i bokningskön och
+	fick in din bokning <strong>{{ queueLatencyFormatted }}</strong> efter att bokningen öppnade.
+	<span *ngIf="queueStats.isEarlyBooking">Eftersom du fick in din bokning tidigt är dina chanser goda att få
+	de platser och boenden du föredrar - go crazy!</span>
+	<span *ngIf="queueStats.isLateBooking">Eftersom du fick in din bokning lite senare än flertalet föreslår
+	vi att du accepterar ett större spann av boenden, så ökar dina chanser. Skriv gärna om du accepterar att laget
+	blir uppdelat på flera stugor, ifall andra lag har ströplatser över.</span>
+</p>
+
+<p *ngIf="hasCredentials">
+	Din bokningsreferens är <span class="credentials">{{ credentials.reference }}</span> och din PIN-kod är <span class="credentials">{{ credentials.password }}</span>.
+	Skriv ner dessa, du kommer att behöva dem senare.
+</p>
+
+<material-expansionpanel [expanded]="isNewBooking"
+						 flat="true"
+						 name="Instruktioner - så här fyller du i (läs först!)"
+						 [showSaveCancel]="false">
+	<p style="margin-top: 0;">
+		Text text
+	</p>
+</material-expansionpanel>
+
+<div style="clear: both; height: 30px;"></div>
+
+<p class="super-important loading-error" *ngIf="hasLoadingError">
+	{{ loadingError }}
+</p>
 
 <form #bookingForm="ngForm">
+	<spinner-widget *ngIf="!hasLoaded && !hasLoadingError"></spinner-widget>
+
 	<pax-component #pax></pax-component>
+
+	<div>
+		<div *ngIf="!isSaving">
+			<material-button class="control-blue"
+							 raised
+							 [disabled]="!canAddPax || !hasLoaded"
+							 (trigger)="addEmptyPax()">
+				Lägg till en deltagare
+			</material-button>
+
+			<material-button class="control-green"
+							 [disabled]="!canSave"
+							 raised
+							 (trigger)="saveBooking()">
+				Spara bokningen
+			</material-button>
+
+			<material-button class="control-red"
+							 [disabled]="!canSave"
+							 raised
+							 (trigger)="saveAndExit()">
+				Spara bokningen och logga ut mig
+			</material-button>
+		</div>
+
+		<spinner-widget *ngIf="isSaving"></spinner-widget>
+	</div>
 </form>

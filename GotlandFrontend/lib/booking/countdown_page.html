@@ -1,0 +1,32 @@
+<div class="countdown-logo">
+	<img src="/gfx/Logo480.png" alt="Absolut Gotland" title="Absolut Gotland"/>
+</div>
+<div *ngIf="shouldShowCountdown">
+	<div class="countdown-time">
+		{{ countdownFormatted }}
+	</div>
+	<div class="countdown-button">
+		<material-button [disabled]="shouldDisableButton"
+						 class="control-green"
+						 raised
+						 (trigger)="submitCandidate()">
+			{{ buttonText }}
+		</material-button>
+	</div>
+	<div class="countdown-escape">
+		Har du ångrat dig?<br/>
+		<a [routerLink]="ContentRoutes.booking.toUrl()">Klicka här för att lämna nedräkningen.</a>
+	</div>
+</div>
+<div *ngIf="waitingForServer" class="countdown-wait">
+	<spinner-widget></spinner-widget>
+</div>
+<p class="countdown-message">
+<div *ngIf="hasError">
+	Hoppsan! Någonting gick snett. Det är bäst att du försöker igen.
+</div>
+<div *ngIf="hasBookingError">
+	Bokningen har redan skapats. Du bör inom några minuter få ett e-mail med bokningsuppgifter.
+	Om inte, hör av dig så ska vi lösa problemet.
+</div>
+</p>

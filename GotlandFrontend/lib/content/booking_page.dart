@@ -7,29 +7,28 @@ import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:quiver/iterables.dart';
 
+import '../booking/booking_login_component.dart';
+import '../booking/booking_routes.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../client/queue_repository.dart';
 import '../model/booking_details.dart';
 import '../model/candidate_response.dart';
 import '../model/event.dart';
+import '../model/team_size.dart';
 import '../util/countdown_state.dart';
+import '../widgets/spinner_widget.dart';
 import 'about_routes.dart';
-import 'content_routes.dart';
 
 @Component(
 	selector: 'start-page',
 	styleUrls: ['content_styles.css', 'booking_page.css'],
 	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, routerDirectives],
+	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: [AboutRoutes]
 )
 class BookingPage implements OnInit {
-	static const int TEAM_SIZE_MIN = 1;
-	static const int TEAM_SIZE_MAX = 20;
-	static const int TEAM_SIZE_DEFAULT = TEAM_SIZE_MAX;
-
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 	final QueueRepository _queueRepository;
@@ -51,9 +50,13 @@ class BookingPage implements OnInit {
 
 	String get eventOpening => DateTimeFormatter.format(_evnt.opening);
 
-	bool get hasOpening => false; //null != _evnt.opening;
+	bool get hasOpening => null != _evnt.opening;
+
+	bool get isInCountdown => isLoaded && _evnt.isInCountdown;
 
 	bool get isLoaded => null != _evnt;
+
+	bool get isOpen => isLoaded && _evnt.isOpen;
 
 	int get teamSize => teamSizeSelection.selectedValues.first;
 
@@ -89,7 +92,7 @@ class BookingPage implements OnInit {
 		final state = CountdownState();
 		state.update(response);
 
-		await _router.navigateByUrl(ContentRoutes.countdown.toUrl());
+		await _router.navigateByUrl(BookingRoutes.countdown.toUrl());
 	}
 
 	String teamSizeToString(int size) {

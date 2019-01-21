@@ -1,0 +1,40 @@
+.countdown-logo {
+	text-align: center;
+}
+
+.countdown-logo img {
+	border: 0;
+	box-shadow: none;
+}
+
+.countdown-button {
+	text-align: center;
+}
+
+.countdown-escape {
+	font-size: small;
+	margin-top: 40px;
+	text-align: center;
+}
+
+.countdown-message {
+	margin-top: 40px;
+	text-align: center;
+}
+
+.countdown-time {
+	font-family: 'Press Start 2P', cursive;
+	font-size: 60px;
+	margin-bottom: 40px;
+	margin-top: 40px;
+	text-align: center;
+}
+
+.countdown-wait {
+	margin-top: 20px;
+	text-align: center;
+}
+
+material-button {
+	font-size: 20px;
+}

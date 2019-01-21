@@ -21,22 +21,14 @@ class BookingValidator {
 			pax.lastNameError = 'Ange efternamn.';
 		}
 
+		if (str.isBlank(pax.gender)) {
+			pax.genderError = 'Ange kön.';
+		}
+
 		if (str.isBlank(pax.dob)) {
 			pax.dobError = 'Ange födelsedatum.';
 		} else if (!ValidationSupport.isDateOfBirth(pax.dob)) {
 			pax.dobError = 'Ange ett giltigt datum.';
-		}
-
-		if (!str.isBlank(pax.nationality) && !ValidationSupport.isTwoLetterNationality(pax.nationality)) {
-			pax.nationalityError = 'Ange landskod (tomt för Sverige).';
-		}
-
-		if (null == pax.outboundTrip) {
-			pax.outboundTripError = 'Välj en utresa.';
-		}
-
-		if (null == pax.inboundTrip) {
-			pax.inboundTripError = 'Välj en återresa.';
 		}
 
 		if (null == pax.cabinClassMin) {

@@ -1,31 +1,25 @@
-import 'package:angular_components/angular_components.dart' show SelectionModel;
+import 'package:angular_components/angular_components.dart' show SelectionModel, SingleSelectionModel;
 import 'package:quiver/strings.dart' as str show isBlank, isNotEmpty;
 
+import 'booking_pax.dart';
 import 'cabin_class.dart';
-import 'trip.dart';
 
 class BookingPaxView {
 	String firstName;
 	String firstNameError;
 	String lastName;
 	String lastNameError;
-	SelectionModel<String> genderSelection;
+	SingleSelectionModel<String> genderSelection;
+	String genderError;
 	String dob;
 	String dobError;
-	String nationality;
-	String nationalityError;
-	SelectionModel<Trip> outboundTripSelection;
-	String outboundTripError;
-	SelectionModel<Trip> inboundTripSelection;
-	String inboundTripError;
-	bool isStudent;
-	SelectionModel<CabinClass> cabinClassMinSelection;
+	SingleSelectionModel<CabinClass> cabinClassMinSelection;
 	String cabinClassMinError;
-	SelectionModel<CabinClass> cabinClassPreferredSelection;
+	SingleSelectionModel<CabinClass> cabinClassPreferredSelection;
 	String cabinClassPreferredError;
-	SelectionModel<CabinClass> cabinClassMaxSelection;
+	SingleSelectionModel<CabinClass> cabinClassMaxSelection;
 	String cabinClassMaxError;
-	String specialFood;
+	String specialRequest;
 
 	CabinClass get cabinClassMax => _selectedOrNull(cabinClassMaxSelection);
 
@@ -39,42 +33,64 @@ class BookingPaxView {
 
 	bool get hasLastNameError => str.isNotEmpty(lastNameError);
 
-	bool get hasDobError => str.isNotEmpty(dobError);
+	bool get hasGenderError => str.isNotEmpty(genderError);
 
-	bool get hasNationalityError => str.isNotEmpty(nationalityError);
+	bool get hasDobError => str.isNotEmpty(dobError);
 
 	bool get hasCabinClassError => str.isNotEmpty(cabinClassMinError) || str.isNotEmpty(cabinClassPreferredError) || str.isNotEmpty(cabinClassMaxError);
 
-	bool get hasTripError => str.isNotEmpty(inboundTripError) || str.isNotEmpty(outboundTripError);
-
-	Trip get inboundTrip => _selectedOrNull(inboundTripSelection);
-
 	bool get isEmpty => str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
 
-	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasDobError && !hasNationalityError && !hasCabinClassError && !hasTripError;
+	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasGenderError && !hasDobError && !hasCabinClassError;
 
-	Trip get outboundTrip => _selectedOrNull(outboundTripSelection);
+	static List<BookingPaxView> listOfBookingPaxToList(List<BookingPax> list, List<CabinClass> cabinClasses) =>
+		list.map((p) => BookingPaxView.fromBookingPax(p, cabinClasses)).toList();
+
+	static List<BookingPax> listToListOfBookingPax(List<BookingPaxView> list) =>
+		list.where((p) => !p.isEmpty).map((p) => p._toBookingPax()).toList(growable: false);
 
 	BookingPaxView.createEmpty() {
 		genderSelection = SelectionModel<String>.single();
-		outboundTripSelection = SelectionModel<Trip>.single();
-		inboundTripSelection = SelectionModel<Trip>.single();
 		cabinClassMinSelection = SelectionModel<CabinClass>.single();
 		cabinClassPreferredSelection = SelectionModel<CabinClass>.single();
 		cabinClassMaxSelection = SelectionModel<CabinClass>.single();
 	}
 
+	BookingPaxView.fromBookingPax(BookingPax pax, List<CabinClass> cabinClasses) {
+		firstName = pax.firstName;
+		lastName = pax.lastName;
+		genderSelection = SelectionModel<String>.single(selected: pax.gender);
+		dob = pax.dob;
+		cabinClassMinSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassMin, cabinClasses));
+		cabinClassPreferredSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassPreferred, cabinClasses));
+		cabinClassMaxSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassMax, cabinClasses));
+		specialRequest = pax.specialRequest;
+	}
+
 	void clearErrors() {
 		firstNameError = null;
 		lastNameError = null;
+		genderError = null;
 		dobError = null;
-		nationalityError = null;
-		outboundTripError = null;
-		inboundTripError = null;
 		cabinClassMinError = null;
 		cabinClassPreferredError = null;
 		cabinClassMaxError = null;
 	}
 
+	static CabinClass _getCabinClass(int no, List<CabinClass> cabinClasses) =>
+		cabinClasses.firstWhere((c) => c.no == no);
+
 	T _selectedOrNull<T>(SelectionModel<T> selection) => selection.isNotEmpty ? selection.selectedValues.first : null;
+
+	BookingPax _toBookingPax() =>
+		BookingPax(
+			firstName,
+			lastName,
+			genderSelection.selectedValue,
+			dob,
+			cabinClassMinSelection.selectedValue.no,
+			cabinClassPreferredSelection.selectedValue.no,
+			cabinClassMaxSelection.selectedValue.no,
+			specialRequest
+		);
 }

@@ -9,10 +9,19 @@
 	<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> i god tid innan bokningen faktiskt öppnar!
 </p>
 
-<div *ngIf="isLoaded && hasOpening">
-	<p>
-		Bokingen för <strong>{{ eventName }}</strong> öppnar {{ eventOpening }}.
-	</p>
+<p *ngIf="isLoaded && !isOpen && hasOpening">
+	Bokingen för <strong>{{ eventName }}</strong> öppnar {{ eventOpening }}. Nedräkningen rullar!
+</p>
+
+<p *ngIf="isLoaded && !hasOpening">
+	Du är tidigt ute - vi har inte satt ett datum för bokningens öppnande ännu. Kom igen senare!
+</p>
+
+<p *ngIf="isLoaded && isOpen">
+	Bokningen är öppen!
+</p>
+
+<div *ngIf="isInCountdown || isOpen">
 	<form #candidateForm="ngForm" (submit)="submitDetails()">
 		<input type="submit" class="hidden-submit"/>
 
@@ -108,15 +117,17 @@
 	</p>
 </div>
 
-<div *ngIf="isLoaded && !hasOpening">
-	Du är tidigt ute - vi har inte satt ett datum för bokningens öppnande ännu. Kom igen senare!
-</div>
-
 <spinner-widget *ngIf="!isLoaded"></spinner-widget>
 
-<div *ngIf="hasError">
-	<p>
-		Hoppsan! Någonting är väldigt trasigt just nu. Du kan försöka ladda om sidan, eller
-		komma tillbaka igen senare.
-	</p>
-</div>
+<p *ngIf="hasError">
+	Hoppsan! Någonting är väldigt trasigt just nu. Du kan försöka ladda om sidan, eller
+	komma tillbaka igen senare.
+</p>
+
+<h1 class="your-booking">Din bokning</h1>
+
+<p class="your-booking-text">
+	Redan bokat? Logga in här för att öppna din bokning.
+</p>
+
+<booking-login></booking-login>

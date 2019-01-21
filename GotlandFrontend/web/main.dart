@@ -6,7 +6,8 @@ import 'init.dart';
 import 'main.template.dart' as self;
 
 @GenerateInjector([
-	ValueProvider<String>.forToken(GOTLAND_API_ROOT, Init.API_ROOT)
+	ValueProvider<String>.forToken(GOTLAND_API_ROOT, Init.API_ROOT),
+	Init.gotlandRouterProviders
 ])
 const InjectorFactory injectorFactory = self.injectorFactory$Injector;
 

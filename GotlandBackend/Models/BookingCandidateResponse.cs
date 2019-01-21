@@ -6,9 +6,9 @@ namespace Accidis.Gotland.WebService.Models
 	{
 		public BookingCandidateResponse(Guid candidateId, int queueSize, Event evnt)
 		{
-			int countdown = -1;
+			long countdown = -1;
 			if(evnt.Opening.HasValue)
-				countdown = Math.Max(0, Convert.ToInt32((evnt.Opening.Value - DateTime.Now).TotalMilliseconds));
+				countdown = Math.Max(0, Convert.ToInt64((evnt.Opening.Value - DateTime.Now).TotalMilliseconds));
 
 			Id = candidateId;
 			QueueSize = queueSize;
@@ -19,6 +19,6 @@ namespace Accidis.Gotland.WebService.Models
 
 		public int QueueSize { get; }
 
-		public int Countdown { get; }
+		public long Countdown { get; }
 	}
 }

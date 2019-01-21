@@ -1,63 +1,67 @@
 table {
-	margin-bottom: 20px;
-	max-width: 1100px;
+	max-width: 820px;
 }
 
 td {
 	white-space: nowrap;
-}
-
-material-dropdown-select.cabin-class-select {
-	width: 200px;
+	vertical-align: top;
 }
 
 td.cabin-class-field-cell {
 	text-align: right;
 }
 
-td.cabin-class-field-cell > material-dropdown-select {
-	text-align: left;
+material-dropdown-select.cabin-class-select {
+	width: 200px;
+	margin-right: 30px;
+}
+
+td.classes-field-cell {
+	padding-bottom: 10px;
+}
+
+td.classes-field-cell > material-dropdown-select:last-child {
+	margin-right: 0;
+}
+
+td.classes-field-cell material-icon {
+	margin-bottom: -2px;
+	margin-right: 4px;
+	margin-top: 2px;
 }
 
 td.dob-field-cell, th.dob-field-cell {
-	padding-right: 10px;
 	width: 110px;
 }
 
-td.gender-field-cell, th.gender-field-cell {
-	padding-right: 10px;
+td.gender-field-cell {
 	width: 110px;
+}
+
+td.gender-field-cell > material-dropdown-select {
+	margin-bottom: 10px;
 }
 
 material-dropdown-select.gender-select {
 	width: 100px;
 }
 
-td.is-student-field-cell > material-checkbox {
-	margin: 0;
-}
-
-td.name-field-cell, th.name-field-cell {
-	padding-right: 10px;
-	width: 170px;
-}
-
-td.nationality-field-cell, th.nationality-field-cell {
-	padding-right: 15px;
-	width: 100px;
+td.name-field-cell {
+	padding-right: 20px;
+	width: 215px;
 }
 
 a.pax-delete {
 	text-decoration: none !important;
 }
 
-a.pax-delete glyph {
+a.pax-delete material-icon {
 	color: darkred;
 	margin-left: -6px;
 }
 
 td.pax-header-cell {
-	font-family: 'Racing Sans One', Helvetica, Arial, sans-serif;
+	font-family: 'Carter One', Helvetica, Arial, sans-serif;
 	font-size: 24px;
 	vertical-align: top !important;
 	min-width: 45px;
@@ -72,35 +76,6 @@ td.special-food-field-cell {
 	padding-top: 8px;
 }
 
-td.trips-and-classes-field-cell {
-	padding-bottom: 10px;
-	padding-right: 15px;
-}
-
-td.trips-and-classes-field-cell glyph, td.cabin-class-field-cell glyph {
-	margin-bottom: -2px;
-	margin-right: 3px;
-	margin-top: 2px;
-}
-
-td.trips-and-classes-field-cell > div {
-	display: inline-block;
-}
-
-td.trips-and-classes-field-cell > div:first-child > material-dropdown-select {
-	margin-left: 0;
-}
-
-td.trips-and-classes-field-cell > div:nth-child(2) > material-dropdown-select {
-	/* Spacing between trip and cabin class fields */
-	margin-right: 20px;
-}
-
-material-dropdown-select.trip-select {
-	width: 250px;
-	margin-left: 20px;
-}
-
 material-input {
 	padding: 0;
 	margin-bottom: -8px;
@@ -110,4 +85,3 @@ material-input {
 material-input.error-marker {
 	margin-bottom: 10px;
 }
-

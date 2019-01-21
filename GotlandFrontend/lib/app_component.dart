@@ -4,10 +4,12 @@ import 'package:angular_router/angular_router.dart';
 import 'app_routes.dart';
 import 'booking/booking_component.template.dart';
 import 'booking/booking_validator.dart';
+import 'client/booking_repository.dart';
 import 'client/client_factory.dart';
 import 'client/event_repository.dart';
 import 'client/queue_repository.dart';
 import 'content/content_component.template.dart';
+import 'util/temp_credentials_store.dart';
 
 @Component(
 	selector: 'gotland-app',
@@ -16,10 +18,11 @@ import 'content/content_component.template.dart';
 	''',
 	providers: <dynamic>[
 		BookingValidator,
+		BookingRepository,
 		ClientFactory,
 		EventRepository,
 		QueueRepository,
-		routerProviders
+		TempCredentialsStore
 	],
 	directives: <dynamic>[routerDirectives]
 )

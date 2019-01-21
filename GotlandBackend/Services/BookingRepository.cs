@@ -20,13 +20,11 @@ namespace Accidis.Gotland.WebService.Services
 		readonly AecCredentialsGenerator _credentialsGenerator;
 
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingRepository).Name);
-		readonly TripRepository _tripRepository;
 		readonly AecUserManager _userManager;
 
-		public BookingRepository(AecCredentialsGenerator credentialsGenerator, TripRepository tripRepository, AecUserManager userManager)
+		public BookingRepository(AecCredentialsGenerator credentialsGenerator, AecUserManager userManager)
 		{
 			_credentialsGenerator = credentialsGenerator;
-			_tripRepository = tripRepository;
 			_userManager = userManager;
 		}
 
@@ -39,13 +37,13 @@ namespace Accidis.Gotland.WebService.Services
 			 * Unlike Sjöslaget there is no risk of overcomitting passengers since allocation of cabins happens
 			 * separate from booking.
 			 */
-			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
+			var tranOptions = new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted };
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = DbUtil.Open())
 			{
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
-				if(0 != await db.ExecuteScalarAsync<int>("select count(*) from [Booking] where [CandidateId] = @Id", new {Id = candidate.Id}))
+				if(0 != await db.ExecuteScalarAsync<int>("select count(*) from [Booking] where [CandidateId] = @Id", new { Id = candidate.Id }))
 				{
 					_log.Warn($"An attempt was made to create a second booking from the same candidate = {candidate.Id}");
 					throw new BookingException("A booking has already been created from this candidate.");
@@ -57,9 +55,9 @@ namespace Accidis.Gotland.WebService.Services
 			}
 
 			var password = _credentialsGenerator.GeneratePinCode();
-			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
+			await _userManager.CreateAsync(new AecUser { UserName = booking.Reference, IsBooking = true }, password);
 
-			return new BookingResult {Reference = booking.Reference, Password = password};
+			return new BookingResult { Reference = booking.Reference, Password = password };
 		}
 
 		public async Task<Booking> FindByReferenceAsync(string reference)
@@ -70,7 +68,7 @@ namespace Accidis.Gotland.WebService.Services
 
 		public async Task<Booking> FindByReferenceAsync(SqlConnection db, string reference)
 		{
-			var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new {Reference = reference});
+			var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new { Reference = reference });
 			return result.FirstOrDefault();
 		}
 
@@ -79,15 +77,48 @@ namespace Accidis.Gotland.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingId] = @Id order by [Order]",
-					new {Id = booking.Id});
+					new { Id = booking.Id });
 				return result.ToArray();
+			}
+		}
+
+		public async Task<BookingQueueStats> GetQueueStatsByReferenceAsync(string reference, DateTime? eventOpening)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var queueStats = await db.QueryFirstOrDefaultAsync<QueueStatsModel>("select BC.[TeamSize], BQ.[No], BQ.[Created] from [BookingCandidate] BC " +
+					"left join [BookingQueue] BQ on BC.[Id] = [BQ].[CandidateId] " +
+					"where BC.[Id] = (select [CandidateId] from [Booking] where [Reference] = @Reference)",
+					new { Reference = reference });
+
+				if(null == queueStats)
+					return null;
+
+				var aheadInQueue = await db.ExecuteScalarAsync<int>("select SUM(BC.[TeamSize]) from [BookingQueue] BQ " +
+					"left join [BookingCandidate] BC on BC.[Id] = [BQ].[CandidateId] where BQ.[No] < @QueueNo",
+					new { QueueNo = queueStats.No });
+
+				int queueLatencyMs = -1;
+				if(eventOpening.HasValue)
+				{
+					long temp = Convert.ToInt64((queueStats.Created - eventOpening.Value).TotalMilliseconds);
+					if(temp >= 0 && temp <= Int32.MaxValue)
+						queueLatencyMs = (int) temp;
+				}
+
+				return new BookingQueueStats
+				{
+					AheadInQueue = aheadInQueue,
+					TeamSize = queueStats.TeamSize,
+					QueueLatencyMs = queueLatencyMs,
+					QueueNo = queueStats.No
+				};
 			}
 		}
 
 		public async Task<BookingResult> UpdateAsync(Event evnt, BookingSource source, bool allowUpdateDetails = false)
 		{
-			var trips = await _tripRepository.GetByEventAsync(evnt);
-			BookingSource.ValidatePax(source, trips);
+			BookingSource.ValidatePax(source);
 			if(allowUpdateDetails)
 				source.ValidateDetails();
 
@@ -97,7 +128,7 @@ namespace Accidis.Gotland.WebService.Services
 			 * See CreateFromCandidateAsync for notes.
 			 * Since this method also handles pax the transaction makes it easy to rollback on error.
 			 */
-			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
+			var tranOptions = new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted };
 			using(var tran = new TransactionScope(TransactionScopeOption.Required, tranOptions, TransactionScopeAsyncFlowOption.Enabled))
 			using(var db = DbUtil.Open())
 			{
@@ -124,18 +155,18 @@ namespace Accidis.Gotland.WebService.Services
 							Email = source.Email,
 							PhoneNo = source.PhoneNo,
 							TeamName = source.TeamName,
-							SpecialRequests = source.SpecialRequests,
+							SpecialRequest = source.SpecialRequest,
 							TotalPrice = totalPrice,
 							Id = booking.Id
 						});
 				}
 				else
-					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new {TotalPrice = totalPrice, Id = booking.Id});
+					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
 
 				tran.Complete();
 			}
 
-			return new BookingResult {Reference = booking.Reference};
+			return new BookingResult { Reference = booking.Reference };
 		}
 
 		async Task CreateBooking(SqlConnection db, Guid candidateId, Booking booking)
@@ -180,8 +211,8 @@ namespace Accidis.Gotland.WebService.Services
 			foreach(BookingSource.PaxSource paxSource in sourceList)
 			{
 				BookingPax pax = BookingPax.FromSource(paxSource, booking.Id);
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [Nationality], [OutboundTripId], [InboundTripId], [IsStudent], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [SpecialFood], [Order])"
-									  + " values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @Nationality, @OutboundTripId, @InboundTripId, @IsStudent, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @SpecialFood, @Order)",
+				await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [SpecialRequest], [Order])"
+									  + " values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @SpecialRequest, @Order)",
 					new
 					{
 						BookingId = pax.BookingId,
@@ -189,14 +220,10 @@ namespace Accidis.Gotland.WebService.Services
 						LastName = pax.LastName,
 						Gender = pax.Gender,
 						Dob = pax.Dob.ToString(),
-						Nationality = pax.Nationality,
-						OutboundTripId = pax.OutboundTripId,
-						InboundTripId = pax.InboundTripId,
-						IsStudent = pax.IsStudent,
 						CabinClassMin = pax.CabinClassMin,
 						CabinClassPreferred = pax.CabinClassPreferred,
 						CabinClassMax = pax.CabinClassMax,
-						SpecialFood = pax.SpecialFood,
+						SpecialRequest = pax.SpecialRequest ?? String.Empty,
 						Order = paxIdx++
 					});
 			}
@@ -204,7 +231,14 @@ namespace Accidis.Gotland.WebService.Services
 
 		async Task DeletePax(SqlConnection db, Booking booking)
 		{
-			await db.ExecuteAsync("delete from [BookingPax] where [BookingId] = @BookingId", new {BookingId = booking.Id});
+			await db.ExecuteAsync("delete from [BookingPax] where [BookingId] = @BookingId", new { BookingId = booking.Id });
+		}
+
+		private sealed class QueueStatsModel
+		{
+			public int TeamSize { get; set; }
+			public int No { get; set; }
+			public DateTime Created { get; set; }
 		}
 	}
 }

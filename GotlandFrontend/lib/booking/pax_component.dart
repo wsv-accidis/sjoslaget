@@ -5,14 +5,12 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:frontend_shared/util.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 import '../booking/booking_validator.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/cabin_class.dart';
-import '../model/trip.dart';
 
 @Component(
 	selector: 'pax-component',
@@ -27,26 +25,25 @@ class PaxComponent implements OnInit {
 	static const String GENDER_OTHER = 'x';
 	static const int MAX_NO_OF_PAX = 20;
 
-	static final DateFormat _tripDateFormat = DateFormat('d/M kk:mm');
-
 	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 
-	int initialEmptyPax = 0;
 	bool isReadOnly = false; // TODO Support this
 
 	List<BookingPaxView> paxViews = <BookingPaxView>[];
 	List<CabinClass> cabinClasses;
 	SelectionOptions<CabinClass> cabinClassOptions;
-	List<Trip> inboundTrips;
-	SelectionOptions<Trip> inboundTripOptions;
-	List<Trip> outboundTrips;
-	SelectionOptions<Trip> outboundTripOptions;
+
+	int get count => paxViews.length;
 
 	SelectionOptions<String> get genderOptions => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
 
-	bool get isLoaded => null != cabinClasses && null != inboundTrips && null != outboundTrips;
+	bool get isEmpty => paxViews.isEmpty || paxViews.every((p) => p.isEmpty);
+
+	bool get isLoaded => null != cabinClasses;
+
+	bool get isValid => paxViews.every((p) => p.isValid);
 
 	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
@@ -55,8 +52,6 @@ class PaxComponent implements OnInit {
 		try {
 			final client = _clientFactory.getClient();
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
-			inboundTrips = await _eventRepository.getInboundTrips(client);
-			outboundTrips = await _eventRepository.getOutboundTrips(client);
 		} catch (e) {
 			// Ignore this here - we will be stuck in the loading state until the user refreshes
 			print('Failed to get data due to an exception: ${e.toString()}');
@@ -64,33 +59,46 @@ class PaxComponent implements OnInit {
 		}
 
 		cabinClassOptions = SelectionOptions.fromList(cabinClasses);
-		inboundTripOptions = SelectionOptions.fromList(inboundTrips);
-		outboundTripOptions = SelectionOptions.fromList(outboundTrips);
+	}
 
-		if (initialEmptyPax > 0)
-			_createInitialEmptyPax(initialEmptyPax);
+	void addEmptyPax() {
+		final BookingPaxView view = BookingPaxView.createEmpty();
+
+		// Change detection for <material-dropdown-select> is annoying
+		view.cabinClassMinSelection.selectionChanges.listen(validateAll);
+		view.cabinClassPreferredSelection.selectionChanges.listen(validateAll);
+		view.cabinClassMaxSelection.selectionChanges.listen(validateAll);
+
+		paxViews.add(view);
 	}
 
 	String cabinClassToString(CabinClass c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
 
 	String cabinClassToStringLabel(CabinClass c, String which) {
 		if (null == c) {
-			switch(which) {
-				case 'min': return 'Lägsta boende';
-				case 'max': return 'Högsta boende';
-				case 'pref': return 'Önskat boende';
-				default: return '';
+			switch (which) {
+				case 'min':
+					return 'Lägsta boende';
+				case 'max':
+					return 'Högsta boende';
+				case 'pref':
+					return 'Önskat boende';
+				default:
+					return '';
 			}
 		}
 		else
 			return cabinClassToString(c);
 	}
 
+	void createInitialEmptyPax(int count) {
+		paxViews.clear();
+		for (int i = 0; i < count; i++) {
+			addEmptyPax();
+		}
+	}
+
 	void deletePax(int idx) {
-		final BookingPaxView pax = paxViews[idx];
-
-		// TODO Pending delete
-
 		paxViews.removeAt(idx);
 	}
 
@@ -108,22 +116,6 @@ class PaxComponent implements OnInit {
 		}
 	}
 
-	String tripToString(Trip t) {
-		if(null == t.departure)
-			return t.name;
-
-		return '${_tripDateFormat.format(t.departure)} ${t.name}';
-	}
-
-	String tripToStringLabel(Trip t, bool isInbound) {
-		if (null == t && isInbound)
-			return 'Välj hemresa';
-		else if (null == t && !isInbound)
-			return 'Välj utresa';
-		else
-			return tripToString(t);
-	}
-
 	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
 
 	void validate(Event event) {
@@ -135,23 +127,6 @@ class PaxComponent implements OnInit {
 
 	void validateAll(dynamic ignored) {
 		paxViews.forEach(_bookingValidator.validatePax);
-	}
-
-	void _createInitialEmptyPax(int count) {
-		paxViews.clear();
-		for (int i = 0; i < count; i++)
-		{
-			final BookingPaxView view = BookingPaxView.createEmpty();
-
-			// Change detection for <material-dropdown-select> is annoying
-			view.outboundTripSelection.selectionChanges.listen(validateAll);
-			view.inboundTripSelection.selectionChanges.listen(validateAll);
-			view.cabinClassMinSelection.selectionChanges.listen(validateAll);
-			view.cabinClassPreferredSelection.selectionChanges.listen(validateAll);
-			view.cabinClassMaxSelection.selectionChanges.listen(validateAll);
-
-			paxViews.add(view);
-		}
 	}
 
 	int _findBookingIndex(HtmlElement target) {

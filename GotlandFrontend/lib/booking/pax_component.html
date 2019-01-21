@@ -8,7 +8,7 @@
 				   (click)="deletePax(p)"
 				   href="javascript:"
 				   title="Ta bort raden">
-					<glyph icon="clear"></glyph>
+					<material-icon icon="clear"></material-icon>
 				</a>
 			</td>
 			<td class="name-field-cell">
@@ -32,6 +32,7 @@
 			<td class="gender-field-cell">
 				<material-dropdown-select [buttonText]="genderToString(pax.gender)"
 										  class="gender-select"
+										  [error]="pax.genderError"
 										  [options]="genderOptions"
 										  [itemRenderer]="genderToString"
 										  [selection]="pax.genderSelection"
@@ -44,92 +45,55 @@
 								[error]="pax.dobError"
 								(keyup)="validate($event)"
 								label="ÅÅMMDD"
-								[ngControl]="uniqueId('dob', p)"
-								type="number">
+								[ngControl]="uniqueId('dob', p)">
 				</material-input>
-			</td>
-			<td class="nationality-field-cell">
-				<material-input [(ngModel)]="pax.nationality"
-								[class]="pax.hasNationalityError ? 'error-marker' : ''"
-								[error]="pax.nationalityError"
-								(keyup)="validate($event)"
-								label="Nationalitet"
-								[ngControl]="uniqueId('nationality', p)">
-				</material-input>
-			</td>
-			<td class="is-student-field-cell">
-				<material-checkbox [checked]="pax.isStudent"
-								   label="Är studerande/under 26 år">
-				</material-checkbox>
 			</td>
 		</tr>
 		<tr>
-			<td class="trips-and-classes-field-cell" colspan="5">
-				<div>
-					<glyph icon="directions_boat"></glyph>
-					<material-dropdown-select [buttonText]="tripToStringLabel(pax.outboundTrip, false)"
-											  class="trip-select"
-											  [error]="pax.outboundTripError"
-											  [options]="outboundTripOptions"
-											  [itemRenderer]="tripToString"
-											  [selection]="pax.outboundTripSelection"
-											  width="5">
-					</material-dropdown-select>
-				</div>
-				<div>
-					<material-dropdown-select [buttonText]="tripToStringLabel(pax.inboundTrip, true)"
-											  class="trip-select"
-											  [error]="pax.inboundTripError"
-											  [options]="inboundTripOptions"
-											  [itemRenderer]="tripToString"
-											  [selection]="pax.inboundTripSelection"
-											  width="5">
-					</material-dropdown-select>
-				</div>
-				<div>
-					<glyph icon="hotel"></glyph>
-					<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassPreferred, 'pref')"
-											  class="cabin-class-select"
-											  [error]="pax.cabinClassPreferredError"
-											  [options]="cabinClassOptions"
-											  [itemRenderer]="cabinClassToString"
-											  [selection]="pax.cabinClassPreferredSelection"
-											  width="4">
-					</material-dropdown-select>
-				</div>
-			</td>
-			<td class="cabin-class-field-cell">
-				<glyph icon="vertical_align_top"></glyph>
-				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMax, 'max')"
-										  class="cabin-class-select"
-										  [error]="pax.cabinClassMaxError"
-										  [options]="cabinClassOptions"
-										  [itemRenderer]="cabinClassToString"
-										  [selection]="pax.cabinClassMaxSelection"
-										  width="4">
-				</material-dropdown-select>
-			</td>
-		</tr>
-		<tr>
-			<td class="special-food-field-cell" colspan="5">
-				<material-input [(ngModel)]="pax.specialFood"
-								label="Särskild kost, allergier och andra speciella önskemål">
-				</material-input>
-			</td>
-			<td class="cabin-class-field-cell">
-				<glyph icon="vertical_align_bottom"></glyph>
+			<td class="classes-field-cell" colspan="4">
+				<material-icon icon="vertical_align_bottom"></material-icon>
 				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMin, 'min')"
 										  class="cabin-class-select"
 										  [error]="pax.cabinClassMinError"
 										  [options]="cabinClassOptions"
 										  [itemRenderer]="cabinClassToString"
 										  [selection]="pax.cabinClassMinSelection"
-										  width="4">
+										  width="3">
+				</material-dropdown-select>
+
+				<material-icon icon="hotel"></material-icon>
+				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassPreferred, 'pref')"
+										  class="cabin-class-select"
+										  [error]="pax.cabinClassPreferredError"
+										  [options]="cabinClassOptions"
+										  [itemRenderer]="cabinClassToString"
+										  [selection]="pax.cabinClassPreferredSelection"
+										  width="3">
+				</material-dropdown-select>
+
+				<material-icon icon="vertical_align_top"></material-icon>
+				<material-dropdown-select [buttonText]="cabinClassToStringLabel(pax.cabinClassMax, 'max')"
+										  class="cabin-class-select"
+										  [error]="pax.cabinClassMaxError"
+										  [options]="cabinClassOptions"
+										  [itemRenderer]="cabinClassToString"
+										  [selection]="pax.cabinClassMaxSelection"
+										  width="3">
 				</material-dropdown-select>
 			</td>
 		</tr>
 		<tr>
-			<td class="spacing-cell" colspan="7"></td>
+			<td class="special-food-field-cell" colspan="4">
+				<material-input [(ngModel)]="pax.specialRequest"
+								label="Särskild kost, allergier och övriga önskemål">
+				</material-input>
+			</td>
+			<td class="cabin-class-field-cell">
+
+			</td>
+		</tr>
+		<tr>
+			<td class="spacing-cell" colspan="5"></td>
 		</tr>
 		</tbody>
 	</table>

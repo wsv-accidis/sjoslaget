@@ -4,11 +4,29 @@ namespace Accidis.Gotland.WebService.Models
 {
 	public sealed class Event
 	{
+		// Event will not display as open until 
+		const int BeforeOpeningCountdownDays = 3;
+
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public bool IsActive { get; set; }
 		public DateTime? Opening { get; set; }
 
 		public bool IsOpen => Opening.HasValue && DateTime.Now > Opening.Value;
+
+		public bool IsInCountdown
+		{
+			get
+			{
+				if(Opening.HasValue)
+				{
+					var now = DateTime.Now;
+					var limit = Opening.Value.AddDays(-BeforeOpeningCountdownDays);
+					return now < Opening.Value && now > limit;
+				}
+
+				return false;
+			}
+		}
 	}
 }
