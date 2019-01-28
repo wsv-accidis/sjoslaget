@@ -11,12 +11,13 @@ import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/cabin_class.dart';
+import '../widgets/components.dart';
 
 @Component(
 	selector: 'pax-component',
 	styleUrls: ['../content/content_styles.css', 'pax_component.css'],
 	templateUrl: 'pax_component.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives],
+	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives],
 	providers: <dynamic>[materialProviders]
 )
 class PaxComponent implements OnInit {

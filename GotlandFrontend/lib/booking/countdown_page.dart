@@ -15,13 +15,14 @@ import '../content/content_routes.dart';
 import '../model/queue_response.dart';
 import '../util/countdown_state.dart';
 import '../util/temp_credentials_store.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'countdown-page',
 	styleUrls: ['../content/content_styles.css', 'countdown_page.css'],
 	templateUrl: 'countdown_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, routerDirectives, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: [ContentRoutes]
 )

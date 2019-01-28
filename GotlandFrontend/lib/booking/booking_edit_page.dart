@@ -18,13 +18,14 @@ import '../model/booking_source.dart';
 import '../model/cabin_class.dart';
 import '../model/team_size.dart';
 import '../util/temp_credentials_store.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
 	selector: 'booking-page',
 	styleUrls: ['../content/content_styles.css', 'booking_edit_page.css'],
 	templateUrl: 'booking_edit_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, PaxComponent, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, PaxComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders]
 )
 class BookingEditPage implements OnInit {

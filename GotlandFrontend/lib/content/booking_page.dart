@@ -17,6 +17,7 @@ import '../model/candidate_response.dart';
 import '../model/event.dart';
 import '../model/team_size.dart';
 import '../util/countdown_state.dart';
+import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'about_routes.dart';
 
@@ -24,7 +25,7 @@ import 'about_routes.dart';
 	selector: 'start-page',
 	styleUrls: ['content_styles.css', 'booking_page.css'],
 	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, materialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: [AboutRoutes]
 )

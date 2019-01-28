@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 
 import '../client/client_factory.dart';
 import '../util/temp_credentials_store.dart';
+import '../widgets/components.dart';
 import 'booking_routes.dart';
 
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
 	styleUrls: ['booking_login_component.css', '../content/content_styles.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, materialDirectives, ModalDialog],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, ModalDialog],
 	exports: <dynamic>[BookingRoutes]
 )
 class BookingLoginComponent {
