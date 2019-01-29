@@ -3,6 +3,10 @@ abstract class ValueConverter {
 		if (null == value || value.isEmpty)
 			return null;
 
+		// Special case for DateTimes that came from .NET and can contain a fractional part of 7 digits
+		if (value.contains(RegExp(r"\.[0-9]{7}$")))
+			value = value.substring(0, value.length - 1);
+
 		return DateTime.parse(value);
 	}
 

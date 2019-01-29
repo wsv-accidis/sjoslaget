@@ -66,6 +66,10 @@ iframe.facebook-box-compact {
 	height: 80px;
 }
 
+.mono {
+	font-family: 'Roboto Mono', monospace;
+}
+
 li:not(:last-child) {
 	margin-bottom: 8px;
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Accidis.Gotland.WebService.Models;
+﻿using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
 using NLog;
+using System;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -104,22 +104,6 @@ namespace Accidis.Gotland.WebService.Controllers
 			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while keeping a candidate alive.");
-				throw;
-			}
-		}
-
-		// TODO Admins only
-		[HttpPost]
-		public async Task<IHttpActionResult> Reset()
-		{
-			try
-			{
-				await _candidateRepository.DeleteAllAsync();
-				return Ok();
-			}
-			catch(Exception ex)
-			{
-				_log.Error(ex, "An unexpected exception occurred while resetting the queue.");
 				throw;
 			}
 		}

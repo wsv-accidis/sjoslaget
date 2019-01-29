@@ -56,7 +56,7 @@ class CountdownPage implements OnInit, OnDestroy {
 	BookingResult _bookingResult;
 	int _buttonTextIndex = 0;
 	Timer _buttonTimer;
-	final _countdown = CountdownState();
+	final _countdown = CountdownState.fromSession();
 	Timer _countdownTimer;
 	Timer _pingTimer;
 	QueueResponse _queueResponse;

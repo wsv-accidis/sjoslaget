@@ -90,7 +90,7 @@ class BookingPage implements OnInit {
 			return;
 		}
 
-		final state = CountdownState();
+		final state = CountdownState.empty();
 		state.update(response);
 
 		await _router.navigateByUrl(BookingRoutes.countdown.toUrl());

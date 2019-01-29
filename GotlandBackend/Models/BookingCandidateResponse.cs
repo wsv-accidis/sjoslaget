@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Accidis.Gotland.WebService.Services;
+using System;
 
 namespace Accidis.Gotland.WebService.Models
 {
@@ -6,13 +7,9 @@ namespace Accidis.Gotland.WebService.Models
 	{
 		public BookingCandidateResponse(Guid candidateId, int queueSize, Event evnt)
 		{
-			long countdown = -1;
-			if(evnt.Opening.HasValue)
-				countdown = Math.Max(0, Convert.ToInt64((evnt.Opening.Value - DateTime.Now).TotalMilliseconds));
-
 			Id = candidateId;
 			QueueSize = queueSize;
-			Countdown = countdown;
+			Countdown = Math.Max(0, IntervalCalculator.CalculateInterval(DateTime.Now, evnt.Opening));
 		}
 
 		public Guid Id { get; }

@@ -86,7 +86,7 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				var queueStats = await db.QueryFirstOrDefaultAsync<QueueStatsModel>("select BC.[TeamSize], BQ.[No], BQ.[Created] from [BookingCandidate] BC " +
+				var queueStats = await db.QueryFirstOrDefaultAsync<QueueStatsRow>("select BC.[TeamSize], BQ.[No], BQ.[Created] from [BookingCandidate] BC " +
 					"left join [BookingQueue] BQ on BC.[Id] = [BQ].[CandidateId] " +
 					"where BC.[Id] = (select [CandidateId] from [Booking] where [Reference] = @Reference)",
 					new { Reference = reference });
@@ -98,19 +98,11 @@ namespace Accidis.Gotland.WebService.Services
 					"left join [BookingCandidate] BC on BC.[Id] = [BQ].[CandidateId] where BQ.[No] < @QueueNo",
 					new { QueueNo = queueStats.No });
 
-				int queueLatencyMs = -1;
-				if(eventOpening.HasValue)
-				{
-					long temp = Convert.ToInt64((queueStats.Created - eventOpening.Value).TotalMilliseconds);
-					if(temp >= 0 && temp <= Int32.MaxValue)
-						queueLatencyMs = (int) temp;
-				}
-
 				return new BookingQueueStats
 				{
 					AheadInQueue = aheadInQueue,
 					TeamSize = queueStats.TeamSize,
-					QueueLatencyMs = queueLatencyMs,
+					QueueLatencyMs = QueueDashboardItem.TryCalculateQueueLatencyMs(eventOpening, queueStats.Created),
 					QueueNo = queueStats.No
 				};
 			}
@@ -234,7 +226,7 @@ namespace Accidis.Gotland.WebService.Services
 			await db.ExecuteAsync("delete from [BookingPax] where [BookingId] = @BookingId", new { BookingId = booking.Id });
 		}
 
-		private sealed class QueueStatsModel
+		private sealed class QueueStatsRow
 		{
 			public int TeamSize { get; set; }
 			public int No { get; set; }

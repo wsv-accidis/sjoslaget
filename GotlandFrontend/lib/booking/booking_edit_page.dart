@@ -60,8 +60,6 @@ class BookingEditPage implements OnInit {
 
 	bool get isNewBooking => false; // TODO
 
-	String get queueLatencyFormatted => _formatQueueLatency(queueStats.queueLatencyMs);
-
 	BookingEditPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
 
 	@override
@@ -136,60 +134,5 @@ class BookingEditPage implements OnInit {
 		} finally {
 			isSaving = false;
 		}
-	}
-
-	String _formatQueueLatency(int latencyMs) {
-		final result = StringBuffer();
-		bool includeSmallUnits = true;
-
-		if (latencyMs >= Duration.millisecondsPerDay) {
-			final int days = (latencyMs / Duration.millisecondsPerDay).floor();
-			latencyMs %= Duration.millisecondsPerDay;
-			final String suffix = 1 == days ? '' : 'ar';
-			result.write('$days dag$suffix');
-			includeSmallUnits = false;
-		}
-
-		if (latencyMs >= Duration.millisecondsPerHour) {
-			if (result.isNotEmpty) {
-				result.write(', ');
-			}
-			final int hours = (latencyMs / Duration.millisecondsPerHour).floor();
-			latencyMs %= Duration.millisecondsPerHour;
-			final String suffix = 1 == hours ? 'e' : 'ar';
-			result.write('$hours timm$suffix');
-			includeSmallUnits = false;
-		}
-
-		if (latencyMs >= Duration.millisecondsPerMinute) {
-			if (result.isNotEmpty) {
-				result.write(', ');
-			}
-			final int mins = (latencyMs / Duration.millisecondsPerMinute).floor();
-			latencyMs %= Duration.millisecondsPerMinute;
-			final String suffix = 1 == mins ? '' : 'er';
-			result.write('$mins minut$suffix');
-		}
-
-		if (includeSmallUnits) {
-			if (latencyMs >= Duration.millisecondsPerSecond) {
-				if (result.isNotEmpty) {
-					result.write(', ');
-				}
-				final int secs = (latencyMs / Duration.millisecondsPerSecond).floor();
-				latencyMs %= Duration.millisecondsPerSecond;
-				final String suffix = 1 == secs ? '' : 'er';
-				result.write('$secs sekund$suffix');
-			}
-
-			if (latencyMs > 0) {
-				if (result.isNotEmpty) {
-					result.write(', ');
-				}
-				result.write('$latencyMs ms');
-			}
-		}
-
-		return result.toString();
 	}
 }

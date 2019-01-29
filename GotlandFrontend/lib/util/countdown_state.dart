@@ -27,20 +27,28 @@ class CountdownState {
 
 	bool get hasState => null != candidateId && candidateId.isNotEmpty;
 
-	CountdownState() {
+	CountdownState();
+
+	factory CountdownState.fromSession() {
+		final state = CountdownState();
+
 		if (window.sessionStorage.containsKey(CANDIDATE_ID)
 			&& window.sessionStorage.containsKey(COUNTDOWN)
 			&& window.sessionStorage.containsKey(COUNTDOWN_FROM)) {
 			try {
-				candidateId = window.sessionStorage[CANDIDATE_ID];
-				_countdown = int.parse(window.sessionStorage[COUNTDOWN]);
-				_countdownFrom = DateTime.parse(window.sessionStorage[COUNTDOWN_FROM]);
+				state.candidateId = window.sessionStorage[CANDIDATE_ID];
+				state._countdown = int.parse(window.sessionStorage[COUNTDOWN]);
+				state._countdownFrom = DateTime.parse(window.sessionStorage[COUNTDOWN_FROM]);
 			} catch (e) {
 				print('Failed to initialize countdown state (corrupt data): ${e.toString()}');
-				candidateId = null;
+				state.candidateId = null;
 			}
 		}
+
+		return state;
 	}
+
+	factory CountdownState.empty() => CountdownState();
 
 	@override
 	String toString() {
@@ -51,18 +59,25 @@ class CountdownState {
 	}
 
 	void update(CandidateResponse response) {
-		final countdownInMs = response.countdown;
-		final syncError = countdownInMs - inMilliseconds;
-		if (syncError.abs() > SYNC_ERROR_TRESHOLD) {
-			print('Countdown sync error = ${syncError.toString()} ms.');
-		}
-
+		_update(response.countdown);
 		candidateId = response.id;
-		_countdown = countdownInMs;
-		_countdownFrom = DateTime.now();
 
 		window.sessionStorage[CANDIDATE_ID] = response.id;
 		window.sessionStorage[COUNTDOWN] = response.countdown.toString();
 		window.sessionStorage[COUNTDOWN_FROM] = _countdownFrom.toIso8601String();
+	}
+
+	void updateCountdown(int countdownMs) {
+		_update(countdownMs);
+	}
+
+	void _update(int countdownMs) {
+		final syncError = countdownMs - inMilliseconds;
+		if (syncError.abs() > SYNC_ERROR_TRESHOLD) {
+			print('Countdown sync error = ${syncError.toString()} ms.');
+		}
+
+		_countdown = countdownMs;
+		_countdownFrom = DateTime.now();
 	}
 }

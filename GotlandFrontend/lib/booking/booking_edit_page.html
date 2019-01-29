@@ -4,7 +4,7 @@
 
 <p *ngIf="hasQueueStats">
 	Du har nummer <strong>{{ queueStats.queueNo }}</strong> i bokningskön och
-	fick in din bokning <strong>{{ queueLatencyFormatted }}</strong> efter att bokningen öppnade.
+	fick in din bokning <strong>{{ queueStats.queueLatency }}</strong> efter att bokningen öppnade.
 	<span *ngIf="queueStats.isEarlyBooking">Eftersom du fick in din bokning tidigt är dina chanser goda att få
 	de platser och boenden du föredrar - go crazy!</span>
 	<span *ngIf="queueStats.isLateBooking">Eftersom du fick in din bokning lite senare än flertalet föreslår
