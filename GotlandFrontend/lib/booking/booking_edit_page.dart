@@ -39,9 +39,10 @@ class BookingEditPage implements OnInit {
 	PaxComponent pax;
 
 	BookingSource booking;
-	String bookingError; // TODO
+	String bookingError;
 	List<CabinClass> cabinClasses;
 	BookingResult credentials;
+	bool isReadOnly = false;
 	bool isSaving = false;
 	String loadingError;
 	BookingQueueStats queueStats;
@@ -52,13 +53,15 @@ class BookingEditPage implements OnInit {
 
 	bool get hasCredentials => null != credentials;
 
-	bool get hasLoaded => null != booking;
+	bool get hasBookingError => isNotEmpty(bookingError);
 
 	bool get hasLoadingError => isNotEmpty(loadingError);
 
 	bool get hasQueueStats => null != queueStats && !queueStats.isEmpty;
 
-	bool get isNewBooking => false; // TODO
+	bool get isLoaded => null != booking;
+
+	bool get isNewBooking => isLoaded && pax.isEmpty && !isReadOnly;
 
 	BookingEditPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
 
@@ -73,7 +76,8 @@ class BookingEditPage implements OnInit {
 		final String reference = _clientFactory.authenticatedUser;
 		try {
 			final client = _clientFactory.getClient();
-			//event = await _eventRepository.getActiveEvent(client);
+			final event = await _eventRepository.getActiveEvent(client);
+			isReadOnly = event.isLocked;
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			booking = await _bookingRepository.getBooking(client, reference);
 			queueStats = await _bookingRepository.getQueueStats(client, reference);
@@ -83,12 +87,10 @@ class BookingEditPage implements OnInit {
 			return;
 		}
 
+		pax.isReadOnly = isReadOnly;
 		credentials = _tempCredentialsStore.load();
 
-		// TODO Handle read-only
-		// readonly = event.isLocked ... (this field doesn't exist on the backend yet)
-
-		if (booking.pax.isEmpty) {
+		if (isNewBooking) {
 			// For new bookings, helpfully create a bunch of empty rows
 			final int teamSize = queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
 			pax.createInitialEmptyPax(teamSize);
@@ -128,7 +130,6 @@ class BookingEditPage implements OnInit {
 				final client = _clientFactory.getClient();
 				await _bookingRepository.saveBooking(client, booking);
 			} catch (e) {
-				// TODO We could have different messages depending on the type of error here
 				bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta oss.';
 			}
 		} finally {

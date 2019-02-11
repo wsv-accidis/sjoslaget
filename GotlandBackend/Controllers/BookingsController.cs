@@ -91,6 +91,8 @@ namespace Accidis.Gotland.WebService.Controllers
 
 			if(IsAuthorized(bookingSource.Reference))
 				return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
+			if(!AuthContext.IsAdmin && evnt.IsLocked)
+				return BadRequest("The event has been locked and the booking can no longer be edited.");
 
 			try
 			{

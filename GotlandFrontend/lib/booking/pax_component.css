@@ -2,6 +2,10 @@ table {
 	max-width: 820px;
 }
 
+table.pax-readonly {
+	max-width: 900px;
+}
+
 td {
 	white-space: nowrap;
 	vertical-align: top;
@@ -67,11 +71,33 @@ td.pax-header-cell {
 	min-width: 45px;
 }
 
+table.pax-readonly td, table.pax-readonly th {
+	padding: 4px 10px;
+	vertical-align: top;
+}
+
+table.pax-readonly th {
+	color: #009900;
+}
+
+table.pax-readonly tr:nth-child(even) {
+	background-color: #EFFFEF;
+}
+
+td.readonly-pax-header-cell {
+	font-weight: bold;
+}
+
+td.readonly-special-req-cell {
+	max-width: 300px;
+	white-space: normal;
+}
+
 td.spacing-cell {
 	height: 30px;
 }
 
-td.special-food-field-cell {
+td.special-req-field-cell {
 	padding-right: 15px;
 	padding-top: 8px;
 }

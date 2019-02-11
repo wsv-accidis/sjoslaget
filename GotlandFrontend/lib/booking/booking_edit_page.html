@@ -17,7 +17,13 @@
 	Skriv ner dessa, du kommer att behöva dem senare.
 </p>
 
-<material-expansionpanel [expanded]="isNewBooking"
+<p *ngIf="isReadOnly">
+	Din bokning är nu låst för ändringar så att boenden ska kunna tilldelas på ett rättvist sätt. Om du behöver ändra något i sista
+	stund, kontakta oss så ska vi se vad vi kan göra.
+</p>
+
+<material-expansionpanel *ngIf="!isReadOnly"
+						 [expanded]="isNewBooking"
 						 flat="true"
 						 name="Instruktioner - så här fyller du i (läs först!)"
 						 [showSaveCancel]="false">
@@ -44,22 +50,26 @@
 	</p>
 </material-expansionpanel>
 
-<div style="clear: both; height: 30px;"></div>
+<div style="clear: both; height: 20px;"></div>
 
 <p class="super-important loading-error" *ngIf="hasLoadingError">
 	{{ loadingError }}
 </p>
 
 <form #bookingForm="ngForm">
-	<spinner-widget *ngIf="!hasLoaded && !hasLoadingError"></spinner-widget>
+	<spinner-widget *ngIf="!isLoaded && !hasLoadingError"></spinner-widget>
 
 	<pax-component #pax></pax-component>
 
-	<div>
+	<p class="super-important booking-error" *ngIf="hasBookingError">
+		{{ bookingError }}
+	</p>
+
+	<div *ngIf="!isReadOnly">
 		<div *ngIf="!isSaving">
 			<material-button class="control-blue"
 							 raised
-							 [disabled]="!canAddPax || !hasLoaded"
+							 [disabled]="!canAddPax || !isLoaded"
 							 (trigger)="addEmptyPax()">
 				Lägg till en deltagare
 			</material-button>

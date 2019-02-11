@@ -7,11 +7,10 @@ class CabinClass {
 	final int no;
 	final String name;
 	final String description;
-	final int count;
 	final Decimal pricePerPax;
 
-	CabinClass(this.no, this.name, this.description, this.count, this.pricePerPax);
+	CabinClass(this.no, this.name, this.description, this.pricePerPax);
 
 	factory CabinClass.fromMap(Map<String, dynamic> json) =>
-		CabinClass(ValueConverter.toInt(json[NO]), json[NAME], json[DESCRIPTION], int.parse(json[COUNT].toString()), Decimal.parse(json[PRICE_PER_PAX].toString()));
+		CabinClass(ValueConverter.toInt(json[NO]), json[NAME], json[DESCRIPTION], Decimal.parse(json[PRICE_PER_PAX].toString()));
 }

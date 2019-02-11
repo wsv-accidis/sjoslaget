@@ -51,11 +51,13 @@ class BookingPage implements OnInit {
 
 	String get eventOpening => DateTimeFormatter.format(_evnt.opening);
 
-	bool get hasOpening => null != _evnt.opening;
+	bool get isClosed => isLoaded && _evnt.isLocked;
+
+	bool get isLoaded => null != _evnt;
 
 	bool get isInCountdown => isLoaded && _evnt.isInCountdown;
 
-	bool get isLoaded => null != _evnt;
+	bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.isOpen && !_evnt.isLocked;
 
 	bool get isOpen => isLoaded && _evnt.isOpen;
 

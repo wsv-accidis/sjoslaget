@@ -9,16 +9,20 @@
 	<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> i god tid innan bokningen faktiskt öppnar!
 </p>
 
-<p *ngIf="isLoaded && !isOpen && hasOpening">
+<p *ngIf="isNotReady">
+	Du är tidigt ute - vi har inte öppnat bokningen ännu. Kom igen senare!
+</p>
+
+<p *ngIf="isInCountdown">
 	Bokingen för <strong>{{ eventName }}</strong> öppnar {{ eventOpening }}. Nedräkningen rullar!
 </p>
 
-<p *ngIf="isLoaded && !hasOpening">
-	Du är tidigt ute - vi har inte satt ett datum för bokningens öppnande ännu. Kom igen senare!
+<p *ngIf="isOpen">
+	Bokningen är öppen!
 </p>
 
-<p *ngIf="isLoaded && isOpen">
-	Bokningen är öppen!
+<p *ngIf="isClosed">
+	Bokningen har stängt. Om du inte hann boka AG i år så önskar vi lycka till nästa gång!
 </p>
 
 <div *ngIf="isInCountdown || isOpen">

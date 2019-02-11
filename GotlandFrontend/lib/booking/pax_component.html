@@ -1,3 +1,56 @@
+<div *ngIf="isReadOnly">
+	<table cellpadding="0" cellspacing="0" border="0" class="pax-readonly">
+		<thead>
+		<tr>
+			<th></th>
+			<th class="name-field-cell">
+				Förnamn
+			</th>
+			<th class="name-field-cell">
+				Efternamn
+			</th>
+			<th class="gender-field-cell">
+				Kön
+			</th>
+			<th class="dob-field-cell">
+				Födelsedatum
+			</th>
+			<th class="classes-field-cell">
+				Boende (Lägst/Önskat/Högst)
+			</th>
+			<th class="special-food-field-cell">
+				Speciella önskemål
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr *ngFor="let pax of paxViews; let p = index">
+			<td class="readonly-pax-header-cell">
+				{{ 1 + p }}
+			</td>
+			<td>
+				{{ pax.firstName }}
+			</td>
+			<td>
+				{{ pax.lastName }}
+			</td>
+			<td>
+				{{ genderToString(pax.gender) }}
+			</td>
+			<td>
+				{{ pax.dob }}
+			</td>
+			<td>
+				{{ pax.cabinClassMin.name }} / {{ pax.cabinClassPreferred.name }} / {{ pax.cabinClassMax.name }}
+			</td>
+			<td class="readonly-special-req-cell">
+				{{ pax.specialRequest }}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
 <div *ngIf="!isReadOnly">
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tbody *ngFor="let pax of paxViews; let p = index" [attr.data-idx]="p">
@@ -83,7 +136,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="special-food-field-cell" colspan="4">
+			<td class="special-req-field-cell" colspan="4">
 				<material-input [(ngModel)]="pax.specialRequest"
 								label="Särskild kost, allergier och övriga önskemål">
 				</material-input>

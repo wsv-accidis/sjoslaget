@@ -114,6 +114,8 @@ namespace Accidis.Gotland.WebService.Controllers
 			Event evnt = await _eventRepository.GetActiveAsync();
 			if(null == evnt)
 				return NotFound();
+			if(evnt.IsLocked)
+				return BadRequest("The event is locked and can no longer accept bookings.");
 
 			try
 			{

@@ -15,6 +15,7 @@ const String FIRSTNAME = 'FirstName';
 const String GENDER = 'Gender';
 const String ID = 'Id';
 const String IS_IN_COUNTDOWN = 'IsInCountdown';
+const String IS_LOCKED = 'IsLocked';
 const String IS_OPEN = 'IsOpen';
 const String LASTNAME = 'LastName';
 const String NAME = 'Name';

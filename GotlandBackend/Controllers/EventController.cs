@@ -2,6 +2,7 @@
 using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Web;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -21,7 +22,7 @@ namespace Accidis.Gotland.WebService.Controllers
 			if(null == evnt)
 				return NotFound();
 
-			return Ok(evnt);
+			return this.OkNoCache(evnt);
 
 			// TODO When this goes live, should have longer cache
 			// return this.OkCacheControl(evnt, WebConfig.StaticDataMaxAge);
