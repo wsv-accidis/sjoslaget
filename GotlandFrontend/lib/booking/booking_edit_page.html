@@ -40,6 +40,11 @@
 	</p>
 
 	<p>
+		Längst ned på sidan kan du fylla i <strong>Särskilda önskemål</strong>. Om du vill ha något särskilt boende eller lämna extra information
+		till oss så gör du det här. Vi kan förstås inte lova att allt går att lösa, men vi gör vårt bästa!
+	</p>
+
+	<p>
 		När tilldelningen av stugor har börjat kan du inte längre göra ändringar i bokningen själv utan måste då kontakta oss för alla ändringar. Detta sker
 		förmodligen en eller ett par timmar efter att bokningen har öppnat, eftersom Absolut Gotland brukar bli fullbokat snabbt. Håll utkik efter
 		uppdaterad information i vårt Facebook-event. <strong>Spara din bokning</strong> ofta under tiden du fyller i.
@@ -90,5 +95,54 @@
 		</div>
 
 		<spinner-widget *ngIf="isSaving"></spinner-widget>
+	</div>
+
+	<div *ngIf="isReadOnly" class="booking-logout">
+		<material-button class="control-red"
+						 raised
+						 (trigger)="saveAndExit()">
+			Logga ut
+		</material-button>
+	</div>
+
+	<div *ngIf="isLoaded" class="booking-details">
+		<h2>
+			Bokningsinformation
+		</h2>
+
+		<table>
+			<tr>
+				<th>
+					Lagets namn
+				</th>
+				<td>
+					{{ booking.teamName }}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Kontaktperson
+				</th>
+				<td>
+					{{ booking.firstName }} {{ booking.lastName }}
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Särskilda önskemål
+				</th>
+				<td *ngIf="isReadOnly">
+					{{ booking.specialRequest }}
+				</td>
+				<td *ngIf="!isReadOnly">
+					<material-input [(ngModel)]="booking.specialRequest"
+									class="special-request-field"
+									[displayBottomPanel]="false"
+									label="Särskilda önskemål"
+									multiline>
+					</material-input>
+				</td>
+			</tr>
+		</table>
 	</div>
 </form>

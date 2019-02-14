@@ -129,7 +129,6 @@ namespace Accidis.Gotland.WebService.Services
 				booking = await FindByReferenceAsync(db, source.Reference);
 				if(null == booking || booking.EventId != evnt.Id)
 					throw new BookingException($"Booking with reference {source.Reference} not found or not in active event.");
-				// TODO Need to handle bookings being locked at some point
 
 				await DeletePax(db, booking);
 				await CreatePax(db, booking, source.Pax);
@@ -147,13 +146,21 @@ namespace Accidis.Gotland.WebService.Services
 							Email = source.Email,
 							PhoneNo = source.PhoneNo,
 							TeamName = source.TeamName,
-							SpecialRequest = source.SpecialRequest,
+							SpecialRequest = source.SpecialRequest ?? String.Empty,
 							TotalPrice = totalPrice,
 							Id = booking.Id
 						});
 				}
 				else
-					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new { TotalPrice = totalPrice, Id = booking.Id });
+				{
+					await db.ExecuteAsync("update [Booking] set [SpecialRequest] = @SpecialRequest, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+						new
+						{
+							SpecialRequest = source.SpecialRequest ?? String.Empty,
+							TotalPrice = totalPrice,
+							Id = booking.Id
+						});
+				}
 
 				tran.Complete();
 			}

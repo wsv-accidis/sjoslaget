@@ -90,7 +90,7 @@ class BookingEditPage implements OnInit {
 		pax.isReadOnly = isReadOnly;
 		credentials = _tempCredentialsStore.load();
 
-		if (isNewBooking) {
+		if (!isReadOnly && booking.pax.isEmpty) {
 			// For new bookings, helpfully create a bunch of empty rows
 			final int teamSize = queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
 			pax.createInitialEmptyPax(teamSize);
@@ -106,8 +106,9 @@ class BookingEditPage implements OnInit {
 	}
 
 	Future<void> saveAndExit() async {
-		await saveBooking();
-
+		if (!isReadOnly) {
+			await saveBooking();
+		}
 		if (null == bookingError) {
 			_clientFactory.clear();
 			await _router.navigateByUrl(ContentRoutes.booking.toUrl());

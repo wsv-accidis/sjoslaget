@@ -6,3 +6,26 @@ span.credentials {
 p.loading-error {
 	font-size: larger;
 }
+
+.booking-details h2 {
+	margin-top: 30px;
+}
+
+.booking-details table th {
+	width: 180px;
+}
+
+.booking-details table th, .booking-details table td {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	vertical-align: top;
+}
+
+.booking-logout {
+	margin-top: 30px;
+}
+
+.special-request-field {
+	padding: 0;
+	width: 600px;
+}

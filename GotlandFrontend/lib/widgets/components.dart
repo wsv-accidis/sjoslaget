@@ -13,5 +13,6 @@ const List<dynamic> gotlandMaterialDirectives = <dynamic>[
 	MaterialInputDefaultValueAccessor,
 	MaterialInputBlurValueAccessor,
 	MaterialInputChangeValueAccessor,
+	MaterialMultilineInputComponent,
 	MaterialProgressComponent
 ];
