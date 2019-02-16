@@ -43,6 +43,12 @@ class BookingPaxView {
 
 	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasGenderError && !hasDobError && !hasCabinClassError;
 
+	int get priceMax => null != cabinClassMax ? cabinClassMax.pricePerPax.toInt() : 0;
+
+	int get priceMin => null != cabinClassMin ? cabinClassMin.pricePerPax.toInt() : 0;
+
+	int get pricePreferred => null != cabinClassPreferred ? cabinClassPreferred.pricePerPax.toInt() : 0;
+
 	static List<BookingPaxView> listOfBookingPaxToList(List<BookingPax> list, List<CabinClass> cabinClasses) =>
 		list.map((p) => BookingPaxView.fromBookingPax(p, cabinClasses)).toList();
 

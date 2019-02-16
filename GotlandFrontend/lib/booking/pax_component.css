@@ -11,8 +11,15 @@ td {
 	vertical-align: top;
 }
 
-td.cabin-class-field-cell {
+div.booking-price {
+	float: right;
+	margin-right: 3px;
 	text-align: right;
+}
+
+div.booking-price span {
+	font-size: larger;
+	font-weight: bold;
 }
 
 material-dropdown-select.cabin-class-select {
@@ -100,6 +107,10 @@ td.spacing-cell {
 td.special-req-field-cell {
 	padding-right: 15px;
 	padding-top: 8px;
+}
+
+td.special-req-field-cell > material-input {
+	width: 760px;
 }
 
 material-input {

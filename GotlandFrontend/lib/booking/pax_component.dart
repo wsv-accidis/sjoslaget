@@ -30,21 +30,34 @@ class PaxComponent implements OnInit {
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 
-	bool isReadOnly = false; // TODO Support this
-
 	List<BookingPaxView> paxViews = <BookingPaxView>[];
 	List<CabinClass> cabinClasses;
 	SelectionOptions<CabinClass> cabinClassOptions;
+	bool isReadOnly = false;
 
 	int get count => paxViews.length;
 
 	SelectionOptions<String> get genderOptions => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
+
+	bool get hasPrice => priceOfPaxPreferred > 0;
 
 	bool get isEmpty => paxViews.isEmpty || paxViews.every((p) => p.isEmpty);
 
 	bool get isLoaded => null != cabinClasses;
 
 	bool get isValid => paxViews.every((p) => p.isValid);
+
+	int get priceOfPaxMax => paxViews.fold(0, (sum, a) => sum + a.priceMax);
+
+	int get priceOfPaxMin => paxViews.fold(0, (sum, a) => sum + a.priceMin);
+
+	int get priceOfPaxPreferred => paxViews.fold(0, (sum, a) => sum + a.pricePreferred);
+
+	String get priceMaxFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMax);
+
+	String get priceMinFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMin);
+
+	String get pricePreferredFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxPreferred);
 
 	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
@@ -64,12 +77,7 @@ class PaxComponent implements OnInit {
 
 	void addEmptyPax() {
 		final BookingPaxView view = BookingPaxView.createEmpty();
-
-		// Change detection for <material-dropdown-select> is annoying
-		view.cabinClassMinSelection.selectionChanges.listen(validateAll);
-		view.cabinClassPreferredSelection.selectionChanges.listen(validateAll);
-		view.cabinClassMaxSelection.selectionChanges.listen(validateAll);
-
+		_addListeners(view);
 		paxViews.add(view);
 	}
 
@@ -117,6 +125,11 @@ class PaxComponent implements OnInit {
 		}
 	}
 
+	void setPax(List<BookingPaxView> list) {
+		list.forEach(_addListeners);
+		paxViews = list;
+	}
+
 	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
 
 	void validate(Event event) {
@@ -126,8 +139,12 @@ class PaxComponent implements OnInit {
 		}
 	}
 
-	void validateAll(dynamic ignored) {
-		paxViews.forEach(_bookingValidator.validatePax);
+	void _addListeners(BookingPaxView view) {
+		// Change detection for <material-dropdown-select> is annoying
+		view.genderSelection.selectionChanges.listen(_validateAll);
+		view.cabinClassMinSelection.selectionChanges.listen(_validateAll);
+		view.cabinClassPreferredSelection.selectionChanges.listen(_validateAll);
+		view.cabinClassMaxSelection.selectionChanges.listen(_validateAll);
 	}
 
 	int _findBookingIndex(HtmlElement target) {
@@ -135,5 +152,9 @@ class PaxComponent implements OnInit {
 			return null == target.parent ? -1 : _findBookingIndex(target.parent);
 		}
 		return int.parse(target.dataset['idx']);
+	}
+
+	void _validateAll(dynamic ignored) {
+		paxViews.forEach(_bookingValidator.validatePax);
 	}
 }

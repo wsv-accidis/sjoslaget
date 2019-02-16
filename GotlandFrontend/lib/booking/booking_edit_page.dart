@@ -95,7 +95,7 @@ class BookingEditPage implements OnInit {
 			final int teamSize = queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
 			pax.createInitialEmptyPax(teamSize);
 		} else {
-			pax.paxViews = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
+			pax.setPax(BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses));
 		}
 	}
 
@@ -138,3 +138,4 @@ class BookingEditPage implements OnInit {
 		}
 	}
 }
+

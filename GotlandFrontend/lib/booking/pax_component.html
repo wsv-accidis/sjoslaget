@@ -136,13 +136,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="special-req-field-cell" colspan="4">
+			<td class="special-req-field-cell" colspan="5">
 				<material-input [(ngModel)]="pax.specialRequest"
 								label="Särskild kost, allergier och övriga önskemål">
 				</material-input>
-			</td>
-			<td class="cabin-class-field-cell">
-
 			</td>
 		</tr>
 		<tr>
@@ -150,4 +147,9 @@
 		</tr>
 		</tbody>
 	</table>
+</div>
+
+<div *ngIf="hasPrice" class="booking-price">
+	Pris (önskat) <span>{{ pricePreferredFormatted }}</span><br />
+	Pris (min-max) <span>{{ priceMinFormatted }} - {{ priceMaxFormatted }}</span>
 </div>
