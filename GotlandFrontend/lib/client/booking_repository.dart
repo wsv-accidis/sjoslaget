@@ -6,6 +6,7 @@ import 'package:frontend_shared/model/booking_result.dart';
 import 'package:http/http.dart';
 
 import '../model/booking_list_item.dart';
+import '../model/booking_pax_list_item.dart';
 import '../model/booking_queue_stats.dart';
 import '../model/booking_source.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
@@ -40,6 +41,21 @@ class BookingRepository {
 		final List jsonResult = json.decode(response.body);
 		return jsonResult
 			.map((dynamic value) => BookingListItem.fromMap(value))
+			.toList();
+	}
+
+	Future<List<BookingPaxListItem>> getListOfPax(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/bookings/pax');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonResult = json.decode(response.body);
+		return jsonResult
+			.map((dynamic value) => BookingPaxListItem.fromMap(value))
 			.toList();
 	}
 

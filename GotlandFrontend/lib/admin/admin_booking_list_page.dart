@@ -86,7 +86,7 @@ class AdminBookingListPage implements OnInit {
 		}
 	}
 
-	int _bookingComparator(BookingListItem one, BookingListItem two) {
+	int _comparator(BookingListItem one, BookingListItem two) {
 		if (sort.desc) {
 			final BookingListItem temp = two;
 			two = one;
@@ -130,7 +130,7 @@ class AdminBookingListPage implements OnInit {
 		}
 
 		final List<BookingListItem> sorted = filtered.toList(growable: false);
-		sorted.sort(_bookingComparator);
+		sorted.sort(_comparator);
 
 		bookingsView = paging.apply(sorted);
 	}

@@ -7,4 +7,5 @@ class AdminRoutes {
 	);
 	static final RoutePath bookingList = RoutePath(path: 'bokningar');
 	static final RoutePath login = RoutePath(path: 'login');
+	static final RoutePath paxList = RoutePath(path: 'deltagare');
 }

@@ -1,0 +1,107 @@
+<h1>
+	Deltagare
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="refresh"></material-icon>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
+	<material-icon icon="view_list"></material-icon>
+	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
+	<span></span>
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<div class="spinner-widget" *ngIf="isLoading">
+	<spinner-widget></spinner-widget>
+</div>
+
+<div *ngIf="!isLoading" class="pax-filter">
+	<h2>Filtrera</h2>
+
+	Referens/namn
+
+	<material-input [(ngModel)]="filterText"
+					class="filter-field"
+					[displayBottomPanel]="false"
+					label="Skriv för att filtrera"
+					style="width: 250px">
+	</material-input>
+</div>
+
+<div *ngIf="!isLoading" class="pax-paging">
+	{{ paging.numberOfResults }} deltagare <span *ngIf="paging.hasResults">(visar {{ paging.pageOffsetStart }} - {{ paging.pageOffsetEnd }})</span>
+	<span class="paging-list" *ngIf="paging.hasMultiplePages">
+		välj sida <a *ngFor="let page of paging.pages" href="javascript:" (click)="paging.pageNo = page"
+					 [class]="paging.pageNo == page ? 'page-selected' : ''">{{ page }}</a>
+	</span>
+</div>
+
+<table *ngIf="!isLoading"
+	   border="0"
+	   cellpadding="0"
+	   cellspacing="0"
+	   class="pax"
+	   (onSortChange)="onSortChanged($event)"
+	   sortableColumns
+	   [sortColumn]="sort.column"
+	   [sortDesc]="sort.desc">
+	<tr>
+		<th style="width: 100px">
+			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="teamName" title="Lagnamn"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="name" title="Namn"></sortable-column-header>
+		</th>
+		<th style="width: 70px">
+			<sortable-column-header key="gender" title="Kön"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="dob" title="Födelsedatum"></sortable-column-header>
+		</th>
+		<th style="width: 90px">
+			<sortable-column-header key="cabinClassMin" title="Lägsta"></sortable-column-header>
+		</th>
+		<th style="width: 90px">
+			<sortable-column-header key="cabinClassPreferred" title="Önskat"></sortable-column-header>
+		</th>
+		<th style="width: 90px">
+			<sortable-column-header key="cabinClassMax" title="Högsta"></sortable-column-header>
+		</th>
+	</tr>
+	<tr *ngFor="let pax of paxView">
+		<td>
+			<!-- [routerLink]="AdminRoutes.bookingUrl(pax.reference)" -->
+			<a class="mono">
+				{{ pax.reference }}
+			</a>
+		</td>
+		<td>
+			{{ pax.teamName }}
+		</td>
+		<td>
+			{{ pax.firstName }} {{ pax.lastName }}
+		</td>
+		<td>
+			{{ genderToString(pax.gender) }}
+		</td>
+		<td>
+			{{ pax.dob }}
+		</td>
+		<td>
+			{{ pax.cabinClassMin }}
+		</td>
+		<td>
+			{{ pax.cabinClassPreferred }}
+		</td>
+		<td>
+			{{ pax.cabinClassMax }}
+		</td>
+	</tr>
+</table>
+
+<div class="page-end-block"></div>

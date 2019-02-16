@@ -6,6 +6,8 @@
 	<material-icon icon="view_list"></material-icon>
 	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
 	<span></span>
+	<material-icon icon="people"></material-icon>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 </div>
 
 <p *ngIf="hasOpening && hasCountdown">

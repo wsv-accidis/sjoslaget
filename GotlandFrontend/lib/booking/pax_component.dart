@@ -11,6 +11,7 @@ import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/cabin_class.dart';
+import '../util/gender.dart';
 import '../widgets/components.dart';
 
 @Component(
@@ -21,9 +22,6 @@ import '../widgets/components.dart';
 	providers: <dynamic>[materialProviders]
 )
 class PaxComponent implements OnInit {
-	static const String GENDER_FEMALE = 'f';
-	static const String GENDER_MALE = 'm';
-	static const String GENDER_OTHER = 'x';
 	static const int MAX_NO_OF_PAX = 20;
 
 	final BookingValidator _bookingValidator;
@@ -37,7 +35,7 @@ class PaxComponent implements OnInit {
 
 	int get count => paxViews.length;
 
-	SelectionOptions<String> get genderOptions => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
+	SelectionOptions<String> get genderOptions => Gender.getOptions();
 
 	bool get hasPrice => priceOfPaxPreferred > 0;
 
@@ -115,14 +113,7 @@ class PaxComponent implements OnInit {
 		if (null == g)
 			return 'Kön';
 
-		switch (g) {
-			case GENDER_FEMALE:
-				return 'Kvinna';
-			case GENDER_MALE:
-				return 'Man';
-			default:
-				return 'Annat';
-		}
+		return Gender.asString(g);
 	}
 
 	void setPax(List<BookingPaxView> list) {

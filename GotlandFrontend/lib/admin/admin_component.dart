@@ -7,6 +7,7 @@ import '../client/queue_admin_repository.dart';
 import 'admin_booking_list_page.template.dart';
 import 'admin_dashboard_page.template.dart';
 import 'admin_login_page.template.dart';
+import 'admin_pax_list_page.template.dart';
 import 'admin_routes.dart';
 
 @Component(
@@ -25,5 +26,6 @@ class AdminComponent {
 		RouteDefinition(routePath: AdminRoutes.bookingList, component: AdminBookingListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.dashboard, component: AdminDashboardPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.login, component: AdminLoginPageNgFactory),
+		RouteDefinition(routePath: AdminRoutes.paxList, component: AdminPaxListPageNgFactory),
 	];
 }
