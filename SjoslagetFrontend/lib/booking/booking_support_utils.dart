@@ -41,7 +41,7 @@ class BookingSupportUtils {
 				if (null != bookingResult) {
 					// Try to get the last saved booking, then we can compare the number of cabins to see where avail failed
 					try {
-						final BookingSource lastSavedBooking = await bookingRepository.findBooking(client, bookingResult.reference);
+						final BookingSource lastSavedBooking = await bookingRepository.getBooking(client, bookingResult.reference);
 						savedCabins = lastSavedBooking.cabins;
 						savedProducts = lastSavedBooking.products;
 					} catch (e) {

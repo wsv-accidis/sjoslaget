@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/widget/paging_support.dart';
+import 'package:frontend_shared/widget/sortable_columns.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/booking_repository.dart';
@@ -10,8 +12,6 @@ import '../client/cruise_repository.dart';
 import '../model/booking_pax_item.dart';
 import '../model/cruise_cabin.dart';
 import '../widgets/components.dart';
-import '../widgets/paging_support.dart';
-import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 

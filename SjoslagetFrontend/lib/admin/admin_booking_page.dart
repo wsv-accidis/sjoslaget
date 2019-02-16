@@ -7,6 +7,7 @@ import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:frontend_shared/util.dart';
+import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../booking/booking_support_utils.dart';
@@ -21,7 +22,6 @@ import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
 import '../model/payment_summary.dart';
 import '../widgets/components.dart';
-import '../widgets/modal_dialog.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
@@ -126,7 +126,7 @@ class AdminBookingPage implements OnActivate {
 
 		try {
 			final client = _clientFactory.getClient();
-			booking = await _bookingRepository.findBooking(client, reference);
+			booking = await _bookingRepository.getBooking(client, reference);
 
 			final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			cabins.amountPaid = booking.payment.total;

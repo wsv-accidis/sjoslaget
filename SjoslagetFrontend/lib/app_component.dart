@@ -18,8 +18,7 @@ import 'content/content_component.template.dart';
 		BookingRepository,
 		BookingValidator,
 		ClientFactory,
-		CruiseRepository,
-		routerProviders
+		CruiseRepository
 	],
 	directives: <dynamic>[routerDirectives]
 )

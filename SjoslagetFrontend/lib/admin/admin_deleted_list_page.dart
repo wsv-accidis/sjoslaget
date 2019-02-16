@@ -4,13 +4,13 @@ import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
+import 'package:frontend_shared/widget/sortable_columns.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/client_factory.dart';
 import '../client/deleted_booking_repository.dart';
 import '../model/deleted_booking.dart';
 import '../widgets/components.dart';
-import '../widgets/sortable_columns.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 

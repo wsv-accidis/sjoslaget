@@ -4,17 +4,17 @@ import 'dart:html' show window;
 import 'package:angular/angular.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/widget/modal_dialog.dart';
 
 import '../client/client_factory.dart';
 import '../widgets/components.dart';
-import '../widgets/modal_dialog.dart';
 import 'booking_component.dart';
 import 'booking_routes.dart';
 
 @Component(
 	selector: 'booking-login',
 	templateUrl: 'booking_login_component.html',
-	styleUrls: ['booking_login_component.css'],
+	styleUrls: ['booking_login_component.css', '../content/content_styles.css'],
 	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, ModalDialog],
 	exports: <dynamic>[BookingRoutes]
 )

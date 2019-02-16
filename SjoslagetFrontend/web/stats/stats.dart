@@ -6,7 +6,8 @@ import '../init.dart';
 import 'stats.template.dart' as self;
 
 @GenerateInjector([
-	ValueProvider<String>.forToken(SJOSLAGET_API_ROOT, Init.API_ROOT)
+	ValueProvider<String>.forToken(SJOSLAGET_API_ROOT, Init.API_ROOT),
+	Init.sjoslagetRouterProviders
 ])
 const InjectorFactory injectorFactory = self.injectorFactory$Injector;
 

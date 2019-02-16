@@ -1,3 +1,5 @@
+import 'package:frontend_shared/util.dart' show DurationFormatter;
+
 import 'json_field.dart';
 
 class BookingDashboardItem {
@@ -30,29 +32,7 @@ class BookingDashboardItem {
 		if (null == _sinceUpdated)
 			return '';
 
-		int seconds = _sinceUpdated.inSeconds;
-		final result = StringBuffer();
-
-		if (seconds >= Duration.secondsPerDay) {
-			final days = (seconds / Duration.secondsPerDay).floor();
-			seconds %= Duration.secondsPerDay;
-			result.write('${days}d ');
-		}
-
-		if (seconds >= Duration.secondsPerHour) {
-			final hours = (seconds / Duration.secondsPerHour).floor();
-			seconds %= Duration.secondsPerHour;
-			result.write('${hours}h ');
-		}
-
-		if (seconds >= Duration.secondsPerMinute) {
-			final mins = (seconds / Duration.secondsPerMinute).floor();
-			seconds %= Duration.secondsPerMinute;
-			result.write('${mins}m ');
-		}
-
-		result.write('${seconds}s');
-		return result.toString();
+		return DurationFormatter.formatCompact(_sinceUpdated);
 	}
 
 	void update(DateTime now) {

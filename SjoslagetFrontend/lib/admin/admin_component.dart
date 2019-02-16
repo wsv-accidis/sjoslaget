@@ -30,8 +30,7 @@ import 'admin_user_page.template.dart';
 		CruiseRepository,
 		DeletedBookingRepository,
 		PrinterRepository,
-		UserRepository,
-		routerProviders
+		UserRepository
 	],
 	directives: <dynamic>[routerDirectives]
 )

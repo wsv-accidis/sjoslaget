@@ -38,7 +38,7 @@ class BookingRepository {
 		HttpStatus.throwIfNotSuccessful(response);
 	}
 
-	Future<BookingSource> findBooking(Client client, String reference) async {
+	Future<BookingSource> getBooking(Client client, String reference) async {
 		Response response;
 		try {
 			response = await client.get('$_apiRoot/bookings/$reference');

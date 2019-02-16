@@ -28,7 +28,7 @@ import 'products_component.dart';
 @Component(
 	selector: 'booking-cabins-page',
 	templateUrl: 'booking_cabins_page.html',
-	styleUrls: ['../content/content_styles.css', 'booking_cabins_styles.css'],
+	styleUrls: ['../content/content_styles.css', 'booking_cabins_page.css'],
 	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ProductsComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AboutRoutes]
@@ -92,10 +92,10 @@ class BookingCabinsPage implements OnInit {
 				final client = _clientFactory.getClient();
 				cruise = await _cruiseRepository.getActiveCruise(client);
 				cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-				booking = await _bookingRepository.findBooking(client, reference);
+				booking = await _bookingRepository.getBooking(client, reference);
 			} catch (e) {
 				print('Failed to get cabins or booking due to an exception: ${e.toString()}');
-				loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta Sjöslaget.';
+				loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
 				cabins.disableAddCabins = true;
 				return;
 			}

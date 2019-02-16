@@ -54,7 +54,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	}
 
 	@override
-	Future<Null> ngOnInit() async {
+	Future<void> ngOnInit() async {
 		if (!_clientFactory.isAdmin) {
 			await _router.navigateByUrl(AdminRoutes.login.toUrl());
 			return;
@@ -71,7 +71,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			_timer.cancel();
 	}
 
-	Future<Null> lockUnlockCruise() async {
+	Future<void> lockUnlockCruise() async {
 		if (null == cruise || _isLockingUnlocking)
 			return;
 
@@ -92,11 +92,11 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		_refreshAvailability();
 	}
 
-	Future<Null> _refreshAvailability() async {
+	Future<void> _refreshAvailability() async {
 		await availabilityComponent.refresh();
 	}
 
-	Future<Null> _refreshRecentlyUpdated() async {
+	Future<void> _refreshRecentlyUpdated() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruise = await _cruiseRepository.getActiveCruise(client);

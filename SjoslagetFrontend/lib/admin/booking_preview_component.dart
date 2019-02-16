@@ -83,7 +83,7 @@ class BookingPreviewComponentPopup implements OnInit {
 			final client = _clientFactory.getClient();
 			_cabins = await _cruiseRepository.getActiveCruiseCabins(client);
 			_products = await _cruiseRepository.getActiveCruiseProducts(client);
-			booking = await _bookingRepository.findBooking(client, bookingItem.reference);
+			booking = await _bookingRepository.getBooking(client, bookingItem.reference);
 		} catch (e) {
 			print('Failed to load booking: ${e.toString()}');
 			// Just ignore this here, we will be stuck in the loading state
