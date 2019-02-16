@@ -4,3 +4,28 @@ th, td {
 	padding-top: 4px;
 	border-bottom: 1px solid silver;
 }
+
+div.admin-menu {
+	font-size: large;
+}
+
+div.page-end-block {
+	clear: both;
+	height: 50px;
+}
+
+span.paging-list {
+}
+
+span.paging-list > a:not(:last-child) {
+	margin-right: 5px;
+}
+
+a.page-selected {
+	font-weight: bold;
+	font-size: larger;
+}
+
+div.spinner-widget {
+	margin-top: 20px;
+}

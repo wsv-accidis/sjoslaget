@@ -5,5 +5,6 @@ class AdminRoutes {
 		path: '',
 		useAsDefault: true
 	);
+	static final RoutePath bookingList = RoutePath(path: 'bokningar');
 	static final RoutePath login = RoutePath(path: 'login');
 }

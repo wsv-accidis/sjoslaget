@@ -1,12 +1,12 @@
-﻿using Accidis.Gotland.WebService.Models;
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Models;
 using Accidis.WebServices.Web;
 using NLog;
-using System;
-using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -54,6 +54,44 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> List()
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				return this.OkNoCache(await _bookingRepository.GetList(evnt));
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting the overview.");
+				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
+		[HttpGet]
+		public async Task<IHttpActionResult> Pax()
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				return this.OkNoCache(await _bookingRepository.GetListOfPax(evnt));
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting the overview.");
+				throw;
+			}
+		}
+
 		[Authorize]
 		[HttpGet]
 		[Route("api/bookings/{reference}/queueStats")]
@@ -96,7 +134,7 @@ namespace Accidis.Gotland.WebService.Controllers
 
 			try
 			{
-				BookingResult result = await _bookingRepository.UpdateAsync(evnt, bookingSource, allowUpdateDetails: AuthContext.IsAdmin);
+				BookingResult result = await _bookingRepository.UpdateAsync(evnt, bookingSource, AuthContext.IsAdmin);
 				_log.Info("Updated booking {0}.", result.Reference);
 				return Ok(result);
 			}
@@ -112,7 +150,9 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
-		private static bool IsAuthorized(string reference)
-			=> !AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase);
+		static bool IsAuthorized(string reference)
+		{
+			return !AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase);
+		}
 	}
 }

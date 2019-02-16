@@ -1,0 +1,153 @@
+<h1>
+	Bokningar
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="refresh"></material-icon>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
+	<!--
+	<material-icon icon="people"></material-icon>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
+	<span></span>
+	-->
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<div class="spinner-widget" *ngIf="isLoading">
+	<spinner-widget></spinner-widget>
+</div>
+
+<div *ngIf="!isLoading" class="bookings-filter">
+	<h2>Filtrera</h2>
+
+	Referens/namn
+
+	<material-input [(ngModel)]="filterText"
+					class="filter-field"
+					[displayBottomPanel]="false"
+					label="Skriv för att filtrera"
+					style="width: 250px">
+	</material-input>
+
+	<br/>Status
+
+	<material-radio-group [(ngModel)]="filterStatus">
+		<material-radio class="filter-radio" value="none" title="Alla">
+			Alla
+		</material-radio>
+		<material-radio class="filter-radio" value="fully-paid" title="Betald">
+			Betald
+		</material-radio>
+		<material-radio class="filter-radio" value="partially-paid" title="Delbetald">
+			Delbetald
+		</material-radio>
+		<material-radio class="filter-radio" value="over-paid" title="Överbetald">
+			Överbetald
+		</material-radio>
+		<material-radio class="filter-radio" value="not-paid" title="Ej betald">
+			Ej betald
+		</material-radio>
+	</material-radio-group>
+</div>
+
+<div *ngIf="!isLoading" class="bookings-paging">
+	{{ paging.numberOfResults }} bokning{{ paging.numberOfResults == 1 ? '' : 'ar' }} <span *ngIf="paging.hasResults">(visar {{ paging.pageOffsetStart }} - {{ paging.pageOffsetEnd }})</span>
+	<span class="paging-list" *ngIf="paging.hasMultiplePages">
+		välj sida <a *ngFor="let page of paging.pages" href="javascript:" (click)="paging.pageNo = page"
+					 [class]="paging.pageNo == page ? 'page-selected' : ''">{{ page }}</a>
+	</span>
+</div>
+
+<table *ngIf="!isLoading"
+	   border="0"
+	   cellpadding="0"
+	   cellspacing="0"
+	   class="bookings"
+	   (onSortChange)="onSortChanged($event)"
+	   sortableColumns
+	   [sortColumn]="sort.column"
+	   [sortDesc]="sort.desc">
+	<tr>
+		<th style="width: 100px">
+			<sortable-column-header key="status" title="Status"></sortable-column-header>
+		</th>
+		<th style="width: 120px">
+			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="teamName" title="Lagnamn"></sortable-column-header>
+		</th>
+		<th>
+			<sortable-column-header key="contact" title="Kontaktperson"></sortable-column-header>
+		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="numberOfPax" title="Deltagare"></sortable-column-header>
+		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="queueNo" title="Köplats"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
+		</th>
+		<th style="width: 130px">
+			<sortable-column-header key="amountRemaining" title="Kvar att betala"></sortable-column-header>
+		</th>
+		<th style="width: 220px">
+			<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
+		</th>
+	</tr>
+	<tr *ngFor="let booking of bookingsView" [ngSwitch]="booking.status">
+		<td *ngSwitchWhen="'locked'" class="locked">
+			Låst
+		</td>
+		<td *ngSwitchWhen="'fully-paid'" class="fully-paid">
+			Betald
+		</td>
+		<td *ngSwitchWhen="'partially-paid'" class="partially-paid">
+			Delbetald
+		</td>
+		<td *ngSwitchWhen="'over-paid'" class="over-paid">
+			Överbetald
+		</td>
+		<td *ngSwitchWhen="'not-paid'" class="not-paid">
+			Ej betald
+		</td>
+		<td *ngSwitchDefault>
+			-
+		</td>
+		<td>
+			<a class="mono">
+				{{ booking.reference }}
+			</a>
+		</td>
+		<td>
+			<!--<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">-->
+			{{ booking.teamName }}
+			<!--</a>-->
+		</td>
+		<td>
+			<!--<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">-->
+			{{ booking.firstName }} {{ booking.lastName }}
+			<!--</a>-->
+		</td>
+		<td>
+			{{ booking.numberOfPax }}
+		</td>
+		<td>
+			{{ booking.queueNo }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.amountPaid) }}
+		</td>
+		<td>
+			{{ formatCurrency(booking.amountRemaining) }}
+		</td>
+		<td>
+			{{ formatDateTime(booking.updated) }}
+		</td>
+	</tr>
+</table>
+
+<div class="page-end-block"></div>

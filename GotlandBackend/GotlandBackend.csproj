@@ -153,7 +153,9 @@
     <Compile Include="Models\BookingCandidate.cs" />
     <Compile Include="Models\BookingCandidateResponse.cs" />
     <Compile Include="Models\BookingException.cs" />
+    <Compile Include="Models\BookingListItem.cs" />
     <Compile Include="Models\BookingPax.cs" />
+    <Compile Include="Models\BookingPaxListItem.cs" />
     <Compile Include="Models\BookingQueueStats.cs" />
     <Compile Include="Models\BookingSource.cs" />
     <Compile Include="Models\CabinClass.cs" />

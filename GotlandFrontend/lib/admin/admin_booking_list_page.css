@@ -1,0 +1,37 @@
+table.bookings {
+	margin-top: 10px;
+	width: 95%;
+}
+
+div.bookings-filter h2 {
+	margin-bottom: 0;
+}
+
+div.bookings-filter .filter-field {
+	margin-left: 15px;
+	margin-right: 20px;
+}
+
+div.bookings-filter .filter-radio {
+	margin-right: 0;
+}
+
+div.bookings-paging {
+	margin-top: 10px;
+}
+
+td.locked {
+	color: darkblue;
+}
+
+td.fully-paid {
+	color: darkgreen;
+}
+
+td.partially-paid {
+	color: orangered;
+}
+
+td.over-paid {
+	color: darkred;
+}

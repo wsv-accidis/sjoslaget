@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:frontend_shared/model/booking_result.dart';
 import 'package:http/http.dart';
 
-import '../model/booking_pax.dart';
+import '../model/booking_list_item.dart';
 import '../model/booking_queue_stats.dart';
 import '../model/booking_source.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
@@ -24,6 +26,21 @@ class BookingRepository {
 
 		HttpStatus.throwIfNotSuccessful(response);
 		return BookingSource.fromJson(response.body);
+	}
+
+	Future<List<BookingListItem>> getList(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/bookings/list');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonResult = json.decode(response.body);
+		return jsonResult
+			.map((dynamic value) => BookingListItem.fromMap(value))
+			.toList();
 	}
 
 	Future<BookingQueueStats> getQueueStats(Client client, String reference) async {
