@@ -84,7 +84,7 @@ class AdminBookingPage implements OnActivate {
 
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
-	Future<Null> deleteBooking() async {
+	Future<void> deleteBooking() async {
 		if (isSaving)
 			return;
 		if (!await deleteBookingDialog.openAsync())
@@ -104,7 +104,7 @@ class AdminBookingPage implements OnActivate {
 		await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
 	}
 
-	Future<Null> lockUnlockBooking() async {
+	Future<void> lockUnlockBooking() async {
 		if (!hasLoaded || isLockingUnlocking)
 			return;
 
@@ -121,7 +121,7 @@ class AdminBookingPage implements OnActivate {
 	}
 
 	@override
-	void onActivate(_, RouterState routerState) async {
+	Future<void> onActivate(_, RouterState routerState) async {
 		final String reference = routerState.parameters['ref'];
 
 		try {
@@ -146,7 +146,7 @@ class AdminBookingPage implements OnActivate {
 		}
 	}
 
-	Future<Null> registerPayment() async {
+	Future<void> registerPayment() async {
 		if (isSaving)
 			return;
 
@@ -180,7 +180,7 @@ class AdminBookingPage implements OnActivate {
 		}
 	}
 
-	Future<Null> resetPinCode() async {
+	Future<void> resetPinCode() async {
 		if (isSaving)
 			return;
 
@@ -201,7 +201,7 @@ class AdminBookingPage implements OnActivate {
 		}
 	}
 
-	Future<Null> saveBooking() async {
+	Future<void> saveBooking() async {
 		// This is very similar to saveBooking in booking_cabins_page, keep the two in sync
 
 		if (isSaving)
@@ -237,7 +237,7 @@ class AdminBookingPage implements OnActivate {
 		}
 	}
 
-	Future<Null> updateDiscount() async {
+	Future<void> updateDiscount() async {
 		if (isSaving)
 			return;
 

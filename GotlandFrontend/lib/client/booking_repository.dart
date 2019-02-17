@@ -17,6 +17,17 @@ class BookingRepository {
 
 	BookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
+	Future<void> deleteBooking(Client client, String reference) async {
+		Response response;
+		try {
+			response = await client.delete('$_apiRoot/bookings/$reference');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+	}
+
 	Future<BookingSource> getBooking(Client client, String reference) async {
 		Response response;
 		try {

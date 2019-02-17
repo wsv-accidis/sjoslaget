@@ -1,0 +1,131 @@
+<h1>
+	Redigera bokning {{ null != booking ? booking.reference : '' }}
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+	<span></span>
+	<material-icon icon="view_list"></material-icon>
+	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
+	<span></span>
+	<material-icon icon="people"></material-icon>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
+</div>
+
+<p>
+	Här redigerar du bokningen och registrerar när betalningar har kommit in. Kontaktpersonen kan inte redigera
+	bokningen efter att bokningen för eventet är stängd.
+</p>
+
+<div style="clear: both; height: 10px;"></div>
+
+<p class="super-important loading-error" *ngIf="hasLoadingError">
+	{{ loadingError }}
+</p>
+
+<form #bookingForm="ngForm">
+	<pax-component #pax></pax-component>
+
+	<div *ngIf="!isLoading && !isSaving">
+		<material-button class="control-blue"
+						 raised
+						 (trigger)="addEmptyPax()">
+			Lägg till en deltagare
+		</material-button>
+	</div>
+
+	<h2>Lag och kontaktperson</h2>
+
+	<div *ngIf="!isLoading">
+		<material-input [(ngModel)]="booking.teamName"
+						ngControl="teamName"
+						floatingLabel
+						label="Lagnamn"
+						required
+						requiredErrorMsg="Ange lagnamn."
+						style="width: 250px; margin-right: 20px">
+		</material-input>
+
+		<material-input [(ngModel)]="booking.firstName"
+						ngControl="firstName"
+						floatingLabel
+						label="Förnamn"
+						required
+						requiredErrorMsg="Ange förnamn."
+						style="width: 200px; margin-right: 20px">
+		</material-input>
+
+		<material-input [(ngModel)]="booking.lastName"
+						ngControl="lastName"
+						floatingLabel
+						label="Efternamn"
+						required
+						requiredErrorMsg="Ange efternamn."
+						style="width: 200px">
+		</material-input>
+		<br>
+
+		<material-input [(ngModel)]="booking.phoneNo"
+						ngControl="phoneNo"
+						floatingLabel
+						label="Telefonnummer"
+						required
+						requiredErrorMsg="Ange telefonnummer."
+						pattern="[0-9()+\- ]+"
+						style="width: 150px; margin-right: 20px"
+						type="tel">
+		</material-input>
+
+		<material-input [(ngModel)]="booking.email"
+						ngControl="email"
+						floatingLabel
+						label="E-postadress"
+						required
+						requiredErrorMsg="Ange e-postadress."
+						pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
+						style="width: 300px"
+						type="email">
+		</material-input>
+		<br>
+
+		<material-input [(ngModel)]="booking.specialRequest"
+						ngControl="specialRequest"
+						[displayBottomPanel]="false"
+						floatingLabel
+						label="Särskilda önskemål"
+						multiline
+						style="width: 700px; margin-bottom: 25px">
+		</material-input>
+	</div>
+
+	<div class="spinner-widget" *ngIf="(isLoading && !hasLoadingError) || isSaving">
+		<spinner-widget></spinner-widget>
+	</div>
+
+	<p class="super-important booking-error" *ngIf="hasBookingError">
+		{{ bookingError }}
+	</p>
+
+	<div *ngIf="!isLoading && !isSaving">
+		<material-button class="control-blue"
+						 [disabled]="!canSave || !bookingForm.valid"
+						 raised
+						 (trigger)="saveBooking()">
+			Spara bokningen
+		</material-button>
+
+		<material-button class="control-red"
+						 [disabled]="!canDelete"
+						 raised
+						 (trigger)="deleteBooking()">
+			Radera bokningen
+		</material-button>
+	</div>
+</form>
+
+<modal-dialog #deleteBookingDialog
+			  action="Ja, radera"
+			  title="Radera bokning"
+			  message="Är du säker? Bokningen raderas permanent. Det här går inte att ångra.">
+</modal-dialog>

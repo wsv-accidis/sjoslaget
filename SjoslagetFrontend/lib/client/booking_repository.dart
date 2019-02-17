@@ -27,7 +27,7 @@ class BookingRepository {
 
 	BookingRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
-	Future<Null> deleteBooking(Client client, String reference) async {
+	Future<void> deleteBooking(Client client, String reference) async {
 		Response response;
 		try {
 			response = await client.delete('$_apiRoot/bookings/$reference');

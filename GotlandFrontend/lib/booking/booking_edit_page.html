@@ -62,39 +62,37 @@
 </p>
 
 <form #bookingForm="ngForm">
-	<spinner-widget *ngIf="!isLoaded && !hasLoadingError"></spinner-widget>
-
 	<pax-component #pax></pax-component>
+
+	<div class="spinner-widget" *ngIf="(!isLoaded && !hasLoadingError) || isSaving">
+		<spinner-widget></spinner-widget>
+	</div>
 
 	<p class="super-important booking-error" *ngIf="hasBookingError">
 		{{ bookingError }}
 	</p>
 
-	<div *ngIf="!isReadOnly" class="booking-buttons">
-		<div *ngIf="!isSaving">
-			<material-button class="control-blue"
-							 raised
-							 [disabled]="!canAddPax || !isLoaded"
-							 (trigger)="addEmptyPax()">
-				Lägg till en deltagare
-			</material-button>
+	<div *ngIf="!isReadOnly && !isSaving" class="booking-buttons">
+		<material-button class="control-blue"
+						 raised
+						 [disabled]="!canAddPax || !isLoaded"
+						 (trigger)="addEmptyPax()">
+			Lägg till en deltagare
+		</material-button>
 
-			<material-button class="control-green"
-							 [disabled]="!canSave"
-							 raised
-							 (trigger)="saveBooking()">
-				Spara bokningen
-			</material-button>
+		<material-button class="control-green"
+						 [disabled]="!canSave"
+						 raised
+						 (trigger)="saveBooking()">
+			Spara bokningen
+		</material-button>
 
-			<material-button class="control-red"
-							 [disabled]="!canSave"
-							 raised
-							 (trigger)="saveAndExit()">
-				Spara bokningen och logga ut mig
-			</material-button>
-		</div>
-
-		<spinner-widget *ngIf="isSaving"></spinner-widget>
+		<material-button class="control-red"
+						 [disabled]="!canSave"
+						 raised
+						 (trigger)="saveAndExit()">
+			Spara bokningen och logga ut mig
+		</material-button>
 	</div>
 
 	<div *ngIf="isReadOnly" class="booking-logout">

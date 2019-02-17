@@ -9,6 +9,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string LastName { get; set; }
 		public string TeamName { get; set; }
 		public int TeamSize { get; set; }
+		public int NumberOfPax { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime? Queued { get; set; }
 		public int QueueNo { get; set; }

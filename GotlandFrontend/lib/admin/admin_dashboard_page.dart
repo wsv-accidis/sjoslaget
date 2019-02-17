@@ -25,7 +25,10 @@ import 'availability_component.dart';
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
-	static const int REFRESH_INTERVAL_MS = 1000;
+	static const int COUNTDOWN_THRESHOLD_MINS = 30;
+	static const int REFRESH_INTERVAL_LONG_MS = 60000;
+	static const int REFRESH_INTERVAL_MEDIUM_MS = 10000;
+	static const int REFRESH_INTERVAL_SHORT_MS = 1000;
 
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
@@ -71,7 +74,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		await _refreshEvent();
 		await _refreshCountdown();
 		await _refreshQueue();
-		Timer(Duration(milliseconds: REFRESH_INTERVAL_MS), _refreshPeriodically);
+		Timer(Duration(milliseconds: _getRefreshInterval()), _refreshPeriodically);
 	}
 
 	@override
@@ -93,6 +96,23 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		} finally {
 			_isLockingUnlocking = false;
 		}
+	}
+
+	int _getRefreshInterval() {
+		if(null != event) {
+			if (event.isLocked || !hasCountdown) {
+				// Nothing will happen, no point in refreshing often
+				return REFRESH_INTERVAL_LONG_MS;
+			}
+
+			if (_countdown.inMinutes < COUNTDOWN_THRESHOLD_MINS) {
+				// We are in the final stages of countdown, update frequently
+				return REFRESH_INTERVAL_SHORT_MS;
+			}
+		}
+
+		// Any other option
+		return REFRESH_INTERVAL_MEDIUM_MS;
 	}
 
 	Future<void> _refreshCountdown() async {
@@ -141,6 +161,6 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		if (hasCountdown)
 			countdownFormatted = _countdown.toString();
 
-		_refreshQueue().whenComplete(() => Timer(Duration(milliseconds: REFRESH_INTERVAL_MS), _refreshPeriodically));
+		_refreshQueue().whenComplete(() => Timer(Duration(milliseconds: _getRefreshInterval()), _refreshPeriodically));
 	}
 }

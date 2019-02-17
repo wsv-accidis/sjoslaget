@@ -71,7 +71,7 @@
 		<th style="width: 100px">
 			<sortable-column-header key="status" title="Status"></sortable-column-header>
 		</th>
-		<th style="width: 120px">
+		<th style="width: 100px">
 			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
 		</th>
 		<th>
@@ -116,19 +116,19 @@
 			-
 		</td>
 		<td>
-			<a class="mono">
+			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)" class="mono">
 				{{ booking.reference }}
 			</a>
 		</td>
 		<td>
-			<!--<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">-->
-			{{ booking.teamName }}
-			<!--</a>-->
+			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">
+				{{ booking.teamName }}
+			</a>
 		</td>
 		<td>
-			<!--<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">-->
-			{{ booking.firstName }} {{ booking.lastName }}
-			<!--</a>-->
+			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">
+				{{ booking.firstName }} {{ booking.lastName }}
+			</a>
 		</td>
 		<td>
 			{{ booking.numberOfPax }}

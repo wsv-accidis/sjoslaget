@@ -75,8 +75,7 @@
 	</tr>
 	<tr *ngFor="let pax of paxView">
 		<td>
-			<!-- [routerLink]="AdminRoutes.bookingUrl(pax.reference)" -->
-			<a class="mono">
+			<a [routerLink]="AdminRoutes.bookingUrl(pax.reference)" class="mono">
 				{{ pax.reference }}
 			</a>
 		</td>

@@ -10,3 +10,9 @@ table.queue {
 div.availability {
 	width: 70%;
 }
+
+.preliminary-size {
+	color: darkgrey;
+	font-size: small;
+	vertical-align: super;
+}

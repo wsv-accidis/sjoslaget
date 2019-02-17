@@ -72,7 +72,7 @@
 			{{ item.teamName }}
 		</td>
 		<td>
-			{{ item.teamSize }}
+			{{ item.actualSize }}<span *ngIf="!item.hasActualPax" class="preliminary-size">?</span>
 		</td>
 		<td>
 			{{ item.firstName }} {{ item.lastName }}
@@ -86,11 +86,14 @@
 		<td *ngIf="item.hasBeenQueued">
 			{{ item.queueLatency }}
 		</td>
-		<td *ngIf="!item.hasBeenQueued" colspan="2">
+		<td *ngIf="!item.hasBeenQueued">
+			-
+		</td>
+		<td *ngIf="!item.hasBeenQueued">
 			-
 		</td>
 		<td *ngIf="item.hasReference">
-			<a class="mono"><!-- TODO Link -->
+			<a [routerLink]="AdminRoutes.bookingUrl(item.reference)" class="mono">
 				{{ item.reference }}
 			</a>
 		</td>

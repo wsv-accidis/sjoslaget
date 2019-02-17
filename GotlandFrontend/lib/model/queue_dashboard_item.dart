@@ -10,13 +10,14 @@ class QueueDashboardItem {
 	final String lastName;
 	final String teamName;
 	final int teamSize;
+	final int numberOfPax;
 	final DateTime created;
 	final DateTime queued;
 	final int queueNo;
 	final int queueLatencyMs;
 	final String reference;
 
-	QueueDashboardItem(this.firstName, this.lastName, this.teamName, this.teamSize, this.created, this.queued, this.queueNo, this.queueLatencyMs, this.reference);
+	QueueDashboardItem(this.firstName, this.lastName, this.teamName, this.teamSize, this.numberOfPax, this.created, this.queued, this.queueNo, this.queueLatencyMs, this.reference);
 
 	factory QueueDashboardItem.fromMap(Map<String, dynamic> json) =>
 		QueueDashboardItem(
@@ -24,12 +25,17 @@ class QueueDashboardItem {
 			json[LASTNAME],
 			json[TEAM_NAME],
 			json[TEAM_SIZE],
+			json[NUMBER_OF_PAX],
 			DateTime.parse(json[CREATED]),
 			ValueConverter.parseDateTime(json[QUEUED]),
 			json[QUEUE_NO],
 			json[QUEUE_LATENCY_MS],
 			json[REFERENCE]
 		);
+
+	int get actualSize => numberOfPax > 0 ? numberOfPax : teamSize;
+
+	bool get hasActualPax => numberOfPax > 0;
 
 	bool get hasBeenQueued => queueNo >= 0;
 

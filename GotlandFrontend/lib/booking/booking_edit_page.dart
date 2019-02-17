@@ -122,7 +122,6 @@ class BookingEditPage implements OnInit {
 			return;
 
 		isSaving = true;
-
 		try {
 			bookingError = null;
 

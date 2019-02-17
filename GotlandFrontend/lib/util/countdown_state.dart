@@ -6,7 +6,7 @@ class CountdownState {
 	static const String CANDIDATE_ID = 'candidate_id';
 	static const String COUNTDOWN = 'countdown';
 	static const String COUNTDOWN_FROM = 'countdown_from';
-	static const int SYNC_ERROR_TRESHOLD = 1000;
+	static const int SYNC_ERROR_THRESHOLD = 1000;
 
 	int _countdown = 0;
 	DateTime _countdownFrom;
@@ -73,7 +73,7 @@ class CountdownState {
 
 	void _update(int countdownMs) {
 		final syncError = countdownMs - inMilliseconds;
-		if (syncError.abs() > SYNC_ERROR_TRESHOLD) {
+		if (syncError.abs() > SYNC_ERROR_THRESHOLD) {
 			print('Countdown sync error = ${syncError.toString()} ms.');
 		}
 

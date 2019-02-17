@@ -22,6 +22,32 @@ namespace Accidis.Gotland.WebService.Controllers
 			_eventRepository = eventRepository;
 		}
 
+		[Authorize(Roles = Roles.Admin)]
+		[HttpDelete]
+		public async Task<IHttpActionResult> Delete(string reference)
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+				if(null == booking)
+					return NotFound();
+
+				await _bookingRepository.DeleteAsync(booking);
+				_log.Info("Deleted booking {0}.", booking.Reference);
+
+				return Ok();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while deleting the booking.");
+				throw;
+			}
+		}
+
 		[Authorize]
 		[HttpGet]
 		public async Task<IHttpActionResult> Get(string reference)

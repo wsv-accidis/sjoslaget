@@ -60,6 +60,16 @@ namespace Accidis.Gotland.WebService.Services
 			return new BookingResult {Reference = booking.Reference, Password = password};
 		}
 
+		public async Task DeleteAsync(Booking booking)
+		{
+			AecUser user = await _userManager.FindByNameAsync(booking.Reference);
+			if(null != user && user.IsBooking)
+				await _userManager.DeleteAsync(user);
+
+			using(var db = DbUtil.Open())
+				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new { Id = booking.Id });
+		}
+
 		public async Task<Booking> FindByReferenceAsync(string reference)
 		{
 			using(var db = DbUtil.Open())
@@ -166,7 +176,7 @@ namespace Accidis.Gotland.WebService.Services
 
 				if(allowUpdateDetails)
 				{
-					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [TeamName] = @TeamName, [SpecialRequests] = @SpecialRequests, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [TeamName] = @TeamName, [SpecialRequest] = @SpecialRequest, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
 						new
 						{
 							FirstName = source.FirstName,
