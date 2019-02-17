@@ -42,8 +42,8 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				await db.ExecuteAsync("update [Event] set [IsActive] = @IsActive, [Opening] = @Opening where [Id] = @Id",
-					new {Id = evnt.Id, IsActive = evnt.IsActive, Opening = evnt.Opening});
+				await db.ExecuteAsync("update [Event] set [IsActive] = @IsActive, [IsLocked] = @IsLocked, [Opening] = @Opening where [Id] = @Id",
+					new {Id = evnt.Id, IsActive = evnt.IsActive, IsLocked = evnt.IsLocked, Opening = evnt.Opening});
 			}
 		}
 	}

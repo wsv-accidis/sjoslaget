@@ -1,9 +1,11 @@
 export 'package:frontend_shared/model/json_field.dart';
 
+const String ACCEPTED = 'Accepted';
 const String AHEAD_IN_QUEUE = 'AheadInQueue';
 const String CABIN_CLASS_MAX = 'CabinClassMax';
 const String CABIN_CLASS_MIN = 'CabinClassMin';
 const String CABIN_CLASS_PREF = 'CabinClassPreferred';
+const String CAPACITY = 'Capacity';
 const String COUNT = 'Count';
 const String COUNTDOWN = 'Countdown';
 const String CREATED = 'Created';
@@ -25,6 +27,7 @@ const String OPENING = 'Opening';
 const String PAX = 'Pax';
 const String PHONE_NO = 'PhoneNo';
 const String PLACE_IN_QUEUE = 'PlaceInQueue';
+const String PREFERRED = 'Preferred';
 const String PRICE = 'Price';
 const String PRICE_PER_PAX = 'PricePerPax';
 const String QUEUED = 'Queued';

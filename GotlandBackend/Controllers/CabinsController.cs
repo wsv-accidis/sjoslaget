@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Auth;
 using Accidis.WebServices.Web;
+using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -10,6 +13,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		readonly CabinRepository _cabinRepository;
 		readonly EventRepository _eventRepository;
+		readonly Logger _log = LogManager.GetLogger(typeof(CabinsController).Name);
 
 		public CabinsController(CabinRepository cabinRepository, EventRepository eventRepository)
 		{
@@ -21,10 +25,58 @@ namespace Accidis.Gotland.WebService.Controllers
 		public async Task<IHttpActionResult> Active()
 		{
 			Event evnt = await _eventRepository.GetActiveAsync();
-			if (null == evnt)
+			if(null == evnt)
 				return NotFound();
 
-			return this.OkCacheControl(await _cabinRepository.GetClassesByEventAsync(evnt), WebConfig.StaticDataMaxAge);
+			try
+			{
+				CabinClass[] cabinClasses = await _cabinRepository.GetClassesByEventAsync(evnt);
+				return this.OkCacheControl(cabinClasses, WebConfig.StaticDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting cabin classes.");
+				throw;
+			}
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Capacity()
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				CabinCapacity[] cabinCapacity = await _cabinRepository.GetCapacityByEventAsync(evnt);
+				return this.OkCacheControl(cabinCapacity, WebConfig.StaticDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting cabin capacity.");
+				throw;
+			}
+		}
+
+		[HttpGet]
+		[Authorize(Roles = Roles.Admin)]
+		public async Task<IHttpActionResult> ClaimedCapacity()
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				ClaimedCapacity[] claimedCapacity = await _cabinRepository.GetClaimedCapacityByEventAsync(evnt);
+				return this.OkNoCache(claimedCapacity);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting claimed capacity.");
+				throw;
+			}
 		}
 	}
 }

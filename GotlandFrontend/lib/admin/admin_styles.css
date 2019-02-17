@@ -9,6 +9,10 @@ div.admin-menu {
 	font-size: large;
 }
 
+div.admin-menu span {
+	margin-left: 15px;
+}
+
 div.page-end-block {
 	clear: both;
 	height: 50px;

@@ -7,7 +7,9 @@ import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../model/cabin_class.dart';
+import '../model/claimed_capacity.dart';
 import '../model/event.dart';
+import '../model/json_field.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
@@ -45,5 +47,33 @@ class EventRepository {
 		return jsonBody
 			.map((dynamic value) => CabinClass.fromMap(value))
 			.toList();
+	}
+
+	Future<List<ClaimedCapacity>> getClaimedCapacity(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/cabins/claimedCapacity');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonBody = json.decode(response.body);
+		return jsonBody
+			.map((dynamic value) => ClaimedCapacity.fromMap(value))
+			.toList();
+	}
+
+	Future<bool> lockUnlockEvent(Client client) async {
+		Response response;
+		try {
+			response = await client.put('$_apiRoot/event/lock');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final Map<String, dynamic> jsonBody = json.decode(response.body);
+		return jsonBody[IS_LOCKED];
 	}
 }

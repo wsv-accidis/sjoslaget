@@ -1,3 +1,12 @@
 table.queue {
 	width: 75%;
 }
+
+.availability-title, .queue-title, .event-title {
+	margin-bottom: 8px;
+	margin-top: 20px;
+}
+
+div.availability {
+	width: 70%;
+}

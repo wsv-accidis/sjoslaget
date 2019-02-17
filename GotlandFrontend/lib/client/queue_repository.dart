@@ -18,7 +18,7 @@ class QueueRepository {
 	QueueRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
 	Future<CandidateResponse> createCandidate(Client client, BookingDetails candidate) async {
-		final headers = _createJsonHeaders();
+		final headers = ClientUtil.createJsonHeaders();
 
 		Response response;
 		try {
@@ -84,11 +84,5 @@ class QueueRepository {
 			throw BookingException();
 		else
 			throw IOException.fromResponse(response);
-	}
-
-	static Map<String, String> _createJsonHeaders() {
-		final headers = <String, String>{};
-		headers['content-type'] = 'application/json';
-		return headers;
 	}
 }

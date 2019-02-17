@@ -158,7 +158,9 @@
     <Compile Include="Models\BookingPaxListItem.cs" />
     <Compile Include="Models\BookingQueueStats.cs" />
     <Compile Include="Models\BookingSource.cs" />
+    <Compile Include="Models\CabinCapacity.cs" />
     <Compile Include="Models\CabinClass.cs" />
+    <Compile Include="Models\ClaimedCapacity.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />
     <Compile Include="Models\QueueDashboardItem.cs" />

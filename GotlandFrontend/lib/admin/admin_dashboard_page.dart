@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' show window;
 
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
@@ -6,31 +7,40 @@ import 'package:frontend_shared/util.dart' show DateTimeFormatter;
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../client/client_factory.dart';
+import '../client/event_repository.dart';
 import '../client/queue_admin_repository.dart';
+import '../model/event.dart';
 import '../model/queue_dashboard_item.dart';
 import '../util/countdown_state.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
+import 'availability_component.dart';
 
 @Component(
 	selector: 'admin-dashboard-page',
 	templateUrl: 'admin_dashboard_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_dashboard_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, gotlandMaterialDirectives, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, gotlandMaterialDirectives, AvailabilityComponent, SpinnerWidget],
 	exports: <dynamic>[AdminRoutes]
 )
 class AdminDashboardPage implements OnInit, OnDestroy {
 	static const int REFRESH_INTERVAL_MS = 1000;
 
 	final ClientFactory _clientFactory;
+	final EventRepository _eventRepository;
 	final QueueAdminRepository _queueAdminRepository;
 	final Router _router;
 
 	final _countdown = CountdownState.empty();
 	DateTime _eventOpening;
+	bool _isLockingUnlocking = false;
+
+	@ViewChild('availabilityComponent')
+	AvailabilityComponent availabilityComponent;
 
 	String countdownFormatted;
+	Event event;
 	bool isDestroyed = false;
 	List<QueueDashboardItem> queueItems;
 
@@ -40,9 +50,16 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 	bool get hasOpening => null != _eventOpening;
 
+	bool get isLoadingEvent => null == event;
+
 	bool get isLoadingQueue => null == queueItems;
 
-	AdminDashboardPage(this._clientFactory, this._queueAdminRepository, this._router);
+	AdminDashboardPage(this._clientFactory, this._eventRepository, this._queueAdminRepository, this._router);
+
+	void logOut() {
+		_clientFactory.clear();
+		window.location.href = '/';
+	}
 
 	@override
 	Future<void> ngOnInit() async {
@@ -51,6 +68,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			return;
 		}
 
+		await _refreshEvent();
 		await _refreshCountdown();
 		await _refreshQueue();
 		Timer(Duration(milliseconds: REFRESH_INTERVAL_MS), _refreshPeriodically);
@@ -61,6 +79,22 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		isDestroyed = true;
 	}
 
+	Future<void> lockUnlockEvent() async {
+		if (_isLockingUnlocking)
+			return;
+
+		_isLockingUnlocking = true;
+		try {
+			final client = _clientFactory.getClient();
+			final bool isLocked = await _eventRepository.lockUnlockEvent(client);
+			event.isLocked = isLocked;
+		} catch (e) {
+			print('Failed to lock/unlock event: ${e.toString()}');
+		} finally {
+			_isLockingUnlocking = false;
+		}
+	}
+
 	Future<void> _refreshCountdown() async {
 		try {
 			final client = _clientFactory.getClient();
@@ -68,8 +102,17 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			_eventOpening = response.opening;
 			_countdown.updateCountdown(response.countdown);
 			countdownFormatted = _countdown.toString();
-		} catch(e) {
+		} catch (e) {
 			print('Failed to refresh countdown: ${e.toString()}');
+		}
+	}
+
+	Future<void> _refreshEvent() async {
+		try {
+			final client = _clientFactory.getClient();
+			event = await _eventRepository.getActiveEvent(client);
+		} catch (e) {
+			print('Failed to load event: ${e.toString()}');
 		}
 	}
 
@@ -81,6 +124,8 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 			final now = DateTime.now();
 			for (QueueDashboardItem item in queueItems)
 				item.update(now);
+
+			await availabilityComponent.refresh();
 		} on ExpirationException catch (e) {
 			print(e.toString());
 			_clientFactory.clear();

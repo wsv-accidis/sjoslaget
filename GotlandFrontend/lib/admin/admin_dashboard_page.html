@@ -8,6 +8,12 @@
 	<span></span>
 	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
+	<span></span>
+	<material-icon icon="lock_outline"></material-icon>
+	<a [routerLink]="AdminRoutes.user.toUrl()">Byt lösenord</a>
+	<span></span>
+	<material-icon icon="exit_to_app"></material-icon>
+	<a href="javascript:" (click)="logOut()">Logga ut</a>
 </div>
 
 <p *ngIf="hasOpening && hasCountdown">
@@ -21,6 +27,14 @@
 <p *ngIf="!hasOpening">
 	Absolut Gotland har ingen bokningsstart ännu.
 </p>
+
+<h2 class="availability-title">
+	Tillgänglighet per nivå
+</h2>
+
+<div class="availability">
+	<availability-component #availabilityComponent></availability-component>
+</div>
 
 <h2 class="queue-title">
 	Inkommande bokningar
@@ -87,11 +101,26 @@
 	</tbody>
 </table>
 
-<!--
-<h2 class="availability-title">
-	Tillgänglighet per nivå
-</h2>
--->
-<!-- TODO Availability per class, should probably be on top as well -->
-
 <!-- TOOD Toggle for very update speed -->
+
+<h2 class="event-title">Bokning</h2>
+
+<div class="spinner-widget" *ngIf="isLoadingEvent">
+	<spinner-widget></spinner-widget>
+</div>
+
+<material-button *ngIf="!isLoadingEvent && !event.isLocked"
+				 class="control-red"
+				 raised
+				 (trigger)="lockUnlockEvent()">
+	Stäng bokningen
+</material-button>
+
+<material-button *ngIf="!isLoadingEvent && event.isLocked"
+				 class="control-green"
+				 raised
+				 (trigger)="lockUnlockEvent()">
+	Öppna bokningen
+</material-button>
+
+<div class="page-end-block"></div>

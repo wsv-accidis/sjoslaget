@@ -72,7 +72,7 @@ class BookingRepository {
 	}
 
 	Future<BookingResult> saveBooking(Client client, BookingSource booking) async {
-		final headers = _createJsonHeaders();
+		final headers = ClientUtil.createJsonHeaders();
 
 		Response response;
 		try {
@@ -87,11 +87,5 @@ class BookingRepository {
 		//throw BookingException();
 		else
 			throw IOException.fromResponse(response);
-	}
-
-	static Map<String, String> _createJsonHeaders() {
-		final headers = <String, String>{};
-		headers['content-type'] = 'application/json';
-		return headers;
 	}
 }

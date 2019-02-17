@@ -111,7 +111,7 @@ class BookingRepository {
 	}
 
 	Future<PaymentSummary> registerPayment(Client client, String reference, Decimal amount) async {
-		final headers = _createJsonHeaders();
+		final headers = ClientUtil.createJsonHeaders();
 		final source = json.encode({AMOUNT: amount.toDouble()});
 
 		Response response;
@@ -126,7 +126,7 @@ class BookingRepository {
 	}
 
 	Future<Null> updateDiscount(Client client, String reference, int amount) async {
-		final headers = _createJsonHeaders();
+		final headers = ClientUtil.createJsonHeaders();
 		final source = json.encode({AMOUNT: amount});
 
 		Response response;
@@ -140,7 +140,7 @@ class BookingRepository {
 	}
 
 	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins, List<BookingProduct> products) async {
-		final headers = _createJsonHeaders();
+		final headers = ClientUtil.createJsonHeaders();
 		final source = BookingSource.fromDetails(details, cabins, products);
 
 		Response response;
@@ -158,11 +158,5 @@ class BookingRepository {
 			throw BookingException();
 		else
 			throw IOException.fromResponse(response);
-	}
-
-	static Map<String, String> _createJsonHeaders() {
-		final headers = <String, String>{};
-		headers['content-type'] = 'application/json';
-		return headers;
 	}
 }
