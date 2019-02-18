@@ -6,6 +6,7 @@ import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
+import 'allocation_component.dart';
 import '../booking/pax_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -21,7 +22,7 @@ import 'admin_routes.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, PaxComponent, ModalDialog, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaxComponent, ModalDialog, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes, ValidationSupport]
 )
@@ -30,6 +31,9 @@ class AdminBookingPage implements OnActivate {
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 	final Router _router;
+
+	@ViewChild('allocation')
+	AllocationComponent allocationComponent;
 
 	@ViewChild('deleteBookingDialog')
 	ModalDialog deleteBookingDialog;
@@ -57,6 +61,7 @@ class AdminBookingPage implements OnActivate {
 
 	void addEmptyPax() {
 		pax.addEmptyPax();
+		allocationComponent.noOfPaxInBooking = pax.count;
 	}
 
 	Future<void> deleteBooking() async {
@@ -88,6 +93,10 @@ class AdminBookingPage implements OnActivate {
 			booking = await _bookingRepository.getBooking(client, reference);
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			pax.setPax(BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses));
+
+			allocationComponent.bookingRef = reference;
+			allocationComponent.noOfPaxInBooking = pax.count;
+			await allocationComponent.load();
 		} catch (e) {
 			print('Failed to load booking: ${e.toString()}');
 			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';

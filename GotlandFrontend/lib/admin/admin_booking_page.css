@@ -2,3 +2,15 @@ h2 {
 	margin-top: 30px;
 	margin-bottom: 5px;
 }
+
+.allocation {
+	margin-bottom: 20px;
+}
+
+.allocation p {
+	margin-bottom: 0;
+}
+
+.details {
+	margin-bottom: 20px;
+}

@@ -126,7 +126,7 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				var result = await db.QueryAsync<BookingListItem>(
 					"select [Id], [Reference], [FirstName], [LastName], [TeamName], [TotalPrice], [QueueNo], [Updated], " +
-					"(select COUNT(*) from [BookingPax] where[BookingId] = [Booking].[Id]) as NumberOfPax " +
+					"(select COUNT(*) from [BookingPax] where [BookingId] = [Booking].[Id]) as NumberOfPax " +
 					"from [Booking] where [EventId] = @EventId",
 					new {EventId = evnt.Id});
 				return result.ToArray();

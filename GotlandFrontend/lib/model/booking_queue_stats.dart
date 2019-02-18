@@ -5,10 +5,10 @@ import 'package:frontend_shared/util.dart';
 import 'json_field.dart';
 
 class BookingQueueStats {
-	int aheadInQueue;
-	int queueLatencyMs;
-	int queueNo;
-	int teamSize;
+	final int aheadInQueue;
+	final int queueLatencyMs;
+	final int queueNo;
+	final int teamSize;
 
 	BookingQueueStats(this.aheadInQueue, this.queueLatencyMs, this.queueNo, this.teamSize);
 

@@ -78,5 +78,24 @@ namespace Accidis.Gotland.WebService.Controllers
 				throw;
 			}
 		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Details()
+		{
+			Event evnt = await _eventRepository.GetActiveAsync();
+			if(null == evnt)
+				return NotFound();
+
+			try
+			{
+				CabinClassDetail[] cabinClassDetail = await _cabinRepository.GetCabinClassDetailByEventAsync(evnt);
+				return this.OkCacheControl(cabinClassDetail, WebConfig.StaticDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting cabin details.");
+				throw;
+			}
+		}
 	}
 }

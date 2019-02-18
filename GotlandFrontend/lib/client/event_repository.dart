@@ -6,6 +6,7 @@ import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
+import '../model/cabin_class_detail.dart';
 import '../model/cabin_class.dart';
 import '../model/claimed_capacity.dart';
 import '../model/event.dart';
@@ -46,6 +47,21 @@ class EventRepository {
 		final List jsonBody = json.decode(response.body);
 		return jsonBody
 			.map((dynamic value) => CabinClass.fromMap(value))
+			.toList();
+	}
+
+	Future<List<CabinClassDetail>> getCabinClassDetails(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/cabins/details');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonBody = json.decode(response.body);
+		return jsonBody
+			.map((dynamic value) => CabinClassDetail.fromMap(value))
 			.toList();
 	}
 

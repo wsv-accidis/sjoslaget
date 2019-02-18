@@ -1,0 +1,93 @@
+<form #allocationForm="ngForm">
+	<material-dropdown-select [buttonText]="cabinClassDetailLabel"
+							  class="allocation-select"
+							  [itemRenderer]="cabinClassDetailToString"
+							  [options]="cabinClassDetailsOptions"
+							  [selection]="cabinClassDetails"
+							  style="width: 220px; margin-right: 20px"
+							  width="3">
+	</material-dropdown-select>
+
+	<material-input [(ngModel)]="noOfPax"
+					ngControl="noOfPax"
+					floatingLabel
+					label="Antal"
+					required
+					requiredErrorMsg="Ange antal."
+					pattern="[0-9]+"
+					style="width: 70px; margin-right: 20px">
+	</material-input>
+
+	<material-input [(ngModel)]="note"
+					ngControl="note"
+					floatingLabel
+					label="Notering"
+					style="width: 370px; margin-right: 20px;">
+	</material-input>
+
+	<material-button class="control-green"
+					 [disabled]="!hasSelectedDetail || !allocationForm.valid"
+					 raised
+					 (trigger)="allocate()">
+		Lägg till
+	</material-button>
+</form>
+
+<table cellpadding="0" cellspacing="0" border="0" class="allocations" *ngIf="hasAllocations">
+	<thead>
+	<th class="delete-cell"></th>
+	<th class="no-cell">
+		Nivå
+	</th>
+	<th class="title-cell">
+		Boende
+	</th>
+	<th class="capacity-cell">
+		Bäddar (max)
+	</th>
+	<th>
+		Notering
+	</th>
+	</thead>
+	<tbody>
+	<tr *ngFor="let alloc of allocations; let idx = index">
+		<td>
+			<a class="alloc-delete" (click)="delete(idx)" href="javascript:" title="Ta bort">
+				<material-icon icon="clear"></material-icon>
+			</a>
+		</td>
+		<td>
+			{{ alloc.no }}
+		</td>
+		<td>
+			{{ alloc.title }}
+		</td>
+		<td>
+			{{ alloc.noOfPax }} ({{ alloc.capacity }})
+		</td>
+		<td>
+			{{ alloc.note }}
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+<p class="super-important" *ngIf="hasWarningMessage">
+	{{ warningMessage }}
+</p>
+
+<p *ngIf="!hasAllocations" class="no-allocation">
+	Ingenting tilldelat.
+</p>
+
+<div class="spinner-widget" *ngIf="isSaving">
+	<spinner-widget></spinner-widget>
+</div>
+
+<div *ngIf="!isSaving" class="save-button">
+	<material-button class="control-blue"
+					 raised
+					 (trigger)="save()">
+		Spara tilldelning
+	</material-button>
+</div>

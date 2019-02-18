@@ -2,6 +2,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
 import '../booking/booking_validator.dart';
+import '../client/allocation_repository.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
@@ -20,6 +21,7 @@ import 'admin_user_page.template.dart';
 	styleUrls: ['../booking/booking_component.css'],
 	templateUrl: '../booking/booking_component.html',
 	providers: <dynamic>[
+		AllocationRepository,
 		BookingRepository,
 		BookingValidator,
 		ClientFactory,

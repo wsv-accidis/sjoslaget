@@ -1,0 +1,38 @@
+a.alloc-delete {
+	text-decoration: none !important;
+}
+
+a.alloc-delete material-icon {
+	color: darkred;
+	margin-left: -4px;
+}
+
+.allocations {
+	width: 900px;
+}
+
+th.delete-cell {
+	width: 50px;
+}
+
+th.no-cell {
+	width: 70px;
+}
+
+th.title-cell {
+	width: 200px;
+}
+
+th.capacity-cell {
+	width: 160px;
+}
+
+.no-allocation {
+	font-style: italic;
+	margin-bottom: -5px;
+	margin-top: 0;
+}
+
+.save-button {
+	margin-top: 30px;
+}

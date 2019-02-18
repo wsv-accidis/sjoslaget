@@ -37,7 +37,7 @@
 
 	<h2>Lag och kontaktperson</h2>
 
-	<div *ngIf="!isLoading">
+	<div *ngIf="!isLoading" class="details">
 		<material-input [(ngModel)]="booking.teamName"
 						ngControl="teamName"
 						floatingLabel
@@ -95,7 +95,7 @@
 						floatingLabel
 						label="Särskilda önskemål"
 						multiline
-						style="width: 700px; margin-bottom: 25px">
+						style="width: 700px">
 		</material-input>
 	</div>
 
@@ -123,6 +123,16 @@
 		</material-button>
 	</div>
 </form>
+
+<h2>Tilldelning</h2>
+
+<div *ngIf="!isLoading" class="allocation">
+	<p>
+		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen. Glöm inte att spara bokningen efteråt.
+	</p>
+
+	<allocation-component #allocation></allocation-component>
+</div>
 
 <modal-dialog #deleteBookingDialog
 			  action="Ja, radera"

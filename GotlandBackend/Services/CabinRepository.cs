@@ -45,5 +45,15 @@ namespace Accidis.Gotland.WebService.Services
 				return result.ToArray();
 			}
 		}
+
+		public async Task<CabinClassDetail[]> GetCabinClassDetailByEventAsync(Event evnt)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<CabinClassDetail>("select * from [EventCabinClassDetail] where [EventId] = @EventId order by [No], [Capacity]",
+					new { EventId = evnt.Id });
+				return result.ToArray();
+			}
+		}
 	}
 }
