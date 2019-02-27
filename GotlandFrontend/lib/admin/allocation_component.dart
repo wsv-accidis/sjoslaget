@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' as str show isEmpty, isNotEmpty;
 
 import '../client/allocation_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
-import '../model/booking_allocation.dart';
 import '../model/booking_allocation_view.dart';
+import '../model/cabin_class.dart';
 import '../model/cabin_class_detail.dart';
 import '../widgets/components.dart';
 
@@ -24,6 +25,7 @@ class AllocationComponent {
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 
+	List<CabinClass> _cabinClasses;
 	int _noOfPaxInBooking;
 
 	AllocationComponent(this._allocationRepository, this._clientFactory, this._eventRepository);
@@ -45,12 +47,18 @@ class AllocationComponent {
 
 	bool get hasSelectedDetail => null != cabinClassDetails.selectedValue;
 
+	bool get hasPrice => price > 0;
+
 	bool get hasWarningMessage => str.isNotEmpty(warningMessage);
 
-	void set noOfPaxInBooking(int value) {
+	set noOfPaxInBooking(int value) {
 		_noOfPaxInBooking = value;
-		_validate();
+		validate();
 	}
+
+	int get price => allocations.fold(0, (sum, a) => sum + a.price);
+
+	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
 
 	String cabinClassDetailToString(CabinClassDetail detail) => '${detail.no}. ${detail.title}, ${detail.capacity} bäddar';
 
@@ -59,15 +67,17 @@ class AllocationComponent {
 			return;
 		}
 
-		final allocation = BookingAllocationView(cabinClassDetails.selectedValue, int.parse(noOfPax), note);
+		final details = cabinClassDetails.selectedValue;
+		final cabinClass = _cabinClasses.firstWhere((c) => c.no == details.no);
+		final allocation = BookingAllocationView(cabinClass, details, int.parse(noOfPax), note);
 		allocations.add(allocation);
 		_clear();
-		_validate();
+		validate();
 	}
 
 	void delete(int idx) {
 		allocations.removeAt(idx);
-		_validate();
+		validate();
 	}
 
 	Future<void> load() async {
@@ -77,17 +87,19 @@ class AllocationComponent {
 
 		try {
 			final client = _clientFactory.getClient();
+			_cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			final cabinClassDetails = await _eventRepository.getCabinClassDetails(client);
 			cabinClassDetailsOptions = SelectionOptions<CabinClassDetail>.fromList(cabinClassDetails);
 
 			final allocation = await _allocationRepository.getAllocation(client, bookingRef);
-			allocations = allocation.map((a) => BookingAllocationView.fromBookingAllocation(a, cabinClassDetails)).toList();
+			allocations = allocation.map((a) => BookingAllocationView.fromBookingAllocation(a, _cabinClasses, cabinClassDetails)).toList();
 		} catch (e) {
 			print('Failed to load allocation: ${e.toString()}');
 			return;
 		}
 
 		cabinClassDetails.selectionChanges.listen(_onSelectionChanged);
+		validate();
 	}
 
 	Future<void> save() async {
@@ -108,6 +120,17 @@ class AllocationComponent {
 		}
 	}
 
+	void validate() {
+		warningMessage = '';
+
+		final allocatedCount = allocations.fold<int>(0, (sum, a) => sum + a.noOfPax);
+		if (allocatedCount > _noOfPaxInBooking) {
+			warningMessage = 'Fler bäddar är tilldelade än vad det finns deltagare i bokningen (behöver $_noOfPaxInBooking, tilldelat $allocatedCount).';
+		} else if (allocatedCount < _noOfPaxInBooking) {
+			warningMessage = 'Alla deltagare i bokningen har inte tilldelat boende (behöver $_noOfPaxInBooking, tilldelat $allocatedCount).';
+		}
+	}
+
 	void _clear() {
 		cabinClassDetails.clear();
 		noOfPax = '';
@@ -119,15 +142,6 @@ class AllocationComponent {
 			noOfPax = '';
 		} else {
 			noOfPax = cabinClassDetails.selectedValue.capacity.toString();
-		}
-	}
-
-	void _validate() {
-		// TODO: No current way to validate when a pax is removed
-		warningMessage = '';
-
-		if (allocations.fold<int>(0, (sum, a) => sum + a.noOfPax) > _noOfPaxInBooking) {
-			warningMessage = 'Fler bäddar är tilldelade än vad det finns deltagare i bokningen.';
 		}
 	}
 }

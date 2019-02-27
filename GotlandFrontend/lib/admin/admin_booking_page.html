@@ -25,7 +25,9 @@
 </p>
 
 <form #bookingForm="ngForm">
-	<pax-component #pax></pax-component>
+	<pax-component #pax
+				   (onNoOfPaxChange)="noOfPax = $event">
+	</pax-component>
 
 	<div *ngIf="!isLoading && !isSaving">
 		<material-button class="control-blue"
@@ -128,7 +130,7 @@
 
 <div *ngIf="!isLoading" class="allocation">
 	<p>
-		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen. Glöm inte att spara bokningen efteråt.
+		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen. Glöm inte att spara efteråt.
 	</p>
 
 	<allocation-component #allocation></allocation-component>

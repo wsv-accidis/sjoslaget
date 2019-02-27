@@ -1,7 +1,9 @@
 import 'booking_allocation.dart';
+import 'cabin_class.dart';
 import 'cabin_class_detail.dart';
 
 class BookingAllocationView {
+	final CabinClass cabinClass;
 	final CabinClassDetail cabinClassDetail;
 	final int noOfPax;
 	final String note;
@@ -10,15 +12,23 @@ class BookingAllocationView {
 
 	int get no => cabinClassDetail.no;
 
+	int get price => noOfPax * cabinClass.pricePerPax.toInt();
+
 	String get title => cabinClassDetail.title;
 
-	BookingAllocationView(this.cabinClassDetail, this.noOfPax, this.note);
+	BookingAllocationView(this.cabinClass, this.cabinClassDetail, this.noOfPax, this.note);
 
-	BookingAllocationView.fromBookingAllocation(BookingAllocation alloc, List<CabinClassDetail> details) :
-			this(_getDetail(alloc.cabinId, details), alloc.noOfPax, alloc.note);
+	factory BookingAllocationView.fromBookingAllocation(BookingAllocation alloc, List<CabinClass> classes, List<CabinClassDetail> details) {
+		final cabinClassDetail = _getDetail(alloc.cabinId, details);
+		final cabinClass = _getClass(cabinClassDetail.no, classes);
+		return BookingAllocationView(cabinClass, cabinClassDetail, alloc.noOfPax, alloc.note);
+	}
 
 	BookingAllocation toBookingAllocation() =>
 		BookingAllocation(cabinClassDetail.id, noOfPax, note);
+
+	static CabinClass _getClass(int no, List<CabinClass> classes) =>
+		classes.firstWhere((c) => c.no == no);
 
 	static CabinClassDetail _getDetail(String id, List<CabinClassDetail> details) =>
 		details.firstWhere((d) => d.id == id);

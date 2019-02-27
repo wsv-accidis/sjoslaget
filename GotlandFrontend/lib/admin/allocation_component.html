@@ -91,3 +91,7 @@
 		Spara tilldelning
 	</material-button>
 </div>
+
+<div *ngIf="hasPrice" class="booking-price">
+	Pris (tilldelat) <span>{{ priceFormatted }}</span>
+</div>

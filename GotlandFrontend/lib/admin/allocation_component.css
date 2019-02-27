@@ -11,6 +11,18 @@ a.alloc-delete material-icon {
 	width: 900px;
 }
 
+
+div.booking-price {
+	float: right;
+	margin-right: 3px;
+	text-align: right;
+}
+
+div.booking-price span {
+	font-size: larger;
+	font-weight: bold;
+}
+
 th.delete-cell {
 	width: 50px;
 }

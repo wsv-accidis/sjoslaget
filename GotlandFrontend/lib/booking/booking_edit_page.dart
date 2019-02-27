@@ -93,9 +93,9 @@ class BookingEditPage implements OnInit {
 		if (!isReadOnly && booking.pax.isEmpty) {
 			// For new bookings, helpfully create a bunch of empty rows
 			final int teamSize = queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
-			pax.createInitialEmptyPax(teamSize);
+			pax.emptyPax = teamSize;
 		} else {
-			pax.setPax(BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses));
+			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
 		}
 	}
 

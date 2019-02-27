@@ -6,7 +6,6 @@ import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
-import 'allocation_component.dart';
 import '../booking/pax_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -17,6 +16,7 @@ import '../model/cabin_class.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
+import 'allocation_component.dart';
 
 @Component(
 	selector: 'admin-booking-page',
@@ -57,6 +57,8 @@ class AdminBookingPage implements OnActivate {
 
 	bool get isLoading => null == booking;
 
+	set noOfPax(int value) => allocationComponent.noOfPaxInBooking = value;
+
 	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router);
 
 	void addEmptyPax() {
@@ -92,10 +94,9 @@ class AdminBookingPage implements OnActivate {
 			final client = _clientFactory.getClient();
 			booking = await _bookingRepository.getBooking(client, reference);
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
-			pax.setPax(BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses));
+			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
 
 			allocationComponent.bookingRef = reference;
-			allocationComponent.noOfPaxInBooking = pax.count;
 			await allocationComponent.load();
 		} catch (e) {
 			print('Failed to load booking: ${e.toString()}');

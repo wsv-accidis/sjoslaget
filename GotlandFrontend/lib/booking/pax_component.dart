@@ -27,6 +27,10 @@ class PaxComponent implements OnInit {
 	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
+	final _onNoOfPaxChange = StreamController<int>.broadcast();
+
+	@Output()
+	Stream get onNoOfPaxChange => _onNoOfPaxChange.stream;
 
 	List<BookingPaxView> paxViews = <BookingPaxView>[];
 	List<CabinClass> cabinClasses;
@@ -57,6 +61,19 @@ class PaxComponent implements OnInit {
 
 	String get pricePreferredFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxPreferred);
 
+	set emptyPax(int count) {
+		paxViews.clear();
+		for (int i = 0; i < count; i++) {
+			addEmptyPax();
+		}
+	}
+
+	set pax(List<BookingPaxView> list) {
+		list.forEach(_addListeners);
+		paxViews = list;
+		_onNoOfPaxChange.add(count);
+	}
+
 	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
 	@override
@@ -77,6 +94,7 @@ class PaxComponent implements OnInit {
 		final BookingPaxView view = BookingPaxView.createEmpty();
 		_addListeners(view);
 		paxViews.add(view);
+		_onNoOfPaxChange.add(count);
 	}
 
 	String cabinClassToString(CabinClass c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
@@ -98,15 +116,9 @@ class PaxComponent implements OnInit {
 			return cabinClassToString(c);
 	}
 
-	void createInitialEmptyPax(int count) {
-		paxViews.clear();
-		for (int i = 0; i < count; i++) {
-			addEmptyPax();
-		}
-	}
-
 	void deletePax(int idx) {
 		paxViews.removeAt(idx);
+		_onNoOfPaxChange.add(count);
 	}
 
 	String genderToString(String g) {
@@ -114,11 +126,6 @@ class PaxComponent implements OnInit {
 			return 'Kön';
 
 		return Gender.asString(g);
-	}
-
-	void setPax(List<BookingPaxView> list) {
-		list.forEach(_addListeners);
-		paxViews = list;
 	}
 
 	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';

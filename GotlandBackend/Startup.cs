@@ -57,9 +57,10 @@ namespace Accidis.Gotland.WebService
 			{
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
 				AccessTokenFormat = new JwtAccessTokenFormat(AuthConfig.AudienceSecret, AuthConfig.Audience, AuthConfig.Issuer),
-#if DEBUG
+// TODO Only while on test server, remove for production
+//#if DEBUG
 				AllowInsecureHttp = true,
-#endif
+//#endif
 				Provider = container.Resolve<AecOAuthProvider>(),
 				TokenEndpointPath = new PathString("/api/token"),
 			};
@@ -83,6 +84,7 @@ namespace Accidis.Gotland.WebService
 			container.Register<AecOAuthProvider>();
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecUserSupport>();
+			container.Register<AllocationRepository>();
 			container.Register<BookingRepository>();
 			container.Register<BookingCandidateRepository>();
 			container.Register<CabinRepository>();
