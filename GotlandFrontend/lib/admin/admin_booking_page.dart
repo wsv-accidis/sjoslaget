@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
@@ -47,9 +49,15 @@ class AdminBookingPage implements OnActivate {
 	bool isSaving = false;
 	String loadingError;
 
-	bool get canDelete => true; // TODO
+	bool get canDelete => !isSaving;
 
 	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
+
+	String get confirmationSentMessage =>
+		hasSentConfirmation ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
+			: 'Bekräftelse inte skickad';
+
+	bool get hasSentConfirmation => null != booking.confirmationSent;
 
 	bool get hasBookingError => isNotEmpty(bookingError);
 
@@ -64,6 +72,23 @@ class AdminBookingPage implements OnActivate {
 	void addEmptyPax() {
 		pax.addEmptyPax();
 		allocationComponent.noOfPaxInBooking = pax.count;
+	}
+
+	Future<void> confirmBooking() async {
+		if (isSaving)
+			return;
+
+		isSaving = true;
+
+		try {
+			final client = _clientFactory.getClient();
+			await _bookingRepository.confirmBooking(client, booking.reference);
+			booking.confirmationSent = DateTime.now();
+		} catch (e) {
+			print('Failed to confirm booking: ${e.toString()}');
+		} finally {
+			isSaving = false;
+		}
 	}
 
 	Future<void> deleteBooking() async {

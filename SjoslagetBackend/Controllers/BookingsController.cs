@@ -307,7 +307,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			}
 			catch(Exception ex)
 			{
-				_log.Error(ex, "Failed to send e-mail on created booking, although the booking was created without error.");
+				_log.Error(ex, "Failed to send e-mail on created booking.");
 			}
 		}
 

@@ -23,13 +23,37 @@ namespace Accidis.Gotland.WebService.Controllers
 		}
 
 		[Authorize(Roles = Roles.Admin)]
+		[HttpPut]
+		public async Task<IHttpActionResult> Confirm(string reference)
+		{
+			try
+			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+				if(null == booking)
+					return NotFound();
+
+				await SendBookingConfirmedMailAsync(evnt, booking);
+				await _bookingRepository.UpdateConfirmationSentAsync(booking);
+
+				_log.Info("Sent confirmation for booking {0}.", booking.Reference);
+
+				return Ok();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while sending a confirmation e-mail.");
+				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
 		[HttpDelete]
 		public async Task<IHttpActionResult> Delete(string reference)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
 				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
@@ -52,12 +76,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> Get(string reference)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				if(IsAuthorized(reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
 
@@ -84,12 +108,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> List()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				return this.OkNoCache(await _bookingRepository.GetList(evnt));
 			}
 			catch(Exception ex)
@@ -103,12 +127,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> Pax()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				return this.OkNoCache(await _bookingRepository.GetListOfPax(evnt));
 			}
 			catch(Exception ex)
@@ -120,15 +144,15 @@ namespace Accidis.Gotland.WebService.Controllers
 
 		[Authorize]
 		[HttpGet]
-		[Route("api/bookings/{reference}/queueStats")]
+		[Route("api/bookings/queueStats/{reference}")]
 		public async Task<IHttpActionResult> QueueStats(string reference)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				if(IsAuthorized(reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
 
@@ -149,17 +173,17 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPost]
 		public async Task<IHttpActionResult> Update(BookingSource bookingSource)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
-			if(IsAuthorized(bookingSource.Reference))
-				return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
-			if(!AuthContext.IsAdmin && evnt.IsLocked)
-				return BadRequest("The event has been locked and the booking can no longer be edited.");
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				if(IsAuthorized(bookingSource.Reference))
+					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
+				if(!AuthContext.IsAdmin && evnt.IsLocked)
+					return BadRequest("The event has been locked and the booking can no longer be edited.");
+
 				BookingResult result = await _bookingRepository.UpdateAsync(evnt, bookingSource, AuthContext.IsAdmin);
 				_log.Info("Updated booking {0}.", result.Reference);
 				return Ok(result);
@@ -179,6 +203,19 @@ namespace Accidis.Gotland.WebService.Controllers
 		static bool IsAuthorized(string reference)
 		{
 			return !AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		async Task SendBookingConfirmedMailAsync(Event evnt, Booking booking)
+		{
+			try
+			{
+				using(var emailSender = new EmailSender())
+					await emailSender.SendBookingConfirmedMailAsync(evnt.Name, booking.Email, booking.Reference);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "Failed to send e-mail on confirmed booking.");
+			}
 		}
 	}
 }

@@ -24,12 +24,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> Active()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				CabinClass[] cabinClasses = await _cabinRepository.GetClassesByEventAsync(evnt);
 				return this.OkCacheControl(cabinClasses, WebConfig.StaticDataMaxAge);
 			}
@@ -43,12 +43,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> Capacity()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				CabinCapacity[] cabinCapacity = await _cabinRepository.GetCapacityByEventAsync(evnt);
 				return this.OkCacheControl(cabinCapacity, WebConfig.StaticDataMaxAge);
 			}
@@ -63,12 +63,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[Authorize(Roles = Roles.Admin)]
 		public async Task<IHttpActionResult> ClaimedCapacity()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				ClaimedCapacity[] claimedCapacity = await _cabinRepository.GetClaimedCapacityByEventAsync(evnt);
 				return this.OkNoCache(claimedCapacity);
 			}
@@ -82,12 +82,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpGet]
 		public async Task<IHttpActionResult> Details()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				CabinClassDetail[] cabinClassDetail = await _cabinRepository.GetCabinClassDetailByEventAsync(evnt);
 				return this.OkCacheControl(cabinClassDetail, WebConfig.StaticDataMaxAge);
 			}

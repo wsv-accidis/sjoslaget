@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:frontend_shared/util/value_converter.dart';
+
 import 'booking_pax.dart';
 import 'json_field.dart';
 
@@ -11,9 +13,10 @@ class BookingSource {
 	String phoneNo;
 	String teamName;
 	String specialRequest;
+	DateTime confirmationSent;
 	List<BookingPax> pax;
 
-	BookingSource(this.reference, this.firstName, this.lastName, this.email, this.phoneNo, this.teamName, this.specialRequest, this.pax);
+	BookingSource(this.reference, this.firstName, this.lastName, this.email, this.phoneNo, this.teamName, this.specialRequest, this.confirmationSent, this.pax);
 
 	factory BookingSource.fromJson(String jsonStr) {
 		final Map<String, dynamic> map = json.decode(jsonStr);
@@ -31,6 +34,7 @@ class BookingSource {
 			map[PHONE_NO],
 			map[TEAM_NAME],
 			map[SPECIAL_REQUEST],
+			ValueConverter.parseDateTime(map[CONFIRMATION_SENT]),
 			pax
 		);
 	}

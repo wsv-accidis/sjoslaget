@@ -33,7 +33,7 @@ namespace Accidis.Gotland.WebService.Services
 			Booking booking;
 
 			/*
-			 * We need a transaction around this to ensure multiple bookings being created from the same candidate.
+			 * We need a transaction around this to prevent multiple bookings being created from the same candidate.
 			 * Unlike Sjöslaget there is no risk of overcomitting passengers since allocation of cabins happens
 			 * separate from booking.
 			 */
@@ -67,7 +67,7 @@ namespace Accidis.Gotland.WebService.Services
 				await _userManager.DeleteAsync(user);
 
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new { Id = booking.Id });
+				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new {Id = booking.Id});
 		}
 
 		public async Task<Booking> FindByReferenceAsync(string reference)
@@ -144,6 +144,12 @@ namespace Accidis.Gotland.WebService.Services
 					new {EventId = evnt.Id});
 				return result.ToArray();
 			}
+		}
+
+		public async Task UpdateConfirmationSentAsync(Booking booking)
+		{
+			using(var db = DbUtil.Open())
+				await db.ExecuteAsync("update [Booking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
 		}
 
 		public async Task<BookingResult> UpdateAsync(Event evnt, BookingSource source, bool allowUpdateDetails = false)

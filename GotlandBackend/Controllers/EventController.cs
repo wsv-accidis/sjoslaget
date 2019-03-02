@@ -42,12 +42,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPut]
 		public async Task<IHttpActionResult> Lock()
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				evnt.IsLocked = !evnt.IsLocked;
 				await _eventRepository.UpdateMetadataAsync(evnt);
 				return Ok(new {IsLocked = evnt.IsLocked});

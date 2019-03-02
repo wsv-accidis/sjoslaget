@@ -1,12 +1,12 @@
-﻿using Accidis.Gotland.WebService.Models;
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
 using NLog;
-using System;
-using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -27,18 +27,18 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPut]
 		public async Task<IHttpActionResult> Claim(string c)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
-			if(!evnt.IsOpen)
-			{
-				_log.Warn("An attempt was made to enqueue a candidate before the event is open.");
-				return BadRequest();
-			}
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				if(!evnt.IsOpen)
+				{
+					_log.Warn("An attempt was made to enqueue a candidate before the event is open.");
+					return BadRequest();
+				}
+
 				Guid candidateId = ParseGuid(c);
 				int placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
 				return Ok(new {PlaceInQueue = placeInQueue});
@@ -58,12 +58,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPost]
 		public async Task<IHttpActionResult> Create(BookingCandidate candidate)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				Guid id = await _candidateRepository.CreateAsync(candidate);
 				int queueSize = await _candidateRepository.GetNumberOfActiveAsync();
 
@@ -84,12 +84,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPut]
 		public async Task<IHttpActionResult> Ping(string c)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
 				Guid candidateId = ParseGuid(c);
 				if(!await _candidateRepository.KeepAliveAsync(candidateId))
 					return NotFound();
@@ -111,14 +111,14 @@ namespace Accidis.Gotland.WebService.Controllers
 		[HttpPost]
 		public async Task<IHttpActionResult> ToBooking(string c)
 		{
-			Event evnt = await _eventRepository.GetActiveAsync();
-			if(null == evnt)
-				return NotFound();
-			if(evnt.IsLocked)
-				return BadRequest("The event is locked and can no longer accept bookings.");
-
 			try
 			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+				if(evnt.IsLocked)
+					return BadRequest("The event is locked and can no longer accept bookings.");
+
 				Guid candidateId = ParseGuid(c);
 				BookingCandidate candidate;
 				int placeInQueue;
@@ -140,7 +140,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				BookingResult result = await _bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
 				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id, placeInQueue);
 
-				// TODO Send e-mail
+				await SendBookingCreatedMailAsync(evnt, candidate, result);
 				return Ok(result);
 			}
 			catch(BookingException)
@@ -159,6 +159,22 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
-		static Guid ParseGuid(string c) => Guid.ParseExact(c, "D");
+		static Guid ParseGuid(string c)
+		{
+			return Guid.ParseExact(c, "D");
+		}
+
+		async Task SendBookingCreatedMailAsync(Event evnt, BookingCandidate candidate, BookingResult result)
+		{
+			try
+			{
+				using(var emailSender = new EmailSender())
+					await emailSender.SendBookingCreatedMailAsync(evnt.Name, candidate.Email, result.Reference, result.Password);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "Failed to send e-mail on created booking.");
+			}
+		}
 	}
 }

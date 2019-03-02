@@ -1,0 +1,31 @@
+﻿Hej!
+
+Det här är en bekräftelse på att din bokning till {EVENT_NAME} är mottagen.
+
+Din bokningsreferens är {BOOKING_REF} och din PIN-kod är {PIN_CODE}.
+
+Ta vara på dessa! Du behöver bokningsreferensen för att hämta ut dina
+nycklar och tillsammans med PIN-koden för att komma åt din bokning.
+
+Gå till absolutgotland.se/bokning och mata in referens samt PIN-kod 
+för att visa din bokning. Du kan göra ändringar en kort tid efter
+bokningsstart, därefter kan du se status på bokningen och om
+du fått plats.
+
+Detta mail betyder inte att du fått plats - så fort tillräckligt många
+bokningar kommit in stänger vi bokningen och tilldelar boenden utifrån
+turordning.
+
+Vi ser fram emot att välkomna dig till ön!
+
+------------------------------------------------------------------------------
+
+Det här är ett automatiskt genererat meddelande som du får därför att den
+här e-postadressen har använts i en bokning till {EVENT_NAME}. Det här är
+inte spam, någon (antagligen du) har bett om att få det här mailet skickat
+till den här e-postadressen.
+
+Om du inte har gjort någon bokning ber vi dig snarast kontakta
+oss på info@absolutgotland.se så att vi kan avhjälpa problemet.
+
+Besök absolutgotland.se för mer information om vårt evenemang.

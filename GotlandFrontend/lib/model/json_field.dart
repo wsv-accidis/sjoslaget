@@ -7,6 +7,7 @@ const String CABIN_CLASS_MIN = 'CabinClassMin';
 const String CABIN_CLASS_PREF = 'CabinClassPreferred';
 const String CABIN_ID = 'CabinId';
 const String CAPACITY = 'Capacity';
+const String CONFIRMATION_SENT = 'ConfirmationSent';
 const String COUNT = 'Count';
 const String COUNTDOWN = 'Countdown';
 const String CREATED = 'Created';

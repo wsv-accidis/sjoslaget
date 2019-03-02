@@ -1,0 +1,38 @@
+﻿Hej!
+
+Gratulerar - du har fått plats på {EVENT_NAME}!
+
+Din bokning med referens {BOOKING_REF} har nu tilldelats ett eller
+flera boenden (alternativt tältplats). 
+
+Gå till absolutgotland.se/bokning och mata in referens samt PIN-kod 
+för att visa din bokning och hur mycket du ska betala. Du kommer
+på samma sida att kunna se när betalningen kommit in.
+
+Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
+Betala så snart som möjligt!
+
+VIKTIGT: Du måste ange bokningsreferensen som meddelande till
+betalningsmottagaren när du gör inbetalningen, annars kan vi inte passa
+ihop din inbetalning med rätt bokning. För extra säkerhet kan du skriva
+in ditt namn i meddelandet också.
+
+Om du betalar flera bokningar samtidigt, ange samtliga bokningsnummer
+i meddelandet.
+
+Glöm inte att boka resa så att du och eventuella lagmedlemmar tar
+er till och från Gotland!
+
+Välkommen till ön!
+
+------------------------------------------------------------------------------
+
+Det här är ett automatiskt genererat meddelande som du får därför att den
+här e-postadressen har använts i en bokning till {EVENT_NAME}. Det här är
+inte spam, någon (antagligen du) har bett om att få det här mailet skickat
+till den här e-postadressen.
+
+Om du inte har gjort någon bokning ber vi dig snarast kontakta
+oss på info@absolutgotland.se så att vi kan avhjälpa problemet.
+
+Besök absolutgotland.se för mer information om vårt evenemang.

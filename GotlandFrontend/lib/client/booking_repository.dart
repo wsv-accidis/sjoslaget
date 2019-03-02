@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:angular/angular.dart';
@@ -16,6 +17,17 @@ class BookingRepository {
 	final String _apiRoot;
 
 	BookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
+
+	Future<void> confirmBooking(Client client, String reference) async {
+		Response response;
+		try {
+			response = await client.put('$_apiRoot/bookings/confirm/$reference');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+	}
 
 	Future<void> deleteBooking(Client client, String reference) async {
 		Response response;
@@ -73,7 +85,7 @@ class BookingRepository {
 	Future<BookingQueueStats> getQueueStats(Client client, String reference) async {
 		Response response;
 		try {
-			response = await client.get('$_apiRoot/bookings/$reference/queueStats');
+			response = await client.get('$_apiRoot/bookings/queueStats/$reference');
 		} catch (e) {
 			throw IOException.fromException(e);
 		}

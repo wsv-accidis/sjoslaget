@@ -14,6 +14,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
 		public string SpecialRequest { get; set; }
+		public DateTime? ConfirmationSent { get; set; }
 		public List<PaxSource> Pax { get; set; }
 
 		public static BookingSource FromBooking(Booking booking, BookingPax[] pax)
@@ -27,6 +28,7 @@ namespace Accidis.Gotland.WebService.Models
 				PhoneNo = booking.PhoneNo,
 				TeamName = booking.TeamName,
 				SpecialRequest = booking.SpecialRequest,
+				ConfirmationSent = booking.ConfirmationSent, 
 				Pax = pax.Select(p => new PaxSource
 				{
 					FirstName = p.FirstName,
@@ -39,15 +41,6 @@ namespace Accidis.Gotland.WebService.Models
 					SpecialRequest = p.SpecialRequest
 				}).ToList()
 			};
-		}
-
-		public static void Validate(BookingSource bookingSource)
-		{
-			if(null == bookingSource)
-				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
-
-			bookingSource.ValidateDetails();
-			bookingSource.ValidatePax();
 		}
 
 		public void ValidateDetails()

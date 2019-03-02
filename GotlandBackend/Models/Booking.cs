@@ -16,6 +16,7 @@ namespace Accidis.Gotland.WebService.Models
 		public decimal TotalPrice { get; set; }
 		public Guid? CandidateId { get; set; }
 		public int QueueNo { get; set; }
+		public DateTime? ConfirmationSent { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }
 

@@ -140,9 +140,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\BookingCreatedEmail.txt" />
+    <Content Include="Content\BookingConfirmedEmail.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\Emails.Designer.cs">
+      <DependentUpon>Emails.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Controllers\AllocationController.cs" />
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
@@ -172,6 +179,7 @@
     <Compile Include="Services\BookingCandidateRepository.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />
+    <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventRepository.cs" />
     <Compile Include="Services\IntervalCalculator.cs" />
     <Compile Include="Services\WebConfig.cs" />
@@ -182,6 +190,10 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Auth.config" />
+    <Content Include="Email.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -203,6 +215,13 @@
       <Project>{dfb81ef3-55b9-4927-9b05-aae669b9ca56}</Project>
       <Name>WebServicesShared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Emails.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Emails.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
