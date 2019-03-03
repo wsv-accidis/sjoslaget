@@ -19,12 +19,13 @@ import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 import 'allocation_component.dart';
+import 'payment_component.dart';
 
 @Component(
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaxComponent, ModalDialog, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaymentComponent, PaxComponent, ModalDialog, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes, ValidationSupport]
 )
@@ -35,10 +36,13 @@ class AdminBookingPage implements OnActivate {
 	final Router _router;
 
 	@ViewChild('allocation')
-	AllocationComponent allocationComponent;
+	AllocationComponent allocation;
 
 	@ViewChild('deleteBookingDialog')
 	ModalDialog deleteBookingDialog;
+
+	@ViewChild('payment')
+	PaymentComponent payment;
 
 	@ViewChild('pax')
 	PaxComponent pax;
@@ -48,6 +52,7 @@ class AdminBookingPage implements OnActivate {
 	List<CabinClass> cabinClasses;
 	bool isSaving = false;
 	String loadingError;
+	int noOfPax = 0;
 
 	bool get canDelete => !isSaving;
 
@@ -65,13 +70,10 @@ class AdminBookingPage implements OnActivate {
 
 	bool get isLoading => null == booking;
 
-	set noOfPax(int value) => allocationComponent.noOfPaxInBooking = value;
-
 	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router);
 
 	void addEmptyPax() {
 		pax.addEmptyPax();
-		allocationComponent.noOfPaxInBooking = pax.count;
 	}
 
 	Future<void> confirmBooking() async {
@@ -121,8 +123,8 @@ class AdminBookingPage implements OnActivate {
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
 
-			allocationComponent.bookingRef = reference;
-			await allocationComponent.load();
+			await allocation.load();
+			payment.load();
 		} catch (e) {
 			print('Failed to load booking: ${e.toString()}');
 			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';

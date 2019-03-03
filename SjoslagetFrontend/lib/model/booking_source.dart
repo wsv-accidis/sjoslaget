@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:frontend_shared/model.dart' show PaymentSummary;
+
 import 'booking_cabin.dart';
 import 'booking_details.dart';
 import 'booking_product.dart';
 import 'json_field.dart';
-import 'payment_summary.dart';
 
 class BookingSource extends BookingDetails {
 	List<BookingCabin> cabins;

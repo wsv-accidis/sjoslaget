@@ -27,10 +27,10 @@ class PaxComponent implements OnInit {
 	final BookingValidator _bookingValidator;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
-	final _onNoOfPaxChange = StreamController<int>.broadcast();
+	final _onCountChange = StreamController<int>.broadcast();
 
 	@Output()
-	Stream get onNoOfPaxChange => _onNoOfPaxChange.stream;
+	Stream get onCountChange => _onCountChange.stream;
 
 	List<BookingPaxView> paxViews = <BookingPaxView>[];
 	List<CabinClass> cabinClasses;
@@ -71,7 +71,7 @@ class PaxComponent implements OnInit {
 	set pax(List<BookingPaxView> list) {
 		list.forEach(_addListeners);
 		paxViews = list;
-		_onNoOfPaxChange.add(count);
+		_onCountChange.add(count);
 	}
 
 	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
@@ -94,7 +94,7 @@ class PaxComponent implements OnInit {
 		final BookingPaxView view = BookingPaxView.createEmpty();
 		_addListeners(view);
 		paxViews.add(view);
-		_onNoOfPaxChange.add(count);
+		_onCountChange.add(count);
 	}
 
 	String cabinClassToString(CabinClass c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
@@ -118,7 +118,7 @@ class PaxComponent implements OnInit {
 
 	void deletePax(int idx) {
 		paxViews.removeAt(idx);
-		_onNoOfPaxChange.add(count);
+		_onCountChange.add(count);
 	}
 
 	String genderToString(String g) {

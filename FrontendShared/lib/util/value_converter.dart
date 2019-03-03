@@ -1,3 +1,5 @@
+import 'package:decimal/decimal.dart';
+
 abstract class ValueConverter {
 	static DateTime parseDateTime(String value) {
 		if (null == value || value.isEmpty)
@@ -7,7 +9,24 @@ abstract class ValueConverter {
 		if (value.contains(RegExp(r"\.[0-9]{7}$")))
 			value = value.substring(0, value.length - 1);
 
-		return DateTime.parse(value);
+		try {
+			return DateTime.parse(value);
+		} catch (e) {
+			print('Exception parsing datetime: ${e.toString()}');
+			return null;
+		}
+	}
+
+	static Decimal parseDecimal(String value) {
+		if (null == value || value.isEmpty)
+			return null;
+
+		try {
+			return Decimal.parse(value.replaceAll(',', '.'));
+		} catch (e) {
+			print('Exception parsing decimal: ${e.toString()}');
+			return null;
+		}
 	}
 
 	static int toInt(dynamic id) {

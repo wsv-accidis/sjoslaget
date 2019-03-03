@@ -126,7 +126,8 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				var result = await db.QueryAsync<BookingListItem>(
 					"select [Id], [Reference], [FirstName], [LastName], [TeamName], [TotalPrice], [QueueNo], [Updated], " +
-					"(select COUNT(*) from [BookingPax] where [BookingId] = [Booking].[Id]) as NumberOfPax " +
+					"(select COUNT(*) from [BookingPax] where [BookingId] = [Booking].[Id]) NumberOfPax, " +
+					"(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = [Booking].[Id] group by [BookingId]) AmountPaid " +
 					"from [Booking] where [EventId] = @EventId",
 					new {EventId = evnt.Id});
 				return result.ToArray();
@@ -150,6 +151,17 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("update [Booking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new {Id = booking.Id});
+		}
+
+		public async Task UpdateDiscountAsync(Booking booking)
+		{
+			using(var db = DbUtil.Open())
+			{
+				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
+
+				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [TotalPrice] = @TotalPrice where [Id] = @Id",
+					new {Id = booking.Id, Discount = booking.Discount, TotalPrice = totalPrice});
+			}
 		}
 
 		public async Task<BookingResult> UpdateAsync(Event evnt, BookingSource source, bool allowUpdateDetails = false)
@@ -176,9 +188,7 @@ namespace Accidis.Gotland.WebService.Services
 
 				await DeletePax(db, booking);
 				await CreatePax(db, booking, source.Pax);
-
-				// TODO Calculate totalPrice
-				const decimal totalPrice = 0.0m;
+				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
 
 				if(allowUpdateDetails)
 				{
@@ -275,6 +285,28 @@ namespace Accidis.Gotland.WebService.Services
 		async Task DeletePax(SqlConnection db, Booking booking)
 		{
 			await db.ExecuteAsync("delete from [BookingPax] where [BookingId] = @BookingId", new {BookingId = booking.Id});
+		}
+
+		async Task<decimal> GetTotalPriceForBooking(SqlConnection db, Guid bookingId, int discount)
+		{
+			if(discount >= 100)
+				return 0m;
+
+			var totalPrice = await db.ExecuteScalarAsync<decimal>(
+				"select SUM(BA.[NumberOfPax] * CC.[PricePerPax]) " +
+				"from [BookingAllocation] BA " +
+				"left join [EventCabinClassDetail] D on D.[Id] = BA.[CabinId] " +
+				"left join [EventCabinClass] CC on CC.[No] = D.[No] " +
+				"where BA.[BookingId] = @BookingId", new {BookingId = bookingId});
+
+			// Discount (only applies to price of cabins)
+			if(discount > 0)
+			{
+				decimal discountPrice = totalPrice * (discount / 100m);
+				totalPrice -= discountPrice;
+			}
+
+			return totalPrice;
 		}
 
 		sealed class QueueStatsRow

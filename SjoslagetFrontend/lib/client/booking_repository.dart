@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:angular/angular.dart';
-import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:frontend_shared/model.dart';
 import 'package:http/http.dart';
@@ -16,7 +15,6 @@ import '../model/booking_pax_item.dart';
 import '../model/booking_product.dart';
 import '../model/booking_source.dart';
 import '../model/json_field.dart';
-import '../model/payment_summary.dart';
 import 'availability_exception.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show SJOSLAGET_API_ROOT;
@@ -108,35 +106,6 @@ class BookingRepository {
 		HttpStatus.throwIfNotSuccessful(response);
 		final Map<String, dynamic> body = json.decode(response.body);
 		return body[IS_LOCKED];
-	}
-
-	Future<PaymentSummary> registerPayment(Client client, String reference, Decimal amount) async {
-		final headers = ClientUtil.createJsonHeaders();
-		final source = json.encode({AMOUNT: amount.toDouble()});
-
-		Response response;
-		try {
-			response = await client.post('$_apiRoot/bookings/pay/$reference', headers: headers, body: source);
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
-
-		HttpStatus.throwIfNotSuccessful(response);
-		return PaymentSummary.fromJson(response.body);
-	}
-
-	Future<Null> updateDiscount(Client client, String reference, int amount) async {
-		final headers = ClientUtil.createJsonHeaders();
-		final source = json.encode({AMOUNT: amount});
-
-		Response response;
-		try {
-			response = await client.post('$_apiRoot/bookings/discount/$reference', headers: headers, body: source);
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
-
-		HttpStatus.throwIfNotSuccessful(response);
 	}
 
 	Future<BookingResult> saveOrUpdateBooking(Client client, BookingDetails details, List<BookingCabin> cabins, List<BookingProduct> products) async {

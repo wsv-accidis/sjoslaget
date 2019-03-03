@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Db;
+using Accidis.WebServices.Models;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services

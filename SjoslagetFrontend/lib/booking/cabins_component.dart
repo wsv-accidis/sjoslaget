@@ -128,7 +128,7 @@ class CabinsComponent implements OnInit {
 	bool hasAvailability(String id) => getAvailability(id) > 0;
 
 	@override
-	Future<Null> ngOnInit() async {
+	Future<void> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
@@ -145,7 +145,7 @@ class CabinsComponent implements OnInit {
 			b.isSaved = true;
 	}
 
-	Future<Null> refreshAvailability() async {
+	Future<void> refreshAvailability() async {
 		try {
 			final client = _clientFactory.getClient();
 			_availability = await _cruiseRepository.getCabinsAvailability(client);

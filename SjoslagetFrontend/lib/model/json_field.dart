@@ -1,7 +1,6 @@
 export 'package:frontend_shared/model/json_field.dart';
 
 const String AGE_DISTRIBUTION = 'AgeDistribution';
-const String AMOUNT = 'Amount';
 const String AMOUNT_PAID = 'AmountPaid';
 const String BOOKINGS_BY_PAYMENT = 'BookingsByPayment';
 const String BOOKINGS_CREATED = 'BookingsCreated';
@@ -28,7 +27,6 @@ const String IS_LOCKED = 'IsLocked';
 const String KEY = 'Key';
 const String LABELS = 'Labels';
 const String LASTNAME = 'LastName';
-const String LATEST = 'Latest';
 const String LUNCH = 'Lunch';
 const String NAME = 'Name';
 const String NATIONALITY = 'Nationality';
@@ -45,7 +43,6 @@ const String PRODUCT_TYPE_ID = 'TypeId';
 const String QUANTITY = 'Quantity';
 const String TOP_CONTACTS = 'TopContacts';
 const String TOP_GROUPS = 'TopGroups';
-const String TOTAL = 'Total';
 const String TOTAL_PRICE = 'TotalPrice';
 const String TYPE_ID = 'TypeId';
 const String UPDATED = 'Updated';

@@ -6,8 +6,8 @@ import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
-import '../model/cabin_class_detail.dart';
 import '../model/cabin_class.dart';
+import '../model/cabin_class_detail.dart';
 import '../model/claimed_capacity.dart';
 import '../model/event.dart';
 import '../model/json_field.dart';

@@ -26,7 +26,7 @@
 
 <form #bookingForm="ngForm">
 	<pax-component #pax
-				   (onNoOfPaxChange)="noOfPax = $event">
+				   (onCountChange)="noOfPax = $event">
 	</pax-component>
 
 	<div *ngIf="!isLoading && !isSaving">
@@ -134,14 +134,21 @@
 	</div>
 </form>
 
-<h2>Tilldelning</h2>
+<h2>
+	Tilldelning
+</h2>
 
 <div *ngIf="!isLoading" class="allocation">
 	<p>
-		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen. Glöm inte att spara efteråt.
+		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen.
+		När tilldelningen är klar är det lämpligt att skicka en bekräftelse så att kontaktpersonen ser sina boenden och pris.
 	</p>
 
-	<allocation-component #allocation></allocation-component>
+	<allocation-component #allocation
+						  (onAllocationChange)="payment.price = allocation.price"
+						  [bookingRef]="booking.reference"
+						  [count]="noOfPax">
+	</allocation-component>
 </div>
 
 <modal-dialog #deleteBookingDialog
@@ -149,3 +156,22 @@
 			  title="Radera bokning"
 			  message="Är du säker? Bokningen raderas permanent. Det här går inte att ångra.">
 </modal-dialog>
+
+<h2>
+	Betalningar
+</h2>
+
+<div *ngIf="!isLoading" class="payments">
+	<p>
+		Här registrerar du inkomna betalningar för den här bokningen. Korrigeringar och återbetalningar kan göras genom att
+		ange negativa belopp.
+	</p>
+
+	<payment-component #payment
+					   [bookingDiscount]="booking.discount"
+					   [bookingRef]="booking.reference"
+					   [bookingPayment]="booking.payment"
+					   (onDiscountUpdated)="booking.discount = $event"
+					   (onPaymentUpdated)="booking.payment = $event">
+	</payment-component>
+</div>

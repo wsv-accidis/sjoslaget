@@ -12,8 +12,8 @@ class BookingListItem extends BookingPaymentModel {
 	final int queueNo;
 	final DateTime updated;
 
-	BookingListItem(this.reference, this.teamName, this.firstName, this.lastName, Decimal totalPrice, this.numberOfPax, this.queueNo, this.updated)
-		: super(totalPrice, Decimal.fromInt(0)); // TODO
+	BookingListItem(this.reference, this.teamName, this.firstName, this.lastName, Decimal totalPrice, Decimal amountPaid, this.numberOfPax, this.queueNo, this.updated)
+		: super(totalPrice, amountPaid);
 
 	factory BookingListItem.fromMap(Map<String, dynamic> json) =>
 		BookingListItem(
@@ -22,6 +22,7 @@ class BookingListItem extends BookingPaymentModel {
 			json[FIRSTNAME],
 			json[LASTNAME],
 			Decimal.parse(json[TOTAL_PRICE].toString()),
+			Decimal.parse(json[AMOUNT_PAID].toString()),
 			json[NUMBER_OF_PAX],
 			json[QUEUE_NO],
 			DateTime.parse(json[UPDATED])

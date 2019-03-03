@@ -5,7 +5,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
-import 'package:frontend_shared/model.dart' show BookingResult;
+import 'package:frontend_shared/model.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
@@ -16,11 +16,11 @@ import '../booking/products_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
+import '../client/payment_repository.dart';
 import '../client/user_repository.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_source.dart';
 import '../model/cruise_cabin.dart';
-import '../model/payment_summary.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -37,6 +37,7 @@ class AdminBookingPage implements OnActivate {
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 	final CruiseRepository _cruiseRepository;
+	final PaymentRepository _paymentRepository;
 	final Router _router;
 	final UserRepository _userRepository;
 
@@ -60,15 +61,13 @@ class AdminBookingPage implements OnActivate {
 	String paymentError;
 	String resetPinCodeError;
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._router, this._userRepository);
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._paymentRepository, this._router, this._userRepository);
 
 	bool get canDelete => !isSaving;
 
 	bool get canLock => null != booking && !booking.isLocked;
 
 	bool get canUnlock => null != booking && booking.isLocked;
-
-	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
 
 	bool get canSave => !cabins.isEmpty && cabins.isValid && products.isValid && !isSaving;
 
@@ -81,6 +80,8 @@ class AdminBookingPage implements OnActivate {
 	bool get hasResetPinCode => isNotEmpty(newPinCode);
 
 	bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
+
+	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
 
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
@@ -154,18 +155,15 @@ class AdminBookingPage implements OnActivate {
 		paymentError = null;
 
 		try {
-			Decimal paymentDec;
-			try {
-				paymentDec = Decimal.parse(payment.replaceAll(',', '.'));
-			} catch (e) {
-				print('Exception parsing payment amount: ${e.toString()}');
+			final Decimal paymentDec = ValueConverter.parseDecimal(payment);
+			if (null == paymentDec) {
 				paymentError = 'Felaktigt belopp. Kontrollera att fältet bara innehåller siffror, eventuellt minustecken och decimalpunkt.';
 				return;
 			}
 
 			try {
 				final client = _clientFactory.getClient();
-				final PaymentSummary result = await _bookingRepository.registerPayment(client, booking.reference, paymentDec);
+				final PaymentSummary result = await _paymentRepository.registerPayment(client, booking.reference, paymentDec);
 
 				cabins.amountPaid = result.total;
 				booking.payment = result;
@@ -247,7 +245,7 @@ class AdminBookingPage implements OnActivate {
 		try {
 			int discountInt;
 			try {
-				discountInt = int.parse(discount.replaceAll(',', '.').replaceAll('%', ''));
+				discountInt = int.parse(discount.replaceAll('%', ''));
 			} catch (e) {
 				print('Exception parsing discount amount: ${e.toString()}');
 				paymentError = 'Felaktig rabatt. Kontrollera att fältet bara innehåller siffror.';
@@ -256,7 +254,7 @@ class AdminBookingPage implements OnActivate {
 
 			try {
 				final client = _clientFactory.getClient();
-				await _bookingRepository.updateDiscount(client, booking.reference, discountInt);
+				await _paymentRepository.updateDiscount(client, booking.reference, discountInt);
 
 				cabins.discountPercent = discountInt;
 				booking.discount = discountInt;

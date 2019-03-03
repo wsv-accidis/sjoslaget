@@ -6,6 +6,7 @@ import '../client/allocation_repository.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
+import '../client/payment_repository.dart';
 import '../client/queue_admin_repository.dart';
 import '../client/user_repository.dart';
 import 'admin_booking_list_page.template.dart';
@@ -26,6 +27,7 @@ import 'admin_user_page.template.dart';
 		BookingValidator,
 		ClientFactory,
 		EventRepository,
+		PaymentRepository,
 		QueueAdminRepository,
 		UserRepository
 	],

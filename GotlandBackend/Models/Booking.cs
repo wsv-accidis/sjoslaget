@@ -13,6 +13,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
 		public string SpecialRequest { get; set; }
+		public int Discount { get; set; }
 		public decimal TotalPrice { get; set; }
 		public Guid? CandidateId { get; set; }
 		public int QueueNo { get; set; }

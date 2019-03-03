@@ -182,13 +182,10 @@
     <Compile Include="Models\BookingPax.cs" />
     <Compile Include="Models\BookingSource.cs" />
     <Compile Include="Models\CabinType.cs" />
-    <Compile Include="Models\PaymentSource.cs" />
     <Compile Include="Models\Cruise.cs" />
     <Compile Include="Models\CruiseCabinAvailability.cs" />
     <Compile Include="Models\CruiseCabinWithType.cs" />
     <Compile Include="Models\CruiseCabinSource.cs" />
-    <Compile Include="Models\Payment.cs" />
-    <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\ProductCount.cs" />
     <Compile Include="Models\ProductType.cs" />
     <Compile Include="Models\Report.cs" />

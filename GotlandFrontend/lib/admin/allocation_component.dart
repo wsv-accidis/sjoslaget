@@ -24,6 +24,19 @@ class AllocationComponent {
 	final AllocationRepository _allocationRepository;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
+	final _onAllocationChange = StreamController<void>.broadcast();
+
+	@Input()
+	String bookingRef;
+
+	@Input()
+	set count(int value) {
+		_noOfPaxInBooking = value;
+		validate();
+	}
+
+	@Output()
+	Stream get onAllocationChange => _onAllocationChange.stream;
 
 	List<CabinClass> _cabinClasses;
 	int _noOfPaxInBooking;
@@ -31,7 +44,6 @@ class AllocationComponent {
 	AllocationComponent(this._allocationRepository, this._clientFactory, this._eventRepository);
 
 	List<BookingAllocationView> allocations = <BookingAllocationView>[];
-	String bookingRef;
 	SingleSelectionModel<CabinClassDetail> cabinClassDetails = SelectionModel<CabinClassDetail>.single();
 	SelectionOptions<CabinClassDetail> cabinClassDetailsOptions;
 	bool isSaving = false;
@@ -73,11 +85,13 @@ class AllocationComponent {
 		allocations.add(allocation);
 		_clear();
 		validate();
+		_notifyChanged();
 	}
 
 	void delete(int idx) {
 		allocations.removeAt(idx);
 		validate();
+		_notifyChanged();
 	}
 
 	Future<void> load() async {
@@ -100,6 +114,7 @@ class AllocationComponent {
 
 		cabinClassDetails.selectionChanges.listen(_onSelectionChanged);
 		validate();
+		_notifyChanged();
 	}
 
 	Future<void> save() async {
@@ -135,6 +150,10 @@ class AllocationComponent {
 		cabinClassDetails.clear();
 		noOfPax = '';
 		note = '';
+	}
+
+	void _notifyChanged() {
+		_onAllocationChange.add(null);
 	}
 
 	void _onSelectionChanged(dynamic ignored) {

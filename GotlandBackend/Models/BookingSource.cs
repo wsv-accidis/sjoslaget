@@ -14,10 +14,12 @@ namespace Accidis.Gotland.WebService.Models
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
 		public string SpecialRequest { get; set; }
+		public int Discount { get; set; }
 		public DateTime? ConfirmationSent { get; set; }
 		public List<PaxSource> Pax { get; set; }
+		public PaymentSummary Payment { get; set; }
 
-		public static BookingSource FromBooking(Booking booking, BookingPax[] pax)
+		public static BookingSource FromBooking(Booking booking, BookingPax[] pax, PaymentSummary payment)
 		{
 			return new BookingSource
 			{
@@ -28,6 +30,7 @@ namespace Accidis.Gotland.WebService.Models
 				PhoneNo = booking.PhoneNo,
 				TeamName = booking.TeamName,
 				SpecialRequest = booking.SpecialRequest,
+				Discount = booking.Discount,
 				ConfirmationSent = booking.ConfirmationSent, 
 				Pax = pax.Select(p => new PaxSource
 				{
@@ -39,7 +42,8 @@ namespace Accidis.Gotland.WebService.Models
 					CabinClassPreferred = p.CabinClassPreferred,
 					CabinClassMax = p.CabinClassMax,
 					SpecialRequest = p.SpecialRequest
-				}).ToList()
+				}).ToList(),
+				Payment = payment
 			};
 		}
 

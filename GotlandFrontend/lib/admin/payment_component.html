@@ -1,0 +1,58 @@
+<p *ngIf="!hasPayment">
+	Bokningens totala pris är <span>{{ priceWithDiscountFormatted }}</span>.
+</p>
+
+<p *ngIf="hasPayment">
+	Bokningens pris är <span>{{ priceWithDiscountFormatted }}</span> och totalt <span>{{ amountPaidFormatted }}</span> har betalats in.
+	Det återstår att betala <span>{{ priceRemainingFormatted }}</span>. Den senaste betalningen registrerades <span>{{ latestPaymentFormatted }}</span>.
+</p>
+
+<form #paymentForm="ngForm">
+	Betalning
+
+	<material-input [(ngModel)]="payment"
+					ngControl="payment"
+					class="payment-field"
+					floatingLabel
+					label="Belopp"
+					required
+					requiredErrorMsg="Ange belopp."
+					pattern="[0-9\-,\.]+">
+	</material-input>
+
+	kr
+
+	<material-button class="control-blue payment-button"
+					 [disabled]="!paymentForm.valid || isSaving"
+					 raised
+					 (trigger)="registerPayment()">
+		Registrera betalning
+	</material-button>
+
+	<span>
+		Rabatt
+	</span>
+
+	<material-input [(ngModel)]="discount"
+					ngControl="discount"
+					class="payment-field"
+					floatingLabel
+					label="Rabatt"
+					required
+					requiredErrorMsg="Ange procentsats."
+					pattern="[0-9%]+">
+	</material-input>
+
+	%
+
+	<material-button class="control-blue payment-button"
+					 [disabled]="!paymentForm.valid || isSaving"
+					 raised
+					 (trigger)="updateDiscount()">
+		Uppdatera rabatt
+	</material-button>
+
+	<p class="super-important" *ngIf="hasPaymentError">
+		{{ paymentError }}
+	</p>
+</form>

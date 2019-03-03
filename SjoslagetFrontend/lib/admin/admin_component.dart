@@ -6,6 +6,7 @@ import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../client/deleted_booking_repository.dart';
+import '../client/payment_repository.dart';
 import '../client/printer_repository.dart';
 import '../client/user_repository.dart';
 import 'admin_booking_list_page.template.dart';
@@ -29,6 +30,7 @@ import 'admin_user_page.template.dart';
 		ClientFactory,
 		CruiseRepository,
 		DeletedBookingRepository,
+		PaymentRepository,
 		PrinterRepository,
 		UserRepository
 	],

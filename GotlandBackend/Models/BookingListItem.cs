@@ -10,10 +10,8 @@ namespace Accidis.Gotland.WebService.Models
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public decimal TotalPrice { get; set; }
+		public decimal AmountPaid { get; set; }
 		public int NumberOfPax { get; set; }
 		public int QueueNo { get; set; }
-		public DateTime Updated { get; set; }
-
-		// TODO: AmountPaid, HasCabins
-	}
+		public DateTime Updated { get; set; }	}
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.Test.Db;
-using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
+using Accidis.WebServices.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Sjoslaget.Test.Services

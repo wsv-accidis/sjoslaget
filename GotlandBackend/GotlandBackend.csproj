@@ -182,6 +182,7 @@
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventRepository.cs" />
     <Compile Include="Services\IntervalCalculator.cs" />
+    <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

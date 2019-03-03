@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Accidis.Sjoslaget.WebService.Models;
+using Accidis.Gotland.WebService.Models;
 using Accidis.WebServices.Models;
 using Accidis.WebServices.Services;
 
-namespace Accidis.Sjoslaget.WebService.Services
+namespace Accidis.Gotland.WebService.Services
 {
 	public sealed class PaymentRepository : AecPaymentRepository
 	{

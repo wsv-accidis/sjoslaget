@@ -1,0 +1,17 @@
+.payment-button {
+	margin-left: 20px;
+}
+
+.payment-field {
+	margin-left: 20px;
+	margin-right: 20px;
+	width: 60px;
+}
+
+form span {
+	margin-left: 50px;
+}
+
+p span {
+	font-weight: bold;
+}
