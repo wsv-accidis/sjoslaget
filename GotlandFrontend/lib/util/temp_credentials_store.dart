@@ -16,7 +16,7 @@ class TempCredentialsStore {
 	}
 
 	BookingResult load() {
-		BookingResult bookingResult = null;
+		BookingResult bookingResult;
 		if (_storage.containsKey(REFERENCE_KEY) && _storage.containsKey(PIN_KEY)) {
 			bookingResult = BookingResult(_storage[REFERENCE_KEY], _storage[PIN_KEY]);
 		}

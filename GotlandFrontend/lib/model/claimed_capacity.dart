@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'json_field.dart';
 
 class ClaimedCapacity {

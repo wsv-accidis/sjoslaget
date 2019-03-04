@@ -20,7 +20,7 @@ class PricingPage implements OnInit {
 
 	PricingPage(this._clientFactory, this._eventRepository);
 
-	Future<Null> doInit() async {
+	Future<void> doInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cabins = await _eventRepository.getActiveCabinClasses(client);
