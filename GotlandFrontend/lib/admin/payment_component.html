@@ -1,10 +1,20 @@
-<p *ngIf="!hasPayment">
+<p *ngIf="!hasPayment && !hasDiscount">
 	Bokningens totala pris är <span>{{ priceWithDiscountFormatted }}</span>.
 </p>
 
-<p *ngIf="hasPayment">
+<p *ngIf="!hasPayment && hasDiscount">
+	Bokningens totala pris är <span>{{ priceWithDiscountFormatted }}</span>. <span>{{ discountPercent }}%</span> rabatt (<span>{{ discountValueFormatted }}</span>) är tillämpad.
+</p>
+
+<p *ngIf="hasPayment && !hasDiscount">
 	Bokningens pris är <span>{{ priceWithDiscountFormatted }}</span> och totalt <span>{{ amountPaidFormatted }}</span> har betalats in.
 	Det återstår att betala <span>{{ priceRemainingFormatted }}</span>. Den senaste betalningen registrerades <span>{{ latestPaymentFormatted }}</span>.
+</p>
+
+<p *ngIf="hasPayment && hasDiscount">
+	Bokningens pris är <span>{{ priceWithDiscountFormatted }}</span>, <span>{{ discountPercent }}%</span> rabatt (<span>{{ discountValueFormatted }}</span>) är tillämpad.
+	Totalt <span>{{ amountPaidFormatted }}</span> har betalats in. Det återstår att betala <span>{{ priceRemainingFormatted }}</span>.
+	Den senaste betalningen registrerades <span>{{ latestPaymentFormatted }}</span>.
 </p>
 
 <form #paymentForm="ngForm">
