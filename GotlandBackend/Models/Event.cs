@@ -5,7 +5,7 @@ namespace Accidis.Gotland.WebService.Models
 	public sealed class Event
 	{
 		// Event will not display as open until 
-		const int BeforeOpeningCountdownDays = 3;
+		const int BeforeOpeningCountdownDays = 7;
 
 		public Guid Id { get; set; }
 		public string Name { get; set; }
