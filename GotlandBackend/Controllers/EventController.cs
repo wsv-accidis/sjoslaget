@@ -28,7 +28,8 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				// Don't cache for too long so client doesn't get confused about event opening
+				// TODO Temporary so we can test before opening date is revealed
+				evnt.Opening = null;
 				return this.OkCacheControl(evnt, WebConfig.DynamicDataMaxAge);
 			}
 			catch(Exception ex)
