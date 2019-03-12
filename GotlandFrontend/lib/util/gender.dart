@@ -4,8 +4,9 @@ class Gender {
 	static const String GENDER_FEMALE = 'f';
 	static const String GENDER_MALE = 'm';
 	static const String GENDER_OTHER = 'x';
+	static const String GENDER_NONE = '-';
 
-	static SelectionOptions<String> getOptions() => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER]);
+	static SelectionOptions<String> getOptions() => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER, GENDER_NONE]);
 
 	static String asString(String g) {
 		switch (g) {
@@ -13,8 +14,10 @@ class Gender {
 				return 'Kvinna';
 			case GENDER_MALE:
 				return 'Man';
-			default:
+			case GENDER_OTHER:
 				return 'Annat';
+			case GENDER_NONE:
+				return 'Vill ej uppge';
 		}
 	}
 }

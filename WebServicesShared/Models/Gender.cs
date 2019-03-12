@@ -7,10 +7,12 @@ namespace Accidis.WebServices.Models
 		const string FemaleValue = "f";
 		const string MaleValue = "m";
 		const string OtherValue = "x";
+		const string NoneValue = "-";
 
 		public static readonly Gender Female = new Gender(FemaleValue);
 		public static readonly Gender Male = new Gender(MaleValue);
 		public static readonly Gender Other = new Gender(OtherValue);
+		public static readonly Gender None = new Gender(NoneValue);
 		readonly string _value;
 
 		Gender(string value)
@@ -37,6 +39,8 @@ namespace Accidis.WebServices.Models
 					return Female;
 				case OtherValue:
 					return Other;
+				case NoneValue:
+					return None;
 				default:
 					throw new ArgumentException("String does not describe a gender.", nameof(s));
 			}
