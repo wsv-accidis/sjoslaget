@@ -17,7 +17,7 @@
 	Den senaste betalningen registrerades <span>{{ latestPaymentFormatted }}</span>.
 </p>
 
-<form #paymentForm="ngForm">
+<form #paymentForm="ngForm" *ngIf="!readOnly">
 	Betalning
 
 	<material-input [(ngModel)]="payment"

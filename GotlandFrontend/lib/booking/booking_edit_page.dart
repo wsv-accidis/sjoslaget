@@ -5,13 +5,18 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/model/booking_result.dart';
+import 'package:http/http.dart' show Client;
 import 'package:quiver/strings.dart' show isNotEmpty;
 
-import '../booking/pax_component.dart';
+import '../admin/pax_component.dart';
+import '../admin/payment_component.dart';
+import '../client/allocation_repository.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
+import '../content/about_routes.dart';
 import '../content/content_routes.dart';
+import '../model/booking_allocation_view.dart';
 import '../model/booking_pax_view.dart';
 import '../model/booking_queue_stats.dart';
 import '../model/booking_source.dart';
@@ -25,10 +30,12 @@ import '../widgets/spinner_widget.dart';
 	selector: 'booking-page',
 	styleUrls: ['../content/content_styles.css', 'booking_edit_page.css'],
 	templateUrl: 'booking_edit_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, PaxComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders]
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, PaxComponent, PaymentComponent, SpinnerWidget],
+	providers: <dynamic>[materialProviders],
+	exports: [AboutRoutes, ContentRoutes]
 )
 class BookingEditPage implements OnInit {
+	final AllocationRepository _allocationRepository;
 	final BookingRepository _bookingRepository;
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
@@ -38,6 +45,7 @@ class BookingEditPage implements OnInit {
 	@ViewChild('pax')
 	PaxComponent pax;
 
+	List<BookingAllocationView> allocation;
 	BookingSource booking;
 	String bookingError;
 	List<CabinClass> cabinClasses;
@@ -51,6 +59,8 @@ class BookingEditPage implements OnInit {
 
 	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
 
+	bool get hasAllocation => null != allocation && allocation.isNotEmpty;
+
 	bool get hasCredentials => null != credentials;
 
 	bool get hasBookingError => isNotEmpty(bookingError);
@@ -63,7 +73,9 @@ class BookingEditPage implements OnInit {
 
 	bool get isNewBooking => isLoaded && pax.isEmpty && !isReadOnly;
 
-	BookingEditPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
+	int get price => hasAllocation ? allocation.fold(0, (sum, a) => sum + a.price) : 200;
+
+	BookingEditPage(this._allocationRepository, this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
 
 	@override
 	Future<void> ngOnInit() async {
@@ -81,6 +93,7 @@ class BookingEditPage implements OnInit {
 			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
 			booking = await _bookingRepository.getBooking(client, reference);
 			queueStats = await _bookingRepository.getQueueStats(client, reference);
+			allocation = await _loadAllocation(client, reference);
 		} catch (e) {
 			print('Failed to get booking due to an exception: ${e.toString()}');
 			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
@@ -134,6 +147,17 @@ class BookingEditPage implements OnInit {
 			}
 		} finally {
 			isSaving = false;
+		}
+	}
+
+	Future<List<BookingAllocationView>> _loadAllocation(Client client, String reference) async {
+		final alloc = await _allocationRepository.getAllocation(client, reference);
+
+		if (alloc.isNotEmpty) {
+			final details = await _eventRepository.getCabinClassDetails(client);
+			return BookingAllocationView.fromListOfBookingAllocation(alloc, cabinClasses, details);
+		} else {
+			return <BookingAllocationView>[];
 		}
 	}
 }

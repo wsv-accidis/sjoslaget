@@ -15,7 +15,7 @@ import '../widgets/components.dart';
 @Component(
 	selector: 'payment-component',
 	templateUrl: 'payment_component.html',
-	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'payment_component.css'],
+	styleUrls: ['../content/content_styles.css', 'payment_component.css'],
 	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, materialNumberInputDirectives]
 )
 class PaymentComponent {
@@ -25,13 +25,23 @@ class PaymentComponent {
 	final _onPaymentUpdated = StreamController<PaymentSummary>.broadcast();
 
 	@Input()
-	int bookingDiscount;
+	set bookingDiscount(int value) {
+		discount = value.toString();
+		discountPercent = value;
+		_calculatePayment();
+	}
 
 	@Input()
 	String bookingRef;
 
 	@Input()
 	PaymentSummary bookingPayment;
+
+	@Input()
+	int price = 0;
+
+	@Input()
+	bool readOnly = false;
 
 	@Output()
 	Stream<int> get onDiscountUpdated => _onDiscountUpdated.stream;
@@ -44,7 +54,6 @@ class PaymentComponent {
 	bool isSaving = false;
 	String payment;
 	String paymentError;
-	int price = 0;
 
 	PaymentComponent(this._clientFactory, this._paymentRepository);
 
@@ -80,15 +89,8 @@ class PaymentComponent {
 
 	String get priceWithDiscountFormatted => CurrencyFormatter.formatDecimalAsSEK(priceWithDiscount);
 
-	void load() {
-		discount = bookingDiscount.toString();
-		discountPercent = int.parse(discount);
-
-		_calculatePayment();
-	}
-
 	Future<void> registerPayment() async {
-		if (isSaving)
+		if (isSaving || readOnly)
 			return;
 
 		isSaving = true;
@@ -119,7 +121,7 @@ class PaymentComponent {
 	}
 
 	Future<void> updateDiscount() async {
-		if (isSaving)
+		if (isSaving || readOnly)
 			return;
 
 		isSaving = true;

@@ -8,7 +8,6 @@ import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 
-import '../booking/pax_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
@@ -19,6 +18,7 @@ import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 import 'allocation_component.dart';
+import 'pax_component.dart';
 import 'payment_component.dart';
 
 @Component(
@@ -124,7 +124,6 @@ class AdminBookingPage implements OnActivate {
 			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
 
 			await allocation.load();
-			payment.load();
 		} catch (e) {
 			print('Failed to load booking: ${e.toString()}');
 			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';

@@ -87,8 +87,8 @@ table.pax-readonly th {
 	color: #009900;
 }
 
-table.pax-readonly tr:nth-child(even) {
-	background-color: #EFFFEF;
+table.pax-readonly td {
+	border-top: 1px solid silver;
 }
 
 td.readonly-pax-header-cell {

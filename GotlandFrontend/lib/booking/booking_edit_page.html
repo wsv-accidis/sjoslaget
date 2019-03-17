@@ -18,8 +18,8 @@
 </p>
 
 <p *ngIf="isReadOnly">
-	Din bokning är nu låst för ändringar så att boenden ska kunna tilldelas på ett rättvist sätt. Om du behöver ändra något i sista
-	stund, kontakta oss så ska vi se vad vi kan göra.
+	Din bokning är nu låst för egna ändringar. Om du behöver ändra något, <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a> så ska vi se vad vi kan göra.
+	Du kan alltid ändra namn på deltagare men för ändringar som innebär skillnad i antal deltagare eller typ av boende finns vissa begränsningar.
 </p>
 
 <material-expansionpanel *ngIf="!isReadOnly"
@@ -28,9 +28,9 @@
 						 name="Instruktioner - så här fyller du i (läs först!)"
 						 [showSaveCancel]="false">
 	<p style="margin-top: 0;">
-		Fyll i <strong>Förnamn</strong>, <strong>Efternamn</strong> och <strong>Födelsedatum</strong> på alla lagmedlemmar. Du kan ta bort och lägga till rader
-		för att anpassa antalet personer i laget, största möjliga lag är 20 personer. Tomma rader tas bort automatiskt. Det är inte tillåtet att lägga till
-		fiktiva personer, placeholders och liknande, dessa tas bort i samband med att stugor tilldelas.
+		Fyll i <strong>Förnamn</strong>, <strong>Efternamn</strong>, <strong>Kön</strong> och <strong>Födelsedatum</strong> på alla lagmedlemmar. Du kan ta bort och
+		lägga till rader för att anpassa antalet personer i laget, största möjliga lag är 20 personer. Tomma rader tas bort automatiskt. Det är inte tillåtet att
+		lägga till fiktiva personer, placeholders och liknande, dessa tas bort i samband med att stugor tilldelas.
 	</p>
 
 	<p>
@@ -46,12 +46,12 @@
 
 	<p>
 		När tilldelningen av stugor har börjat kan du inte längre göra ändringar i bokningen själv utan måste då kontakta oss för alla ändringar. Detta sker
-		förmodligen en eller ett par timmar efter att bokningen har öppnat, eftersom Absolut Gotland brukar bli fullbokat snabbt. Håll utkik efter
-		uppdaterad information i vårt Facebook-event. <strong>Spara din bokning</strong> ofta under tiden du fyller i.
+		några timmar efter att bokningen har öppnat, eftersom Absolut Gotland brukar bli fullbokat snabbt. Håll utkik efter uppdaterad information i vårt Facebook-event.
+		<strong>Spara din bokning</strong> ofta under tiden du fyller i.
 	</p>
 
 	<p>
-		<strong>Skriv upp</strong> den bokningsreferens och PIN-kod som visas ovan, du behöver den när du ska checka in på Kneippbyn.
+		<strong>Spara</strong> din bokningsreferens och PIN-kod, du behöver dem senare.
 	</p>
 </material-expansionpanel>
 
@@ -62,7 +62,9 @@
 </p>
 
 <form #bookingForm="ngForm">
-	<pax-component #pax></pax-component>
+	<pax-component #pax
+				   [hidePricing]="hasAllocation">
+	</pax-component>
 
 	<div class="spinner-widget" *ngIf="(!isLoaded && !hasLoadingError) || isSaving">
 		<spinner-widget></spinner-widget>
@@ -119,7 +121,7 @@
 			</tr>
 			<tr>
 				<th>
-					Kontaktperson
+					Lagledare
 				</th>
 				<td>
 					{{ booking.firstName }} {{ booking.lastName }}
@@ -130,7 +132,7 @@
 					Särskilda önskemål
 				</th>
 				<td *ngIf="isReadOnly">
-					{{ booking.specialRequest }}
+					{{ booking.specialRequest.isNotEmpty ? booking.specialRequest : '-' }}
 				</td>
 				<td *ngIf="!isReadOnly">
 					<material-input [(ngModel)]="booking.specialRequest"
@@ -144,3 +146,61 @@
 		</table>
 	</div>
 </form>
+
+<div *ngIf="hasAllocation" class="allocation">
+	<h2>
+		Tilldelade boenden
+	</h2>
+
+	<p>
+		Grattis, ditt lag har fått plats på AG! Kom ihåg att bokningen måste betalas inom en viss tid. Se <a [routerLink]="AboutRoutes.booking.toUrl()">denna sida för
+		betalningsinformation</a> och <a [routerLink]="ContentRoutes.pricing.toUrl()">denna sida för information om boendena.</a>
+	</p>
+
+	<table cellpadding="0" cellspacing="0" border="0">
+		<thead>
+		<th class="no-cell">
+			Nivå
+		</th>
+		<th class="title-cell">
+			Boende
+		</th>
+		<th class="capacity-cell">
+			Bäddar
+		</th>
+		<th>
+			Notering
+		</th>
+		</thead>
+		<tbody>
+		<tr *ngFor="let alloc of allocation">
+			<td>
+				{{ alloc.no }}
+			</td>
+			<td>
+				{{ alloc.title }}
+			</td>
+			<td>
+				{{ alloc.noOfPax }}
+			</td>
+			<td>
+				{{ alloc.note }}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<div *ngIf="hasAllocation">
+	<h2>
+		Betalning
+	</h2>
+
+	<payment-component #payment
+					   [bookingDiscount]="booking.discount"
+					   [bookingRef]="booking.reference"
+					   [bookingPayment]="booking.payment"
+					   [price]="price"
+					   [readOnly]="true">
+	</payment-component>
+</div>

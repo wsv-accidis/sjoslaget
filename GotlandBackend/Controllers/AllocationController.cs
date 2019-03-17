@@ -21,12 +21,15 @@ namespace Accidis.Gotland.WebService.Controllers
 			_bookingRepository = bookingRepository;
 		}
 
-		[Authorize(Roles = Roles.Admin)]
+		[Authorize]
 		[HttpGet]
 		public async Task<IHttpActionResult> Get(string reference)
 		{
 			try
 			{
+				if(BookingsController.IsUnauthorized(reference))
+					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
+
 				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
 				return Ok(await _allocationRepository.GetByBookingAsync(booking));
 			}

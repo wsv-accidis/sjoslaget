@@ -113,7 +113,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				if(IsAuthorized(reference))
+				if(IsUnauthorized(reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
 
 				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
@@ -211,7 +211,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				if(IsAuthorized(reference))
+				if(IsUnauthorized(reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
 
 				BookingQueueStats bookingQueueStats = await _bookingRepository.GetQueueStatsByReferenceAsync(reference, evnt.Opening);
@@ -237,7 +237,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				if(IsAuthorized(bookingSource.Reference))
+				if(IsUnauthorized(bookingSource.Reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
 				if(!AuthContext.IsAdmin && evnt.IsLocked)
 					return BadRequest("The event has been locked and the booking can no longer be edited.");
@@ -258,7 +258,7 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
-		static bool IsAuthorized(string reference)
+		internal static bool IsUnauthorized(string reference)
 		{
 			return !AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase);
 		}

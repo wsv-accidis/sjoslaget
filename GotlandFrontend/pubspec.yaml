@@ -10,15 +10,8 @@ dependencies:
   angular_components: ^0.9.2
   angular_forms: ^2.0.0
   angular_router: ^2.0.0-alpha
-  #chartjs:
-  #  git:
-  #    url: https://github.com/google/chartjs.dart.git
-  #decimal:
   frontend_shared:
     path: ../FrontendShared
-  #oauth2:
-  #  git:
-  #    url: https://github.com/wsv-accidis/oauth2.git
   quiver: '>=0.24.0 <0.30.0'
 
 dev_dependencies:

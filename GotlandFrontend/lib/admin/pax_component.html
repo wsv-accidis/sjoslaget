@@ -149,7 +149,7 @@
 	</table>
 </div>
 
-<div *ngIf="hasPrice" class="booking-price">
+<div *ngIf="hasPrice && !hidePricing" class="booking-price">
 	Pris (önskat) <span>{{ pricePreferredFormatted }}</span><br />
 	Pris (min-max) <span>{{ priceMinFormatted }} - {{ priceMaxFormatted }}</span>
 </div>

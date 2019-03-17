@@ -24,6 +24,9 @@ class BookingAllocationView {
 		return BookingAllocationView(cabinClass, cabinClassDetail, alloc.noOfPax, alloc.note);
 	}
 
+	static List<BookingAllocationView> fromListOfBookingAllocation(List<BookingAllocation> alloc, List<CabinClass> classes, List<CabinClassDetail> details) =>
+		alloc.map((a) => BookingAllocationView.fromBookingAllocation(a, classes, details)).toList();
+
 	BookingAllocation toBookingAllocation() =>
 		BookingAllocation(cabinClassDetail.id, noOfPax, note);
 

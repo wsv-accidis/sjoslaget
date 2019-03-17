@@ -169,6 +169,10 @@ class CountdownPage implements OnInit, OnDestroy {
 		_cancelTimers();
 		_clearErrors();
 
+		if(waitingForServer) {
+			return;
+		}
+
 		waitingForServer = true;
 		try {
 			int retries = 0;

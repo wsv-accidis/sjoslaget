@@ -29,6 +29,9 @@ class PaxComponent implements OnInit {
 	final EventRepository _eventRepository;
 	final _onCountChange = StreamController<int>.broadcast();
 
+	@Input()
+	bool hidePricing = false;
+
 	@Output()
 	Stream get onCountChange => _onCountChange.stream;
 

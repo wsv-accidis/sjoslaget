@@ -106,7 +106,7 @@ class AllocationComponent {
 			cabinClassDetailsOptions = SelectionOptions<CabinClassDetail>.fromList(cabinClassDetails);
 
 			final allocation = await _allocationRepository.getAllocation(client, bookingRef);
-			allocations = allocation.map((a) => BookingAllocationView.fromBookingAllocation(a, _cabinClasses, cabinClassDetails)).toList();
+			allocations = BookingAllocationView.fromListOfBookingAllocation(allocation, _cabinClasses, cabinClassDetails);
 		} catch (e) {
 			print('Failed to load allocation: ${e.toString()}');
 			return;

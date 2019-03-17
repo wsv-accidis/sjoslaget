@@ -1,3 +1,23 @@
+.allocation table {
+	width: 850px;
+}
+
+.allocation table td {
+	border-top: 1px solid silver;
+}
+
+.allocation table th.no-cell {
+	width: 70px;
+}
+
+.allocation table th.title-cell {
+	width: 200px;
+}
+
+.allocation th.capacity-cell {
+	width: 160px;
+}
+
 span.credentials {
 	font-size: larger;
 	font-weight: bold;
@@ -20,12 +40,6 @@ p.loading-error {
 	width: 180px;
 }
 
-.booking-details table th, .booking-details table td {
-	padding-top: 4px;
-	padding-bottom: 4px;
-	vertical-align: top;
-}
-
 .booking-logout {
 	margin-top: 30px;
 }
@@ -33,6 +47,13 @@ p.loading-error {
 .special-request-field {
 	padding: 0;
 	width: 600px;
+}
+
+td, th {
+	padding-bottom: 4px;
+	padding-right: 8px;
+	padding-top: 4px;
+	vertical-align: top;
 }
 
 material-expansionpanel {
