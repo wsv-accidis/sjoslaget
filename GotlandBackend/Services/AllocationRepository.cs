@@ -26,6 +26,21 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
+		public async Task<AllocationListItem[]> GetListAsync(Event evnt)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<AllocationListItem>(
+					"select A.[CabinId], B.[Reference], B.[TeamName], A.[NumberOfPax], A.[Note], " +
+					"(select count(*) from [BookingPax] where [BookingId] = A.[BookingId]) [TotalPax] " +
+					"from [BookingAllocation] A " +
+					"left join [Booking] B on A.[BookingId] = B.[Id] " +
+					"where B.[EventId] = @EventId",
+					new {EventId = evnt.Id});
+				return result.ToArray();
+			}
+		}
+
 		public async Task UpdateAsync(Booking booking, List<BookingAllocation> allocation)
 		{
 			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};

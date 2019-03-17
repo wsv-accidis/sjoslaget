@@ -9,6 +9,9 @@
 	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
 	<span></span>
+	<material-icon icon="home"></material-icon>
+	<a [routerLink]="AdminRoutes.allocationList.toUrl()">Boenden</a>
+	<span></span>
 	<material-icon icon="arrow_back"></material-icon>
 	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 </div>
@@ -29,9 +32,14 @@
 					style="width: 250px">
 	</material-input>
 
-	<br/>Status
+	<material-checkbox [(ngModel)]="filterEmpty"
+					   style="margin-top: 0">
+		Visa tomma bokningar
+	</material-checkbox>
 
-	<material-radio-group [(ngModel)]="filterStatus">
+	<br/>Betalning
+
+	<material-radio-group [(ngModel)]="filterPayment">
 		<material-radio class="filter-radio" value="none" title="Alla">
 			Alla
 		</material-radio>
@@ -46,6 +54,26 @@
 		</material-radio>
 		<material-radio class="filter-radio" value="not-paid" title="Ej betald">
 			Ej betald
+		</material-radio>
+	</material-radio-group>
+
+	<br/>Boenden
+
+	<material-radio-group [(ngModel)]="filterAlloc">
+		<material-radio class="filter-radio" value="none" title="Alla">
+			Alla
+		</material-radio>
+		<material-radio class="filter-radio" value="fully-alloc" title="Tilldelade">
+			Tilldelade
+		</material-radio>
+		<material-radio class="filter-radio" value="partially-alloc" title="Deltilldelade">
+			Deltilldelade
+		</material-radio>
+		<material-radio class="filter-radio" value="over-alloc" title="Övertilldelade">
+			Övertilldelade
+		</material-radio>
+		<material-radio class="filter-radio" value="not-alloc" title="Ej tilldelade">
+			Ej tilldelade
 		</material-radio>
 	</material-radio-group>
 </div>
@@ -69,7 +97,10 @@
 	   [sortDesc]="sort.desc">
 	<tr>
 		<th style="width: 100px">
-			<sortable-column-header key="status" title="Status"></sortable-column-header>
+			<sortable-column-header key="paymentStatus" title="Betalning"></sortable-column-header>
+		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="allocStatus" title="Boenden"></sortable-column-header>
 		</th>
 		<th style="width: 100px">
 			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
@@ -83,37 +114,33 @@
 		<th style="width: 100px">
 			<sortable-column-header key="numberOfPax" title="Deltagare"></sortable-column-header>
 		</th>
-		<th style="width: 100px">
+		<th style="width: 80px">
 			<sortable-column-header key="queueNo" title="Köplats"></sortable-column-header>
 		</th>
-		<th style="width: 130px">
+		<th style="width: 120px">
 			<sortable-column-header key="amountPaid" title="Betalat"></sortable-column-header>
 		</th>
-		<th style="width: 130px">
+		<th style="width: 140px">
 			<sortable-column-header key="amountRemaining" title="Kvar att betala"></sortable-column-header>
 		</th>
-		<th style="width: 220px">
+		<th style="width: 160px">
 			<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
 		</th>
 	</tr>
-	<tr *ngFor="let booking of bookingsView" [ngSwitch]="booking.status">
-		<td *ngSwitchWhen="'locked'" class="locked">
-			Låst
+	<tr *ngFor="let booking of bookingsView">
+		<td [ngSwitch]="booking.payment.status">
+			<span *ngSwitchWhen="'fully-paid'" class="status-full">Betald</span>
+			<span *ngSwitchWhen="'partially-paid'" class="status-partial">Delbetald</span>
+			<span *ngSwitchWhen="'over-paid'" class="status-over">Överbetald</span>
+			<span *ngSwitchWhen="'not-paid'">Ej betald</span>
+			<span *ngSwitchDefault>-</span>
 		</td>
-		<td *ngSwitchWhen="'fully-paid'" class="fully-paid">
-			Betald
-		</td>
-		<td *ngSwitchWhen="'partially-paid'" class="partially-paid">
-			Delbetald
-		</td>
-		<td *ngSwitchWhen="'over-paid'" class="over-paid">
-			Överbetald
-		</td>
-		<td *ngSwitchWhen="'not-paid'" class="not-paid">
-			Ej betald
-		</td>
-		<td *ngSwitchDefault>
-			-
+		<td [ngSwitch]="booking.allocation.status">
+			<span *ngSwitchWhen="'fully-alloc'" class="status-full">Tilldelade</span>
+			<span *ngSwitchWhen="'partially-alloc'" class="status-partial">Deltilld.</span>
+			<span *ngSwitchWhen="'over-alloc'" class="status-over">Övertilld.</span>
+			<span *ngSwitchWhen="'not-alloc'">Ej tilldelade</span>
+			<span *ngSwitchDefault>-</span>
 		</td>
 		<td>
 			<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)" class="mono">
@@ -137,10 +164,10 @@
 			{{ booking.queueNo }}
 		</td>
 		<td>
-			{{ formatCurrency(booking.amountPaid) }}
+			{{ formatCurrency(booking.payment.amountPaid) }}
 		</td>
 		<td>
-			{{ formatCurrency(booking.amountRemaining) }}
+			{{ formatCurrency(booking.payment.amountRemaining) }}
 		</td>
 		<td>
 			{{ formatDateTime(booking.updated) }}

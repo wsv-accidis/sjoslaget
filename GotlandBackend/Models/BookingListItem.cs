@@ -12,6 +12,7 @@ namespace Accidis.Gotland.WebService.Models
 		public decimal TotalPrice { get; set; }
 		public decimal AmountPaid { get; set; }
 		public int NumberOfPax { get; set; }
+		public int AllocatedPax { get; set; }
 		public int QueueNo { get; set; }
 		public DateTime Updated { get; set; }	}
 }

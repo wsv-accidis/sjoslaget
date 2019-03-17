@@ -155,6 +155,7 @@
     <Compile Include="Controllers\QueueAdminController.cs" />
     <Compile Include="Controllers\QueueController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Models\AllocationListItem.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingAllocation.cs" />
     <Compile Include="Models\BookingCandidate.cs" />

@@ -20,18 +20,14 @@ div.bookings-paging {
 	margin-top: 10px;
 }
 
-td.locked {
-	color: darkblue;
-}
-
-td.fully-paid {
+span.status-full {
 	color: darkgreen;
 }
 
-td.partially-paid {
+span.status-partial {
 	color: orangered;
 }
 
-td.over-paid {
+span.status-over {
 	color: darkred;
 }

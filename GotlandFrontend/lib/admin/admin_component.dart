@@ -9,6 +9,7 @@ import '../client/event_repository.dart';
 import '../client/payment_repository.dart';
 import '../client/queue_admin_repository.dart';
 import '../client/user_repository.dart';
+import 'admin_alloc_list_page.template.dart';
 import 'admin_booking_list_page.template.dart';
 import 'admin_booking_page.template.dart';
 import 'admin_dashboard_page.template.dart';
@@ -35,6 +36,7 @@ import 'admin_user_page.template.dart';
 )
 class AdminComponent {
 	final List<RouteDefinition> routes = [
+		RouteDefinition(routePath: AdminRoutes.allocationList, component: AdminAllocListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.booking, component: AdminBookingPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.bookingList, component: AdminBookingListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.dashboard, component: AdminDashboardPageNgFactory),

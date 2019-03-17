@@ -146,7 +146,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				return this.OkNoCache(await _bookingRepository.GetList(evnt));
+				return this.OkNoCache(await _bookingRepository.GetListAsync(evnt));
 			}
 			catch(Exception ex)
 			{
@@ -165,7 +165,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				return this.OkNoCache(await _bookingRepository.GetListOfPax(evnt));
+				return this.OkNoCache(await _bookingRepository.GetListOfPaxAsync(evnt));
 			}
 			catch(Exception ex)
 			{

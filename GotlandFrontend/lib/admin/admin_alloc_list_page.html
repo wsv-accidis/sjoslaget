@@ -1,0 +1,88 @@
+<h1>
+	Boenden
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="refresh"></material-icon>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
+	<material-icon icon="view_list"></material-icon>
+	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
+	<span></span>
+	<material-icon icon="people"></material-icon>
+	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
+	<span></span>
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<div class="spinner-widget" *ngIf="isLoading">
+	<spinner-widget></spinner-widget>
+</div>
+
+<div *ngIf="!isLoading">
+	<div *ngFor="let cabin of cabinClasses">
+		<div class="allocation-title" *ngIf="cabin.no == 0">
+			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar
+		</div>
+
+		<div class="allocation-title" *ngIf="cabin.no > 0">
+			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar ({{ count(cabin) }} av {{ cabin.count }} tilldelade)
+		</div>
+
+		<div *ngIf="!exists(cabin)" class="no-allocation-message">
+			Inga tilldelningar.
+		</div>
+
+		<div *ngIf="isOvercapacity(cabin) && cabin.no > 0" class="over-capacity-message">
+			Det är fler boenden tilldelade än vad som finns tillgängliga.
+		</div>
+
+		<table *ngIf="exists(cabin)"
+			   border="0"
+			   cellpadding="0"
+			   cellspacing="0"
+			   class="allocations">
+			<tr>
+				<th style="width: 100px">
+					Referens
+				</th>
+				<th style="width: 180px">
+					Lagnamn
+				</th>
+				<th>
+					Notering
+				</th>
+				<th style="width: 80px">
+					Bäddar
+				</th>
+				<th style="width: 120px">
+					Tot. i bokning
+				</th>
+			</tr>
+			<tr *ngFor="let alloc of findAllocations(cabin)">
+				<td>
+					<a [routerLink]="AdminRoutes.bookingUrl(alloc.reference)" class="mono">
+						{{ alloc.reference }}
+					</a>
+				</td>
+				<td>
+					<a [routerLink]="AdminRoutes.bookingUrl(alloc.reference)">
+						{{ alloc.teamName }}
+					</a>
+				</td>
+				<td>
+					{{ alloc.note.isNotEmpty ? alloc.note : '-' }}
+				</td>
+				<td>
+					{{ alloc.numberOfPax }}
+				</td>
+				<td>
+					{{ alloc.totalPax }}
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div class="page-end-block"></div>

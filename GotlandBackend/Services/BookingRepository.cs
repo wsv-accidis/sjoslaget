@@ -120,13 +120,14 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
-		public async Task<BookingListItem[]> GetList(Event evnt)
+		public async Task<BookingListItem[]> GetListAsync(Event evnt)
 		{
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<BookingListItem>(
 					"select [Id], [Reference], [FirstName], [LastName], [TeamName], [TotalPrice], [QueueNo], [Updated], " +
-					"(select COUNT(*) from [BookingPax] where [BookingId] = [Booking].[Id]) NumberOfPax, " +
+					"(select count(*) from [BookingPax] where [BookingId] = [Booking].[Id]) NumberOfPax, " +
+					"(select sum([NumberOfPax]) from [BookingAllocation] BA where BA.[BookingId] = [Booking].[Id] group by [BookingId]) AllocatedPax, " +
 					"(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = [Booking].[Id] group by [BookingId]) AmountPaid " +
 					"from [Booking] where [EventId] = @EventId",
 					new {EventId = evnt.Id});
@@ -134,7 +135,7 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
-		public async Task<BookingPaxListItem[]> GetListOfPax(Event evnt)
+		public async Task<BookingPaxListItem[]> GetListOfPaxAsync(Event evnt)
 		{
 			using(var db = DbUtil.Open())
 			{

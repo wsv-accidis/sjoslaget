@@ -2,6 +2,7 @@ export 'package:frontend_shared/model/json_field.dart';
 
 const String ACCEPTED = 'Accepted';
 const String AHEAD_IN_QUEUE = 'AheadInQueue';
+const String ALLOCATED_PAX = 'AllocatedPax';
 const String AMOUNT_PAID = 'AmountPaid';
 const String CABIN_CLASS_MAX = 'CabinClassMax';
 const String CABIN_CLASS_MIN = 'CabinClassMin';
@@ -45,5 +46,6 @@ const String SPECIAL_REQUEST = 'SpecialRequest';
 const String TEAM_NAME = 'TeamName';
 const String TEAM_SIZE = 'TeamSize';
 const String TITLE = 'Title';
+const String TOTAL_PAX = 'TotalPax';
 const String TOTAL_PRICE = 'TotalPrice';
 const String UPDATED = 'Updated';

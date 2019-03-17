@@ -4,6 +4,7 @@ import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
+import '../model/allocation_list_item.dart';
 import '../model/booking_allocation.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
@@ -25,6 +26,21 @@ class AllocationRepository {
 		final List jsonResult = json.decode(response.body);
 		return jsonResult
 			.map((dynamic value) => BookingAllocation.fromMap(value))
+			.toList();
+	}
+
+	Future<List<AllocationListItem>> getList(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/allocation');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonResult = json.decode(response.body);
+		return jsonResult
+			.map((dynamic value) => AllocationListItem.fromMap(value))
 			.toList();
 	}
 

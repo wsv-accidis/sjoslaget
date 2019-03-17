@@ -1,0 +1,21 @@
+div.allocation-title {
+	color: #009900;
+	font-size: larger;
+	font-weight: bold;
+	margin-bottom: 10px;
+	margin-top: 30px;
+}
+
+table.allocations {
+	width: 75%;
+}
+
+.no-allocation-message {
+	font-style: italic;
+}
+
+.over-capacity-message {
+	color: red;
+	font-style: italic;
+	margin-bottom: 10px;
+}

@@ -11,6 +11,7 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
+import '../model/booking_allocation_model.dart';
 import '../model/booking_list_item.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
@@ -31,7 +32,9 @@ class AdminBookingListPage implements OnInit {
 	final ClientFactory _clientFactory;
 
 	List<BookingListItem> _bookings;
-	String _filterStatus = BookingPaymentModel.STATUS_NONE;
+	String _filterAlloc = BookingAllocationModel.STATUS_NONE;
+	bool _filterEmpty = false;
+	String _filterPayment = BookingPaymentModel.STATUS_NONE;
 	String _filterText = '';
 
 	List<BookingListItem> bookingsView;
@@ -40,10 +43,24 @@ class AdminBookingListPage implements OnInit {
 
 	AdminBookingListPage(this._bookingRepository, this._clientFactory);
 
-	String get filterStatus => _filterStatus;
+	String get filterAlloc => _filterAlloc;
 
-	set filterStatus(String value) {
-		_filterStatus = value;
+	set filterAlloc(String value) {
+		_filterAlloc = value;
+		_refreshView();
+	}
+
+	bool get filterEmpty => _filterEmpty;
+
+	set filterEmpty(bool value) {
+		_filterEmpty = value;
+		_refreshView();
+	}
+
+	String get filterPayment => _filterPayment;
+
+	set filterPayment(String value) {
+		_filterPayment = value;
 		_refreshView();
 	}
 
@@ -94,8 +111,10 @@ class AdminBookingListPage implements OnInit {
 		}
 
 		switch (sort.column) {
-			case 'status':
-				return one.statusAsInt - two.statusAsInt;
+			case 'paymentStatus':
+				return one.payment.statusAsInt - two.payment.statusAsInt;
+			case 'allocStatus':
+				return one.allocation.statusAsInt - two.allocation.statusAsInt;
 			case 'reference':
 				return one.reference.compareTo(two.reference);
 			case 'teamName':
@@ -107,9 +126,9 @@ class AdminBookingListPage implements OnInit {
 			case 'queueNo':
 				return one.queueNo - two.queueNo;
 			case 'amountPaid':
-				return one.amountPaid.compareTo(two.amountPaid);
+				return one.payment.amountPaid.compareTo(two.payment.amountPaid);
 			case 'amountRemaining':
-				return one.amountRemaining.compareTo(two.amountRemaining);
+				return one.payment.amountRemaining.compareTo(two.payment.amountRemaining);
 			case 'updated':
 				return two.updated.compareTo(one.updated);
 			default:
@@ -121,12 +140,18 @@ class AdminBookingListPage implements OnInit {
 	void _refreshView() {
 		Iterable<BookingListItem> filtered = _bookings;
 
+		if (!_filterEmpty) {
+			filtered = filtered.where((b) => b.numberOfPax > 0);
+		}
 		if (isNotEmpty(_filterText)) {
 			final filterText = _filterText.toLowerCase().trim();
 			filtered = filtered.where((b) => '${b.reference} ${b.teamName} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
 		}
-		if (BookingPaymentModel.STATUS_NONE != _filterStatus) {
-			filtered = filtered.where((b) => b.status == _filterStatus);
+		if (BookingPaymentModel.STATUS_NONE != _filterPayment) {
+			filtered = filtered.where((b) => b.payment.status == _filterPayment);
+		}
+		if (BookingAllocationModel.STATUS_NONE != _filterAlloc) {
+			filtered = filtered.where((b) => b.allocation.status == _filterAlloc);
 		}
 
 		final List<BookingListItem> sorted = filtered.toList(growable: false);

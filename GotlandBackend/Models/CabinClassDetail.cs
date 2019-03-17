@@ -2,7 +2,7 @@
 
 namespace Accidis.Gotland.WebService.Models
 {
-	public sealed class CabinClassDetail
+	public class CabinClassDetail
 	{
 		public Guid Id { get; set; }
 		public string Title { get; set; }
