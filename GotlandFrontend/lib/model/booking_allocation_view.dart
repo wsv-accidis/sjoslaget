@@ -24,8 +24,13 @@ class BookingAllocationView {
 		return BookingAllocationView(cabinClass, cabinClassDetail, alloc.noOfPax, alloc.note);
 	}
 
-	static List<BookingAllocationView> fromListOfBookingAllocation(List<BookingAllocation> alloc, List<CabinClass> classes, List<CabinClassDetail> details) =>
-		alloc.map((a) => BookingAllocationView.fromBookingAllocation(a, classes, details)).toList();
+	static List<BookingAllocationView> fromListOfBookingAllocation(List<BookingAllocation> alloc, List<CabinClass> classes, List<CabinClassDetail> details) {
+		final result = alloc.map((a) =>
+			BookingAllocationView.fromBookingAllocation(a, classes, details))
+			.toList();
+		result.sort(_comparator);
+		return result;
+	}
 
 	BookingAllocation toBookingAllocation() =>
 		BookingAllocation(cabinClassDetail.id, noOfPax, note);
@@ -35,4 +40,12 @@ class BookingAllocationView {
 
 	static CabinClassDetail _getDetail(String id, List<CabinClassDetail> details) =>
 		details.firstWhere((d) => d.id == id);
+
+	static int _comparator(BookingAllocationView one, BookingAllocationView two) {
+		if(one.no != two.no) {
+			return one.no - two.no;
+		} else {
+			return one.note.compareTo(two.note);
+		}
+	}
 }

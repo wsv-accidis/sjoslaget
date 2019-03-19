@@ -16,7 +16,7 @@ class Gender {
 				return 'Man';
 			case GENDER_OTHER:
 				return 'Annat';
-			case GENDER_NONE:
+			default:
 				return 'Vill ej uppge';
 		}
 	}

@@ -3,6 +3,7 @@ th, td {
 	padding-right: 8px;
 	padding-top: 4px;
 	border-bottom: 1px solid silver;
+	white-space: nowrap;
 }
 
 td.progress {
