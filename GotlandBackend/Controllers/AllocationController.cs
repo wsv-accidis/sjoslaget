@@ -70,6 +70,7 @@ namespace Accidis.Gotland.WebService.Controllers
 			{
 				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
 				await _allocationRepository.UpdateAsync(booking, allocation);
+				await _bookingRepository.UpdateTotalPriceAsync(booking);
 				_log.Info("Updated allocation for booking {0}.", booking.Reference);
 				return Ok();
 			}

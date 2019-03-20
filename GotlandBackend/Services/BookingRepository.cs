@@ -165,6 +165,20 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
+		public async Task UpdateTotalPriceAsync(Booking booking)
+		{
+			using(var db = DbUtil.Open())
+			{
+				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
+				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+					new
+					{
+						TotalPrice = totalPrice,
+						Id = booking.Id
+					});
+			}
+		}
+
 		public async Task<BookingResult> UpdateAsync(Event evnt, BookingSource source, bool allowUpdateDetails = false)
 		{
 			BookingSource.ValidatePax(source);

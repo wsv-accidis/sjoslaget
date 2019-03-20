@@ -22,12 +22,8 @@
 
 <div *ngIf="!isLoading">
 	<div *ngFor="let cabin of cabinClasses">
-		<div class="allocation-title" *ngIf="cabin.no == 0">
-			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar
-		</div>
-
-		<div class="allocation-title" *ngIf="cabin.no > 0">
-			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar ({{ count(cabin) }} av {{ cabin.count }} tilldelade)
+		<div class="allocation-title">
+			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar ({{ count(cabin) }} av {{ total(cabin) }} tilldelade)
 		</div>
 
 		<div *ngIf="!exists(cabin)" class="no-allocation-message">
@@ -35,7 +31,7 @@
 		</div>
 
 		<div *ngIf="isOvercapacity(cabin) && cabin.no > 0" class="over-capacity-message">
-			Det är fler boenden tilldelade än vad som finns tillgängliga.
+			Det är fler bäddar tilldelade än vad som finns tillgängliga.
 		</div>
 
 		<table *ngIf="exists(cabin)"
@@ -47,7 +43,7 @@
 				<th style="width: 100px">
 					Referens
 				</th>
-				<th style="width: 240px">
+				<th style="width: 300px">
 					Lagnamn
 				</th>
 				<th>
@@ -56,8 +52,8 @@
 				<th style="width: 80px">
 					Bäddar
 				</th>
-				<th style="width: 120px">
-					Tot. i bokning
+				<th style="width: 80px">
+					Bokade
 				</th>
 			</tr>
 			<tr *ngFor="let alloc of findAllocations(cabin)">
@@ -74,7 +70,7 @@
 				<td>
 					{{ alloc.note.isNotEmpty ? alloc.note : '-' }}
 				</td>
-				<td>
+				<td [class]="cabin.no != 0 && alloc.numberOfPax != cabin.capacity ? 'capacity-warning-cell' : ''">
 					{{ alloc.numberOfPax }}
 				</td>
 				<td>
