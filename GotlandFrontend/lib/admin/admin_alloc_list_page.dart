@@ -52,9 +52,10 @@ class AdminAllocListPage implements OnInit {
 		try {
 			final client = _clientFactory.getClient();
 			cabinClasses = await _eventRepository.getCabinClassDetails(client);
+			cabinClasses.sort(_classesComparator);
 
 			final allocationList = await _allocationRepository.getList(client);
-			allocationList.sort(_comparator);
+			allocationList.sort(_allocationComparator);
 			allocations = _groupAllocations(allocationList);
 		} catch (e) {
 			print('Failed to load list of allocations: ${e.toString()}');
@@ -62,11 +63,23 @@ class AdminAllocListPage implements OnInit {
 		}
 	}
 
-	int _comparator(AllocationListItem one, AllocationListItem two) {
+	int _allocationComparator(AllocationListItem one, AllocationListItem two) {
 		if(one.teamName != two.teamName) {
 			return one.teamName.compareTo(two.teamName);
 		} else {
 			return one.note.compareTo(two.note);
+		}
+	}
+
+	int _classesComparator(CabinClassDetail one, CabinClassDetail two) {
+		if(one.no != two.no) {
+			return one.no - two.no;
+		} else {
+			if(one.title != two.title) {
+				return one.title.compareTo(two.title);
+			} else {
+				return one.count - two.count;
+			}
 		}
 	}
 
