@@ -28,6 +28,31 @@ namespace Accidis.Gotland.WebService.Services
 			_userManager = userManager;
 		}
 
+		public async Task<BookingResult> CreateEmptyAsync(Event evnt)
+		{
+			var booking = new Booking
+			{
+				EventId = evnt.Id,
+				Reference = _credentialsGenerator.GenerateBookingReference(),
+				FirstName = "FirstName",
+				LastName = "LastName",
+				Email = "info@absolutgotland.se",
+				PhoneNo = "0",
+				TeamName = "TeamName",
+				SpecialRequest = String.Empty
+			};
+
+			using(var db = DbUtil.Open())
+			{
+				await CreateBooking(db, Guid.Empty, booking);
+			}
+
+			var password = _credentialsGenerator.GeneratePinCode();
+			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
+
+			return new BookingResult {Reference = booking.Reference, Password = password};
+		}
+
 		public async Task<BookingResult> CreateFromCandidateAsync(Event evnt, BookingCandidate candidate, int placeInQueue)
 		{
 			Booking booking;

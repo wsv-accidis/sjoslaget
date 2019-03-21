@@ -4,6 +4,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
@@ -14,6 +15,7 @@ import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/booking_source.dart';
 import '../model/cabin_class.dart';
+import '../util/temp_credentials_store.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -34,6 +36,7 @@ class AdminBookingPage implements OnActivate {
 	final ClientFactory _clientFactory;
 	final EventRepository _eventRepository;
 	final Router _router;
+	final TempCredentialsStore _tempCredentialsStore;
 
 	@ViewChild('allocation')
 	AllocationComponent allocation;
@@ -48,6 +51,7 @@ class AdminBookingPage implements OnActivate {
 	PaxComponent pax;
 
 	BookingSource booking;
+	BookingResult bookingResult;
 	String bookingError;
 	List<CabinClass> cabinClasses;
 	bool isSaving = false;
@@ -62,6 +66,8 @@ class AdminBookingPage implements OnActivate {
 		hasSentConfirmation ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
 			: 'Bekräftelse inte skickad';
 
+	bool get hasBookingResult => null != bookingResult;
+
 	bool get hasSentConfirmation => null != booking.confirmationSent;
 
 	bool get hasBookingError => isNotEmpty(bookingError);
@@ -70,7 +76,7 @@ class AdminBookingPage implements OnActivate {
 
 	bool get isLoading => null == booking;
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router);
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
 
 	void addEmptyPax() {
 		pax.addEmptyPax();
@@ -128,6 +134,12 @@ class AdminBookingPage implements OnActivate {
 			print('Failed to load booking: ${e.toString()}');
 			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';
 			return;
+		}
+
+		bookingResult = _tempCredentialsStore.load();
+		if(null != bookingResult && bookingResult.reference != reference) {
+			bookingResult = null;
+			_tempCredentialsStore.clear();
 		}
 	}
 

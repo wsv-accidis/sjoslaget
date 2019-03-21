@@ -11,6 +11,10 @@ h2 {
 	margin-bottom: 0;
 }
 
+.credentials {
+	font-weight: bold;
+}
+
 .details {
 	margin-bottom: 20px;
 }

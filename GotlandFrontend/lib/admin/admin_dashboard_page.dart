@@ -6,12 +6,14 @@ import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/util.dart' show DateTimeFormatter;
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
+import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../client/queue_admin_repository.dart';
 import '../model/event.dart';
 import '../model/queue_dashboard_item.dart';
 import '../util/countdown_state.dart';
+import '../util/temp_credentials_store.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -31,9 +33,11 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	static const int REFRESH_INTERVAL_SHORT_MS = 1000;
 
 	final ClientFactory _clientFactory;
+	final BookingRepository _bookingRepository;
 	final EventRepository _eventRepository;
 	final QueueAdminRepository _queueAdminRepository;
 	final Router _router;
+	final TempCredentialsStore _tempCredentialsStore;
 
 	final _countdown = CountdownState.empty();
 	DateTime _eventOpening;
@@ -57,7 +61,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 
 	bool get isLoadingQueue => null == queueItems;
 
-	AdminDashboardPage(this._clientFactory, this._eventRepository, this._queueAdminRepository, this._router);
+	AdminDashboardPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._queueAdminRepository, this._router, this._tempCredentialsStore);
 
 	void logOut() {
 		_clientFactory.clear();
@@ -82,6 +86,17 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 		isDestroyed = true;
 	}
 
+	Future<void> createEmptyBooking() async {
+		try {
+			final client = _clientFactory.getClient();
+			final result = await _bookingRepository.createEmpty(client);
+			_tempCredentialsStore.save(result);
+			await _router.navigateByUrl(AdminRoutes.bookingUrl(result.reference));
+		} catch (e) {
+			print('Failed to create empty booking: ${e.toString()}');
+		}
+	}
+
 	Future<void> lockUnlockEvent() async {
 		if (_isLockingUnlocking)
 			return;
@@ -99,7 +114,7 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	}
 
 	int _getRefreshInterval() {
-		if(null != event) {
+		if (null != event) {
 			if (event.isLocked || !hasCountdown) {
 				// Nothing will happen, no point in refreshing often
 				return REFRESH_INTERVAL_LONG_MS;

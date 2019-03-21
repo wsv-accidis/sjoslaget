@@ -10,6 +10,7 @@ import '../model/booking_list_item.dart';
 import '../model/booking_pax_list_item.dart';
 import '../model/booking_queue_stats.dart';
 import '../model/booking_source.dart';
+import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
@@ -27,6 +28,20 @@ class BookingRepository {
 		}
 
 		HttpStatus.throwIfNotSuccessful(response);
+	}
+
+	Future<BookingResult> createEmpty(Client client) async {
+		Response response;
+		try {
+			response = await client.post('$_apiRoot/bookings/empty');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		if (HttpStatus.OK == response.statusCode)
+			return BookingResult.fromJson(response.body);
+		else
+			throw IOException.fromResponse(response);
 	}
 
 	Future<void> deleteBooking(Client client, String reference) async {
@@ -99,15 +114,15 @@ class BookingRepository {
 
 		Response response;
 		try {
-			response = await client.post('$_apiRoot/bookings', headers: headers, body: booking.toJson());
+			response = await client.post('$_apiRoot/bookings/update', headers: headers, body: booking.toJson());
 		} catch (e) {
 			throw IOException.fromException(e);
 		}
 
 		if (HttpStatus.OK == response.statusCode)
 			return BookingResult.fromJson(response.body);
-		//else if (HttpStatus.BAD_REQUEST == response.statusCode) TODO For validation errors
-		//throw BookingException();
+		else if (HttpStatus.BAD_REQUEST == response.statusCode)
+			throw BookingException();
 		else
 			throw IOException.fromResponse(response);
 	}

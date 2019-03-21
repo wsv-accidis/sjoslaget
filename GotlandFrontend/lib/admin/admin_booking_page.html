@@ -18,6 +18,10 @@
 	bokningen efter att bokningen för eventet är stängd.
 </p>
 
+<p *ngIf="hasBookingResult">
+	Bokingens referens är <span class="credentials">{{ bookingResult.reference }}</span> och PIN-koden är <span class="credentials">{{ bookingResult.password }}</span>.
+</p>
+
 <div style="clear: both; height: 10px;"></div>
 
 <p class="super-important loading-error" *ngIf="hasLoadingError">

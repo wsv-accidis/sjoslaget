@@ -107,8 +107,6 @@
 	</tbody>
 </table>
 
-<!-- TOOD Toggle for very update speed -->
-
 <h2 class="event-title">Bokning</h2>
 
 <div class="spinner-widget" *ngIf="isLoadingEvent">
@@ -127,6 +125,13 @@
 				 raised
 				 (trigger)="lockUnlockEvent()">
 	Öppna bokningen
+</material-button>
+
+<material-button *ngIf="!isLoadingEvent"
+				 class="control-blue"
+				 raised
+				 (trigger)="createEmptyBooking()">
+	Ny bokning
 </material-button>
 
 <div class="page-end-block"></div>

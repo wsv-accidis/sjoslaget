@@ -9,6 +9,7 @@ import '../client/event_repository.dart';
 import '../client/payment_repository.dart';
 import '../client/queue_admin_repository.dart';
 import '../client/user_repository.dart';
+import '../util/temp_credentials_store.dart';
 import 'admin_alloc_list_page.template.dart';
 import 'admin_booking_list_page.template.dart';
 import 'admin_booking_page.template.dart';
@@ -30,6 +31,7 @@ import 'admin_user_page.template.dart';
 		EventRepository,
 		PaymentRepository,
 		QueueAdminRepository,
+		TempCredentialsStore,
 		UserRepository
 	],
 	directives: <dynamic>[routerDirectives]

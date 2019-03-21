@@ -103,6 +103,28 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
+		[Authorize(Roles = Roles.Admin)]
+		[HttpPost]
+		public async Task<IHttpActionResult> Empty()
+		{
+			try
+			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				var result = await _bookingRepository.CreateEmptyAsync(evnt);
+				_log.Info("Created empty booking {0}.", result.Reference);
+
+				return Ok(result);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while creating an empty booking.");
+				throw;
+			}
+		}
+
 		[Authorize]
 		[HttpGet]
 		public async Task<IHttpActionResult> Get(string reference)
