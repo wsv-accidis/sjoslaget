@@ -161,7 +161,7 @@
 			{{ booking.numberOfPax }}
 		</td>
 		<td>
-			{{ booking.queueNo }}
+			{{ booking.queueNo <= 0 ? '-' : booking.queueNo }}
 		</td>
 		<td>
 			{{ formatCurrency(booking.payment.amountPaid) }}

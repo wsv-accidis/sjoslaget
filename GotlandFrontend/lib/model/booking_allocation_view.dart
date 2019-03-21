@@ -1,3 +1,5 @@
+import 'package:frontend_shared/util.dart' show ValueComparer;
+
 import 'booking_allocation.dart';
 import 'cabin_class.dart';
 import 'cabin_class_detail.dart';
@@ -45,7 +47,7 @@ class BookingAllocationView {
 		if(one.no != two.no) {
 			return one.no - two.no;
 		} else {
-			return one.note.compareTo(two.note);
+			return ValueComparer.compareStringsWithNumbers(one.note, two.note);
 		}
 	}
 }

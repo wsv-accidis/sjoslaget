@@ -5,6 +5,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:collection/collection.dart';
+import 'package:frontend_shared/util.dart' show ValueComparer;
 
 import '../client/allocation_repository.dart';
 import '../client/client_factory.dart';
@@ -72,7 +73,7 @@ class AdminAllocListPage implements OnInit {
 
 	int _allocationComparator(AllocationListItem one, AllocationListItem two) {
 		if(one.note != two.note) {
-			return _normalizeNumbers(one.note).compareTo(_normalizeNumbers(two.note));
+			return ValueComparer.compareStringsWithNumbers(one.note, two.note);
 		} else {
 			return one.teamName.compareTo(two.teamName);
 		}
@@ -85,14 +86,10 @@ class AdminAllocListPage implements OnInit {
 			if(one.title != two.title) {
 				return one.title.compareTo(two.title);
 			} else {
-				return one.count - two.count;
+				return one.capacity - two.capacity;
 			}
 		}
 	}
-
-	// Poor man's natural number sort - prefix single digits by 0
-	String _normalizeNumbers(String str) =>
-		str.replaceAllMapped(RegExp(r'(\s|^)([0-9])(\s|$)'), (m) => '${m[1]}0${m[2]}${m[3]}');
 
 	Map<String, List<AllocationListItem>> _groupAllocations(List<AllocationListItem> items) =>
 		groupBy(items, (i) => i.cabinId);
