@@ -4,12 +4,12 @@ Sjöslaget
 _This application is directed exclusively at a Swedish audience. International visitors, please
 contact me if you have any questions._
 
-Det här är den officiella webbplatsen för [Sjöslaget](http://www.sjoslaget.se). Sjöslaget 
-är en årlig kryssning för i huvudsak universitets- och högskolestudenter.
+Det här är den officiella webbplatsen för [Sjöslaget](https://sjoslaget.se) och [Absolut Gotland](https://absolutgotland.se). 
+Sjöslaget och Absolut Gotland är årliga festevenemang som riktar sig til högskole- och universitetsstudenter.
 
 ## Status
-Webbplatsen är under aktiv utveckling. Den är i skarp drift på [www.sjoslaget.se](http://www.sjoslaget.se)
-men koden som körs där är inte nödvändigtvis i synk med detta repo.
+Webbplatsen är under aktiv utveckling. Den är i skarp drift på [sjoslaget.se](https://sjoslaget.se) respektive
+[absolutgotland.se](https://absolutgotland.se) men koden som körs där är inte nödvändigtvis i synk med detta repo.
 
 ## Teknik och tillkännagivanden
 Serversidan utvecklas i [ASP.NET Web API](https://www.asp.net/web-api). Webbplatsen hostas på [IIS](https://www.iis.net/) i Windows-miljö med
