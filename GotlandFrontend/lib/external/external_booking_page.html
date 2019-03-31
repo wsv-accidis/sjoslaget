@@ -1,0 +1,20 @@
+<h1>
+	Boka dagbiljett
+</h1>
+
+<p>
+	Ange uppgifter för bokningen, ta betalt och klicka på Skicka.
+</p>
+
+<external-booking-component
+	#externalBooking
+	*ngIf="!isSaving"
+	(onSubmit)="submit($event)">
+</external-booking-component>
+
+<spinner-widget *ngIf="isSaving">
+</spinner-widget>
+
+<p class="super-important" *ngIf="hasError">
+	Någonting gick fel när bokningen skulle sparas. Kontakta Öslagsgruppen.
+</p>

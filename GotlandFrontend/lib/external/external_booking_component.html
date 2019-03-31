@@ -1,0 +1,103 @@
+<form #bookingForm="ngForm" (submit)="submit()">
+	<input type="submit" class="hidden-submit"/>
+
+	<div>
+		<material-input [(ngModel)]="firstName"
+						ngControl="firstName"
+						floatingLabel
+						label="Förnamn"
+						required
+						requiredErrorMsg="Ange förnamn."
+						style="width: 200px; margin-right: 20px">
+		</material-input>
+
+		<material-input [(ngModel)]="lastName"
+						ngControl="lastName"
+						floatingLabel
+						label="Efternamn"
+						required
+						requiredErrorMsg="Ange efternamn."
+						style="width: 200px">
+		</material-input>
+	</div>
+	<div>
+		<material-input [(ngModel)]="phoneNo"
+						ngControl="phoneNo"
+						floatingLabel
+						label="Telefonnummer"
+						required
+						requiredErrorMsg="Ange telefonnummer."
+						pattern="[0-9()+\- ]+"
+						style="width: 200px; margin-right: 20px"
+						type="tel">
+		</material-input>
+
+		<material-input [(ngModel)]="dob"
+						ngControl="dob"
+						floatingLabel
+						label="Födelsedatum (ÅÅMMDD)"
+						required
+						requiredErrorMsg="Ange födelsedatum."
+						pattern="[0-9]{6}"
+						style="width: 200px">
+		</material-input>
+	</div>
+	<div>
+		<material-dropdown-select [buttonText]="dayToString(days)"
+								  [options]="dayOptions"
+								  [itemRenderer]="dayToString"
+								  [selection]="daySelection"
+								  style="width: 380px"
+								  width="4">
+		</material-dropdown-select>
+	</div>
+	<div>
+		<material-input [(ngModel)]="specialRequest"
+						ngControl="specialRequest"
+						floatingLabel
+						label="Särskild kost, allergier och övriga önskemål"
+						style="width: 380px">
+		</material-input>
+	</div>
+	<div>
+		<material-checkbox [(ngModel)]="isRindiMember"
+						   ngControl="isRindiMember"
+						   class="checkbox-label">
+			Deltagaren är medlem i studentkåren Rindi.
+		</material-checkbox>
+	</div>
+	<div>
+		<material-checkbox [(ngModel)]="confirmPayment"
+						   ngControl="confirmPayment"
+						   class="checkbox-label">
+			Betalning för vald biljett ({{ dayToPrice(days) }} kr) har tagits emot.
+		</material-checkbox>
+	</div>
+	<div>
+		<material-checkbox [(ngModel)]="acceptRules"
+						   ngControl="acceptRules"
+						   class="checkbox-label">
+			Deltagaren är införstådd med <a href="/allt-om/regler">Reglerna som gäller på Absolut Gotland</a>.
+		</material-checkbox>
+	</div>
+	<div>
+		<material-checkbox [(ngModel)]="acceptToc"
+						   ngControl="acceptToc"
+						   class="checkbox-label">
+			Deltagaren godkänner att de personuppgifter som lämnats här lagras och användas av Rindi, Sjöslagsgruppen och deras samarbetspartners.
+			Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Absolut Gotland att göra.
+		</material-checkbox>
+	</div>
+	<div style="margin-top: 30px">
+		<material-button [disabled]="!bookingForm.valid || !canSubmit"
+						 class="control-blue"
+						 raised
+						 (trigger)="submit()">
+			Skicka bokning
+		</material-button>
+	</div>
+</form>
+
+<p class="super-important" *ngIf="hasError">
+	{{ errorMessage }}
+</p>

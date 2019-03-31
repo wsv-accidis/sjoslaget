@@ -270,10 +270,10 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				try
 				{
-					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([EventId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [TeamName], [CandidateId], [QueueNo]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @TeamName, @CandidateId, @QueueNo)",
+					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([EventId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [TeamName], [CandidateId], [QueueNo]) output inserted.[Id] values (@EventId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @TeamName, @CandidateId, @QueueNo)",
 						new
 						{
-							CruiseId = booking.EventId,
+							EventId = booking.EventId,
 							Reference = booking.Reference,
 							FirstName = booking.FirstName,
 							LastName = booking.LastName,
