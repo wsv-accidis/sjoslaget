@@ -43,10 +43,10 @@
 		</material-input>
 	</div>
 	<div>
-		<material-dropdown-select [buttonText]="dayToString(days)"
-								  [options]="dayOptions"
-								  [itemRenderer]="dayToString"
-								  [selection]="daySelection"
+		<material-dropdown-select [buttonText]="typeToString(type)"
+								  [options]="typeOptions"
+								  [itemRenderer]="typeToString"
+								  [selection]="typeSelection"
 								  style="width: 380px"
 								  width="4">
 		</material-dropdown-select>
@@ -60,17 +60,10 @@
 		</material-input>
 	</div>
 	<div>
-		<material-checkbox [(ngModel)]="isRindiMember"
-						   ngControl="isRindiMember"
+		<material-checkbox [(ngModel)]="paymentReceived"
+						   ngControl="paymentReceived"
 						   class="checkbox-label">
-			Deltagaren är medlem i studentkåren Rindi.
-		</material-checkbox>
-	</div>
-	<div>
-		<material-checkbox [(ngModel)]="confirmPayment"
-						   ngControl="confirmPayment"
-						   class="checkbox-label">
-			Betalning för vald biljett ({{ dayToPrice(days) }} kr) har tagits emot.
+			Betalning för vald biljett ({{ typeToPrice(type) }} kr) har skickats via Swish till <strong>0735329410</strong> (Henric Zethelius).
 		</material-checkbox>
 	</div>
 	<div>

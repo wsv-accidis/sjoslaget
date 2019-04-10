@@ -6,7 +6,10 @@ import 'package:angular_forms/angular_forms.dart';
 import 'package:frontend_shared/util.dart' show ValidationSupport;
 import 'package:quiver/strings.dart' as str;
 
+import '../client/client_factory.dart';
+import '../client/external_booking_repository.dart';
 import '../model/external_booking.dart';
+import '../model/external_booking_type.dart';
 import '../widgets/components.dart';
 
 @Component(
@@ -16,11 +19,9 @@ import '../widgets/components.dart';
 	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives],
 	providers: <dynamic>[materialProviders]
 )
-class ExternalBookingComponent {
-	static const String FRIDAY = 'fri';
-	static const String SATURDAY = 'sat';
-	static const String WHOLE_EVENT = 'all';
-
+class ExternalBookingComponent implements OnInit {
+	final ClientFactory _clientFactory;
+	final ExternalBookingRepository _externalBookingRepository;
 	final _onSubmit = StreamController<ExternalBooking>.broadcast();
 
 	@Output()
@@ -34,41 +35,37 @@ class ExternalBookingComponent {
 	String phoneNo;
 	String dob;
 	String specialRequest;
-	SingleSelectionModel<String> daySelection = SelectionModel<String>.single(selected: WHOLE_EVENT);
-	SelectionOptions<String> dayOptions = SelectionOptions.fromList(<String>[WHOLE_EVENT, FRIDAY, SATURDAY]);
-	bool isRindiMember = false;
+	SingleSelectionModel<ExternalBookingType> typeSelection = SelectionModel<ExternalBookingType>.single();
+	SelectionOptions<ExternalBookingType> typeOptions;
+	bool paymentReceived = false;
 	bool acceptRules = false;
 	bool acceptToc = false;
-	bool confirmPayment = false;
 	String errorMessage;
 
-	bool get canSubmit => acceptRules && acceptToc && confirmPayment;
-
-	String get days => daySelection.selectedValue;
+	bool get canSubmit => acceptRules && acceptToc && null != type;
 
 	bool get hasError => str.isNotEmpty(errorMessage);
 
-	int dayToPrice(String day) {
-		if (day == FRIDAY || day == SATURDAY) {
-			return 400;
-		} else if (day == WHOLE_EVENT) {
-			return 750;
-		} else {
-			return 0;
+	ExternalBookingType get type => typeSelection.selectedValue;
+
+	ExternalBookingComponent(this._clientFactory, this._externalBookingRepository);
+
+	@override
+	Future<void> ngOnInit() async {
+		try {
+			final client = _clientFactory.getClient();
+			final types = await _externalBookingRepository.getTypes(client);
+			typeOptions = SelectionOptions.fromList(types);
+		} catch (e) {
+			// Ignore this here - we will be stuck in the loading state until the user refreshes
+			print('Failed to get data due to an exception: ${e.toString()}');
+			return;
 		}
 	}
 
-	String dayToString(String day) {
-		if (day == FRIDAY) {
-			return 'Biljett för fredag (${dayToPrice(day)} kr)';
-		} else if (day == SATURDAY) {
-			return 'Biljett för lördag (${dayToPrice(day)} kr)';
-		} else if (day == WHOLE_EVENT) {
-			return 'Biljett för fredag och lördag (${dayToPrice(day)} kr)';
-		} else {
-			return '';
-		}
-	}
+	int typeToPrice(ExternalBookingType type) => null != type ? type.price.toInt() : 0;
+
+	String typeToString(ExternalBookingType type) => null != type ? '${type.title} (${typeToPrice(type)} kr)' : 'Välj biljett';
 
 	void submit() {
 		_validate();
@@ -80,9 +77,8 @@ class ExternalBookingComponent {
 				phoneNo,
 				dob,
 				specialRequest,
-				isRindiMember,
-				_isFriday,
-				_isSaturday
+				type.id,
+				paymentReceived
 			);
 
 			_onSubmit.add(booking);
@@ -90,13 +86,9 @@ class ExternalBookingComponent {
 		}
 	}
 
-	bool get _isFriday => days == FRIDAY || days == WHOLE_EVENT;
-
-	bool get _isSaturday => days == SATURDAY || days == WHOLE_EVENT;
-
 	void _clear() {
 		firstName = lastName = phoneNo = dob = specialRequest = '';
-		isRindiMember = acceptRules = acceptToc = confirmPayment = false;
+		acceptRules = acceptToc = paymentReceived = false;
 		errorMessage = '';
 		bookingForm.reset();
 	}
@@ -109,7 +101,7 @@ class ExternalBookingComponent {
 			return;
 		}
 
-		if (!_isFriday && !_isSaturday) {
+		if (null == typeSelection.selectedValue) {
 			errorMessage = 'Typ av biljett är inte vald. Kontrollera formuläret och försök igen.';
 			return;
 		}
@@ -119,7 +111,7 @@ class ExternalBookingComponent {
 			return;
 		}
 
-		if (!acceptRules || !acceptToc || !confirmPayment) {
+		if (!acceptRules || !acceptToc) {
 			errorMessage = 'En eller flera bekräftelser saknas.';
 			return;
 		}

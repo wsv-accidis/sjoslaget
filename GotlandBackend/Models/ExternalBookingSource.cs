@@ -1,4 +1,6 @@
-﻿namespace Accidis.Gotland.WebService.Models
+﻿using System;
+
+namespace Accidis.Gotland.WebService.Models
 {
 	public class ExternalBookingSource
 	{
@@ -7,8 +9,7 @@
 		public string Dob { get; set; }
 		public string PhoneNo { get; set; }
 		public string SpecialRequest { get; set; }
-		public bool IsRindiMember { get; set; }
-		public bool DayFriday { get; set; }
-		public bool DaySaturday { get; set; }
+		public Guid TypeId { get; set; }
+		public bool PaymentReceived { get; set; }
 	}
 }

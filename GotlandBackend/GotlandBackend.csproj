@@ -140,7 +140,9 @@
   <ItemGroup>
     <Content Include="Content\BookingCreatedEmail.txt" />
     <Content Include="Content\BookingConfirmedEmail.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\Emails.Designer.cs">
@@ -174,6 +176,7 @@
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />
     <Compile Include="Models\ExternalBookingSource.cs" />
+    <Compile Include="Models\ExternalBookingType.cs" />
     <Compile Include="Models\QueueDashboardItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AllocationRepository.cs" />

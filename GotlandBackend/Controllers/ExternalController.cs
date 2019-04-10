@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Web;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
@@ -36,6 +37,21 @@ namespace Accidis.Gotland.WebService.Controllers
 			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while creating an external booking.");
+				throw;
+			}
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Types()
+		{
+			try
+			{
+				ExternalBookingType[] types = await _externalBookingRepository.GetTypesAsync();
+				return this.OkCacheControl(types, WebConfig.StaticDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting external booking types.");
 				throw;
 			}
 		}
