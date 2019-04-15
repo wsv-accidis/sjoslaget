@@ -1,0 +1,20 @@
+table.bookings {
+	margin-top: 10px;
+	width: 80%;
+}
+
+div.bookings-paging {
+	margin-top: 10px;
+}
+
+span.status-confirmed {
+	color: darkgreen;
+}
+
+span.status-not-confirmed {
+	color: darkred;
+}
+
+span.status-external {
+	color: darkblue;
+}

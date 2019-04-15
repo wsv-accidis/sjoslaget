@@ -5,6 +5,7 @@ import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
 import '../model/external_booking.dart';
+import '../model/external_booking_source.dart';
 import '../model/external_booking_type.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
@@ -13,6 +14,21 @@ class ExternalBookingRepository {
 	final String _apiRoot;
 
 	ExternalBookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
+
+	Future<List<ExternalBooking>> getList(Client client) async {
+		Response response;
+		try {
+			response = await client.get('$_apiRoot/external/list');
+		} catch (e) {
+			throw IOException.fromException(e);
+		}
+
+		HttpStatus.throwIfNotSuccessful(response);
+		final List jsonBody = json.decode(response.body);
+		return jsonBody
+			.map((dynamic value) => ExternalBooking.fromMap(value))
+			.toList();
+	}
 
 	Future<List<ExternalBookingType>> getTypes(Client client) async {
 		Response response;
@@ -29,7 +45,7 @@ class ExternalBookingRepository {
 			.toList();
 	}
 
-	Future<void> saveBooking(Client client, ExternalBooking booking) async {
+	Future<void> saveBooking(Client client, ExternalBookingSource booking) async {
 		final headers = ClientUtil.createJsonHeaders();
 
 		Response response;

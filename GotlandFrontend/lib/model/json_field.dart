@@ -32,6 +32,7 @@ const String NUMBER_OF_PAX = 'NumberOfPax';
 const String OPENING = 'Opening';
 const String PAX = 'Pax';
 const String PAYMENT = 'Payment';
+const String PAYMENT_CONFIRMED = 'PaymentConfirmed';
 const String PAYMENT_RECEIVED = 'PaymentReceived';
 const String PHONE_NO = 'PhoneNo';
 const String PLACE_IN_QUEUE = 'PlaceInQueue';

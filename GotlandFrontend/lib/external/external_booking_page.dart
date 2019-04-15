@@ -2,7 +2,7 @@ import 'package:angular/angular.dart';
 
 import '../client/client_factory.dart';
 import '../client/external_booking_repository.dart';
-import '../model/external_booking.dart';
+import '../model/external_booking_source.dart';
 import '../widgets/spinner_widget.dart';
 import 'external_booking_component.dart';
 
@@ -29,7 +29,7 @@ class ExternalBookingPage implements OnInit {
 		_clientFactory.clear();
 	}
 
-	Future<void> submit(ExternalBooking booking) async {
+	Future<void> submit(ExternalBookingSource booking) async {
 		hasError = false;
 		isSaving = true;
 

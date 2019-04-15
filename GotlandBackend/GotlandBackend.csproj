@@ -173,6 +173,7 @@
     <Compile Include="Models\CabinClass.cs" />
     <Compile Include="Models\CabinClassDetail.cs" />
     <Compile Include="Models\ClaimedCapacity.cs" />
+    <Compile Include="Models\ExternalBooking.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />
     <Compile Include="Models\ExternalBookingSource.cs" />

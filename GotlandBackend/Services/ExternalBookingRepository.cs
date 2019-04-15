@@ -32,6 +32,16 @@ namespace Accidis.Gotland.WebService.Services
 			}
 		}
 
+		public async Task<ExternalBooking[]> GetListAsync(Event evnt)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<ExternalBooking>("select * from [ExternalBooking] where [EventId] = @EventId order by [Created] desc",
+					new {EventId = evnt.Id});
+				return result.ToArray();
+			}
+		}
+
 		public async Task<ExternalBookingType[]> GetTypesAsync()
 		{
 			using(var db = DbUtil.Open())

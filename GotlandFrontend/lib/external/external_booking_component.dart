@@ -8,7 +8,7 @@ import 'package:quiver/strings.dart' as str;
 
 import '../client/client_factory.dart';
 import '../client/external_booking_repository.dart';
-import '../model/external_booking.dart';
+import '../model/external_booking_source.dart';
 import '../model/external_booking_type.dart';
 import '../widgets/components.dart';
 
@@ -22,7 +22,7 @@ import '../widgets/components.dart';
 class ExternalBookingComponent implements OnInit {
 	final ClientFactory _clientFactory;
 	final ExternalBookingRepository _externalBookingRepository;
-	final _onSubmit = StreamController<ExternalBooking>.broadcast();
+	final _onSubmit = StreamController<ExternalBookingSource>.broadcast();
 
 	@Output()
 	Stream get onSubmit => _onSubmit.stream;
@@ -71,7 +71,7 @@ class ExternalBookingComponent implements OnInit {
 		_validate();
 
 		if (!hasError) {
-			final booking = ExternalBooking(
+			final booking = ExternalBookingSource(
 				firstName,
 				lastName,
 				phoneNo,
