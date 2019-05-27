@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:quiver/strings.dart';
 
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -31,6 +32,8 @@ class BookingPreviewComponentPopup implements OnInit {
 	List<CruiseProduct> _products;
 
 	BookingSource booking;
+
+	bool get hasInternalNotes => null != booking && isNotEmpty(booking.internalNotes);
 
 	@Input()
 	BookingOverviewItem bookingItem;

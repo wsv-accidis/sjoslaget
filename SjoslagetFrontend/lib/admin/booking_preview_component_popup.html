@@ -31,6 +31,14 @@
 					<a [href]="'tel:' + booking.phoneNo">{{ booking.phoneNo }}</a>
 				</td>
 			</tr>
+			<tr *ngIf="hasInternalNotes">
+				<td class="details-header-cell">
+					<material-icon icon="note"></material-icon>
+				</td>
+				<td class="details-value-cell">
+					{{ booking.internalNotes }}
+				</td>
+			</tr>
 		</table>
 
 		<table cellpadding="0" cellspacing="0" border="0">
