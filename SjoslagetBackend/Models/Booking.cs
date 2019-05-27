@@ -15,6 +15,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public int Discount { get; set; }
 		public decimal TotalPrice { get; set; }
 		public bool IsLocked { get; set; }
+		public string InternalNotes { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }
 
@@ -29,7 +30,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 				LastName = source.LastName,
 				Email = source.Email,
 				PhoneNo = source.PhoneNo,
-				Lunch = source.Lunch
+				Lunch = source.Lunch,
+				InternalNotes = source.InternalNotes
 			};
 		}
 	}

@@ -164,8 +164,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
 				if(allowUpdateDetails)
 				{
-					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
-						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, TotalPrice = totalPrice, Id = booking.Id});
+					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [InternalNotes] = @InternalNotes, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, InternalNotes = source.InternalNotes, TotalPrice = totalPrice, Id = booking.Id});
 				}
 				else
 					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new {TotalPrice = totalPrice, Id = booking.Id});
@@ -243,8 +243,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				try
 				{
-					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch)",
-						new {CruiseId = booking.CruiseId, Reference = booking.Reference, FirstName = booking.FirstName, LastName = booking.LastName, Email = booking.Email, PhoneNo = booking.PhoneNo, Lunch = booking.Lunch});
+					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch], [InternalNotes]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch, @InternalNotes)",
+						new {CruiseId = booking.CruiseId, Reference = booking.Reference, FirstName = booking.FirstName, LastName = booking.LastName, Email = booking.Email, PhoneNo = booking.PhoneNo, Lunch = booking.Lunch, InternalNotes = booking.InternalNotes});
 
 					createdBooking = true;
 					booking.Id = id;

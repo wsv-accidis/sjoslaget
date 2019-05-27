@@ -79,7 +79,7 @@ class BookingPage implements OnInit {
 			lunch = '-';
 		}
 
-		final bookingDetails = BookingDetails(firstName, lastName, phoneNo, email, lunch, null);
+		final bookingDetails = BookingDetails.fromForm(firstName, lastName, phoneNo, email, lunch);
 		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
 		await _router.navigateByUrl(BookingRoutes.editBooking.toUrl());
 	}

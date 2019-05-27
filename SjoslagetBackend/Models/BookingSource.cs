@@ -15,6 +15,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public string Lunch { get; set; }
 		public int Discount { get; set; }
 		public bool IsLocked { get; set; }
+		public string InternalNotes { get; set; }
 		public List<Cabin> Cabins { get; set; }
 		public List<Product> Products { get; set; }
 		public PaymentSummary Payment { get; set; }
@@ -30,6 +31,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 				PhoneNo = booking.PhoneNo,
 				Lunch = booking.Lunch,
 				Discount = booking.Discount,
+				InternalNotes = booking.InternalNotes,
 				IsLocked = booking.IsLocked,
 				Cabins = cabins.Select(c => new Cabin
 				{

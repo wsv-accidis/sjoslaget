@@ -23,6 +23,7 @@ const String GENDERS = 'Genders';
 const String GROUP = 'Group';
 const String ID = 'Id';
 const String IMAGE = 'Image';
+const String INTERNAL_NOTES = 'InternalNotes';
 const String IS_LOCKED = 'IsLocked';
 const String KEY = 'Key';
 const String LABELS = 'Labels';

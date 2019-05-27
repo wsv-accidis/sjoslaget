@@ -175,7 +175,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				BookingProduct[] products = await _productRepository.GetProductsForBookingAsync(booking);
 				PaymentSummary payment = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
 
-				return this.OkNoCache(BookingSource.FromBooking(booking, cabins, products, payment));
+				BookingSource result = BookingSource.FromBooking(booking, cabins, products, payment);
+				if(!AuthContext.IsAdmin)
+					result.InternalNotes = null; // Do not leak internal notes to non-admins
+
+				return this.OkNoCache(result);
 			}
 			catch(Exception ex)
 			{

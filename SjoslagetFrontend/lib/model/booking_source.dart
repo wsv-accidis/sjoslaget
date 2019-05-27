@@ -14,11 +14,11 @@ class BookingSource extends BookingDetails {
 	PaymentSummary payment;
 	List<BookingProduct> products;
 
-	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, this.discount, this.isLocked, this.cabins, this.products, this.payment)
-		: super(firstName, lastName, phoneNo, email, lunch, reference);
+	BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, String internalNotes, this.discount, this.isLocked, this.cabins, this.products, this.payment)
+		: super(firstName, lastName, phoneNo, email, lunch, reference, internalNotes);
 
 	BookingSource.fromDetails(BookingDetails details, this.cabins, this.products)
-		: super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference);
+		: super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference, details.internalNotes);
 
 	factory BookingSource.fromJson(String jsonStr) {
 		final Map<String, dynamic> map = json.decode(jsonStr);
@@ -39,6 +39,7 @@ class BookingSource extends BookingDetails {
 			map[EMAIL],
 			map[LUNCH],
 			map[REFERENCE],
+			map[INTERNAL_NOTES],
 			map[DISCOUNT],
 			map[IS_LOCKED],
 			cabins,
@@ -59,6 +60,7 @@ class BookingSource extends BookingDetails {
 			EMAIL: email,
 			LUNCH: lunch,
 			REFERENCE: reference,
+			INTERNAL_NOTES: internalNotes,
 			CABINS: cabinsMap,
 			PRODUCTS: productsMap
 		});

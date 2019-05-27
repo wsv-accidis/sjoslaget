@@ -392,6 +392,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				Email = "test@sjoslaget.se",
 				PhoneNo = "0000-123 456",
 				Lunch = "15",
+				InternalNotes = String.Empty,
 				Cabins = new List<BookingSource.Cabin>(cabins),
 				Products = new List<BookingSource.Product>()
 			};

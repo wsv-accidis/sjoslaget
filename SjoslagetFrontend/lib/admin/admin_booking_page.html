@@ -23,11 +23,11 @@
 <form #bookingForm="ngForm">
 	<cabins-component #cabins></cabins-component>
 
-	<h2 class="booking-subtitle">Tillägg</h2>
+	<h2 class="booking-subtitle-padded">Tillägg</h2>
 
 	<products-component #products></products-component>
 
-	<h2 class="booking-subtitle" style="margin-top: 5px">Kontaktperson</h2>
+	<h2 class="booking-subtitle">Kontaktperson</h2>
 
 	<div *ngIf="hasLoaded" style="margin-left: 5px">
 		<material-input [(ngModel)]="booking.firstName"
@@ -69,11 +69,8 @@
 						type="email">
 		</material-input>
 
-		<!-- Vårkryssen
 		<div class="booking-lunch">
-			<span>
-				Önskad sittning
-			</span>
+			<span>Önskad sittning</span>
 
 			<material-radio-group [(ngModel)]="booking.lunch"
 								  ngControl="lunch">
@@ -90,7 +87,17 @@
 				</material-radio>
 			</material-radio-group>
 		</div>
-		-->
+	</div>
+
+	<h2 class="booking-subtitle">Interna anteckningar</h2>
+
+	<div *ngIf="hasLoaded" style="margin-left: 5px">
+		<material-input [(ngModel)]="booking.internalNotes"
+						ngControl="internalNotes"
+						label="Interna anteckningar (ej synliga för kontaktperson)"
+						style="width: 700px"
+						multiline>
+		</material-input>
 	</div>
 
 	<spinner-widget *ngIf="!hasLoaded || isSaving"></spinner-widget>
@@ -128,11 +135,12 @@
 	</div>
 
 	<p class="super-important" *ngIf="hasBookingError">
-		<material-icon icon="error"></material-icon> {{ bookingError }}
+		<material-icon icon="error"></material-icon>
+		{{ bookingError }}
 	</p>
 </form>
 
-<h2 class="booking-subtitle">
+<h2 class="booking-subtitle-padded">
 	Betalningar
 </h2>
 

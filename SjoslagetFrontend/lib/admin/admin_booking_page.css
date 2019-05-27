@@ -1,6 +1,5 @@
 .booking-lunch {
 	display: inline-block;
-	margin-bottom: 10px;
 	white-space: nowrap;
 }
 
@@ -23,6 +22,11 @@
 }
 
 .booking-subtitle {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.booking-subtitle-padded {
 	margin-top: 30px;
 	margin-bottom: 5px;
 }

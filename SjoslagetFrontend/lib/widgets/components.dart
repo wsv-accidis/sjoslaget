@@ -12,6 +12,7 @@ const List<dynamic> sjoslagetMaterialDirectives = <dynamic>[
 	MaterialInputDefaultValueAccessor,
 	MaterialInputBlurValueAccessor,
 	MaterialInputChangeValueAccessor,
+	MaterialMultilineInputComponent,
 	MaterialProgressComponent,
 	MaterialRadioComponent,
 	MaterialRadioGroupComponent
