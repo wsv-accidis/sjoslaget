@@ -15,7 +15,8 @@ import 'admin_routes.dart';
 	selector: 'admin-user-page',
 	templateUrl: 'admin_user_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, SpinnerWidget]
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, SpinnerWidget],
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminUserPage {
 	final ClientFactory _clientFactory;

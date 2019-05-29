@@ -2,6 +2,11 @@
 	Byt lösenord
 </h1>
 
+<div class="admin-menu">
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
 <p>
 	Du är inloggad som <span>{{ username }}</span>. Här kan du byta lösenord på ditt konto. När du bytt lösenord kommer du att loggas ut automatiskt.
 </p>
