@@ -39,7 +39,8 @@ namespace Accidis.Gotland.WebService.Services
 				Email = "info@absolutgotland.se",
 				PhoneNo = "0",
 				TeamName = "TeamName",
-				SpecialRequest = String.Empty
+				SpecialRequest = String.Empty,
+				InternalNotes = String.Empty
 			};
 
 			using(var db = DbUtil.Open())
@@ -59,7 +60,7 @@ namespace Accidis.Gotland.WebService.Services
 
 			/*
 			 * We need a transaction around this to prevent multiple bookings being created from the same candidate.
-			 * Unlike Sjöslaget there is no risk of overcomitting passengers since allocation of cabins happens
+			 * Unlike Sjöslaget there is no risk of overcommitting passengers since allocation of cabins happens
 			 * separate from booking.
 			 */
 			var tranOptions = new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted};
@@ -232,7 +233,7 @@ namespace Accidis.Gotland.WebService.Services
 
 				if(allowUpdateDetails)
 				{
-					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [TeamName] = @TeamName, [SpecialRequest] = @SpecialRequest, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [TeamName] = @TeamName, [SpecialRequest] = @SpecialRequest, [InternalNotes] = @InternalNotes, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
 						new
 						{
 							FirstName = source.FirstName,
@@ -241,6 +242,7 @@ namespace Accidis.Gotland.WebService.Services
 							PhoneNo = source.PhoneNo,
 							TeamName = source.TeamName,
 							SpecialRequest = source.SpecialRequest ?? String.Empty,
+							InternalNotes = source.InternalNotes ?? String.Empty,
 							TotalPrice = totalPrice,
 							Id = booking.Id
 						});

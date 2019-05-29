@@ -149,7 +149,11 @@ namespace Accidis.Gotland.WebService.Controllers
 				BookingPax[] pax = await _bookingRepository.GetPaxForBookingAsync(booking);
 				PaymentSummary payment = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
 
-				return this.OkNoCache(BookingSource.FromBooking(booking, pax, payment));
+				BookingSource result = BookingSource.FromBooking(booking, pax, payment);
+				if(!AuthContext.IsAdmin)
+					result.InternalNotes = null; // Do not leak internal notes to non-admins
+
+				return this.OkNoCache(result);
 			}
 			catch(Exception ex)
 			{

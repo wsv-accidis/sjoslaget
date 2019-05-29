@@ -21,6 +21,7 @@ const String EMAIL = 'Email';
 const String FIRSTNAME = 'FirstName';
 const String GENDER = 'Gender';
 const String ID = 'Id';
+const String INTERNAL_NOTES = 'InternalNotes';
 const String IS_IN_COUNTDOWN = 'IsInCountdown';
 const String IS_LOCKED = 'IsLocked';
 const String IS_OPEN = 'IsOpen';

@@ -14,12 +14,13 @@ class BookingSource {
 	String phoneNo;
 	String teamName;
 	String specialRequest;
+	String internalNotes;
 	int discount;
 	DateTime confirmationSent;
 	List<BookingPax> pax;
 	PaymentSummary payment;
 
-	BookingSource(this.reference, this.firstName, this.lastName, this.email, this.phoneNo, this.teamName, this.specialRequest, this.discount, this.confirmationSent, this.pax, this.payment);
+	BookingSource(this.reference, this.firstName, this.lastName, this.email, this.phoneNo, this.teamName, this.specialRequest, this.internalNotes, this.discount, this.confirmationSent, this.pax, this.payment);
 
 	factory BookingSource.fromJson(String jsonStr) {
 		final Map<String, dynamic> map = json.decode(jsonStr);
@@ -37,6 +38,7 @@ class BookingSource {
 			map[PHONE_NO],
 			map[TEAM_NAME],
 			map[SPECIAL_REQUEST],
+			map[INTERNAL_NOTES],
 			map[DISCOUNT],
 			ValueConverter.parseDateTime(map[CONFIRMATION_SENT]),
 			pax,
@@ -55,6 +57,7 @@ class BookingSource {
 			PHONE_NO: phoneNo,
 			TEAM_NAME: teamName,
 			SPECIAL_REQUEST: specialRequest,
+			INTERNAL_NOTES: internalNotes,
 			PAX: paxMap
 		});
 	}

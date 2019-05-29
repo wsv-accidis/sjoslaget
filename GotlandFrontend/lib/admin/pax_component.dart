@@ -100,7 +100,7 @@ class PaxComponent implements OnInit {
 		_onCountChange.add(count);
 	}
 
-	String cabinClassToString(CabinClass c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
+	String cabinClassToString(dynamic c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
 
 	String cabinClassToStringLabel(CabinClass c, String which) {
 		if (null == c) {
@@ -124,7 +124,7 @@ class PaxComponent implements OnInit {
 		_onCountChange.add(count);
 	}
 
-	String genderToString(String g) {
+	String genderToString(dynamic g) {
 		if (null == g)
 			return 'Kön';
 

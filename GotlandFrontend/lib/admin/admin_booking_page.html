@@ -41,7 +41,7 @@
 		</material-button>
 	</div>
 
-	<h2>Lag och kontaktperson</h2>
+	<h2 class="booking-subtitle-padded">Lag och kontaktperson</h2>
 
 	<div *ngIf="!isLoading" class="details">
 		<material-input [(ngModel)]="booking.teamName"
@@ -105,6 +105,17 @@
 		</material-input>
 	</div>
 
+	<h2 class="booking-subtitle">Interna anteckningar</h2>
+
+	<div *ngIf="!isLoading">
+		<material-input [(ngModel)]="booking.internalNotes"
+						ngControl="internalNotes"
+						label="Interna anteckningar (ej synliga för kontaktperson)"
+						style="width: 700px"
+						multiline>
+		</material-input>
+	</div>
+
 	<div class="spinner-widget" *ngIf="(isLoading && !hasLoadingError) || isSaving">
 		<spinner-widget></spinner-widget>
 	</div>
@@ -138,7 +149,7 @@
 	</div>
 </form>
 
-<h2>
+<h2 class="booking-subtitle-padded">
 	Tilldelning
 </h2>
 
@@ -161,7 +172,7 @@
 			  message="Är du säker? Bokningen raderas permanent. Det här går inte att ångra.">
 </modal-dialog>
 
-<h2>
+<h2 class="booking-subtitle">
 	Betalningar
 </h2>
 

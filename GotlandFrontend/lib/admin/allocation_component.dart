@@ -72,7 +72,7 @@ class AllocationComponent {
 
 	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
 
-	String cabinClassDetailToString(CabinClassDetail detail) => '${detail.no}. ${detail.title}, ${detail.capacity} bäddar';
+	String cabinClassDetailToString(dynamic detail) => '${detail.no}. ${detail.title}, ${detail.capacity} bäddar';
 
 	void allocate() {
 		if (!hasSelectedDetail) {
