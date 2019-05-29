@@ -103,7 +103,6 @@ namespace Accidis.Gotland.Test.Services
 
 			var sut = new BookingRepository(
 				new AecCredentialsGenerator(),
-				new TripRepository(),
 				userManagerMock.Object);
 
 			return sut;
@@ -124,14 +123,9 @@ namespace Accidis.Gotland.Test.Services
 				LastName = "Partysson",
 				Gender = "X",
 				Dob = "830412",
-				Nationality = "se",
-				OutboundTripId = GotlandDbExtensions.OutboundTripId,
-				InboundTripId = GotlandDbExtensions.InboundTripId,
-				IsStudent = true,
 				CabinClassMin = 0,
 				CabinClassPreferred = 2,
-				CabinClassMax = 3,
-				SpecialFood = "Pizza"
+				CabinClassMax = 3
 			};
 		}
 	}
