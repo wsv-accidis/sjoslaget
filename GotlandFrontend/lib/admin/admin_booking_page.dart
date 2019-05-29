@@ -68,13 +68,18 @@ class AdminBookingPage implements OnActivate {
 
 	bool get hasBookingResult => null != bookingResult;
 
+
 	bool get hasSentConfirmation => null != booking.confirmationSent;
 
 	bool get hasBookingError => isNotEmpty(bookingError);
 
 	bool get hasLoadingError => isNotEmpty(loadingError);
 
+	bool get hasPax => numberOfPax > 0;
+
 	bool get isLoading => null == booking;
+
+	int get numberOfPax => null != booking ? booking.pax.length : 0;
 
 	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
 

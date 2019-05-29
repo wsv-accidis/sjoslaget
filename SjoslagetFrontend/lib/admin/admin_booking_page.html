@@ -18,6 +18,10 @@
 	redigera bokningen efter att den skapats, men du kan låsa en bokning för att hindra flera ändringar.
 </p>
 
+<p *ngIf="hasCabins">
+	Bokningen har <span class="credentials">{{ numberOfPax }}</span> deltagare och <span class="credentials">{{ numberOfCabins }}</span> hytt(er).
+</p>
+
 <div style="clear: both; height: 10px;"></div>
 
 <form #bookingForm="ngForm">

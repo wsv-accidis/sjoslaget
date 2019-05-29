@@ -73,6 +73,8 @@ class AdminBookingPage implements OnActivate {
 
 	bool get hasBookingError => isNotEmpty(bookingError);
 
+	bool get hasCabins => hasLoaded && numberOfCabins > 0;
+
 	bool get hasLoaded => null != booking;
 
 	bool get hasPaymentError => isNotEmpty(paymentError);
@@ -84,6 +86,10 @@ class AdminBookingPage implements OnActivate {
 	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
 
 	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
+
+	int get numberOfCabins => booking.cabins.length;
+
+	int get numberOfPax => booking.cabins.fold(0, (sum, cabin) => sum + cabin.pax.where((p) => !p.isEmpty).length);
 
 	Future<void> deleteBooking() async {
 		if (isSaving)

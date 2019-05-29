@@ -22,6 +22,10 @@
 	Bokningens referens är <span class="credentials">{{ bookingResult.reference }}</span> och PIN-koden är <span class="credentials">{{ bookingResult.password }}</span>.
 </p>
 
+<p *ngIf="hasPax">
+	Bokningen har <span class="credentials">{{ numberOfPax }}</span> deltagare.
+</p>
+
 <div style="clear: both; height: 10px;"></div>
 
 <p class="super-important loading-error" *ngIf="hasLoadingError">

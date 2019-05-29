@@ -1,3 +1,5 @@
+import 'package:quiver/strings.dart' as str show isBlank;
+
 class BookingPax {
 	final String group;
 	final String firstName;
@@ -8,4 +10,6 @@ class BookingPax {
 	final int years;
 
 	BookingPax(this.group, this.firstName, this.lastName, this.gender, this.dob, this.nationality, this.years);
+
+	bool get isEmpty => str.isBlank(group) && str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
 }
