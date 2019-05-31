@@ -244,7 +244,17 @@ namespace Accidis.Sjoslaget.WebService.Services
 				try
 				{
 					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch], [InternalNotes]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch, @InternalNotes)",
-						new {CruiseId = booking.CruiseId, Reference = booking.Reference, FirstName = booking.FirstName, LastName = booking.LastName, Email = booking.Email, PhoneNo = booking.PhoneNo, Lunch = booking.Lunch, InternalNotes = booking.InternalNotes});
+						new
+						{
+							CruiseId = booking.CruiseId,
+							Reference = booking.Reference, 
+							FirstName = booking.FirstName, 
+							LastName = booking.LastName, 
+							Email = booking.Email, 
+							PhoneNo = booking.PhoneNo, 
+							Lunch = booking.Lunch, 
+							InternalNotes = booking.InternalNotes ?? String.Empty
+						});
 
 					createdBooking = true;
 					booking.Id = id;
