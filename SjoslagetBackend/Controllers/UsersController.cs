@@ -13,11 +13,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class UsersController : ApiController
 	{
 		readonly Logger _log = LogManager.GetLogger(typeof(UsersController).Name);
-		readonly AecUserSupport _userSupport;
+		readonly AecUsersController _usersController;
 
-		public UsersController(AecUserSupport userSupport)
+		public UsersController(AecUsersController usersController)
 		{
-			_userSupport = userSupport;
+			_usersController = usersController;
 		}
 
 		[Authorize(Roles = Roles.Admin)]
@@ -26,7 +26,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				await _userSupport.ChangePassword(change.Username, change.CurrentPassword, change.NewPassword, change.ForceReset);
+				await _usersController.ChangePassword(change.Username, change.CurrentPassword, change.NewPassword, change.ForceReset);
 				return Ok();
 			}
 			catch(NotFoundException)
@@ -50,7 +50,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				await _userSupport.CreateUser(user);
+				await _usersController.CreateUser(user);
 				return Ok();
 			}
 			catch(InvalidOperationException ex)
@@ -70,7 +70,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				Tuple<string, string> result = await _userSupport.ResetPinCode(booking.Reference);
+				Tuple<string, string> result = await _usersController.ResetPinCode(booking.Reference);
 				return Ok(new BookingResult {Reference = result.Item1, Password = result.Item2});
 			}
 			catch(NotFoundException)

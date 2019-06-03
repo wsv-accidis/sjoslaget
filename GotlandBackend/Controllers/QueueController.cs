@@ -6,6 +6,7 @@ using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
+using Accidis.WebServices.Web;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
@@ -104,6 +105,32 @@ namespace Accidis.Gotland.WebService.Controllers
 			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while keeping a candidate alive.");
+				throw;
+			}
+		}
+
+		[Authorize]
+		[HttpGet]
+		public async Task<IHttpActionResult> Stats(string reference)
+		{
+			try
+			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				if(BookingsController.IsUnauthorized(reference))
+					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
+
+				BookingQueueStats bookingQueueStats = await _bookingRepository.GetQueueStatsByReferenceAsync(reference, evnt.Opening);
+				if(null == bookingQueueStats)
+					return Ok(new BookingQueueStats());
+
+				return this.OkCacheControl(bookingQueueStats, WebConfig.StaticDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, $"An unexpected exception occurred while getting the booking with reference {reference}.");
 				throw;
 			}
 		}

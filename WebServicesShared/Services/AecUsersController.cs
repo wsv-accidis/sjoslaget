@@ -7,12 +7,12 @@ using Microsoft.AspNet.Identity;
 
 namespace Accidis.WebServices.Services
 {
-	public sealed class AecUserSupport
+	public sealed class AecUsersController
 	{
 		readonly AecCredentialsGenerator _credentialsGenerator;
 		readonly AecUserManager _userManager;
 
-		public AecUserSupport(AecCredentialsGenerator credentialsGenerator, AecUserManager userManager)
+		public AecUsersController(AecCredentialsGenerator credentialsGenerator, AecUserManager userManager)
 		{
 			_credentialsGenerator = credentialsGenerator;
 			_userManager = userManager;

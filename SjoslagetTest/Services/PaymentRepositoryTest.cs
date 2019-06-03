@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Accidis.Sjoslaget.Test.Db;
-using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Sjoslaget.Test.Services
@@ -34,9 +34,9 @@ namespace Accidis.Sjoslaget.Test.Services
 			SjoslagetDbExtensions.InitializeForTest();
 		}
 
-		internal static PaymentRepository GetPaymentRepositoryForTest()
+		internal static AecPaymentRepository GetPaymentRepositoryForTest()
 		{
-			return new PaymentRepository();
+			return new AecPaymentRepository();
 		}
 	}
 }

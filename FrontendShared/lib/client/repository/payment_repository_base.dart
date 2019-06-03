@@ -22,7 +22,7 @@ class PaymentRepositoryBase {
 
 		Response response;
 		try {
-			response = await client.post('$_apiRoot/bookings/pay/$reference', headers: headers, body: source);
+			response = await client.post('$_apiRoot/payments/pay/$reference', headers: headers, body: source);
 		} catch (e) {
 			throw IOException.fromException(e);
 		}
@@ -37,7 +37,7 @@ class PaymentRepositoryBase {
 
 		Response response;
 		try {
-			response = await client.post('$_apiRoot/bookings/discount/$reference', headers: headers, body: source);
+			response = await client.post('$_apiRoot/payments/discount/$reference', headers: headers, body: source);
 		} catch (e) {
 			throw IOException.fromException(e);
 		}

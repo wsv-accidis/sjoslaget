@@ -100,7 +100,7 @@ class BookingRepository {
 	Future<BookingQueueStats> getQueueStats(Client client, String reference) async {
 		Response response;
 		try {
-			response = await client.get('$_apiRoot/bookings/queueStats/$reference');
+			response = await client.get('$_apiRoot/queue/stats/$reference');
 		} catch (e) {
 			throw IOException.fromException(e);
 		}

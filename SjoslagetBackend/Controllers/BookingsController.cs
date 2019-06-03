@@ -8,6 +8,7 @@ using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Accidis.WebServices.Web;
 using Dapper;
 using NLog;
@@ -20,7 +21,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly CruiseRepository _cruiseRepository;
 		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
-		readonly PaymentRepository _paymentRepository;
+		readonly AecPaymentRepository _paymentRepository;
 		readonly ProductRepository _productRepository;
 		readonly ReportingService _reportingService;
 
@@ -28,7 +29,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			BookingRepository bookingRepository,
 			CruiseRepository cruiseRepository,
 			DeletedBookingRepository deletedBookingRepository,
-			PaymentRepository paymentRepository,
+			AecPaymentRepository paymentRepository,
 			ProductRepository productRepository,
 			ReportingService reportingService)
 		{
@@ -123,35 +124,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			DeletedBooking[] result = await _deletedBookingRepository.GetAllAsync(activeCruise);
 			return this.OkNoCache(result);
-		}
-
-		[Authorize(Roles = Roles.Admin)]
-		[HttpPost]
-		public async Task<IHttpActionResult> Discount(string reference, PaymentSource discount)
-		{
-			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
-			if(null == booking)
-				return NotFound();
-
-			try
-			{
-				int amount = Convert.ToInt32(discount.Amount);
-				amount = Math.Max(Math.Min(amount, 100), 0);
-
-				if(amount != booking.Discount)
-				{
-					booking.Discount = amount;
-					await _bookingRepository.UpdateDiscountAsync(booking);
-					_log.Info("Set discount to {0}% for booking {1}.", amount, booking.Reference);
-				}
-
-				return Ok();
-			}
-			catch(Exception ex)
-			{
-				_log.Error(ex, $"An unexpected exception occurred while updating the discount for the booking with reference {reference}.");
-				throw;
-			}
 		}
 
 		[Authorize]
@@ -252,32 +224,6 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				BookingPaxItem[] result = items.ToArray();
 				return this.OkNoCache(result);
 			}
-		}
-
-		[Authorize(Roles = Roles.Admin)]
-		[HttpPost]
-		public async Task<IHttpActionResult> Pay(string reference, PaymentSource payment)
-		{
-			Booking booking = await TryFindBookingInActiveCruiseByReference(reference);
-			if(null == booking)
-				return NotFound();
-
-			try
-			{
-				if(payment.Amount != 0)
-				{
-					await _paymentRepository.CreateAsync(booking, payment.Amount);
-					_log.Info("Registered payment of {0} kr for booking {1}.", payment.Amount, booking.Reference);
-				}
-			}
-			catch(Exception ex)
-			{
-				_log.Error(ex, $"An unexpected exception occurred while creating a payment for the booking with reference {reference}.");
-				throw;
-			}
-
-			var summary = await _paymentRepository.GetSumOfPaymentsByBookingAsync(booking);
-			return Ok(summary);
 		}
 
 		[Authorize(Roles = Roles.Admin)]

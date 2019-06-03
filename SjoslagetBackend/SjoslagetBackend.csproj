@@ -162,6 +162,7 @@
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\CruiseController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
+    <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PrinterController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\ReportingController.cs" />
@@ -199,7 +200,6 @@
     <Compile Include="Services\DeletedBookingRepository.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\ExportToExcelGenerator.cs" />
-    <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Services\ProductRepository.cs" />
     <Compile Include="Services\ReportingService.cs" />

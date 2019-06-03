@@ -1,8 +1,9 @@
 ﻿using System;
+using Accidis.WebServices.Models;
 
 namespace Accidis.Gotland.WebService.Models
 {
-	public sealed class Booking
+	public sealed class Booking : IBookingPaymentModel
 	{
 		public Guid Id { get; set; }
 		public Guid EventId { get; set; }

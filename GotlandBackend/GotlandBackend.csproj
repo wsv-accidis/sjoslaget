@@ -158,6 +158,7 @@
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\ExternalController.cs" />
+    <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\QueueAdminController.cs" />
     <Compile Include="Controllers\QueueController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -191,7 +192,6 @@
     <Compile Include="Services\EventRepository.cs" />
     <Compile Include="Services\ExternalBookingRepository.cs" />
     <Compile Include="Services\IntervalCalculator.cs" />
-    <Compile Include="Services\PaymentRepository.cs" />
     <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

@@ -105,13 +105,16 @@
     <Compile Include="Auth\AecUserTokenProvider.cs" />
     <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\BookingResult.cs" />
+    <Compile Include="Models\IBookingPaymentModel.cs" />
     <Compile Include="Models\IsoNationality.cs" />
+    <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PaymentSource.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Services\AecLoggingConfiguration.cs" />
     <Compile Include="Services\AecPaymentRepository.cs" />
-    <Compile Include="Services\AecUserSupport.cs" />
+    <Compile Include="Services\AecPaymentsController.cs" />
+    <Compile Include="Services\AecUsersController.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />
     <Compile Include="Db\DbUtil.cs" />

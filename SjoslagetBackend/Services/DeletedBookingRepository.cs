@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Services
 {
 	public sealed class DeletedBookingRepository
 	{
-		readonly PaymentRepository _paymentRepository;
+		readonly AecPaymentRepository _paymentRepository;
 
-		public DeletedBookingRepository(PaymentRepository paymentRepository)
+		public DeletedBookingRepository(AecPaymentRepository paymentRepository)
 		{
 			_paymentRepository = paymentRepository;
 		}

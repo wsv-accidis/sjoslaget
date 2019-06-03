@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Gotland.WebService;
+using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Services;
@@ -79,17 +80,18 @@ namespace Accidis.Gotland.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
-			container.Register<AecCredentialsGenerator>();
-			container.Register<AecOAuthProvider>();
+			container.Register<AecCredentialsGenerator>(Reuse.Singleton);
+			container.Register<AecOAuthProvider>(Reuse.Singleton);
+			container.Register<AecPaymentRepository>(Reuse.Singleton);
+			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
-			container.Register<AecUserSupport>();
-			container.Register<AllocationRepository>();
-			container.Register<BookingRepository>();
-			container.Register<BookingCandidateRepository>();
-			container.Register<CabinRepository>();
-			container.Register<EventRepository>();
-			container.Register<ExternalBookingRepository>();
-			container.Register<PaymentRepository>();
+			container.Register<AecUsersController>(Reuse.Singleton);
+			container.Register<AllocationRepository>(Reuse.Singleton);
+			container.Register<BookingRepository>(Reuse.Singleton);
+			container.Register<BookingCandidateRepository>(Reuse.Singleton);
+			container.Register<CabinRepository>(Reuse.Singleton);
+			container.Register<EventRepository>(Reuse.Singleton);
+			container.Register<ExternalBookingRepository>(Reuse.Singleton);
 
 			return container;
 		}

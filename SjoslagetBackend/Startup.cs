@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
+using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Services;
@@ -81,8 +82,10 @@ namespace Accidis.Sjoslaget.WebService
 
 			container.Register<AecCredentialsGenerator>(Reuse.Singleton);
 			container.Register<AecOAuthProvider>(Reuse.Singleton);
+			container.Register<AecPaymentRepository>(Reuse.Singleton);
+			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
 			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
-			container.Register<AecUserSupport>(Reuse.Singleton);
+			container.Register<AecUsersController>(Reuse.Singleton);
 			container.Register<BookingCabinsComparer>(Reuse.Singleton);
 			container.Register<BookingRepository>(Reuse.Singleton);
 			container.Register<CabinRepository>(Reuse.Singleton);
@@ -90,7 +93,6 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<DeletedBookingRepository>(Reuse.Singleton);
 			container.Register<PriceCalculator>(Reuse.Singleton);
 			container.Register<ProductRepository>(Reuse.Singleton);
-			container.Register<PaymentRepository>(Reuse.Singleton);
 			container.Register<ReportingService>(Reuse.Singleton);
 			container.Register<ReportRepository>(Reuse.Singleton);
 
