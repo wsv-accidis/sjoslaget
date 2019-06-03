@@ -27,6 +27,8 @@ namespace Accidis.Gotland.WebService.Models
 				throw new BookingException("Team name must be set.");
 			if(candidate.TeamSize <= 0)
 				throw new BookingException("Team size must be greater than zero.");
+			if(candidate.TeamSize > BookingSource.MaximumPaxInBooking)
+				throw new BookingException("Team size is too large.");
 		}
 	}
 }

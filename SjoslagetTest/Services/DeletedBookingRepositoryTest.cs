@@ -37,7 +37,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
 			var booking = await BookingRepositoryTest.GetNewlyCreatedBookingForTestAsync(cruise, repository);
 
-			var paymentRepository = PaymentRepositoryTest.GetPaymentRepositoryForTest();
+			var paymentRepository = AecPaymentRepositoryTest.GetPaymentRepositoryForTest();
 			const decimal amountPaid = 10m;
 			await paymentRepository.CreateAsync(booking, amountPaid);
 
@@ -68,7 +68,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			var result = await repository.CreateAsync(cruise, source);
 
 			var booking = await repository.FindByReferenceAsync(result.Reference);
-			var paymentRepository = PaymentRepositoryTest.GetPaymentRepositoryForTest();
+			var paymentRepository = AecPaymentRepositoryTest.GetPaymentRepositoryForTest();
 			await paymentRepository.CreateAsync(booking, 123.45m);
 
 			await repository.DeleteAsync(booking);
@@ -95,7 +95,7 @@ namespace Accidis.Sjoslaget.Test.Services
 
 		internal static DeletedBookingRepository GetDeletedBookingRepositoryForTest()
 		{
-			return new DeletedBookingRepository(PaymentRepositoryTest.GetPaymentRepositoryForTest());
+			return new DeletedBookingRepository(AecPaymentRepositoryTest.GetPaymentRepositoryForTest());
 		}
 	}
 }

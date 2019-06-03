@@ -7,6 +7,8 @@ namespace Accidis.Gotland.WebService.Models
 {
 	public class BookingSource
 	{
+		public const int MaximumPaxInBooking = 20;
+
 		public string Reference { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
@@ -75,6 +77,9 @@ namespace Accidis.Gotland.WebService.Models
 		{
 			if(null == Pax)
 				return;
+
+			if(Pax.Count > MaximumPaxInBooking)
+				throw new BookingException("Maximum number of pax exceeded.");
 
 			foreach(PaxSource pax in Pax)
 			{

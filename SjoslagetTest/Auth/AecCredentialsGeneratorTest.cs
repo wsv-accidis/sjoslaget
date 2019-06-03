@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Accidis.WebServices.Auth;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Accidis.Sjoslaget.Test.Services
+namespace Accidis.Sjoslaget.Test.Auth
 {
 	[TestClass]
 	public class AecCredentialsGeneratorTest

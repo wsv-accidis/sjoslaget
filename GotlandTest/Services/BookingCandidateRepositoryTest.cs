@@ -63,6 +63,17 @@ namespace Accidis.Gotland.Test.Services
 			}
 		}
 
+		[TestMethod]
+		[ExpectedException(typeof(BookingException))]
+		public async Task GivenBookingCandidate_WithTeamSizeTooLarge_ShouldReject()
+		{
+			var candidate = GetBookingCandidateForTest();
+			candidate.TeamSize = BookingSource.MaximumPaxInBooking + 1;
+			
+			var repository = CreateBookingCandidateRepositoryForTest();
+			await repository.CreateAsync(candidate);
+		}
+
 		[TestInitialize]
 		public void Initialize()
 		{

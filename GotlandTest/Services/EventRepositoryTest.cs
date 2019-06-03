@@ -11,7 +11,7 @@ namespace Accidis.Gotland.Test.Services
 	public class EventRepositoryTest
 	{
 		[TestMethod]
-		public async Task GivenActiveCruise_ShouldGetIt()
+		public async Task GivenActiveEvent_ShouldGetIt()
 		{
 			var repository = GetEventRepositoryForTest();
 			Event evnt = await repository.GetActiveAsync();

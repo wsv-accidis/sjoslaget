@@ -9,7 +9,7 @@ namespace Accidis.Sjoslaget.Test.Services
 {
 	[TestClass]
 	[DeploymentItem("DbTest.config")]
-	public class PaymentRepositoryTest
+	public class AecPaymentRepositoryTest
 	{
 		[TestMethod]
 		public async Task GivenBooking_WhenPaymentsRegistered_ShouldCalculateCorrectSummary()

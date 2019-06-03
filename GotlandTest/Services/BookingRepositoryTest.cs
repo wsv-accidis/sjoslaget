@@ -48,7 +48,7 @@ namespace Accidis.Gotland.Test.Services
 			var source = new BookingSource
 			{
 				Reference = booking.Reference,
-				Pax = new List<BookingSource.PaxSource> { GetPaxSourceForTest(), GetPaxSourceForTest(), GetPaxSourceForTest() }
+				Pax = new List<BookingSource.PaxSource> {GetPaxSourceForTest(), GetPaxSourceForTest(), GetPaxSourceForTest()}
 			};
 
 			var result = await repository.UpdateAsync(evnt, source);
@@ -58,6 +58,23 @@ namespace Accidis.Gotland.Test.Services
 			var pax = await repository.GetPaxForBookingAsync(booking);
 
 			Assert.AreEqual(3, pax.Length);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(BookingException))]
+		public async Task GivenExistingBooking_WhenUpdatedWithTooManyPax_ShouldReject()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var evnt = await EventRepositoryTest.GetEventForTestAsync();
+			var booking = await GetNewlyCreatedBookingForTest(evnt, repository);
+
+			var pax = new List<BookingSource.PaxSource>();
+			for(int i = 0; i < BookingSource.MaximumPaxInBooking + 1; i++)
+				pax.Add(GetPaxSourceForTest());
+
+			var source = new BookingSource {Reference = booking.Reference, Pax = pax};
+
+			await repository.UpdateAsync(evnt, source);
 		}
 
 		[TestMethod]
