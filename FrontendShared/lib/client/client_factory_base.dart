@@ -7,9 +7,10 @@ import 'package:http/browser_client.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:quiver/strings.dart' as str show equalsIgnoreCase;
 
+import 'client_provider.dart';
 import 'io_exception.dart';
 
-class ClientFactoryBase {
+class ClientFactoryBase implements ClientProvider {
 	static const NAME_KEY = 'client_name';
 	static const ROLE_KEY = 'client_role';
 	static const TOKEN_KEY = 'client_jwt';
@@ -54,6 +55,7 @@ class ClientFactoryBase {
 		print('Session state cleared.');
 	}
 
+	@override
 	http.Client getClient() {
 		try {
 			if (hasCredentials) {

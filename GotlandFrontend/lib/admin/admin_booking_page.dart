@@ -4,6 +4,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/admin/payment_history_component.dart';
 import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
@@ -27,7 +28,7 @@ import 'payment_component.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaymentComponent, PaxComponent, ModalDialog, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaymentComponent, PaymentHistoryComponent, PaxComponent, ModalDialog, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes, ValidationSupport]
 )
@@ -142,7 +143,7 @@ class AdminBookingPage implements OnActivate {
 		}
 
 		bookingResult = _tempCredentialsStore.load();
-		if(null != bookingResult && bookingResult.reference != reference) {
+		if (null != bookingResult && bookingResult.reference != reference) {
 			bookingResult = null;
 			_tempCredentialsStore.clear();
 		}

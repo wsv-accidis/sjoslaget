@@ -1,0 +1,24 @@
+<div *ngIf="isLoading">
+	Laddar ...
+</div>
+
+<div *ngIf="!hasPayments">
+	Det finns ingen betalningshistorik.
+</div>
+
+<table *ngIf="hasPayments">
+	<thead>
+	<th>Datum</th>
+	<th>Belopp</th>
+	</thead>
+	<tbody>
+	<tr *ngFor="let p of payments">
+		<td>
+			{{ formatCreated(p.created) }}
+		</td>
+		<td>
+			{{ formatAmount(p.amount) }}
+		</td>
+	</tr>
+	</tbody>
+</table>

@@ -1,4 +1,5 @@
 const String AMOUNT = 'Amount';
+const String CREATED = 'Created';
 const String CURRENT_PASSWORD = 'CurrentPassword';
 const String LATEST = 'Latest';
 const String NEW_PASSWORD = 'NewPassword';

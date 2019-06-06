@@ -214,6 +214,11 @@
 	</p>
 </form>
 
+<div *ngIf="hasLoaded">
+	<payment-history-component [bookingRef]="booking.reference">
+	</payment-history-component>
+</div>
+
 <h2>
 	PIN-kod
 </h2>

@@ -1,5 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/admin/payment_history_provider.dart';
+import 'package:frontend_shared/client.dart';
 
 import '../booking/booking_validator.dart';
 import '../client/booking_repository.dart';
@@ -28,8 +30,10 @@ import 'admin_user_page.template.dart';
 		BookingRepository,
 		BookingValidator,
 		ClientFactory,
+		ClassProvider<ClientProvider>(ClientProvider, useClass: ClientFactory),
 		CruiseRepository,
 		DeletedBookingRepository,
+		ClassProvider<PaymentHistoryProvider>(PaymentHistoryProvider, useClass: PaymentRepository),
 		PaymentRepository,
 		PrinterRepository,
 		UserRepository

@@ -193,4 +193,7 @@
 					   (onDiscountUpdated)="booking.discount = $event"
 					   (onPaymentUpdated)="booking.payment = $event">
 	</payment-component>
+
+	<payment-history-component [bookingRef]="booking.reference">
+	</payment-history-component>
 </div>

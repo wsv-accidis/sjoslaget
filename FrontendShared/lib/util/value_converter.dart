@@ -1,6 +1,15 @@
 import 'package:decimal/decimal.dart';
 
 abstract class ValueConverter {
+	// The intended use for this is where a value gets internally parsed as double, but we want decimal.
+	// This potentially causes a loss of precision and should be avoided if possible.
+	static Decimal doubleToDecimal(double value) {
+		if(!value.isFinite)
+			return null;
+
+		return Decimal.parse(value.toString());
+	}
+
 	static DateTime parseDateTime(String value) {
 		if (null == value || value.isEmpty)
 			return null;

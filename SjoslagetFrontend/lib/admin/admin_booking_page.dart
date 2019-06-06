@@ -5,6 +5,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
+import 'package:frontend_shared/admin/payment_history_component.dart';
 import 'package:frontend_shared/model.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
@@ -29,7 +30,7 @@ import 'admin_routes.dart';
 	selector: 'admin-booking-page',
 	templateUrl: 'admin_booking_page.html',
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ModalDialog, ProductsComponent, SpinnerWidget],
+	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ModalDialog, PaymentHistoryComponent, ProductsComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
 	exports: <dynamic>[AdminRoutes]
 )

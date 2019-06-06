@@ -1,0 +1,19 @@
+div {
+	font-style: italic;
+}
+
+material-expansionpanel {
+	width: 500px;
+}
+
+table {
+	width: 400px;
+}
+
+th, td {
+	border-bottom: 1px solid silver;
+	padding-bottom: 4px;
+	padding-right: 8px;
+	padding-top: 4px;
+	text-align: left;
+}
