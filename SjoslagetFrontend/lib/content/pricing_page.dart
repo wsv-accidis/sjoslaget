@@ -11,7 +11,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
 	selector: 'pricing-page',
 	styleUrls: ['content_styles.css'],
-	templateUrl: 'pricing_page_sj.html',
+	templateUrl: 'pricing_page_vk.html',
 	directives: <dynamic>[coreDirectives, SpinnerWidget]
 )
 class PricingPage implements OnInit {

@@ -16,7 +16,7 @@ import 'booking_validator.dart';
 
 @Component(
 	selector: 'products-component',
-	templateUrl: 'products_component_sj.html',
+	templateUrl: 'products_component_vk.html',
 	styleUrls: ['../content/content_styles.css', 'products_component.css'],
 	directives: <dynamic>[coreDirectives, formDirectives, sjoslagetMaterialDirectives, SpinnerWidget]
 )
