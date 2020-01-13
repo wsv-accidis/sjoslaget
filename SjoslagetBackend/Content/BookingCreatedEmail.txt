@@ -10,8 +10,8 @@ biljetter och tillsammans med PIN-koden för att komma åt din bokning.
 Gå till sjoslaget.se/bokning och mata in referens samt PIN-kod för att visa
 din bokning och se det totala beloppet att betala.
 
-Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
-Betala så snart som möjligt efter att du färdigställt din bokning.
+Vårt Bankgiro är 299-5272 och betalningsmottagare är HZ Event, alternativt
+OMO Media. Betala så snart som möjligt efter att du färdigställt din bokning.
 
 VIKTIGT: Du måste ange bokningsreferensen som meddelande till
 betalningsmottagaren när du gör inbetalningen, annars kan vi inte passa
