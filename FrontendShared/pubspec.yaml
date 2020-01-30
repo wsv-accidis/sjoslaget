@@ -11,7 +11,7 @@ dependencies:
   corsac_jwt:
     git: https://github.com/corsac-dart/jwt.git
   decimal:
-  http:
+  http: ^0.12.0
   intl:
   oauth2:
     git:
