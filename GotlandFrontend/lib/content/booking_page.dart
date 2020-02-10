@@ -70,8 +70,11 @@ class BookingPage implements OnInit {
 	@override
 	Future<void> ngOnInit() async {
 		try {
-			final client = _clientFactory.getClient();
-			_evnt = await _eventRepository.getActiveEvent(client);
+			// Temporary dummy event while working on shit
+			_evnt = Event('', false, false, false, null);
+
+			//final client = _clientFactory.getClient();
+			//_evnt = await _eventRepository.getActiveEvent(client);
 		} catch (e) {
 			print('Failed to load active event: ${e.toString()}');
 			hasError = true;

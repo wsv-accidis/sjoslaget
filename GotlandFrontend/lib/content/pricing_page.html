@@ -4,25 +4,72 @@
 	Läs nedanför tabellen om vad som ingår i priset och hur du väljer logi när du bokar!
 </p>
 
-<table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
+<table cellpadding="8" cellspacing="0" *ngIf="isLoaded">
 	<tr>
-		<th>Paket</th>
+		<th>Nivå</th>
 		<th>Pris</th>
-		<th>Beskrivning</th>
+		<th class="feature-header">Säng</th>
+		<th class="feature-header">Badrum</th>
+		<th class="feature-header">Kök</th>
+		<th class="feature-header">Städning</th>
+		<th></th>
 	</tr>
-	<tr *ngFor="let cabin of cabins">
-		<td class="border nowrap">
-			{{cabin.name}}
-		</td>
-		<td class="border nowrap">
-			{{cabin.pricePerPax}} kr
-		</td>
-		<td class="border">
-			{{cabin.description}}
-		</td>
+	<tr>
+		<td>0</td>
+		<td>{{price(0)}}</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td>{{description(0)}}</td>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td>{{price(1)}}</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td>{{description(1)}}</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td>{{price(2)}}</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-on">✓</td>
+		<td>{{description(2)}}</td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td>{{price(3)}}</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-on">(✓)</td>
+		<td class="feature-off">✗</td>
+		<td>{{description(3)}}</td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td>{{price(4)}}</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-off">✗</td>
+		<td class="feature-on">✓</td>
+		<td>{{description(4)}}</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td>{{price(5)}}</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-on">✓</td>
+		<td class="feature-off">✗</td>
+		<td>{{description(5)}}</td>
 	</tr>
 </table>
-<spinner-widget *ngIf="null == cabins"></spinner-widget>
+<spinner-widget *ngIf="!isLoaded"></spinner-widget>
 
 <p>
 	Priserna är per person och under förutsättning att stugan är full. Vi kommer att göra vårt bästa för att alla ska få plats så om ni absolut
@@ -35,12 +82,31 @@
 	och alla aktiviteter som äger rum på Kneippbyn.
 </p>
 
+<h2>Om loginivåerna</h2>
+
+<p>
+	Vi har gjort om nivåerna i år, så här kommer en förklaring - nivå 1 och 2 är ganska enkla boenden som alltjämt erbjuder behagligt
+	tak över huvudet. Du har, liksom alla som bor på campingen, fri tillgång till dusch och toalett i ett servicehus som oftast ligger väldigt nära.
+	Stugorna i nivå 3 håller lite högre standard och har egna badrum, flera av dem har dessutom små kök för enklare matlagning.
+</p>
+
+<p>
+	Nivå 4 är rum i lyxiga Hotell Kneippbyn, samtliga med badrum. Som en bonus för både nivå 2 och 4 ingår städning,
+	så att söndagsmorgonen blir lite mindre slitsam. Nivå 5, slutligen, är våra populäraste, bäst utrustade boenden
+	som har både kök och badrum. Dessutom ofta med fin sjöutsikt och plats för sex (personer)!
+</p>
+
+<p>
+	Nedan finner du en karta som visar vilka områden som ligger i vilken nivå.
+</p>
+
 <h2>Resor</h2>
 
 <p>
-	Till skillnad från tidigare AG så <strong>ingår inte resan till Visby i biljetten</strong>. Du väljer och bokar din resa själv. Vi föreslår att du gör det
-	så fort din bokning är bekräftad! Du kan boka båtbiljett med <a href="https://www.destinationgotland.se/">Destination Gotland</a> eller
-	flygbiljett med antingen <a href="https://braathens.flygbra.se/">Braathens</a> eller <a href="https://www.sas.se/resmal/sverige/visby/">SAS</a>.
+	Du väljer och bokar din resa själv, det ingår inte i priset för bokningen. Vi föreslår att du gör det så fort din bokning är bekräftad!
+	Du kan boka båtbiljett med <a href="https://www.destinationgotland.se/">Destination Gotland</a> eller flygbiljett med antingen
+	<a href="https://www.flygbra.se/destinationer/visby/">BRA</a> eller <a href="https://www.sas.se/resmal/sverige/visby/">SAS</a>. Tänk på att
+	du som student ofta kan utnyttja särskilda erbjudanden.
 </p>
 
 <p>
@@ -55,11 +121,10 @@
 	Ju fler olika nivåer du kan tänka dig desto större är din chans att få plats. Naturligtvis betalar du bara för den nivå du faktiskt bor i.
 </p>
 
-<p>
-	Hotellet och de flesta stugorna ligger i den östra delen av området. Villavagnarna, lägenheterna, en del stugor och campingen
-	ligger i den västra delen. Säg till när du bokar om du föredrar ett visst område. Du kan klicka på kartan nedan för att zooma in.
-</p>
-
 <a href="/gfx/karta/karta.png">
 	<img src="/gfx/karta/karta-liten.png" alt="Karta över Kneippbyn" title="Karta över Kneippbyn" />
 </a>
+
+<p>
+	Kartan är preliminär, vi väntar på detaljer från Kneippbyn!
+</p>

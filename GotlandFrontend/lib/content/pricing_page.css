@@ -1,0 +1,13 @@
+td {
+	border-top: 1px solid silver;
+}
+th.feature-header {
+	text-align: center;
+}
+td.feature-on {
+	text-align: center;
+	font-weight: bold;
+}
+td.feature-off {
+	text-align: center;
+}

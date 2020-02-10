@@ -208,6 +208,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Beebyte WebDeploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Beebyte FTP.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
