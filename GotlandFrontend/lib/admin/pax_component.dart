@@ -11,6 +11,7 @@ import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/cabin_class.dart';
+import '../util/food.dart';
 import '../util/gender.dart';
 import '../widgets/components.dart';
 
@@ -41,6 +42,8 @@ class PaxComponent implements OnInit {
 	bool isReadOnly = false;
 
 	int get count => paxViews.length;
+
+	SelectionOptions<String> get foodOptions => Food.getOptions();
 
 	SelectionOptions<String> get genderOptions => Gender.getOptions();
 
@@ -124,6 +127,13 @@ class PaxComponent implements OnInit {
 		_onCountChange.add(count);
 	}
 
+	String foodToString(dynamic f) {
+		if (null == f)
+			return 'Kost';
+
+		return Food.asString(f);
+	}
+
 	String genderToString(dynamic g) {
 		if (null == g)
 			return 'Kön';
@@ -142,6 +152,7 @@ class PaxComponent implements OnInit {
 
 	void _addListeners(BookingPaxView view) {
 		// Change detection for <material-dropdown-select> is annoying
+		view.foodSelection.selectionChanges.listen(_validateAll);
 		view.genderSelection.selectionChanges.listen(_validateAll);
 		view.cabinClassMinSelection.selectionChanges.listen(_validateAll);
 		view.cabinClassPreferredSelection.selectionChanges.listen(_validateAll);

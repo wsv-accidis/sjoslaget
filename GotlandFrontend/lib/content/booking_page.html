@@ -85,6 +85,7 @@
 									  [options]="teamSizeOptions"
 									  [itemRenderer]="teamSizeToString"
 									  [selection]="teamSizeSelection"
+									  (selectionChange)="teamSizeChanged($event)"
 									  width="2">
 			</material-dropdown-select>
 		</div>

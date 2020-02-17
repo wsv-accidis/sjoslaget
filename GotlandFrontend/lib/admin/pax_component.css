@@ -1,5 +1,5 @@
 table {
-	max-width: 820px;
+	max-width: 860px;
 }
 
 table.pax-readonly {
@@ -42,7 +42,11 @@ td.classes-field-cell material-icon {
 }
 
 td.dob-field-cell, th.dob-field-cell {
-	width: 110px;
+	width: 90px;
+}
+
+td.dob-field-cell {
+	padding-right: 20px;
 }
 
 td.gender-field-cell {
@@ -59,7 +63,7 @@ material-dropdown-select.gender-select {
 
 td.name-field-cell {
 	padding-right: 20px;
-	width: 215px;
+	width: 200px;
 }
 
 a.pax-delete {
@@ -105,12 +109,10 @@ td.spacing-cell {
 }
 
 td.special-req-field-cell {
-	padding-right: 15px;
-	padding-top: 8px;
 }
 
-td.special-req-field-cell > material-input {
-	width: 760px;
+td.special-req-field-cell > material-dropdown-select {
+	width: 100px;
 }
 
 material-input {

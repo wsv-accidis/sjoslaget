@@ -100,8 +100,8 @@ class BookingEditPage implements OnInit {
 			return;
 		}
 
-		pax.isReadOnly = isReadOnly;
 		credentials = _tempCredentialsStore.load();
+		pax.isReadOnly = isReadOnly;
 
 		if (!isReadOnly && booking.pax.isEmpty) {
 			// For new bookings, helpfully create a bunch of empty rows

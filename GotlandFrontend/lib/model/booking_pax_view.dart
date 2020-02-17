@@ -13,19 +13,22 @@ class BookingPaxView {
 	String genderError;
 	String dob;
 	String dobError;
+	SingleSelectionModel<String> foodSelection;
+	String foodError;
 	SingleSelectionModel<CabinClass> cabinClassMinSelection;
 	String cabinClassMinError;
 	SingleSelectionModel<CabinClass> cabinClassPreferredSelection;
 	String cabinClassPreferredError;
 	SingleSelectionModel<CabinClass> cabinClassMaxSelection;
 	String cabinClassMaxError;
-	String specialRequest;
 
 	CabinClass get cabinClassMax => _selectedOrNull(cabinClassMaxSelection);
 
 	CabinClass get cabinClassMin => _selectedOrNull(cabinClassMinSelection);
 
 	CabinClass get cabinClassPreferred => _selectedOrNull(cabinClassPreferredSelection);
+
+	String get food => _selectedOrNull(foodSelection);
 
 	String get gender => _selectedOrNull(genderSelection);
 
@@ -36,6 +39,8 @@ class BookingPaxView {
 	bool get hasGenderError => str.isNotEmpty(genderError);
 
 	bool get hasDobError => str.isNotEmpty(dobError);
+
+	bool get hasFoodError => str.isNotEmpty(foodError);
 
 	bool get hasCabinClassError => str.isNotEmpty(cabinClassMinError) || str.isNotEmpty(cabinClassPreferredError) || str.isNotEmpty(cabinClassMaxError);
 
@@ -56,6 +61,7 @@ class BookingPaxView {
 		list.where((p) => !p.isEmpty).map((p) => p._toBookingPax()).toList(growable: false);
 
 	BookingPaxView.createEmpty() {
+		foodSelection = SelectionModel<String>.single();
 		genderSelection = SelectionModel<String>.single();
 		cabinClassMinSelection = SelectionModel<CabinClass>.single();
 		cabinClassPreferredSelection = SelectionModel<CabinClass>.single();
@@ -65,12 +71,12 @@ class BookingPaxView {
 	BookingPaxView.fromBookingPax(BookingPax pax, List<CabinClass> cabinClasses) {
 		firstName = pax.firstName;
 		lastName = pax.lastName;
+		foodSelection = SelectionModel<String>.single(selected: pax.specialRequest);
 		genderSelection = SelectionModel<String>.single(selected: pax.gender);
 		dob = pax.dob;
 		cabinClassMinSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassMin, cabinClasses));
 		cabinClassPreferredSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassPreferred, cabinClasses));
 		cabinClassMaxSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassMax, cabinClasses));
-		specialRequest = pax.specialRequest;
 	}
 
 	void clearErrors() {
@@ -78,6 +84,7 @@ class BookingPaxView {
 		lastNameError = null;
 		genderError = null;
 		dobError = null;
+		foodError = null;
 		cabinClassMinError = null;
 		cabinClassPreferredError = null;
 		cabinClassMaxError = null;
@@ -97,6 +104,6 @@ class BookingPaxView {
 			cabinClassMinSelection.selectedValue.no,
 			cabinClassPreferredSelection.selectedValue.no,
 			cabinClassMaxSelection.selectedValue.no,
-			specialRequest
+			foodSelection.selectedValue
 		);
 }

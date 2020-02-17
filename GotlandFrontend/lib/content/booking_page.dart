@@ -42,6 +42,7 @@ class BookingPage implements OnInit {
 	String phoneNo;
 	String email;
 	String teamName;
+	int teamSize = TEAM_SIZE_DEFAULT;
 	SelectionModel<int> teamSizeSelection = SelectionModel.single(selected: TEAM_SIZE_DEFAULT);
 	bool acceptToc = false;
 	bool acceptRules = false;
@@ -60,8 +61,6 @@ class BookingPage implements OnInit {
 	bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.isOpen && !_evnt.isLocked;
 
 	bool get isOpen => isLoaded && _evnt.isOpen;
-
-	int get teamSize => teamSizeSelection.selectedValues.first;
 
 	SelectionOptions<int> get teamSizeOptions => SelectionOptions.fromList(range(TEAM_SIZE_MIN, TEAM_SIZE_MAX + 1, 1).cast<int>().toList(growable: false));
 
@@ -101,7 +100,15 @@ class BookingPage implements OnInit {
 		await _router.navigateByUrl(BookingRoutes.countdown.toUrl());
 	}
 
-	String teamSizeToString(int size) {
+	void teamSizeChanged(int size) {
+		// We save the last set value because the user might unintentionally "unselect" the value
+		// from the dropdown and leave it at null.
+		if(null != size) {
+			teamSize = size;
+		}
+	}
+
+	String teamSizeToString(dynamic size) {
 		if(1 == size)
 			return '1 person';
 		else
