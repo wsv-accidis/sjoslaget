@@ -140,6 +140,7 @@ namespace Accidis.Gotland.Test.Services
 				LastName = "Partysson",
 				Gender = "X",
 				Dob = "830412",
+				Food = "m",
 				CabinClassMin = 0,
 				CabinClassPreferred = 2,
 				CabinClassMax = 3

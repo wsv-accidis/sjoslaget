@@ -19,6 +19,7 @@ const String DISCOUNT = 'Discount';
 const String DOB = 'Dob';
 const String EMAIL = 'Email';
 const String FIRSTNAME = 'FirstName';
+const String FOOD = 'Food';
 const String GENDER = 'Gender';
 const String ID = 'Id';
 const String INTERNAL_NOTES = 'InternalNotes';

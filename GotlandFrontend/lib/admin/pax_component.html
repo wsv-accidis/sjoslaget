@@ -15,7 +15,7 @@
 			<th class="dob-field-cell">
 				Födelsedatum
 			</th>
-			<th class="special-req-field-cell">
+			<th class="food-field-cell">
 				Kost
 			</th>
 			<th class="classes-field-cell">
@@ -40,7 +40,7 @@
 			<td>
 				{{ pax.dob }}
 			</td>
-			<td class="readonly-special-req-cell">
+			<td class="readonly-food-cell">
 				{{ foodToString(pax.food) }}
 			</td>
 			<td>
@@ -101,7 +101,7 @@
 								[ngControl]="uniqueId('dob', p)">
 				</material-input>
 			</td>
-			<td class="special-req-field-cell">
+			<td class="food-field-cell">
 				<material-dropdown-select [buttonText]="foodToString(pax.food)"
 										  class="food-select"
 										  [error]="pax.foodError"

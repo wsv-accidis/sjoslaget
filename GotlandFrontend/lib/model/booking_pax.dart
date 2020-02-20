@@ -5,12 +5,12 @@ class BookingPax {
 	final String lastName;
 	final String gender;
 	final String dob;
+	final String food;
 	final int cabinClassMin;
 	final int cabinClassPreferred;
 	final int cabinClassMax;
-	final String specialRequest;
 
-	BookingPax(this.firstName, this.lastName, this.gender, this.dob, this.cabinClassMin, this.cabinClassPreferred, this.cabinClassMax, this.specialRequest);
+	BookingPax(this.firstName, this.lastName, this.gender, this.dob, this.food, this.cabinClassMin, this.cabinClassPreferred, this.cabinClassMax);
 
 	factory BookingPax.fromMap(Map<String, dynamic> map) =>
 		BookingPax(
@@ -18,10 +18,10 @@ class BookingPax {
 			map[LASTNAME],
 			map[GENDER],
 			map[DOB],
+			map[FOOD],
 			map[CABIN_CLASS_MIN],
 			map[CABIN_CLASS_PREF],
 			map[CABIN_CLASS_MAX],
-			map[SPECIAL_REQUEST]
 		);
 
 	Map<String, dynamic> toMap() =>
@@ -30,9 +30,9 @@ class BookingPax {
 			LASTNAME: lastName,
 			GENDER: gender,
 			DOB: dob,
+			FOOD: food,
 			CABIN_CLASS_MIN: cabinClassMin,
 			CABIN_CLASS_PREF: cabinClassPreferred,
-			CABIN_CLASS_MAX: cabinClassMax,
-			SPECIAL_REQUEST: specialRequest
+			CABIN_CLASS_MAX: cabinClassMax
 		};
 }

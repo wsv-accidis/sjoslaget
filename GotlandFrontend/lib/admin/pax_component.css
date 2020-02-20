@@ -95,23 +95,23 @@ table.pax-readonly td {
 	border-top: 1px solid silver;
 }
 
-td.readonly-pax-header-cell {
-	font-weight: bold;
-}
-
-td.readonly-special-req-cell {
+td.readonly-food-cell {
 	max-width: 300px;
 	white-space: normal;
+}
+
+td.readonly-pax-header-cell {
+	font-weight: bold;
 }
 
 td.spacing-cell {
 	height: 30px;
 }
 
-td.special-req-field-cell {
+td.food-field-cell {
 }
 
-td.special-req-field-cell > material-dropdown-select {
+td.food-field-cell > material-dropdown-select {
 	width: 100px;
 }
 

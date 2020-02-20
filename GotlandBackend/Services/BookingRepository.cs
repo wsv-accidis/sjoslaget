@@ -306,8 +306,8 @@ namespace Accidis.Gotland.WebService.Services
 			foreach(BookingSource.PaxSource paxSource in sourceList)
 			{
 				BookingPax pax = BookingPax.FromSource(paxSource, booking.Id);
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [SpecialRequest], [Order]) " +
-				                      "values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @SpecialRequest, @Order)",
+				await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [Food], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [Order]) " +
+				                      "values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @Food, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @Order)",
 					new
 					{
 						BookingId = pax.BookingId,
@@ -315,10 +315,10 @@ namespace Accidis.Gotland.WebService.Services
 						LastName = pax.LastName,
 						Gender = pax.Gender,
 						Dob = pax.Dob.ToString(),
+						Food = pax.Food,
 						CabinClassMin = pax.CabinClassMin,
 						CabinClassPreferred = pax.CabinClassPreferred,
 						CabinClassMax = pax.CabinClassMax,
-						SpecialRequest = pax.SpecialRequest ?? String.Empty,
 						Order = paxIdx++
 					});
 			}

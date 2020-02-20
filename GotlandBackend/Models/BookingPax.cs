@@ -11,10 +11,10 @@ namespace Accidis.Gotland.WebService.Models
 		public string LastName { get; set; }
 		public Gender Gender { get; set; }
 		public DateOfBirth Dob { get; set; }
+		public string Food { get; set; }
 		public int CabinClassMin { get; set; }
 		public int CabinClassPreferred { get; set; }
 		public int CabinClassMax { get; set; }
-		public string SpecialRequest { get; set; }
 
 		public static BookingPax FromSource(BookingSource.PaxSource source, Guid bookingId)
 		{
@@ -25,10 +25,10 @@ namespace Accidis.Gotland.WebService.Models
 				LastName = source.LastName,
 				Gender = Gender.FromString(source.Gender),
 				Dob = new DateOfBirth(source.Dob),
+				Food = source.Food,
 				CabinClassMin = source.CabinClassMin,
 				CabinClassPreferred = source.CabinClassPreferred,
-				CabinClassMax = source.CabinClassMax,
-				SpecialRequest = source.SpecialRequest
+				CabinClassMax = source.CabinClassMax
 			};
 		}
 	}

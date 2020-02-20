@@ -35,17 +35,17 @@ namespace Accidis.Gotland.WebService.Models
 				SpecialRequest = booking.SpecialRequest,
 				InternalNotes = booking.InternalNotes,
 				Discount = booking.Discount,
-				ConfirmationSent = booking.ConfirmationSent, 
+				ConfirmationSent = booking.ConfirmationSent,
 				Pax = pax.Select(p => new PaxSource
 				{
 					FirstName = p.FirstName,
 					LastName = p.LastName,
 					Gender = p.Gender.ToString(),
 					Dob = p.Dob.ToString(),
+					Food = p.Food,
 					CabinClassMin = p.CabinClassMin,
 					CabinClassPreferred = p.CabinClassPreferred,
 					CabinClassMax = p.CabinClassMax,
-					SpecialRequest = p.SpecialRequest
 				}).ToList(),
 				Payment = payment
 			};
@@ -94,10 +94,10 @@ namespace Accidis.Gotland.WebService.Models
 			public string LastName { get; set; }
 			public string Gender { get; set; }
 			public string Dob { get; set; }
+			public string Food { get; set; }
 			public int CabinClassMin { get; set; }
 			public int CabinClassPreferred { get; set; }
 			public int CabinClassMax { get; set; }
-			public string SpecialRequest { get; set; }
 
 			internal void ValidateCabinClasses()
 			{
@@ -115,6 +115,8 @@ namespace Accidis.Gotland.WebService.Models
 					throw new BookingException("Last name must be set.");
 				if(!DateOfBirth.IsValid(Dob))
 					throw new BookingException("Date of birth must be set and a valid date.");
+				if(String.IsNullOrEmpty(Food))
+					throw new BookingException("Food must be set.");
 			}
 		}
 	}

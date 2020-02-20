@@ -46,7 +46,7 @@ class BookingPaxView {
 
 	bool get isEmpty => str.isBlank(firstName) && str.isBlank(lastName) && str.isBlank(dob);
 
-	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasGenderError && !hasDobError && !hasCabinClassError;
+	bool get isValid => !hasFirstNameError && !hasLastNameError && !hasGenderError && !hasDobError && !hasFoodError && !hasCabinClassError;
 
 	int get priceMax => null != cabinClassMax ? cabinClassMax.pricePerPax.toInt() : 0;
 
@@ -71,7 +71,7 @@ class BookingPaxView {
 	BookingPaxView.fromBookingPax(BookingPax pax, List<CabinClass> cabinClasses) {
 		firstName = pax.firstName;
 		lastName = pax.lastName;
-		foodSelection = SelectionModel<String>.single(selected: pax.specialRequest);
+		foodSelection = SelectionModel<String>.single(selected: pax.food);
 		genderSelection = SelectionModel<String>.single(selected: pax.gender);
 		dob = pax.dob;
 		cabinClassMinSelection = SelectionModel<CabinClass>.single(selected: _getCabinClass(pax.cabinClassMin, cabinClasses));
@@ -101,9 +101,9 @@ class BookingPaxView {
 			lastName,
 			genderSelection.selectedValue,
 			dob,
+			foodSelection.selectedValue,
 			cabinClassMinSelection.selectedValue.no,
 			cabinClassPreferredSelection.selectedValue.no,
-			cabinClassMaxSelection.selectedValue.no,
-			foodSelection.selectedValue
+			cabinClassMaxSelection.selectedValue.no
 		);
 }

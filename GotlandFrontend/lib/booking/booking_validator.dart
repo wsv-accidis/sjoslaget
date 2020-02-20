@@ -31,6 +31,10 @@ class BookingValidator {
 			pax.dobError = 'Ange ett giltigt datum.';
 		}
 
+		if (str.isBlank(pax.food)) {
+			pax.foodError = 'Ange kostpreferens.';
+		}
+
 		if (null == pax.cabinClassMin) {
 			pax.cabinClassMinError = 'Välj lägsta boende.';
 		}
