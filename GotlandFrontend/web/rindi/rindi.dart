@@ -3,14 +3,11 @@ import 'package:Gotland/external/external_component.template.dart';
 import 'package:angular/angular.dart';
 
 import '../init.dart';
-import 'rindi_bokning.template.dart' as self;
+import 'rindi.template.dart' as self;
 
-@GenerateInjector([
-	ValueProvider<String>.forToken(GOTLAND_API_ROOT, Init.API_ROOT),
-	Init.gotlandRouterProviders
-])
+@GenerateInjector([ValueProvider<String>.forToken(GOTLAND_API_ROOT, Init.API_ROOT), Init.gotlandRouterProviders])
 const InjectorFactory injectorFactory = self.injectorFactory$Injector;
 
 void main() {
-	runApp(ExternalComponentNgFactory, createInjector: injectorFactory);
+  runApp(ExternalComponentNgFactory, createInjector: injectorFactory);
 }

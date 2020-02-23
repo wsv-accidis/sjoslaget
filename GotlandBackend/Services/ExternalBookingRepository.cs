@@ -13,19 +13,20 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [ExternalBooking] ([EventId], [FirstName], [LastName], [Dob], [PhoneNo], [SpecialRequest], [TypeId], [PaymentReceived]) " +
-				                                            "output inserted.[Id] values " +
-				                                            "(@EventId, @FirstName, @LastName, @Dob, @PhoneNo, @SpecialRequest, @TypeId, @PaymentReceived)",
+				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [ExternalBooking] ([EventId], [FirstName], [LastName], [Email], [PhoneNo], [Gender], [Dob], [Food], [TypeId]) " +
+															"output inserted.[Id] values " +
+															"(@EventId, @FirstName, @LastName, @Email, @PhoneNo, @Gender, @Dob, @Food, @TypeId)",
 					new
 					{
 						EventId = evnt.Id,
 						FirstName = booking.FirstName,
 						LastName = booking.LastName,
-						Dob = booking.Dob,
+						Email = booking.Email,
 						PhoneNo = booking.PhoneNo,
-						SpecialRequest = booking.SpecialRequest ?? String.Empty,
-						TypeId = booking.TypeId,
-						PaymentReceived = booking.PaymentReceived
+						Gender = booking.Gender,
+						Dob = booking.Dob,
+						Food = booking.Food,
+						TypeId = booking.TypeId
 					});
 
 				return id;
@@ -37,7 +38,7 @@ namespace Accidis.Gotland.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<ExternalBooking>("select * from [ExternalBooking] where [EventId] = @EventId order by [Created] desc",
-					new {EventId = evnt.Id});
+					new { EventId = evnt.Id });
 				return result.ToArray();
 			}
 		}

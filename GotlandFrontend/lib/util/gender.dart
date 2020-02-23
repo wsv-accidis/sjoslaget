@@ -9,6 +9,9 @@ class Gender {
 	static SelectionOptions<String> getOptions() => SelectionOptions.fromList(<String>[GENDER_FEMALE, GENDER_MALE, GENDER_OTHER, GENDER_NONE]);
 
 	static String asString(String g) {
+		if (null == g)
+			return 'Kön';
+
 		switch (g) {
 			case GENDER_FEMALE:
 				return 'Kvinna';

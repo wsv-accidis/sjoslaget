@@ -7,6 +7,9 @@ class Food {
 	static SelectionOptions<String> getOptions() => SelectionOptions.fromList(<String>[FOOD_MEAT, FOOD_VEG]);
 
 	static String asString(String g) {
+		if (null == g)
+			return 'Kost';
+
 		switch (g) {
 			case FOOD_MEAT:
 				return 'Kött';

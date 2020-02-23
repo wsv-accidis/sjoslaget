@@ -5,7 +5,7 @@
 <p>
 	Bokningen till Absolut Gotland går till så här: Du som lagledare fyller i god tid innan bokningen öppnar i ditt namn
 	och kontaktuppgifter, lagets namn och storlek här på sidan. Då får du tillgång till <strong>nedräkningen</strong>
-	och sedan gäller det att vara orimligt snabb på knappen när räknaren når noll. 	Läs igenom
+	och sedan gäller det att vara orimligt snabb på knappen när räknaren når noll. Läs igenom
 	<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> i god tid innan bokningen faktiskt öppnar!
 </p>
 
@@ -32,42 +32,42 @@
 		<div>
 			<material-input [(ngModel)]="firstName"
 							ngControl="firstName"
+							class="first-name-field"
 							floatingLabel
 							label="Förnamn"
 							required
-							requiredErrorMsg="Ange förnamn."
-							style="width: 150px; margin-right: 20px">
+							requiredErrorMsg="Ange förnamn.">
 			</material-input>
 
 			<material-input [(ngModel)]="lastName"
 							ngControl="lastName"
+							class="last-name-field"
 							floatingLabel
 							label="Efternamn"
 							required
-							requiredErrorMsg="Ange efternamn."
-							style="width: 150px">
+							requiredErrorMsg="Ange efternamn.">
 			</material-input>
 		</div>
 		<div>
 			<material-input [(ngModel)]="phoneNo"
 							ngControl="phoneNo"
+							class="phone-no-field"
 							floatingLabel
 							label="Telefonnummer"
 							required
 							requiredErrorMsg="Ange telefonnummer."
 							pattern="[0-9()+\- ]+"
-							style="width: 150px; margin-right: 20px"
 							type="tel">
 			</material-input>
 
 			<material-input [(ngModel)]="email"
 							ngControl="email"
+							class="email-field"
 							floatingLabel
 							label="E-postadress"
 							required
 							requiredErrorMsg="Ange e-postadress."
 							pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
-							style="width: 250px"
 							type="email">
 			</material-input>
 		</div>
@@ -95,14 +95,14 @@
 		<div>
 			<material-checkbox [(ngModel)]="acceptRules"
 							   ngControl="acceptRules"
-							   style="font-size: smaller; margin-left: 0">
+							   class="rules-and-toc-checks">
 				Jag har läst och förstått <a [routerLink]="AboutRoutes.rules.toUrl()">Reglerna som gäller på Absolut Gotland</a>.
 			</material-checkbox>
 		</div>
 		<div>
 			<material-checkbox [(ngModel)]="acceptToc"
 							   ngControl="acceptToc"
-							   style="font-size: smaller; margin-left: 0">
+							   class="rules-and-toc-checks">
 				Jag godkänner att de personuppgifter jag anger i bokningen får lagras och användas av Rindi, Sjöslagsgruppen och deras samarbetspartners.
 				Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Absolut Gotland att göra.
 			</material-checkbox>

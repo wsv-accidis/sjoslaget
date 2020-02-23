@@ -1,0 +1,21 @@
+.first-name-field {
+	width: 200px;
+	margin-right: 20px;
+}
+.last-name-field {
+	width: 200px;
+}
+.phone-no-field {
+	width: 200px;
+	margin-right: 20px;
+}
+.dob-field {
+	width: 200px;
+}
+.email-field {
+	width: 250px;
+}
+material-checkbox.rules-and-toc-checks {
+	font-size: smaller;
+	margin-left: 0;
+}

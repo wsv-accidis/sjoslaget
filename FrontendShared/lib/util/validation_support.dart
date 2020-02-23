@@ -1,18 +1,28 @@
 class ValidationSupport {
-	static final _dobRegExp = new RegExp(r'^\d{6}$');
-	static final _nationalityRegExp = new RegExp(r'^[a-zA-Z]{2}$');
-	static final _numberRegExp = new RegExp(r'^\d+$');
+	static final _dobRegExp = RegExp(r'^\d{6}$');
+	static final _emailRegExp = RegExp(r'[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})');
+	static final _nationalityRegExp = RegExp(r'^[a-zA-Z]{2}$');
+	static final _numberRegExp = RegExp(r'^\d+$');
+	static final _phoneNoRegExp = RegExp(r'[0-9()+\- ]+');
 
 	static bool isDateOfBirth(String value) {
 		return _dobRegExp.hasMatch(value) && _isValidDate(value);
 	}
 
-	static bool isTwoLetterNationality(String value) {
-		return _nationalityRegExp.hasMatch(value);
+	static bool isEmailAdress(String value) {
+		return _emailRegExp.hasMatch(value);
+	}
+
+	static bool isPhoneNumber(String value) {
+		return _phoneNoRegExp.hasMatch(value);
 	}
 
 	static bool isSimpleInteger(String value) {
 		return _numberRegExp.hasMatch(value);
+	}
+
+	static bool isTwoLetterNationality(String value) {
+		return _nationalityRegExp.hasMatch(value);
 	}
 
 	// Mildly dubious conversion - interpret as 20xx unless that would be in the future, otherwise 19xx

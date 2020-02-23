@@ -127,19 +127,9 @@ class PaxComponent implements OnInit {
 		_onCountChange.add(count);
 	}
 
-	String foodToString(dynamic f) {
-		if (null == f)
-			return 'Kost';
+	String foodToString(dynamic f) => Food.asString(f);
 
-		return Food.asString(f);
-	}
-
-	String genderToString(dynamic g) {
-		if (null == g)
-			return 'Kön';
-
-		return Gender.asString(g);
-	}
+	String genderToString(dynamic g) => Gender.asString(g);
 
 	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
 

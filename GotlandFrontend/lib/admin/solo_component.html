@@ -1,0 +1,83 @@
+<div>
+	<material-input [(ngModel)]="view.firstName"
+					class="first-name-field"
+					[error]="view.firstNameError"
+					floatingLabel
+					(keyup)="validate($event)"
+					label="Förnamn"
+					ngControl="firstName">
+	</material-input>
+
+	<material-input [(ngModel)]="view.lastName"
+					class="last-name-field"
+					[error]="view.lastNameError"
+					floatingLabel
+					(keyup)="validate($event)"
+					label="Efternamn"
+					ngControl="lastName">
+	</material-input>
+</div>
+<div>
+	<material-input [(ngModel)]="view.phoneNo"
+					class="phone-no-field"
+					[error]="view.phoneNoError"
+					floatingLabel
+					(keyup)="validate($event)"
+					label="Telefonnummer"
+					ngControl="phoneNo"
+					type="tel">
+	</material-input>
+
+	<material-input [(ngModel)]="view.email"
+					class="email-field"
+					[error]="view.emailError"
+					floatingLabel
+					(keyup)="validate($event)"
+					label="E-postadress"
+					ngControl="email"
+					type="email">
+	</material-input>
+</div>
+<div>
+	<material-dropdown-select [buttonText]="genderToString(view.gender)"
+							  class="gender-field"
+							  [error]="view.genderError"
+							  [options]="genderOptions"
+							  [itemRenderer]="genderToString"
+							  [selection]="view.genderSelection"
+							  width="2">
+	</material-dropdown-select>
+
+	<material-dropdown-select [buttonText]="foodToString(view.food)"
+							  class="food-field"
+							  [error]="view.foodError"
+							  [options]="foodOptions"
+							  [itemRenderer]="foodToString"
+							  [selection]="view.foodSelection"
+							  width="2">
+	</material-dropdown-select>
+
+	<material-input [(ngModel)]="view.dob"
+					class="dob-field"
+					[error]="view.dobError"
+					floatingLabel
+					(keyup)="validate($event)"
+					label="Födelsedatum (ÅÅMMDD)"
+					ngControl="dob">
+	</material-input>
+</div>
+<div>
+	<material-checkbox [(ngModel)]="acceptRules"
+					   ngControl="acceptRules"
+					   class="rules-and-toc-checks">
+		Jag har läst och förstått <a href="/allt-om/regler">Reglerna som gäller på Absolut Gotland</a>.
+	</material-checkbox>
+</div>
+<div>
+	<material-checkbox [(ngModel)]="acceptToc"
+					   ngControl="acceptToc"
+					   class="rules-and-toc-checks">
+		Jag godkänner att de personuppgifter jag anger i bokningen får lagras och användas av Rindi, Sjöslagsgruppen och deras samarbetspartners.
+		Inga personuppgifter används i marknadsföringssyfte eller sprids till tredje part som inte har något med Absolut Gotland att göra.
+	</material-checkbox>
+</div>

@@ -1,20 +1,55 @@
 <h1>
-	Boka dagbiljett
+	Absolut Gotland - Biljetter utan boende
 </h1>
 
 <p>
-	Ange uppgifter för bokningen, ta betalt och klicka på Skicka.
+	Här köper du som bor på Gotland en biljett till AG utan boende! Du har fortfarande full tillgång till alla aktiviteter och spelningar
+	samt båda sittningarna, men inget boende på området och ingen frukost. Varmt välkommen!
 </p>
 
-<external-booking-component
-	#externalBooking
-	*ngIf="!isSaving"
-	(onSubmit)="submit($event)">
-</external-booking-component>
+<form #bookingForm="ngForm" (submit)="submit()">
+	<input type="submit" class="hidden-submit"/>
+	<solo-component #booking>
+	</solo-component>
 
-<spinner-widget *ngIf="isSaving">
-</spinner-widget>
+	<div *ngIf="!isLoading">
+		<img alt="Swish"
+			 class="swish"
+			 src="../gfx/Swish_Helgbiljett600.png"
+			 title="Swish"/>
 
-<p class="super-important" *ngIf="hasError">
-	Någonting gick fel när bokningen skulle sparas. Kontakta Öslagsgruppen.
+		<p class="price-info">
+			Biljettens pris är <strong>{{ priceFormatted }}</strong>. Betalning kan ske med via Swish till <strong>0735329410</strong> (Henric Zethelius).
+			Skriv ditt namn i meddelandefältet för säkerhets skull.
+		</p>
+
+		<material-button [disabled]="!canSubmit"
+						 class="control-blue important-margin"
+						 raised
+						 (trigger)="submit()">
+			Skicka bokning
+		</material-button>
+	</div>
+</form>
+
+<div class="important-margin">
+	<spinner-widget *ngIf="isSaving || isLoading">
+	</spinner-widget>
+
+	<p *ngIf="hasSaved">
+		Bokningen för <strong>{{ lastSavedName }}</strong> skapades. Välkommen till AG!
+	</p>
+
+	<p class="super-important" *ngIf="hasError">
+		Någonting gick fel när bokningen skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta ansvarig för sidan.
+	</p>
+</div>
+
+<h3>
+	Information om kostalternativ
+</h3>
+
+<p>
+	Du kan välja <strong>Kost</strong> i form av kött eller vegansk kost. Båda alternativen är fria från gluten, laktos, nötter och fläskkött.
+	Om du har ytterligare medicinska behov av specialkost, <a href="mailto:info@absolutgotland.se">skicka e-post</a> till oss.
 </p>
