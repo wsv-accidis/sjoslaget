@@ -28,7 +28,7 @@ div.menu-item {
 	border-left: 2px solid white;
 	box-sizing: border-box;
 	float: left;
-	height: 60px;
+	height: 70px;
 	width: 25%;
 }
 
@@ -66,8 +66,8 @@ div.content {
 	background-image: url(gfx/Logo.png);
 	background-repeat: no-repeat;
 	background-size: contain;
-	height: 75px;
-	width: 136px;
+	height: 80px;
+	width: 80px;
 	margin: 5px 15px 5px 0;
 	vertical-align: middle;
 }
