@@ -17,12 +17,12 @@ namespace Accidis.Gotland.WebService.Services
 	{
 		const string LockResource = "Booking";
 		const int LockTimeout = 10000;
-		readonly AecCredentialsGenerator _credentialsGenerator;
+		readonly CredentialsGenerator _credentialsGenerator;
 
 		readonly Logger _log = LogManager.GetLogger(typeof(BookingRepository).Name);
 		readonly AecUserManager _userManager;
 
-		public BookingRepository(AecCredentialsGenerator credentialsGenerator, AecUserManager userManager)
+		public BookingRepository(CredentialsGenerator credentialsGenerator, AecUserManager userManager)
 		{
 			_credentialsGenerator = credentialsGenerator;
 			_userManager = userManager;

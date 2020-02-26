@@ -19,7 +19,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		readonly BookingCabinsComparer _bookingComparer;
 		readonly CabinRepository _cabinRepository;
-		readonly AecCredentialsGenerator _credentialsGenerator;
+		readonly CredentialsGenerator _credentialsGenerator;
 		readonly CruiseRepository _cruiseRepository;
 		readonly DeletedBookingRepository _deletedBookingRepository;
 		readonly PriceCalculator _priceCalculator;
@@ -33,7 +33,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			DeletedBookingRepository deletedBookingRepository,
 			PriceCalculator priceCalculator,
 			ProductRepository productRepository,
-			AecCredentialsGenerator credentialsGenerator,
+			CredentialsGenerator credentialsGenerator,
 			AecUserManager userManager)
 		{
 			_bookingComparer = bookingComparer;
