@@ -15,12 +15,20 @@
 	<div *ngIf="!isLoading">
 		<img alt="Swish"
 			 class="swish"
-			 src="../gfx/Swish_Helgbiljett600.png"
+			 src="../gfx/Swish_Helgbiljett.png"
 			 title="Swish"/>
 
+		<div>
+			<material-checkbox [(ngModel)]="memberOfRindi"
+							   ngControl="memberOfRindi"
+							   class="rindi-check">
+				Jag är medlem i Gotlands Studentkår Rindi.
+			</material-checkbox>
+		</div>
+
 		<p class="price-info">
-			Biljettens pris är <strong>{{ priceFormatted }}</strong>. Betalning kan ske med via Swish till <strong>0735329410</strong> (Henric Zethelius).
-			Skriv ditt namn i meddelandefältet för säkerhets skull.
+			Biljettens pris är <strong>{{ priceFormatted }}</strong>. Betalning kan ske med via Swish till <strong>0735329410</strong> (Henric Zethelius)
+			eller via Bankgiro till <strong>299-5272</strong> (OMO Media AB). Skriv ditt namn i meddelandefältet för säkerhets skull.
 		</p>
 
 		<material-button [disabled]="!canSubmit"

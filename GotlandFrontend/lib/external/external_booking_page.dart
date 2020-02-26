@@ -20,6 +20,8 @@ class ExternalBookingPage implements OnInit {
   final ClientFactory _clientFactory;
   final ExternalBookingRepository _externalBookingRepository;
 
+  bool _memberOfRindi;
+  List<ExternalBookingType> _types;
   bool hasError = false;
   bool isSaving = false;
   String lastSavedName;
@@ -35,6 +37,13 @@ class ExternalBookingPage implements OnInit {
 
   bool get isLoading => null == booking || null == type;
 
+  bool get memberOfRindi => _memberOfRindi;
+
+  set memberOfRindi(bool value) {
+    _memberOfRindi = value;
+    type = value ? _types[0] : _types[1];
+  }
+
   String get priceFormatted => CurrencyFormatter.formatDecimalAsSEK(type.price);
 
   ExternalBookingPage(this._clientFactory, this._externalBookingRepository);
@@ -44,12 +53,15 @@ class ExternalBookingPage implements OnInit {
     _clientFactory.clear();
     try {
       final client = _clientFactory.getClient();
-      final types = await _externalBookingRepository.getTypes(client);
+      _types = await _externalBookingRepository.getTypes(client);
 
-      // For 2020 there is only one type, so we don't use a picker and just take the first one
-      if (types.isNotEmpty) {
-        type = types[0];
+      if (2 != _types.length) {
+        print('Invalid data from server, expected two types of external bookings.');
+        return;
       }
+
+      // Initalize to non-member first
+      memberOfRindi = false;
     } catch (e) {
       // Ignore this here - we will be stuck in the loading state until the user refreshes
       print('Failed to get data due to an exception: ${e.toString()}');
