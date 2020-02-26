@@ -188,6 +188,7 @@
     <Compile Include="Services\BookingCandidateRepository.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />
+    <Compile Include="Services\CredentialsGenerator.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventRepository.cs" />
     <Compile Include="Services\ExternalBookingRepository.cs" />

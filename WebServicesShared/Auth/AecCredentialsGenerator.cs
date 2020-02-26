@@ -3,10 +3,8 @@ using System.Security.Cryptography;
 
 namespace Accidis.WebServices.Auth
 {
-	public sealed class AecCredentialsGenerator
+	public abstract class AecCredentialsGenerator
 	{
-		public const int BookingReferenceLength = 6;
-		public const string BookingReferencePattern = @"[0-9][A-Z0-9]{5}";
 		public const int PinCodeLength = 4;
 
 		const string Letters = "ABCDEFGHJKLMNPQRSTUVWX";
@@ -15,14 +13,16 @@ namespace Accidis.WebServices.Auth
 
 		readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
-		public string GenerateBookingReference()
+		public abstract string GenerateBookingReference();
+
+		protected string GenerateBookingReference(int length)
 		{
-			var rngBytes = new byte[BookingReferenceLength];
+			var rngBytes = new byte[length];
 			_rng.GetBytes(rngBytes);
 
-			var buffer = new char[BookingReferenceLength];
+			var buffer = new char[length];
 			buffer[0] = ByteToChar(Numbers, rngBytes[0]); // first char is always a number
-			for(int i = 1; i < BookingReferenceLength; i++)
+			for(int i = 1; i < length; i++)
 				buffer[i] = ByteToChar(LettersAndNumbers, rngBytes[i]);
 
 			return new string(buffer);
@@ -30,12 +30,20 @@ namespace Accidis.WebServices.Auth
 
 		public string GeneratePinCode()
 		{
-			var rngBytes = new byte[PinCodeLength];
+			return GeneratePinCode(PinCodeLength);
+		}
+
+		protected string GeneratePinCode(int length)
+		{
+			var rngBytes = new byte[length];
 			_rng.GetBytes(rngBytes);
 
 			return new string(rngBytes.Select(b => ByteToChar(Numbers, b)).ToArray());
 		}
 
-		static char ByteToChar(string set, byte random) => set[random % set.Length];
+		static char ByteToChar(string set, byte random)
+		{
+			return set[random % set.Length];
+		}
 	}
 }

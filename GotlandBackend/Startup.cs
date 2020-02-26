@@ -80,7 +80,6 @@ namespace Accidis.Gotland.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
-			container.Register<AecCredentialsGenerator>(Reuse.Singleton);
 			container.Register<AecOAuthProvider>(Reuse.Singleton);
 			container.Register<AecPaymentRepository>(Reuse.Singleton);
 			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
@@ -90,6 +89,7 @@ namespace Accidis.Gotland.WebService
 			container.Register<BookingRepository>(Reuse.Singleton);
 			container.Register<BookingCandidateRepository>(Reuse.Singleton);
 			container.Register<CabinRepository>(Reuse.Singleton);
+			container.Register<CredentialsGenerator>(Reuse.Singleton);
 			container.Register<EventRepository>(Reuse.Singleton);
 			container.Register<ExternalBookingRepository>(Reuse.Singleton);
 
@@ -115,27 +115,27 @@ namespace Accidis.Gotland.WebService
 			config.MapHttpAttributeRoutes();
 
 			config.Routes.MapHttpRoute(
-				name: "ControllerActionIdApi",
-				routeTemplate: "api/{controller}/{action}/{reference}",
-				defaults: new { },
-				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
+				"ControllerActionIdApi",
+				"api/{controller}/{action}/{reference}",
+				new { },
+				new {reference = CredentialsGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
-				name: "ControllerIdApi",
-				routeTemplate: "api/{controller}/{reference}",
-				defaults: new { },
-				constraints: new {reference = AecCredentialsGenerator.BookingReferencePattern}
+				"ControllerIdApi",
+				"api/{controller}/{reference}",
+				new { },
+				new {reference = CredentialsGenerator.BookingReferencePattern}
 			);
 
 			config.Routes.MapHttpRoute(
-				name: "ControllerActionApi",
-				routeTemplate: "api/{controller}/{action}"
+				"ControllerActionApi",
+				"api/{controller}/{action}"
 			);
 
 			config.Routes.MapHttpRoute(
-				name: "ControllerSimpleApi",
-				routeTemplate: "api/{controller}"
+				"ControllerSimpleApi",
+				"api/{controller}"
 			);
 
 			return config;

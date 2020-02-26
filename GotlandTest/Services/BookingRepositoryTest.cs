@@ -119,7 +119,7 @@ namespace Accidis.Gotland.Test.Services
 			userManagerMock.Setup(m => m.CreateAsync(It.IsAny<AecUser>(), It.IsAny<string>())).Returns(Task.FromResult<IdentityResult>(null));
 
 			var sut = new BookingRepository(
-				new AecCredentialsGenerator(),
+				new CredentialsGenerator(),
 				userManagerMock.Object);
 
 			return sut;

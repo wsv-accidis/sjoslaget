@@ -70,6 +70,7 @@
     <Compile Include="Services\BookingCandidateRepositoryTest.cs" />
     <Compile Include="Services\BookingRepositoryTest.cs" />
     <Compile Include="Services\EventRepositoryTest.cs" />
+    <Compile Include="Auth\CredentialsGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GotlandBackend\GotlandBackend.csproj">
@@ -99,5 +100,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

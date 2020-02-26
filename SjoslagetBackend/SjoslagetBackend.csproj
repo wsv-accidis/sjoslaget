@@ -196,6 +196,7 @@
     <Compile Include="Services\BookingCabinsComparer.cs" />
     <Compile Include="Services\BookingRepository.cs" />
     <Compile Include="Services\CabinRepository.cs" />
+    <Compile Include="Services\CredentialsGenerator.cs" />
     <Compile Include="Services\CruiseRepository.cs" />
     <Compile Include="Services\DeletedBookingRepository.cs" />
     <Compile Include="Services\EmailSender.cs" />

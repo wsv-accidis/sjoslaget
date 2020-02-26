@@ -89,7 +89,7 @@
     <Compile Include="Services\EmailSenderTest.cs" />
     <Compile Include="Services\PriceCalculatorTest.cs" />
     <Compile Include="Services\AecPaymentRepositoryTest.cs" />
-    <Compile Include="Auth\AecCredentialsGeneratorTest.cs" />
+    <Compile Include="Auth\CredentialsGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

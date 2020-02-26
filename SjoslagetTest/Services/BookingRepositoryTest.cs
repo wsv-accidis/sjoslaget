@@ -341,7 +341,7 @@ namespace Accidis.Sjoslaget.Test.Services
 				DeletedBookingRepositoryTest.GetDeletedBookingRepositoryForTest(),
 				new PriceCalculator(),
 				new ProductRepository(),
-				new AecCredentialsGenerator(),
+				new CredentialsGenerator(),
 				userManagerMock.Object);
 
 			return sut;
