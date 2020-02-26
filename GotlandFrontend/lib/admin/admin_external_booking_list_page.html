@@ -44,6 +44,9 @@
 		<th style="width: 120px">
 			Födelsedatum
 		</th>
+		<th style="width: 120px">
+			<sortable-column-header key="food" title="Kost"></sortable-column-header>
+		</th>
 		<th style="width: 320px">
 			Biljett
 		</th>
@@ -55,19 +58,21 @@
 		<td [ngSwitch]="getStatus(booking)">
 			<span *ngSwitchWhen="'confirmed'" class="status-confirmed">Bekräftad</span>
 			<span *ngSwitchWhen="'not-confirmed'" class="status-not-confirmed">Ej bekräftad</span>
-			<span *ngSwitchWhen="'external'" class="status-external">Till Rindi</span>
 			<span *ngSwitchDefault>-</span>
 		</td>
 		<td>
-			<!--<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">-->
-			{{ booking.firstName }} {{ booking.lastName }}
-			<!--</a>-->
+			<a href="mailto:{{ booking.email }}">
+				{{ booking.firstName }} {{ booking.lastName }}
+			</a>
 		</td>
 		<td>
 			{{ booking.phoneNo }}
 		</td>
 		<td>
 			{{ booking.dob }}
+		</td>
+		<td>
+			{{ formatFood(booking.food) }}
 		</td>
 		<td>
 			{{ formatType(booking.type) }}

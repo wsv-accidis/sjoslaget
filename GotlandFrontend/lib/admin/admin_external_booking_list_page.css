@@ -14,7 +14,3 @@ span.status-confirmed {
 span.status-not-confirmed {
 	color: darkred;
 }
-
-span.status-external {
-	color: darkblue;
-}
