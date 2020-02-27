@@ -22,96 +22,92 @@ import '../widgets/spinner_widget.dart';
 import 'about_routes.dart';
 
 @Component(
-	selector: 'start-page',
-	styleUrls: ['content_styles.css', 'booking_page.css'],
-	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: [AboutRoutes]
-)
+    selector: 'start-page',
+    styleUrls: ['content_styles.css', 'booking_page.css', 'booking_styles.css'],
+    templateUrl: 'booking_page.html',
+    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
+    providers: <dynamic>[materialProviders],
+    exports: [AboutRoutes])
 class BookingPage implements OnInit {
-	final ClientFactory _clientFactory;
-	final EventRepository _eventRepository;
-	final QueueRepository _queueRepository;
-	final Router _router;
+  final ClientFactory _clientFactory;
+  final EventRepository _eventRepository;
+  final QueueRepository _queueRepository;
+  final Router _router;
 
-	Event _evnt;
+  Event _evnt;
 
-	String firstName;
-	String lastName;
-	String phoneNo;
-	String email;
-	String teamName;
-	int teamSize = TEAM_SIZE_DEFAULT;
-	SelectionModel<int> teamSizeSelection = SelectionModel.single(selected: TEAM_SIZE_DEFAULT);
-	bool acceptToc = false;
-	bool acceptRules = false;
-	bool hasError = false;
+  String firstName;
+  String lastName;
+  String phoneNo;
+  String email;
+  String teamName;
+  int teamSize = TEAM_SIZE_DEFAULT;
+  SelectionModel<int> teamSizeSelection = SelectionModel.single(selected: TEAM_SIZE_DEFAULT);
+  bool acceptToc = false;
+  bool acceptRules = false;
+  bool hasError = false;
 
-	String get eventName => _evnt.name;
+  String get eventName => _evnt.name;
 
-	String get eventOpening => DateTimeFormatter.format(_evnt.opening);
+  String get eventOpening => DateTimeFormatter.format(_evnt.opening);
 
-	bool get isClosed => isLoaded && _evnt.isLocked;
+  bool get isClosed => isLoaded && _evnt.isLocked;
 
-	bool get isLoaded => null != _evnt;
+  bool get isLoaded => null != _evnt;
 
-	bool get isInCountdown => isLoaded && _evnt.isInCountdown;
+  bool get isInCountdown => isLoaded && _evnt.isInCountdown;
 
-	bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.isOpen && !_evnt.isLocked;
+  bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.isOpen && !_evnt.isLocked;
 
-	bool get isOpen => isLoaded && _evnt.isOpen;
+  bool get isOpen => isLoaded && _evnt.isOpen;
 
-	SelectionOptions<int> get teamSizeOptions => SelectionOptions.fromList(range(TEAM_SIZE_MIN, TEAM_SIZE_MAX + 1, 1).cast<int>().toList(growable: false));
+  SelectionOptions<int> get teamSizeOptions => SelectionOptions.fromList(range(TEAM_SIZE_MIN, TEAM_SIZE_MAX + 1, 1).cast<int>().toList(growable: false));
 
-	BookingPage(this._clientFactory, this._eventRepository, this._queueRepository, this._router);
+  BookingPage(this._clientFactory, this._eventRepository, this._queueRepository, this._router);
 
-	@override
-	Future<void> ngOnInit() async {
-		try {
-			// Temporary dummy event while working on shit
-			_evnt = Event('', false, false, false, null);
+  @override
+  Future<void> ngOnInit() async {
+    try {
+      final client = _clientFactory.getClient();
+      _evnt = await _eventRepository.getActiveEvent(client);
+    } catch (e) {
+      print('Failed to load active event: ${e.toString()}');
+      hasError = true;
+    }
+  }
 
-			//final client = _clientFactory.getClient();
-			//_evnt = await _eventRepository.getActiveEvent(client);
-		} catch (e) {
-			print('Failed to load active event: ${e.toString()}');
-			hasError = true;
-		}
-	}
+  Future<void> submitDetails() async {
+    final candidate = BookingDetails(firstName, lastName, phoneNo, email, teamName, teamSize);
+    CandidateResponse response;
 
-	Future<void> submitDetails() async {
-		final candidate = BookingDetails(firstName, lastName, phoneNo, email, teamName, teamSize);
-		CandidateResponse response;
+    try {
+      _clientFactory.clear();
+      final client = _clientFactory.getClient();
+      response = await _queueRepository.createCandidate(client, candidate);
+    } catch (e) {
+      print('Failed to create booking candidate: ${e.toString()}');
+      hasError = true;
+      return;
+    }
 
-		try {
-			_clientFactory.clear();
-			final client = _clientFactory.getClient();
-			response = await _queueRepository.createCandidate(client, candidate);
-		} catch (e) {
-			print('Failed to create booking candidate: ${e.toString()}');
-			hasError = true;
-			return;
-		}
+    final state = CountdownState.empty();
+    state.update(response);
 
-		final state = CountdownState.empty();
-		state.update(response);
+    await _router.navigateByUrl(BookingRoutes.countdown.toUrl());
+  }
 
-		await _router.navigateByUrl(BookingRoutes.countdown.toUrl());
-	}
+  void teamSizeChanged(int size) {
+    // We save the last set value because the user might unintentionally "unselect" the value
+    // from the dropdown and leave it at null.
+    if (null != size) {
+      teamSize = size;
+    }
+  }
 
-	void teamSizeChanged(int size) {
-		// We save the last set value because the user might unintentionally "unselect" the value
-		// from the dropdown and leave it at null.
-		if(null != size) {
-			teamSize = size;
-		}
-	}
-
-	String teamSizeToString(dynamic size) {
-		if(1 == size)
-			return '1 person';
-		else
-			return '$size personer';
-	}
+  String teamSizeToString(dynamic size) {
+    if (1 == size)
+      return '1 person';
+    else
+      return '$size personer';
+  }
 }

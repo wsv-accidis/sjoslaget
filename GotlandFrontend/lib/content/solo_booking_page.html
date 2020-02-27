@@ -1,0 +1,43 @@
+<h1>
+	Intresserad av ströplats?
+</h1>
+
+<p>
+	Här kan du anmäla dig som intresserad av ströplats på AG! Denna intresseanmälan är <strong>inte bindande</strong> och
+	<strong>garanterar inte plats</strong>, men om möjligheten dyker upp så kommer vi att höra av oss till dig och fråga om du fortfarande
+	är intresserad. Du får då även veta priset på den plats som finns tillgänglig.
+</p>
+
+<p>
+	Efter att du skickat in anmälan kommer du att få e-post med <strong>bokningsreferens och PIN-kod</strong> som du behöver spara
+	för att kunna checka in på AG. Se därför till att din e-postadress stämmer, både en och två gånger, innan du skickar.
+</p>
+
+<form #bookingForm="ngForm" (submit)="submit()">
+	<input type="submit" class="hidden-submit"/>
+	<solo-component #booking>
+	</solo-component>
+
+	<material-button [disabled]="!canSubmit"
+					 class="control-blue"
+					 raised
+					 (trigger)="submit()">
+		Skicka anmälan
+	</material-button>
+</form>
+
+<spinner-widget *ngIf="isSaving">
+</spinner-widget>
+
+<p class="super-important" *ngIf="hasError">
+	Någonting gick fel när anmälan skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta oss.
+</p>
+
+<h3>
+	Information om kostalternativ
+</h3>
+
+<p>
+	Du kan välja <strong>Kost</strong> i form av kött eller vegansk kost. Båda alternativen är fria från gluten, laktos, nötter och fläskkött.
+	Om du har ytterligare medicinska behov av specialkost, <a href="mailto:info@absolutgotland.se">skicka e-post</a> till oss.
+</p>
