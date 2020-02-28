@@ -1,7 +1,16 @@
+table.buses-table {
+	width: 75%;
+}
+
 table.ferries-table {
 	width: 60%;
 }
 
-table.ferries-table > thead > tr > td {
+table > thead > tr > td {
 	font-weight: bold;
+}
+
+tbody > tr > td {
+	border-left: 1px solid #006000;
+	border-top: 1px solid #006000;
 }
