@@ -22,8 +22,11 @@
 
 <div *ngIf="!isLoading">
 	<div *ngFor="let cabin of cabinClasses">
-		<div class="allocation-title">
-			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar ({{ count(cabin) }} av {{ total(cabin) }} tilldelade)
+		<div class="allocation-title" *ngIf="cabin.no == 0">
+			{{ cabin.no }}. {{ cabin.title }} ({{ numberOfPax(cabin) }} av {{ totalPax(cabin) }} tilldelade)
+		</div>
+		<div class="allocation-title" *ngIf="cabin.no > 0">
+			{{ cabin.no }}. {{ cabin.title }}, {{ cabin.capacity }} bäddar ({{ numberOfPax(cabin) }} av {{ totalPax(cabin) }} tilldelade)
 		</div>
 
 		<div *ngIf="!exists(cabin)" class="no-allocation-message">
