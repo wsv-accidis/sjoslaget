@@ -172,6 +172,34 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
+		[HttpPost]
+		public async Task<IHttpActionResult> Solo(SoloBookingSource bookingSource)
+		{
+			try
+			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				if(!evnt.IsOpen)
+				{
+					_log.Warn("An attempt was made to create a solo booking before the event is open.");
+					return BadRequest();
+				}
+
+				BookingResult result = await _bookingRepository.CreateSoloAsync(evnt, bookingSource);
+				_log.Info("Created solo booking {0}.", result.Reference);
+
+				await SendBookingCreatedMailAsync(evnt, bookingSource, result);
+				return Ok(result);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while creating a solo booking.");
+				throw;
+			}
+		}
+
 		[Authorize]
 		[HttpPost]
 		public async Task<IHttpActionResult> Update(BookingSource bookingSource)
@@ -206,6 +234,19 @@ namespace Accidis.Gotland.WebService.Controllers
 		internal static bool IsUnauthorized(string reference)
 		{
 			return !AuthContext.IsAdmin && !String.Equals(AuthContext.UserName, reference, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		async Task SendBookingCreatedMailAsync(Event evnt, SoloBookingSource source, BookingResult result)
+		{
+			try
+			{
+				using(var emailSender = new EmailSender())
+					await emailSender.SendBookingCreatedMailAsync(evnt.Name, source.Email, result.Reference, result.Password);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "Failed to send e-mail on created booking.");
+			}
 		}
 
 		async Task SendBookingConfirmedMailAsync(Event evnt, Booking booking)

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:Gotland/model/solo_booking_source.dart';
 import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:frontend_shared/model/booking_result.dart';
@@ -15,115 +16,129 @@ import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
 class BookingRepository {
-	final String _apiRoot;
+  final String _apiRoot;
 
-	BookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
+  BookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
-	Future<void> confirmBooking(Client client, String reference) async {
-		Response response;
-		try {
-			response = await client.put('$_apiRoot/bookings/confirm/$reference');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<void> confirmBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.put('$_apiRoot/bookings/confirm/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+  }
 
-	Future<BookingResult> createEmpty(Client client) async {
-		Response response;
-		try {
-			response = await client.post('$_apiRoot/bookings/empty');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<BookingResult> createEmpty(Client client) async {
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/bookings/empty');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		if (HttpStatus.OK == response.statusCode)
-			return BookingResult.fromJson(response.body);
-		else
-			throw IOException.fromResponse(response);
-	}
+    if (HttpStatus.OK == response.statusCode)
+      return BookingResult.fromJson(response.body);
+    else
+      throw IOException.fromResponse(response);
+  }
 
-	Future<void> deleteBooking(Client client, String reference) async {
-		Response response;
-		try {
-			response = await client.delete('$_apiRoot/bookings/$reference');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<void> deleteBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.delete('$_apiRoot/bookings/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+  }
 
-	Future<BookingSource> getBooking(Client client, String reference) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/bookings/$reference');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<BookingSource> getBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/bookings/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		return BookingSource.fromJson(response.body);
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    return BookingSource.fromJson(response.body);
+  }
 
-	Future<List<BookingListItem>> getList(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/bookings/list');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<List<BookingListItem>> getList(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/bookings/list');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final List jsonResult = json.decode(response.body);
-		return jsonResult
-			.map((dynamic value) => BookingListItem.fromMap(value))
-			.toList();
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    final List jsonResult = json.decode(response.body);
+    return jsonResult.map((dynamic value) => BookingListItem.fromMap(value)).toList();
+  }
 
-	Future<List<BookingPaxListItem>> getListOfPax(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/bookings/pax');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<List<BookingPaxListItem>> getListOfPax(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/bookings/pax');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final List jsonResult = json.decode(response.body);
-		return jsonResult
-			.map((dynamic value) => BookingPaxListItem.fromMap(value))
-			.toList();
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    final List jsonResult = json.decode(response.body);
+    return jsonResult.map((dynamic value) => BookingPaxListItem.fromMap(value)).toList();
+  }
 
-	Future<BookingQueueStats> getQueueStats(Client client, String reference) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/queue/stats/$reference');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<BookingQueueStats> getQueueStats(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/queue/stats/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		return BookingQueueStats.fromJson(response.body);
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    return BookingQueueStats.fromJson(response.body);
+  }
 
-	Future<BookingResult> saveBooking(Client client, BookingSource booking) async {
-		final headers = ClientUtil.createJsonHeaders();
+  Future<BookingResult> saveBooking(Client client, BookingSource booking) async {
+    final headers = ClientUtil.createJsonHeaders();
 
-		Response response;
-		try {
-			response = await client.post('$_apiRoot/bookings/update', headers: headers, body: booking.toJson());
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/bookings/update', headers: headers, body: booking.toJson());
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		if (HttpStatus.OK == response.statusCode)
-			return BookingResult.fromJson(response.body);
-		else if (HttpStatus.BAD_REQUEST == response.statusCode)
-			throw BookingException();
-		else
-			throw IOException.fromResponse(response);
-	}
+    if (HttpStatus.OK == response.statusCode)
+      return BookingResult.fromJson(response.body);
+    else if (HttpStatus.BAD_REQUEST == response.statusCode)
+      throw BookingException();
+    else
+      throw IOException.fromResponse(response);
+  }
+
+  Future<BookingResult> saveSoloBooking(Client client, SoloBookingSource source) async {
+    final headers = ClientUtil.createJsonHeaders();
+
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/bookings/solo', headers: headers, body: source.toJson());
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    if (HttpStatus.OK == response.statusCode)
+      return BookingResult.fromJson(response.body);
+    else if (HttpStatus.BAD_REQUEST == response.statusCode)
+      throw BookingException();
+    else
+      throw IOException.fromResponse(response);
+  }
 }

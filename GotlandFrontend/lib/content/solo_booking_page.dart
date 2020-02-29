@@ -1,12 +1,14 @@
 import 'package:angular/angular.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/model/booking_result.dart';
 
 import '../admin/solo_component.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
 import '../model/event.dart';
+import '../model/solo_booking_source.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'content_routes.dart';
@@ -51,10 +53,10 @@ class SoloBookingPage implements OnInit {
     isSaving = true;
     hasError = false;
     try {
-      // Get source from component
-      // Send it over to _bookingRepository
-      // ???
-      // Profit
+      final source = SoloBookingSource.fromSoloView(booking.view);
+      final client = _clientFactory.getClient();
+      final BookingResult result = await _bookingRepository.saveSoloBooking(client, source);
+      print('Created a booking with ref: ${result.reference}');
     } catch (e) {
       print('Failed to save booking: ${e.toString()}');
       hasError = true;

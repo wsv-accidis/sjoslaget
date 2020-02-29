@@ -54,6 +54,48 @@ namespace Accidis.Gotland.WebService.Services
 			return new BookingResult {Reference = booking.Reference, Password = password};
 		}
 
+		public async Task<BookingResult> CreateSoloAsync(Event evnt, SoloBookingSource source)
+		{
+			SoloBookingSource.Validate(source);
+
+			var booking = new Booking
+			{
+				EventId = evnt.Id,
+				Reference = _credentialsGenerator.GenerateBookingReference(),
+				FirstName = source.FirstName,
+				LastName = source.LastName,
+				Email = source.Email,
+				PhoneNo = source.PhoneNo,
+				TeamName = String.Concat(source.FirstName, ' ', source.LastName),
+				SpecialRequest = String.Empty,
+				InternalNotes = String.Empty
+			};
+
+			var pax = new BookingPax
+			{
+				FirstName = source.FirstName,
+				LastName = source.LastName,
+				Gender = Gender.FromString(source.Gender),
+				Dob = new DateOfBirth(source.Dob),
+				Food = source.Food,
+				CabinClassMin = 0,
+				CabinClassMax = 0,
+				CabinClassPreferred = 0
+			};
+
+			using(var db = DbUtil.Open())
+			{
+				await CreateBooking(db, Guid.Empty, booking);
+				pax.BookingId = booking.Id;
+				await CreatePax(db, pax, 0);
+			}
+
+			var password = _credentialsGenerator.GeneratePinCode();
+			await _userManager.CreateAsync(new AecUser {UserName = booking.Reference, IsBooking = true}, password);
+
+			return new BookingResult {Reference = booking.Reference, Password = password};
+		}
+
 		public async Task<BookingResult> CreateFromCandidateAsync(Event evnt, BookingCandidate candidate, int placeInQueue)
 		{
 			Booking booking;
@@ -306,22 +348,27 @@ namespace Accidis.Gotland.WebService.Services
 			foreach(BookingSource.PaxSource paxSource in sourceList)
 			{
 				BookingPax pax = BookingPax.FromSource(paxSource, booking.Id);
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [Food], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [Order]) " +
-				                      "values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @Food, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @Order)",
-					new
-					{
-						BookingId = pax.BookingId,
-						FirstName = pax.FirstName,
-						LastName = pax.LastName,
-						Gender = pax.Gender,
-						Dob = pax.Dob.ToString(),
-						Food = pax.Food,
-						CabinClassMin = pax.CabinClassMin,
-						CabinClassPreferred = pax.CabinClassPreferred,
-						CabinClassMax = pax.CabinClassMax,
-						Order = paxIdx++
-					});
+				await CreatePax(db, pax, paxIdx++);
 			}
+		}
+
+		async Task CreatePax(SqlConnection db, BookingPax pax, int idx)
+		{
+			await db.ExecuteAsync("insert into [BookingPax] ([BookingId], [FirstName], [LastName], [Gender], [Dob], [Food], [CabinClassMin], [CabinClassPreferred], [CabinClassMax], [Order]) " +
+			                      "values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @Food, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @Order)",
+				new
+				{
+					BookingId = pax.BookingId,
+					FirstName = pax.FirstName,
+					LastName = pax.LastName,
+					Gender = pax.Gender,
+					Dob = pax.Dob.ToString(),
+					Food = pax.Food,
+					CabinClassMin = pax.CabinClassMin,
+					CabinClassPreferred = pax.CabinClassPreferred,
+					CabinClassMax = pax.CabinClassMax,
+					Order = idx
+				});
 		}
 
 		async Task DeletePax(SqlConnection db, Booking booking)
