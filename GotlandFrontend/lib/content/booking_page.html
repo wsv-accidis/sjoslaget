@@ -2,12 +2,14 @@
 	Bokning
 </h1>
 
+<!-- Innan bokningen öppnar
 <p>
 	Bokningen till Absolut Gotland går till så här: Du som lagledare fyller i god tid innan bokningen öppnar i ditt namn
 	och kontaktuppgifter, lagets namn och storlek här på sidan. Då får du tillgång till <strong>nedräkningen</strong>
 	och sedan gäller det att vara orimligt snabb på knappen när räknaren når noll. Läs igenom
 	<a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> i god tid innan bokningen faktiskt öppnar!
 </p>
+-->
 
 <p *ngIf="isNotReady">
 	Du är tidigt ute - vi har inte öppnat bokningen ännu. Kom igen senare!
@@ -22,7 +24,9 @@
 </p>
 
 <p *ngIf="isClosed">
-	Bokningen har stängt. Om du inte hann boka AG i år så önskar vi lycka till nästa gång!
+	Bokningen har stängt för i år - men hoppet är inte ute för dig som vill åka med på AG. Du kan skriva upp dig på vår <strong><a [routerLink]="ContentRoutes.solo.toUrl()">väntelista</a></strong>
+	så hör vi av oss ifall det blir några avbokningar eller extrastugor, och vi tar även emot anmälan för lag som vill bo på <strong><a [routerLink]="ContentRoutes.contact.toUrl()">campingen</a></strong>.
+	Kontakta oss så ska vi göra vårt bästa för att även du ska få uppleva Absolut Gotland i år!
 </p>
 
 <div *ngIf="isInCountdown || isOpen">

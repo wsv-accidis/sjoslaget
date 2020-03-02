@@ -20,6 +20,7 @@ import '../util/countdown_state.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'about_routes.dart';
+import 'content_routes.dart';
 
 @Component(
     selector: 'start-page',
@@ -27,7 +28,7 @@ import 'about_routes.dart';
     templateUrl: 'booking_page.html',
     directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, BookingLoginComponent, SpinnerWidget],
     providers: <dynamic>[materialProviders],
-    exports: [AboutRoutes])
+    exports: [AboutRoutes, ContentRoutes])
 class BookingPage implements OnInit {
   final ClientFactory _clientFactory;
   final EventRepository _eventRepository;
@@ -57,9 +58,9 @@ class BookingPage implements OnInit {
 
   bool get isInCountdown => isLoaded && _evnt.isInCountdown;
 
-  bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.isOpen && !_evnt.isLocked;
+  bool get isNotReady => isLoaded && !_evnt.isInCountdown && !_evnt.hasOpened && !_evnt.isLocked;
 
-  bool get isOpen => isLoaded && _evnt.isOpen;
+  bool get isOpen => isLoaded && _evnt.isOpenAndNotLocked;
 
   SelectionOptions<int> get teamSizeOptions => SelectionOptions.fromList(range(TEAM_SIZE_MIN, TEAM_SIZE_MAX + 1, 1).cast<int>().toList(growable: false));
 

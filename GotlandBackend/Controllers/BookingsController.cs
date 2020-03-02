@@ -181,7 +181,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				if(!evnt.IsOpen)
+				if(!evnt.HasOpened)
 				{
 					_log.Warn("An attempt was made to create a solo booking before the event is open.");
 					return BadRequest();

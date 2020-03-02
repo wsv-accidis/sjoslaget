@@ -34,7 +34,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				if(null == evnt)
 					return NotFound();
 
-				if(!evnt.IsOpen)
+				if(!evnt.IsOpenAndNotLocked)
 				{
 					_log.Warn("An attempt was made to enqueue a candidate before the event is open.");
 					return BadRequest();

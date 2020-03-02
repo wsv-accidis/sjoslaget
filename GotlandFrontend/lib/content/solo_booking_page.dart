@@ -41,7 +41,7 @@ class SoloBookingPage implements OnInit {
       final Event evnt = await _eventRepository.getActiveEvent(client);
 
       // No countdown on this page; just refuse entry if event is not yet open
-      if (!evnt.isOpen) {
+      if (!evnt.hasOpened) {
         await _router.navigateByUrl(ContentRoutes.start.toUrl());
       }
     } catch (e) {
