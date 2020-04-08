@@ -96,7 +96,7 @@
 </div>
 
 <p *ngIf="isCruiseLocked && !isLoadingCruise">
-	Bokningen är stängd. Det är bara att vänta tills den öppnar igen! <a [routerLink]="ContentRoutes.contact.toUrl()">Kontakta oss</a> om du har frågor kring tidigare bokningar.
+	Bokningen är stängd. Det är bara att vänta tills den öppnar igen! <a [routerLink]="AboutRoutes.contact.toUrl()">Kontakta oss</a> om du har frågor kring tidigare bokningar.
 </p>
 
 <spinner-widget *ngIf="isLoadingCruise"></spinner-widget>

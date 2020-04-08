@@ -3,26 +3,25 @@ import 'package:angular_router/angular_router.dart';
 
 import 'about_component.template.dart';
 import 'booking_page.template.dart';
-import 'contact_page.template.dart';
 import 'content_routes.dart';
 import 'not_found_page.template.dart';
 import 'pricing_page.template.dart';
+import 'program_page.template.dart';
 import 'start_page.template.dart';
 
 @Component(
-	selector: 'content-component',
-	styleUrls: ['content_component.css'],
-	templateUrl: 'content_component.html',
-	directives: <dynamic>[routerDirectives],
-	exports: [ContentRoutes]
-)
+    selector: 'content-component',
+    styleUrls: ['content_component.css'],
+    templateUrl: 'content_component.html',
+    directives: <dynamic>[routerDirectives],
+    exports: [ContentRoutes])
 class ContentComponent {
-	final List<RouteDefinition> routes = [
-		RouteDefinition(routePath: ContentRoutes.start, component: StartPageNgFactory),
-		RouteDefinition(routePath: ContentRoutes.about, component: AboutComponentNgFactory),
-		RouteDefinition(routePath: ContentRoutes.booking, component: BookingPageNgFactory),
-		RouteDefinition(routePath: ContentRoutes.contact, component: ContactPageNgFactory),
-		RouteDefinition(routePath: ContentRoutes.pricing, component: PricingPageNgFactory),
-		RouteDefinition(path: '.+', component: NotFoundPageNgFactory),
-	];
+  final List<RouteDefinition> routes = [
+    RouteDefinition(routePath: ContentRoutes.start, component: StartPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.about, component: AboutComponentNgFactory),
+    RouteDefinition(routePath: ContentRoutes.booking, component: BookingPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.pricing, component: PricingPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.program, component: ProgramPageNgFactory),
+    RouteDefinition(path: '.+', component: NotFoundPageNgFactory),
+  ];
 }
