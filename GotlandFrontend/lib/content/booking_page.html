@@ -24,10 +24,17 @@
 </p>
 
 <p *ngIf="isClosed">
+	Absolut Gotland 2020 är tyvärr inställt i enlighet med myndigheternas rekommendationer för att minska spridningen av Coronaviruset.
+	Vi hoppas att vi ses snart igen!
+</p>
+
+<!--
+<p *ngIf="isClosed">
 	Bokningen har stängt för i år - men hoppet är inte ute för dig som vill åka med på AG. Du kan skriva upp dig på vår <strong><a [routerLink]="ContentRoutes.solo.toUrl()">väntelista</a></strong>
 	så hör vi av oss ifall det blir några avbokningar eller extrastugor, och vi tar även emot anmälan för lag som vill bo på <strong><a [routerLink]="ContentRoutes.contact.toUrl()">campingen</a></strong>.
 	Kontakta oss så ska vi göra vårt bästa för att även du ska få uppleva Absolut Gotland i år!
 </p>
+-->
 
 <div *ngIf="isInCountdown || isOpen">
 	<form #candidateForm="ngForm" (submit)="submitDetails()">
