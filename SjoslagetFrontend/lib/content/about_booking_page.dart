@@ -6,7 +6,7 @@ import 'content_routes.dart';
 @Component(
 	selector: 'about-booking-page',
 	styleUrls: ['content_styles.css'],
-	templateUrl: 'about_booking_page_vk.html',
+	templateUrl: 'about_booking_page_sj.html',
 	directives: <dynamic>[routerDirectives],
 	exports: [ContentRoutes]
 )

@@ -8,7 +8,7 @@ import 'content_routes.dart';
 @Component(
     selector: 'about-start-page',
     styleUrls: ['content_styles.css'],
-    templateUrl: 'about_start_page_vk.html',
+    templateUrl: 'about_start_page_sj.html',
     directives: <dynamic>[routerDirectives, MaterialIconComponent],
     exports: [AboutRoutes, ContentRoutes])
 class AboutStartPage {}

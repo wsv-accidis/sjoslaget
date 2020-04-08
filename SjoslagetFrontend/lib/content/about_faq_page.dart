@@ -7,7 +7,7 @@ import 'content_routes.dart';
 @Component(
     selector: 'about-faq-page',
     styleUrls: ['content_styles.css'],
-    templateUrl: 'about_faq_page_vk.html',
+    templateUrl: 'about_faq_page_sj.html',
     directives: <dynamic>[routerDirectives],
     exports: [AboutRoutes, ContentRoutes])
 class AboutFaqPage {}
