@@ -7,11 +7,12 @@ div.page {
 	min-height: 100vh;
 	min-width: 700px;
 	margin: 0 auto;
-	padding: 20px 40px;
+	padding: 40px 40px;
 }
 
 div.navigation {
-	display: flex;
+	padding-bottom: 65px;
+	text-align: center;
 	width: 100%;
 }
 
@@ -19,43 +20,39 @@ div.logo {
 	border-radius: 15px 0 0 15px;
 }
 
+div.logo a, div.logo a:hover {
+	color: black;
+}
+
 div.menu {
+	margin-top: 20px;
 	width: 100%;
-	padding-top: 10px;
 }
 
 div.menu-item {
 	border-left: 2px solid white;
 	box-sizing: border-box;
 	float: left;
-	height: 70px;
-	width: 25%;
+	height: 40px;
+	width: 20%;
 }
 
 div.menu-item a {
 	align-items: center;
-	background-color: #0F76BC;
-	color: white;
+	color: black;
 	display: flex;
-	font-family: 'Carter One', Helvetica, Arial, sans-serif;
+	font-family: Raleway, Helvetica, Arial, sans-serif;
 	font-size: large;
 	height: 100%;
 	justify-content: center;
 	line-height: 1.1;
 	text-align: center;
 	text-decoration: none;
+	text-transform: uppercase;
 }
 
 div.menu-item a:hover {
-	background-color: #0A507F;
-}
-
-div.menu > div.menu-item:first-child > a {
-	border-radius: 15px 0 0 15px;
-}
-
-div.menu > div.menu-item:last-child > a {
-	border-radius: 0 15px 15px 0;
+	background-color: #dddddd;
 }
 
 div.content {
@@ -66,9 +63,18 @@ div.content {
 	background-image: url(gfx/Logo.png);
 	background-repeat: no-repeat;
 	background-size: contain;
-	height: 80px;
-	width: 80px;
+	display: inline-block;
+	height: 35px;
+	width: 35px;
 	margin: 5px 15px 5px 0;
+	vertical-align: middle;
+}
+
+#sjoslaget-title {
+	display: inline-block;
+	font-family: Raleway, Helvetica, Arial, sans-serif;
+	font-size: x-large;
+	text-transform: uppercase;
 	vertical-align: middle;
 }
 

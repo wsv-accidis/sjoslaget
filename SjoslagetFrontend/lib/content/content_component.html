@@ -1,12 +1,18 @@
 <div class="page">
 	<div class="navigation">
 		<div class="logo">
-			<a [routerLink]="ContentRoutes.start.toUrl()"><div id="sjoslaget-logo"></div></a>
+			<a [routerLink]="ContentRoutes.start.toUrl()">
+				<div id="sjoslaget-logo"></div>
+				<div id="sjoslaget-title">Sjöslaget</div>
+			</a>
 		</div>
 
 		<div class="menu">
 			<div class="menu-item">
-				<a [routerLink]="ContentRoutes.about.toUrl()">Allt om<br>Sjöslaget</a>
+				<a [routerLink]="ContentRoutes.about.toUrl()">Allt om…</a>
+			</div>
+			<div class="menu-item">
+				<a [routerLink]="ContentRoutes.program.toUrl()">Program</a>
 			</div>
 			<div class="menu-item">
 				<a [routerLink]="ContentRoutes.pricing.toUrl()">Priser</a>
@@ -15,7 +21,7 @@
 				<a [routerLink]="ContentRoutes.booking.toUrl()">Bokning</a>
 			</div>
 			<div class="menu-item">
-				<a [routerLink]="ContentRoutes.program.toUrl()">Program</a>
+				<a [routerLink]="ContentRoutes.program.toUrl()">Kontakt</a>
 			</div>
 		</div>
 	</div>

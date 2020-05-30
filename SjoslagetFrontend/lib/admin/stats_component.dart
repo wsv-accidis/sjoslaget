@@ -234,7 +234,7 @@ class StatsComponent implements OnInit {
 	ChartTitleOptions _createTitle(String label) =>
 		ChartTitleOptions(display: true,
 			fontColor: 'black',
-			fontFamily: 'Carter One',
+			fontFamily: 'Raleway',
 			fontSize: 20,
 			padding: 15,
 			text: label
