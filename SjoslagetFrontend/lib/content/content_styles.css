@@ -32,16 +32,19 @@ material-icon {
 h1, h2, h3 {
 	color: #0F75BC;
 	font-family: Raleway, Helvetica, Arial, sans-serif;
+	margin-top: 10px;
 }
 
 h1 {
-	font-size: 28px;
+	font-size: x-large;
+	font-weight: lighter;
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 h2 {
-	font-size: 18px;
+	font-size: large;
+	font-weight: lighter;
 }
 
 img {
@@ -57,14 +60,6 @@ iframe {
 	width: 487px;
 }
 
-iframe.facebook-box {
-	height: 80px;
-}
-
-iframe.twitter-box {
-	height: 800px;
-}
-
 iframe.youtube-box {
 	height: 273px;
 	margin-left: 1px;
@@ -74,6 +69,10 @@ iframe.youtube-box {
 	font-family: 'Roboto Mono', monospace;
 }
 
+p {
+	line-height: 1.5;
+}
+
 .super-important {
 	color: red;
 	font-style: italic;
@@ -81,6 +80,10 @@ iframe.youtube-box {
 
 .super-important material-icon {
 	color: red;
+}
+
+.title-font {
+	font-family: Raleway, Helvetica, Arial, sans-serif;
 }
 
 table {
