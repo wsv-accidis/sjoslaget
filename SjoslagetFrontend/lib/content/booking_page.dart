@@ -17,70 +17,68 @@ import '../model/booking_details.dart';
 import '../model/cruise.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
-import 'about_routes.dart';
 import 'content_routes.dart';
 
 @Component(
-	selector: 'booking-page',
-	styleUrls: ['content_styles.css'],
-	templateUrl: 'booking_page.html',
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, BookingLoginComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: [AboutRoutes, ContentRoutes]
-)
+    selector: 'booking-page',
+    styleUrls: ['content_styles.css'],
+    templateUrl: 'booking_page.html',
+    directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, BookingLoginComponent, SpinnerWidget],
+    providers: <dynamic>[materialProviders],
+    exports: [ContentRoutes])
 class BookingPage implements OnInit {
-	final ClientFactory _clientFactory;
-	final CruiseRepository _cruiseRepository;
-	final Router _router;
+  final ClientFactory _clientFactory;
+  final CruiseRepository _cruiseRepository;
+  final Router _router;
 
-	Cruise cruise;
-	String firstName;
-	String lastName;
-	String phoneNo;
-	String email;
-	String lunch;
-	bool acceptToc = false;
+  Cruise cruise;
+  String firstName;
+  String lastName;
+  String phoneNo;
+  String email;
+  String lunch;
+  bool acceptToc = false;
 
-	BookingPage(this._clientFactory, this._cruiseRepository, this._router);
+  BookingPage(this._clientFactory, this._cruiseRepository, this._router);
 
-	bool get isLoadingCruise => null == cruise;
+  bool get isLoadingCruise => null == cruise;
 
-	bool get isCruiseLocked => null == cruise || cruise.isLocked;
+  bool get isCruiseLocked => null == cruise || cruise.isLocked;
 
-	Future<Null> doInit() async {
-		try {
-			final client = _clientFactory.getClient();
-			cruise = await _cruiseRepository.getActiveCruise(client);
-		} on ExpirationException {
-			rethrow;
-		} catch (e) {
-			// Just ignore this here, we will be stuck in the loading state until the user refreshes
-			print('Failed to get cruise due to an exception: ${e.toString()}');
-		}
-	}
+  Future<Null> doInit() async {
+    try {
+      final client = _clientFactory.getClient();
+      cruise = await _cruiseRepository.getActiveCruise(client);
+    } on ExpirationException {
+      rethrow;
+    } catch (e) {
+      // Just ignore this here, we will be stuck in the loading state until the user refreshes
+      print('Failed to get cruise due to an exception: ${e.toString()}');
+    }
+  }
 
-	@override
-	Future<Null> ngOnInit() async {
-		try {
-			await doInit();
-		} on ExpirationException catch (e) {
-			print(e.toString());
-			_clientFactory.clear();
-			await doInit();
-		}
-	}
+  @override
+  Future<Null> ngOnInit() async {
+    try {
+      await doInit();
+    } on ExpirationException catch (e) {
+      print(e.toString());
+      _clientFactory.clear();
+      await doInit();
+    }
+  }
 
-	Future<Null> submitDetails() async {
-		if (!acceptToc) {
-			return;
-		}
-		if (str.isEmpty(lunch)) {
-			// Vårkryssen doesn't use lunch so just set a dummy value
-			lunch = '-';
-		}
+  Future<Null> submitDetails() async {
+    if (!acceptToc) {
+      return;
+    }
+    if (str.isEmpty(lunch)) {
+      // Vårkryssen doesn't use lunch so just set a dummy value
+      lunch = '-';
+    }
 
-		final bookingDetails = BookingDetails.fromForm(firstName, lastName, phoneNo, email, lunch);
-		window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
-		await _router.navigateByUrl(BookingRoutes.editBooking.toUrl());
-	}
+    final bookingDetails = BookingDetails.fromForm(firstName, lastName, phoneNo, email, lunch);
+    window.sessionStorage[BookingComponent.BOOKING] = bookingDetails.toJson();
+    await _router.navigateByUrl(BookingRoutes.editBooking.toUrl());
+  }
 }

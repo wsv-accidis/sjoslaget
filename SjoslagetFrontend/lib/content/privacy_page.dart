@@ -1,13 +1,12 @@
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 
-import 'about_routes.dart';
 import 'content_routes.dart';
 
 @Component(
-    selector: 'about-faq-page',
+    selector: 'privacy-page',
     styleUrls: ['content_styles.css'],
-    templateUrl: 'about_faq_page_sj.html',
+    templateUrl: 'privacy_page.html',
     directives: <dynamic>[routerDirectives],
-    exports: [AboutRoutes, ContentRoutes])
-class AboutFaqPage {}
+    exports: [ContentRoutes])
+class PrivacyPage {}

@@ -11,7 +11,6 @@ import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
-import '../content/about_routes.dart';
 import '../content/content_routes.dart';
 import '../model/booking_cabin_view.dart';
 import '../model/booking_details.dart';
@@ -31,7 +30,7 @@ import 'products_component.dart';
 	styleUrls: ['../content/content_styles.css', 'booking_cabins_page.css'],
 	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ProductsComponent, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
-	exports: <dynamic>[AboutRoutes]
+	exports: <dynamic>[ContentRoutes]
 )
 class BookingCabinsPage implements OnInit {
 	final BookingRepository _bookingRepository;

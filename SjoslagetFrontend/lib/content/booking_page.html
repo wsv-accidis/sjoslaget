@@ -2,7 +2,7 @@
 
 <div *ngIf="!isCruiseLocked">
 	<p style="margin-bottom: 3px">
-		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="AboutRoutes.booking.toUrl()">Hur man bokar</a> och se till att
+		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="ContentRoutes.booking.toUrl()">Hur man bokar</a> och se till att
 		du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
 		egna uppgifter som <strong>kontaktperson</strong>:
 	</p>
@@ -79,7 +79,7 @@
 							   ngControl="acceptToc"
 							   style="font-size: smaller; margin-left: 0">
 				Jag godkänner att samtliga personuppgifter jag anger i bokningen får lagras och användas av Sjöslaget och våra samarbetspartners, samt att ingen person i bokningen är under 18 år.
-				Sjöslaget säljer inte personuppgifter vidare och vi använder dem aldrig i marknadsföringssyfte. Läs gärna <a [routerLink]="AboutRoutes.privacy.toUrl()">vår integritetspolicy</a> för mer information.
+				Sjöslaget säljer inte personuppgifter vidare och vi använder dem aldrig i marknadsföringssyfte. Läs gärna <a [routerLink]="ContentRoutes.privacy.toUrl()">vår integritetspolicy</a> för mer information.
 			</material-checkbox>
 		</div>
 		<div style="margin-top: 10px">
@@ -97,7 +97,7 @@
 </div>
 
 <p *ngIf="isCruiseLocked && !isLoadingCruise">
-	Bokningen är stängd. Det är bara att vänta tills den öppnar igen! <a [routerLink]="AboutRoutes.contact.toUrl()">Kontakta oss</a> om du har frågor kring tidigare bokningar.
+	Bokningen är stängd. Det är bara att vänta tills den öppnar igen! <a [routerLink]="ContentRoutes.contact.toUrl()">Kontakta oss</a> om du har frågor kring tidigare bokningar.
 </p>
 
 <spinner-widget *ngIf="isLoadingCruise"></spinner-widget>
