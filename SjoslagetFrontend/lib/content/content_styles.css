@@ -130,6 +130,7 @@ h1.splash-title {
 }
 
 h1.splash-subtitle {
+	margin-top: 45px;
 	text-transform: uppercase;
 }
 
