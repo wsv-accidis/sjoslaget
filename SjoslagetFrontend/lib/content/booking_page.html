@@ -1,6 +1,75 @@
-<h1>Bokning</h1>
+<div class="to-booking-link">
+	<a href="#bokning">🡇 Vet du redan hur man gör? Gå direkt till bokning 🡇</a>
+</div>
 
-<div *ngIf="!isCruiseLocked">
+<h1>Hur man bokar</h1>
+
+<p>
+	Du bokar direkt här på webbsajten, under <a [routerLink]="ContentRoutes.booking.toUrl()">Bokning</a>. Du som bokar är
+	<strong>kontaktperson</strong> för bokningen och ansvarar för att samla ihop personuppgifter och pengar från alla deltagare.
+	Du kommer att behöva följande information:
+</p>
+
+<ul>
+	<li>Namn, telefonnummer och e-postadress till den som är kontaktperson och står för bokningen.</li>
+	<li>Hur många ni är som ska åka, vilka <a [routerLink]="ContentRoutes.pricing.toUrl()">typer av hytter</a> ni vill ha och vilka som ska bo tillsammans.</li>
+	<li>För varje deltagare: För- och efternamn, kön, födelsedatum, förening (se nedan) och antal tidigare åkta Sjöslag.</li>
+</ul>
+
+<p>
+	När du bokar får du också välja en lunchtid. Av utrymmesskäl kan inte alla få sin önskade sittning, så detta ska bara ses som
+	ett önskemål. Vilken lunchtid ni faktiskt fick får du veta i terminalen när du hämtar ut biljetterna.
+</p>
+
+<p>
+	Vad menas med "förening"? Det är det mästeri, nation eller sektion deltagaren tillhör eller bara namnet på högskolan/universitetet
+	där deltagaren studerar. Har du inget av detta duger det med ett gruppnamn.
+</p>
+
+<p>
+	Det går bra att göra flera bokningar med samma kontaktperson, men boka i så stora grupper som möjligt!
+	Kontaktpersoner för grupper större än 40 personer belönas självklart!
+</p>
+
+<p>
+	I terminalen är det kontaktpersonen som hämtar ut ett kuvert med biljetter, oavsett hur många som är anmälda.
+	Du som är deltagare får alltså din biljett av den som är kontaktperson för bokningen.
+</p>
+
+<h2>Betalning och ändringar</h2>
+
+<p>
+	När bokningen är skickad får du en <strong>bokningsreferens</strong> och <strong>PIN-kod</strong> som du kan
+	använda för att titta på bokningen eller göra ändringar i den. Hytterna reserveras så fort bokningen är sparad,
+	du får inget separat bekräftelsemail.
+</p>
+
+<p>
+	Betalning ska ske till <strong>Bankgiro 299-5272</strong> med mottagare <strong>OMO Media AB</strong>.
+	Inbetalning ska ske så snart som möjligt efter gjord bokning. På inbetalningen ska anges <strong>bokningsreferens</strong>
+	och <strong>kontaktpersonens namn</strong>. Du måste inte betala hela bokningen på en gång utan det går bra att delbetala,
+	men betala ej varje person separat (hög risk för fel). Du får inget mail som bekräftar mottagen betalning,
+	utan det ser du genom att logga in i bokningen.
+</p>
+
+<h2>Sista bokningsdag</h2>
+
+<p>
+	Sista bokningsdag existerar inte. När biljetterna är slut är de slut, först till kvarn gäller!
+
+	Betalning ska dock alltid ske så snart som du får bekräftelse på bokningen.
+	Obetalda bokningar kan komma att tas bort om de ligger kvar för länge.
+	Obetalda bokningar gjorda före 25/8 kommer automatiskt att rensas 31/8.
+</p>
+
+<p>
+	Ändringar i din bokning kan du göra här på webbsajten fram till några dagar innan kryssningen
+	och på terminalen ända fram tills fartyget avgår.
+</p>
+
+<h1 id="bokning">Bokning</h1>
+
+<div> <!--*ngIf="!isCruiseLocked"-->
 	<p style="margin-bottom: 3px">
 		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="ContentRoutes.booking.toUrl()">Hur man bokar</a> och se till att
 		du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
@@ -77,12 +146,12 @@
 		<div>
 			<material-checkbox [(ngModel)]="acceptToc"
 							   ngControl="acceptToc"
-							   style="font-size: smaller; margin-left: 0">
+							   class="booking-form-toc">
 				Jag godkänner att samtliga personuppgifter jag anger i bokningen får lagras och användas av Sjöslaget och våra samarbetspartners, samt att ingen person i bokningen är under 18 år.
 				Sjöslaget säljer inte personuppgifter vidare och vi använder dem aldrig i marknadsföringssyfte. Läs gärna <a [routerLink]="ContentRoutes.privacy.toUrl()">vår integritetspolicy</a> för mer information.
 			</material-checkbox>
 		</div>
-		<div style="margin-top: 10px">
+		<div class="booking-form-submit">
 			<material-button [disabled]="!bookingForm.valid || !acceptToc"
 							 class="control-blue"
 							 raised
@@ -102,12 +171,10 @@
 
 <spinner-widget *ngIf="isLoadingCruise"></spinner-widget>
 
-<h1 style="margin-top: 20px">Din bokning</h1>
+<h1 id="din-bokning">Din bokning</h1>
 
-<p style="margin-bottom: 5px;">
+<p class="your-booking">
 	Redan bokat? Logga in här för att visa eller ändra din bokning.
 </p>
 
 <booking-login></booking-login>
-
-<div style="height: 30px"></div>

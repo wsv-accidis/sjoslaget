@@ -1,36 +1,25 @@
-<h1>Allt om Sjöslaget</h1>
+<div class="splash-grid">
+	<div>
+		<a [routerLink]="ContentRoutes.faq.toUrl()"><img class="fancy-border" src="gfx/photos/temp.jpg" alt="Vanliga frågor"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.faq.toUrl()">Vanliga frågor</a>
+	</div>
+	<div>
+		<a [routerLink]="ContentRoutes.rules.toUrl()"><img class="fancy-border" src="gfx/photos/temp.jpg" alt="Trivselregler"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.rules.toUrl()">Trivselregler</a><br/>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.privacy.toUrl()">Integritetspolicy</a>
+	</div>
+	<div>
+		<a [routerLink]="ContentRoutes.history.toUrl()"><img class="fancy-border" src="gfx/photos/temp.jpg" alt="Historik"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.history.toUrl()">Historik</a>
+	</div>
+</div>
+
+<h2>
+	Sjöslaget
+</h2>
 
 <p>
 	Sjöslaget är en av Sveriges största årligen återkommande fester för högskole- och universitetsstudenter.
-	Någon gång när temperaturen börjar sjunka och regnet öser ned i mitten av oktober är det dags att dra på sig ovven och ge sig ut på
-	Östersjöns böljande vågor tillsammans med nästan 2 000 andra festsugna! Du hänger väl med?
-</p>
-
-<p>
-	Allt du behöver veta finns på någon av följande sidor:
-</p>
-
-<p style="font-size: large">
-	<material-icon icon="mood"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.booking.toUrl()">Hur man bokar</a><br/>
-	<material-icon icon="security"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.rules.toUrl()">Regler ombord</a><br/>
-	<material-icon icon="chat_bubble_outline"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.faq.toUrl()">Vanliga frågor</a><br/>
-	<material-icon icon="import_contacts"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.history.toUrl()">Historik</a><br />
-	<material-icon icon="vpn_key"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.privacy.toUrl()">Integritetspolicy</a><br />
-	<material-icon icon="email"></material-icon>
-	&nbsp;<a [routerLink]="ContentRoutes.contact.toUrl()">Kontakta oss</a>
-</p>
-
-<p>
-	Mycket att läsa? Tack vare en av våra deltagare har vi en video som visar vad det handlar om:
-</p>
-
-<iframe class="youtube-box" src="https://www.youtube-nocookie.com/embed/Kxxy7jmuakA?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-<p>
-	Om det du behövde veta mot förmodan inte fanns på någon av sidorna så är det bara att du <a [routerLink]="ContentRoutes.contact.toUrl()">hör av dig</a>!
+	Någon gång när temperaturen börjar sjunka och regnet öser ned i mitten av oktober är det dags att dra på sig festplagget
+	och ge sig ut på Östersjöns böljande vågor tillsammans med nästan 2 000 andra festsugna! Du hänger väl med?
 </p>

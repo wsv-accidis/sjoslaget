@@ -1,0 +1,22 @@
+#bokning, #din-bokning {
+	margin-top: 40px;
+}
+
+.booking-form-toc {
+	font-size: smaller;
+	margin-left: 0;
+}
+
+.booking-form-submit {
+	margin-top: 10px;
+}
+
+div.to-booking-link {
+	font-size: larger;
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+.your-booking {
+	margin-bottom: 10px;
+}

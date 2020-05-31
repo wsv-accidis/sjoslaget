@@ -10,7 +10,9 @@ import 'history_page.template.dart';
 import 'not_found_page.template.dart';
 import 'pricing_page.template.dart';
 import 'privacy_page.template.dart';
+import 'program_artists_page.template.dart';
 import 'program_page.template.dart';
+import 'program_standup_page.template.dart';
 import 'rules_page.template.dart';
 import 'start_page.template.dart';
 
@@ -24,6 +26,7 @@ class ContentComponent {
   final List<RouteDefinition> routes = [
     RouteDefinition(routePath: ContentRoutes.start, component: StartPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.about, component: AboutPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.artists, component: ProgramArtistsPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.booking, component: BookingPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.contact, component: ContactPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.faq, component: FaqPageNgFactory),
@@ -32,6 +35,7 @@ class ContentComponent {
     RouteDefinition(routePath: ContentRoutes.privacy, component: PrivacyPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.program, component: ProgramPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.rules, component: RulesPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.standup, component: ProgramStandupPageNgFactory),
     RouteDefinition(path: '.+', component: NotFoundPageNgFactory),
   ];
 }

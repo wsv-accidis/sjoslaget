@@ -53,6 +53,14 @@ img {
 	max-width: 100%;
 }
 
+img.fancy-border {
+	background: white;
+	box-shadow: 0 0 5px black;
+	border: 2px outset;
+	border-color: #fff #ddd;
+	padding: 15px;
+}
+
 iframe {
 	border: 0;
 	margin-left: -10px;
@@ -73,6 +81,58 @@ p {
 	line-height: 1.5;
 }
 
+div.splash-grid {
+	display: grid;
+	grid-template-columns: repeat(11, 1fr);
+	margin-bottom: 60px;
+	margin-top: 60px;
+	position: relative;
+}
+
+div.splash-grid > div {
+	font-size: larger;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+div.splash-grid img {
+	transform: rotate(-5deg);
+}
+
+div.splash-grid :nth-child(1) {
+	grid-column: 1 / span 3;
+	grid-row: 1;
+}
+
+div.splash-grid :nth-child(2) {
+	grid-column: 5 / span 3;
+	grid-row: 1;
+}
+
+div.splash-grid :nth-child(3) {
+	grid-column: 9 / span 3;
+	grid-row: 1;
+}
+
+a.splash-link, a.splash-link:hover {
+	display: block;
+	margin-left: 33px;
+	margin-top: 20px;
+}
+
+h1.splash-title {
+	color: black;
+	font-size: x-large;
+	font-weight: lighter;
+	margin-bottom: 30px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+h1.splash-subtitle {
+	text-transform: uppercase;
+}
+
 .super-important {
 	color: red;
 	font-style: italic;
@@ -80,10 +140,6 @@ p {
 
 .super-important material-icon {
 	color: red;
-}
-
-.title-font {
-	font-family: Raleway, Helvetica, Arial, sans-serif;
 }
 
 table {
@@ -111,6 +167,32 @@ tbody > tr:last-child > td.border {
 	border-bottom: 1px solid #608BA8;
 }
 
+.title-font {
+	font-family: Raleway, Helvetica, Arial, sans-serif;
+}
+
+div.top-splash-grid {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	margin-bottom: 40px;
+	margin-top: 60px;
+	position: relative;
+}
+
+div.top-splash-grid :nth-child(1) {
+	grid-column: 1 / span 8;
+	grid-row: 1;
+	transform: rotate(-10deg);
+}
+
+div.top-splash-grid :nth-child(2) {
+	grid-column: 8 / -1;
+	grid-row: 1;
+	margin-top: 40%;
+	transform: rotate(12deg);
+	z-index: 1;
+}
+
 span.underline {
 	text-decoration: underline;
 }
@@ -122,4 +204,42 @@ ul.undecorated-list {
 
 ul.undecorated-list li {
 	margin-bottom: 8px;
+}
+
+@media (max-width: 700px) {
+	img.fancy-border {
+		padding: 5px;
+	}
+
+	div.splash-grid {
+		margin-right: 15px;
+	}
+
+	div.splash-grid :nth-child(1) {
+		grid-column: 2 / span 9;
+		grid-row: 1;
+	}
+
+	div.splash-grid :nth-child(2) {
+		grid-column: 2 / span 9;
+		grid-row: 2;
+	}
+
+	div.splash-grid :nth-child(3) {
+		grid-column: 2 / span 9;
+		grid-row: 3;
+	}
+
+	div.splash-grid > div {
+		margin-bottom: 50px;
+	}
+
+	div.splash-grid > img {
+		margin-bottom: 20px;
+	}
+
+	div.top-splash-grid {
+		margin-top: 30px;
+		margin-right: 10px;
+	}
 }

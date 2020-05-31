@@ -29,16 +29,16 @@
 
 <div class="splash-grid">
 	<div>
-		<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-		<a class="title-font" href="">Artister</a>
+		<a [routerLink]="ContentRoutes.artists.toUrl()"><img class="fancy-border" src="gfx/photos/temp.jpg" alt="Artister"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.artists.toUrl()">Artister</a>
 	</div>
 	<div>
-		<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-		<a class="title-font" href="">Stand up</a>
+		<a [routerLink]="ContentRoutes.standup.toUrl()"><img class="fancy-border" src="gfx/photos/temp.jpg" alt="Stand up"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.standup.toUrl()">Stand up</a>
 	</div>
 	<div>
-		<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-		<a class="title-font" href="">Mer…</a>
+		<a [routerLink]="ContentRoutes.program.toUrl()"> <img class="fancy-border" src="gfx/photos/temp.jpg" alt="Mer…"/></a>
+		<a class="splash-link title-font" [routerLink]="ContentRoutes.program.toUrl()">Mer…</a>
 	</div>
 </div>
 
@@ -47,15 +47,15 @@
 </div>
 
 <div class="splash-grid">
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
 </div>
 
 <div class="splash-grid">
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
-	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Sjöslaget"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
+	<img class="fancy-border" src="gfx/photos/temp.jpg" alt="Instagram"/>
 </div>
 
 <div class="available-cabins" *ngIf="cruiseIsUnlocked">

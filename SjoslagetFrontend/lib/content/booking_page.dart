@@ -21,7 +21,7 @@ import 'content_routes.dart';
 
 @Component(
     selector: 'booking-page',
-    styleUrls: ['content_styles.css'],
+    styleUrls: ['booking_page.css', 'content_styles.css'],
     templateUrl: 'booking_page.html',
     directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, BookingLoginComponent, SpinnerWidget],
     providers: <dynamic>[materialProviders],
