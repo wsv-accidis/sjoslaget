@@ -5,6 +5,12 @@
 	Rejäl lunchbuffé på måndagen ingår i alla biljetter!
 </p>
 
+<p>
+	Ni betalar alltid för hela hytten så priserna gäller förutsatt att hytten är full. Om pris per person
+	exempelvis är 600 kr, och hytten rymmer fyra personer, så betalar ni 2 400 kr oavsett hur många som bor i hytten.
+</p>
+
+<!--
 <table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
 	<tr>
 		<th>Biljett</th>
@@ -23,34 +29,74 @@
 		</td>
 	</tr>
 </table>
-<spinner-widget *ngIf="null == cabins"></spinner-widget>
+-->
 
-<p>
-	Ni betalar alltid för hela hytter så priserna ovan gäller under förutsättning att hytten är full.
-	Om pris per person exempelvis är 640 kr, och hytten rymmer fyra personer, så betalar ni 2 560 kr
-	oavsett hur många som bor i hytten.
-</p>
+<div *ngIf="!isLoading">
+	<h2>DeLuxe</h2>
 
-<img src="gfx/cabins/Galaxy_A2.jpg" alt="A2-hytt" title="A2-hytt">
+	<p>
+		Lyxhytter med dubbelsäng, minibar och grym utsikt. Dessa är för 2 personer.
+	</p>
 
-<p>
-	Skillnaden mellan hytterna är främst antalet sängar och om det finns fönster. E-hytterna
-	är något billigare eftersom de ligger på platser där det kan bullra mer, t ex under nattklubben.
-</p>
+	<img src="gfx/cabins/Galaxy_Deluxe.jpg" alt="DeLuxe-hytt">
 
-<img src="gfx/cabins/Galaxy_Deluxe.jpg" alt="DeLuxe-hytt" title="DeLuxe-hytt">
+	<ul>
+		<li>DeLuxe - {{ priceByName("Deluxe") }} per person</li>
+	</ul>
 
-<p>
-	A2dbl och Deluxe har dubbelsängar som sitter ihop. Deluxe har dessutom en minibar laddad med några
-	öl, vin och läsk som ingår i biljettpriset.
-</p>
+	<h2>
+		A-hytter
+	</h2>
 
-<p>
-	Oftast är det E-hytterna, A2dbl och Deluxe som går åt först när bokningen öppnar. Var ute i god tid
-	om du vill boka dem!
-</p>
+	<p>
+		A-hytter är hytter som alltid har fönster med utsikt. De finns för 2, 3 eller 4 personer.
+		Du kan också välja en A2-hytt med dubbelsäng. De kallas A2dbl i bokningen.
+	</p>
 
-<p>
-	Mer info om hytterna finns på <a href="http://www.tallinksilja.se/sv/galaxy#tabs-content-7">Tallink Siljas hemsida</a>.
-	Sviterna går inte att boka på Sjöslaget.
-</p>
+	<img src="gfx/cabins/Galaxy_A4.jpg" alt="A4-hytt">
+
+	<ul>
+		<li>A4 - {{ priceByName("A4") }} per person</li>
+		<li>A3 - {{ priceByName("A3") }} per person</li>
+		<li>A2 - {{ priceByName("A2") }} per person</li>
+		<li>A2dbl - {{ priceByName("A2dbl") }} per person</li>
+	</ul>
+
+	<h2>
+		B-hytter
+	</h2>
+
+	<p>
+		I B-hytterna får du njuta av sällskapet istället för utsikten då de saknar fönster.
+		De finns för 2, 3 eller 4 personer.
+	</p>
+
+	<img src="gfx/cabins/Galaxy_B4.jpg" alt="B4-hytt">
+
+	<ul>
+		<li>B4 - {{ priceByName("B4") }} per person</li>
+		<li>B3 - {{ priceByName("B3") }} per person</li>
+		<li>B2 - {{ priceByName("B2") }} per person</li>
+	</ul>
+
+	<h2>
+		E-hytter
+	</h2>
+
+	<p>
+		E-hytter är en specialkategori som kan vara såväl med som utan fönster. De som har fönster har dock oftast utsikten blockerad av t ex en livbåt.
+		De finns för 2, 3 eller 4 personer.
+	</p>
+
+	<ul>
+		<li>E4 - {{ priceByName("E4") }} per person</li>
+		<li>E3 - {{ priceByName("E3") }} per person</li>
+		<li>E2 - {{ priceByName("E2") }} per person</li>
+	</ul>
+
+	<p>
+		Mer info om hytterna finns på <a href="http://www.tallinksilja.se/sv/galaxy#tabs-content-7">Tallink Siljas hemsida</a>.
+		Sviterna går inte att boka på Sjöslaget.
+	</p>
+</div>
+<spinner-widget *ngIf="isLoading"></spinner-widget>

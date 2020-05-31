@@ -1,0 +1,12 @@
+h2 {
+	margin-top: 40px;
+}
+
+ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+ul li:not(:last-child) {
+	margin-bottom: 5px;
+}

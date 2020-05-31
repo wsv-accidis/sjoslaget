@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:oauth2/oauth2.dart' show ExpirationException;
 
 import '../client/client_factory.dart';
@@ -9,16 +10,21 @@ import '../model/cruise_cabin.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
-    selector: 'pricing-page', styleUrls: ['content_styles.css'], templateUrl: 'pricing_page_sj.html', directives: <dynamic>[coreDirectives, SpinnerWidget])
+    selector: 'pricing-page',
+    styleUrls: ['content_styles.css', 'pricing_page.css'],
+    templateUrl: 'pricing_page_sj.html',
+    directives: <dynamic>[coreDirectives, SpinnerWidget])
 class PricingPage implements OnInit {
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
 
   List<CruiseCabin> cabins;
 
+  bool get isLoading => null == cabins;
+
   PricingPage(this._clientFactory, this._cruiseRepository);
 
-  Future<Null> doInit() async {
+  Future<void> doInit() async {
     try {
       final client = _clientFactory.getClient();
       cabins = await _cruiseRepository.getActiveCruiseCabins(client);
@@ -39,5 +45,14 @@ class PricingPage implements OnInit {
       _clientFactory.clear();
       await doInit();
     }
+  }
+
+  String priceByName(String name) {
+    if (isLoading) {
+      return '';
+    }
+
+    final CruiseCabin cabin = cabins.firstWhere((c) => c.name == name, orElse: () => null);
+    return null != cabin ? CurrencyFormatter.formatIntAsSEK(cabin.pricePerPax) : '-';
   }
 }

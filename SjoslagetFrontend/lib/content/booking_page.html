@@ -1,79 +1,63 @@
-<div class="to-booking-link">
-	<a href="#bokning">🡇 Vet du redan hur man gör? Gå direkt till bokning 🡇</a>
-</div>
-
 <h1>Hur man bokar</h1>
 
 <p>
-	Du bokar direkt här på webbsajten, under <a [routerLink]="ContentRoutes.booking.toUrl()">Bokning</a>. Du som bokar är
-	<strong>kontaktperson</strong> för bokningen och ansvarar för att samla ihop personuppgifter och pengar från alla deltagare.
-	Du kommer att behöva följande information:
+	Du som bokar är <strong>kontaktperson</strong> och ansvarar för att samla ihop personuppgifter och pengar från alla deltagare. Du kommer att behöva följande:
 </p>
 
 <ul>
-	<li>Namn, telefonnummer och e-postadress till den som är kontaktperson och står för bokningen.</li>
-	<li>Hur många ni är som ska åka, vilka <a [routerLink]="ContentRoutes.pricing.toUrl()">typer av hytter</a> ni vill ha och vilka som ska bo tillsammans.</li>
-	<li>För varje deltagare: För- och efternamn, kön, födelsedatum, förening (se nedan) och antal tidigare åkta Sjöslag.</li>
+	<li>Namn, telefonnummer och e-postadress till dig som kontaktperson.</li>
+	<li>Hur många ni är, vilka <a [routerLink]="ContentRoutes.pricing.toUrl()">hytter</a> ni vill ha och vilka som ska bo tillsammans.</li>
+	<li>För varje deltagare: För- och efternamn, kön, födelsedatum, förening och antal tidigare åkta Sjöslag.</li>
 </ul>
 
 <p>
-	När du bokar får du också välja en lunchtid. Av utrymmesskäl kan inte alla få sin önskade sittning, så detta ska bara ses som
-	ett önskemål. Vilken lunchtid ni faktiskt fick får du veta i terminalen när du hämtar ut biljetterna.
+	När du bokar får du också önska en lunchtid. Förening är förening alt. högskola/universitet.
 </p>
 
 <p>
-	Vad menas med "förening"? Det är det mästeri, nation eller sektion deltagaren tillhör eller bara namnet på högskolan/universitetet
-	där deltagaren studerar. Har du inget av detta duger det med ett gruppnamn.
-</p>
-
-<p>
-	Det går bra att göra flera bokningar med samma kontaktperson, men boka i så stora grupper som möjligt!
+	Det går bra att göra flera bokningar, men boka så stora grupper som möjligt!
 	Kontaktpersoner för grupper större än 40 personer belönas självklart!
 </p>
 
 <p>
-	I terminalen är det kontaktpersonen som hämtar ut ett kuvert med biljetter, oavsett hur många som är anmälda.
-	Du som är deltagare får alltså din biljett av den som är kontaktperson för bokningen.
+	I terminalen är det kontaktpersonen som hämtar ut ett kuvert med biljetter.
+	Du som är deltagare får alltså din biljett av kontaktpersonen.
 </p>
 
 <h2>Betalning och ändringar</h2>
 
 <p>
-	När bokningen är skickad får du en <strong>bokningsreferens</strong> och <strong>PIN-kod</strong> som du kan
-	använda för att titta på bokningen eller göra ändringar i den. Hytterna reserveras så fort bokningen är sparad,
-	du får inget separat bekräftelsemail.
+
+	När bokningen är skickad får du en <strong>bokningsreferens</strong> och <strong>PIN-kod</strong> som du kan använda
+	för att komma åt din bokning. Du får inget separat bekräftelsemail.
 </p>
 
 <p>
 	Betalning ska ske till <strong>Bankgiro 299-5272</strong> med mottagare <strong>OMO Media AB</strong>.
-	Inbetalning ska ske så snart som möjligt efter gjord bokning. På inbetalningen ska anges <strong>bokningsreferens</strong>
-	och <strong>kontaktpersonens namn</strong>. Du måste inte betala hela bokningen på en gång utan det går bra att delbetala,
-	men betala ej varje person separat (hög risk för fel). Du får inget mail som bekräftar mottagen betalning,
-	utan det ser du genom att logga in i bokningen.
+	På inbetalningen ska anges bokningsreferens och kontaktpersonens namn.
+	Betala hela bokningen på en gång, kontakta oss för undantag. Det kommer ingen betalningsbekräftelse per mail.
+</p>
+
+<p>
+	På grund av Corona vill vi i år att ni avvaktar med betalning tills ni meddelas.
 </p>
 
 <h2>Sista bokningsdag</h2>
 
 <p>
-	Sista bokningsdag existerar inte. När biljetterna är slut är de slut, först till kvarn gäller!
-
-	Betalning ska dock alltid ske så snart som du får bekräftelse på bokningen.
-	Obetalda bokningar kan komma att tas bort om de ligger kvar för länge.
-	Obetalda bokningar gjorda före 25/8 kommer automatiskt att rensas 31/8.
+	Först till kvarn gäller!
 </p>
 
 <p>
-	Ändringar i din bokning kan du göra här på webbsajten fram till några dagar innan kryssningen
-	och på terminalen ända fram tills fartyget avgår.
+	Ändringar kan du göra fram till några dagar innan kryssningen och på terminalen ända till avgång. Sista avbokning två veckor före avgång.
 </p>
 
 <h1 id="bokning">Bokning</h1>
 
-<div> <!--*ngIf="!isCruiseLocked"-->
+<div *ngIf="!isCruiseLocked">
 	<p style="margin-bottom: 3px">
-		Bokningen är öppen och det är bara att sätta fart! Läs igenom <a [routerLink]="ContentRoutes.booking.toUrl()">Hur man bokar</a> och se till att
-		du har alla uppgifter klara från början så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina
-		egna uppgifter som <strong>kontaktperson</strong>:
+		Bokningen är öppen och det är bara att sätta fart! Se till att du har alla uppgifter klara från början
+		så kommer det att gå mycket snabbare och enklare. Börja med att fylla i dina egna uppgifter som <strong>kontaktperson</strong>:
 	</p>
 
 	<form #bookingForm="ngForm" (submit)="submitDetails()">
