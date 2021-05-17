@@ -25,9 +25,10 @@ namespace Accidis.Sjoslaget.Test.Db
 			 * 2. Select specific database objects, check Tables only in the list. Next.
 			 * 3. Set the following options in Advanced:
 			 *		Schema qualify object names = False
+			 *		Include Descriptive Headers = False
 			 *		Script USE DATABASE = False
 			 *		Script Indexes = True
-			 * 4. Finish.
+			 * 4. Continue until finished.
 			 * 5. Unignore this test and off you go!
 			 */
 			using (var db = DbUtil.Open())
