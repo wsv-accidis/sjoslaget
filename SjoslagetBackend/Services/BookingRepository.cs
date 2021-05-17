@@ -65,6 +65,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				var cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
 				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
+				CheckCabinTypesValidity(booking.SubCruise, source.Cabins, cabinTypes);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 				await CheckCabinsAvailability(db, cruise, source.Cabins, cabinTypes);
@@ -139,6 +140,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				var cabinTypes = await _cabinRepository.GetActiveAsync(db, cruise);
 				var productTypes = await _productRepository.GetActiveAsync(db, cruise);
+				CheckCabinTypesValidity(SubCruiseCode.FromString(source.SubCruise), source.Cabins, cabinTypes);
 
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
@@ -164,11 +166,19 @@ namespace Accidis.Sjoslaget.WebService.Services
 				decimal totalPrice = _priceCalculator.CalculatePrice(source.Cabins, source.Products, booking.Discount, cabinTypes, productTypes);
 				if(allowUpdateDetails)
 				{
-					await db.ExecuteAsync("update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [InternalNotes] = @InternalNotes, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
-						new {FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, InternalNotes = source.InternalNotes, TotalPrice = totalPrice, Id = booking.Id});
+					await db.ExecuteAsync(
+						"update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Lunch] = @Lunch, [InternalNotes] = @InternalNotes, [SubCruise] = @SubCruise, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+						new
+						{
+							FirstName = source.FirstName, LastName = source.LastName, Email = source.Email, PhoneNo = source.PhoneNo, Lunch = source.Lunch, InternalNotes = source.InternalNotes, SubCruise = source.SubCruise,
+							TotalPrice = totalPrice, Id = booking.Id
+						});
 				}
 				else
-					await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id", new {TotalPrice = totalPrice, Id = booking.Id});
+				{
+					await db.ExecuteAsync("update [Booking] set [SubCruise] = @SubCruise, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
+						new {SubCruise = source.SubCruise, TotalPrice = totalPrice, Id = booking.Id});
+				}
 
 				tran.Complete();
 			}
@@ -223,6 +233,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		void CheckCabinTypesValidity(SubCruiseCode subCruiseForBooking, List<BookingSource.Cabin> sourceCabins, CruiseCabinWithType[] cabinTypes)
+		{
+			var typeDict = cabinTypes.ToDictionary(c => c.Id, c => c.SubCruise);
+			if(sourceCabins.Any(cabin => !typeDict.ContainsKey(cabin.TypeId) || !subCruiseForBooking.Equals(typeDict[cabin.TypeId])))
+				throw new BookingException($"One or more cabin types in the booking are not valid for sub-cruise {subCruiseForBooking}.");
+		}
+
 		async Task CheckProductsAvailability(SqlConnection db, Cruise cruise, List<BookingSource.Product> sourceList)
 		{
 			var availabilityDict = (await _productRepository.GetAvailabilityAsync(db, cruise)).ToDictionary(p => p.ProductTypeId, p => p);
@@ -243,17 +260,19 @@ namespace Accidis.Sjoslaget.WebService.Services
 			{
 				try
 				{
-					Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch], [InternalNotes]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch, @InternalNotes)",
+					Guid id = await db.ExecuteScalarAsync<Guid>(
+						"insert into [Booking] ([CruiseId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Lunch], [InternalNotes], [SubCruise]) output inserted.[Id] values (@CruiseId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Lunch, @InternalNotes, @SubCruise)",
 						new
 						{
 							CruiseId = booking.CruiseId,
-							Reference = booking.Reference, 
-							FirstName = booking.FirstName, 
-							LastName = booking.LastName, 
-							Email = booking.Email, 
-							PhoneNo = booking.PhoneNo, 
-							Lunch = booking.Lunch, 
-							InternalNotes = booking.InternalNotes ?? String.Empty
+							Reference = booking.Reference,
+							FirstName = booking.FirstName,
+							LastName = booking.LastName,
+							Email = booking.Email,
+							PhoneNo = booking.PhoneNo,
+							Lunch = booking.Lunch,
+							InternalNotes = booking.InternalNotes ?? string.Empty,
+							SubCruise = booking.SubCruise
 						});
 
 					createdBooking = true;
@@ -281,8 +300,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 				int paxIdx = 0;
 				IEnumerable<BookingPax> pax = cabinSource.Pax.Select(p => BookingPax.FromSource(p, id));
-				await db.ExecuteAsync("insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years], [Order]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years, @Order)",
-					pax.Select(p => new {BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years, Order = paxIdx++}));
+				await db.ExecuteAsync(
+					"insert into [BookingPax] ([BookingCabinId], [Group], [FirstName], [LastName], [Gender], [Dob], [Nationality], [Years], [Order]) values (@BookingCabinId, @Group, @FirstName, @LastName, @Gender, @Dob, @Nationality, @Years, @Order)",
+					pax.Select(p => new
+					{
+						BookingCabinId = p.BookingCabinId, Group = p.Group, FirstName = p.FirstName, LastName = p.LastName, Gender = p.Gender, Dob = p.Dob.ToString(), Nationality = p.Nationality, Years = p.Years, Order = paxIdx++
+					}));
 			}
 		}
 

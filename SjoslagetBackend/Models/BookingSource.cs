@@ -16,6 +16,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public int Discount { get; set; }
 		public bool IsLocked { get; set; }
 		public string InternalNotes { get; set; }
+		public string SubCruise { get; set; }
 		public List<Cabin> Cabins { get; set; }
 		public List<Product> Products { get; set; }
 		public PaymentSummary Payment { get; set; }
@@ -32,6 +33,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 				Lunch = booking.Lunch,
 				Discount = booking.Discount,
 				InternalNotes = booking.InternalNotes,
+				SubCruise = booking.SubCruise.ToString(),
 				IsLocked = booking.IsLocked,
 				Cabins = cabins.Select(c => new Cabin
 				{
@@ -70,6 +72,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 		{
 			if(null == bookingSource)
 				throw new ArgumentNullException(nameof(bookingSource), "Booking data not present.");
+			if(null == bookingSource.SubCruise)
+				throw new BookingException("Sub-cruise must be set.");
 
 			bookingSource.ValidateCabins();
 		}
@@ -144,18 +148,18 @@ namespace Accidis.Sjoslaget.WebService.Models
 				{
 					if(isFirstPax)
 					{
-						if(String.IsNullOrWhiteSpace(pax.Group))
+						if(string.IsNullOrWhiteSpace(pax.Group))
 							throw new BookingException("Group must be set for the first pax.");
 						defaultGroup = pax.Group;
 					}
-					else if(String.IsNullOrWhiteSpace(pax.Group))
+					else if(string.IsNullOrWhiteSpace(pax.Group))
 						pax.Group = defaultGroup;
 
 					isFirstPax = false;
 
-					if(String.IsNullOrWhiteSpace(pax.FirstName))
+					if(string.IsNullOrWhiteSpace(pax.FirstName))
 						throw new BookingException("First name must be set.");
-					if(String.IsNullOrWhiteSpace(pax.LastName))
+					if(string.IsNullOrWhiteSpace(pax.LastName))
 						throw new BookingException("Last name must be set.");
 					if(!DateOfBirth.IsValid(pax.Dob))
 						throw new BookingException("Date of birth must be set and a valid date.");

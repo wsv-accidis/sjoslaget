@@ -62,6 +62,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			{
 				failed = true;
 			}
+
 			Assert.IsTrue(failed, "Creating an invalid booking should have failed.");
 		}
 
@@ -89,8 +90,13 @@ namespace Accidis.Sjoslaget.Test.Services
 		{
 			var source = GetBookingForTest(
 				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)),
-				GetCabinForTest(Guid.NewGuid(), GetMultiplePaxForTest(4)) // this will not be a valid cabin type
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4))
 			);
+			source.Products.Add(new BookingSource.Product
+			{
+				TypeId = Guid.NewGuid(), // this will not match an existing product
+				Quantity = 47
+			});
 
 			bool failed = false;
 			try
@@ -101,6 +107,7 @@ namespace Accidis.Sjoslaget.Test.Services
 			{
 				failed = true;
 			}
+
 			Assert.IsTrue(failed, "Creating an invalid booking should have failed.");
 
 			using(var db = DbUtil.Open())
@@ -111,6 +118,23 @@ namespace Accidis.Sjoslaget.Test.Services
 				Assert.AreEqual(0, numberOfCabins, "There should not be any booked cabins in the database.");
 				int numberOfPax = await db.ExecuteScalarAsync<int>("select count(*) from [BookingPax]");
 				Assert.AreEqual(0, numberOfPax, "There should not be any booked passengers in the database.");
+			}
+		}
+
+		[TestMethod]
+		public async Task GivenBookingSource_WhenCabinTypeDoesNotMatchSubCruise_ShouldFailToCreate()
+		{
+			var source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeBId, GetMultiplePaxForTest(4)));
+			source.SubCruise = "A";
+
+			try
+			{
+				await CreateBookingFromSource(source);
+				Assert.Fail("Create booking did not throw");
+			}
+			catch(BookingException)
+			{
 			}
 		}
 
@@ -290,6 +314,32 @@ namespace Accidis.Sjoslaget.Test.Services
 		}
 
 		[TestMethod]
+		public async Task GivenExistingBooking_WhenUpdatedWithExtraCabinOfWrongSubCruise_ShouldFail()
+		{
+			var repository = GetBookingRepositoryForTest();
+			var cruise = await CruiseRepositoryTest.GetCruiseForTestAsync();
+
+			var source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)));
+
+			var result = await repository.CreateAsync(cruise, source);
+
+			source = GetBookingForTest(
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeId, GetMultiplePaxForTest(4)),
+				GetCabinForTest(SjoslagetDbExtensions.CabinTypeBId, GetMultiplePaxForTest(4)));
+			source.Reference = result.Reference;
+
+			try
+			{
+				await repository.UpdateAsync(cruise, source);
+				Assert.Fail("Update booking did not throw.");
+			}
+			catch(BookingException)
+			{
+			}
+		}
+
+		[TestMethod]
 		public async Task GivenMultipleConcurrentBookings_ShouldNotExceedAvailableCabins()
 		{
 			var repository = GetBookingRepositoryForTest();
@@ -392,7 +442,8 @@ namespace Accidis.Sjoslaget.Test.Services
 				Email = "test@sjoslaget.se",
 				PhoneNo = "0000-123 456",
 				Lunch = "15",
-				InternalNotes = String.Empty,
+				InternalNotes = string.Empty,
+				SubCruise = "A",
 				Cabins = new List<BookingSource.Cabin>(cabins),
 				Products = new List<BookingSource.Product>()
 			};

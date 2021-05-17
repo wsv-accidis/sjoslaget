@@ -38,6 +38,15 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
+		public async Task<SubCruise[]> GetSubCruisesAsync(Cruise cruise)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var result = await db.QueryAsync<SubCruise>("select * from [SubCruise] where [CruiseId] = @Id order by [Order]", new {Id = cruise.Id});
+				return result.ToArray();
+			}
+		}
+
 		public async Task UpdateMetadataAsync(Cruise cruise)
 		{
 			using(var db = DbUtil.Open())

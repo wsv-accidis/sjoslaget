@@ -8,10 +8,12 @@ namespace Accidis.Sjoslaget.Test.Db
 	static class SjoslagetDbExtensions
 	{
 		static Guid _cabinTypeId;
+		static Guid _cabinTypeBId;
 		static Guid _cruiseId;
 		static Guid _productId;
 
 		public static Guid CabinTypeId => _cabinTypeId;
+		public static Guid CabinTypeBId => _cabinTypeBId;
 		public static Guid CruiseId => _cruiseId;
 		public static Guid ProductId => _productId;
 
@@ -33,11 +35,14 @@ namespace Accidis.Sjoslaget.Test.Db
 			db.Execute("delete from [ProductType]");
 
 			_cabinTypeId = db.ExecuteScalar<Guid>("insert into [CabinType] ([Name], [Description], [Capacity], [Order]) output inserted.[Id] values ('A4', '', 4, 0)");
+			_cabinTypeBId = db.ExecuteScalar<Guid>("insert into [CabinType] ([SubCruise], [Name], [Description], [Capacity], [Order]) output inserted.[Id] values ('B', 'B4', '', 4, 0)");
 			_cruiseId = db.ExecuteScalar<Guid>("insert into [Cruise] ([Name], [IsActive]) output inserted.[Id] values ('Test', 1)");
 			_productId = db.ExecuteScalar<Guid>("insert into [ProductType] ([Name], [Order]) output inserted.[Id] values ('Produkt', 0)");
 
 			db.Execute("insert into [CruiseCabin] ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @NumberOfCabins, @PricePerPax)",
 				new {CruiseId = _cruiseId, CabinTypeId = _cabinTypeId, NumberOfCabins = config.NumberOfCabins, PricePerPax = config.PricePerPax});
+			db.Execute("insert into [CruiseCabin] ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @NumberOfCabins, @PricePerPax)",
+				new { CruiseId = _cruiseId, CabinTypeId = _cabinTypeBId, NumberOfCabins = config.NumberOfCabins, PricePerPax = config.PricePerPax });
 			db.Execute("insert into [CruiseProduct] ([CruiseId], [ProductTypeId], [Description], [Price]) values (@CruiseId, @ProductTypeId, '', @Price)",
 				new {CruiseId = _cruiseId, ProductTypeId = _productId, Price = config.ProductPrice});
 		}

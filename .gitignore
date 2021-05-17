@@ -7,6 +7,7 @@ TestResults/
 # Visual Studio user files
 *.suo
 *.user
+*.DotSettings
 
 # Visual Studio cache
 .vs/

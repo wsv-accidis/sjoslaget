@@ -29,6 +29,17 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			return this.OkCacheControl(cruise, WebConfig.StaticDataMaxAge);
 		}
 
+		[HttpGet]
+		public async Task<IHttpActionResult> ActiveSubs()
+		{
+			Cruise cruise = await _cruiseRepository.GetActiveAsync();
+			if (null == cruise)
+				return NotFound();
+
+			SubCruise[] subCruises = await _cruiseRepository.GetSubCruisesAsync(cruise);
+			return this.OkCacheControl(subCruises, WebConfig.StaticDataMaxAge);
+		}
+
 		[Authorize(Roles = Roles.Admin)]
 		[HttpPut]
 		public async Task<IHttpActionResult> Lock()
