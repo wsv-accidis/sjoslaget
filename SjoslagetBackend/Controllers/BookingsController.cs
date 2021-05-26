@@ -20,7 +20,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		readonly BookingRepository _bookingRepository;
 		readonly CruiseRepository _cruiseRepository;
 		readonly DeletedBookingRepository _deletedBookingRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(BookingsController));
 		readonly AecPaymentRepository _paymentRepository;
 		readonly ProductRepository _productRepository;
 		readonly ReportingService _reportingService;
@@ -193,7 +193,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = DbUtil.Open())
 			{
-				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [FirstName], [LastName], [Lunch], [TotalPrice], [IsLocked], [Updated], " +
+				var items = await db.QueryAsync<BookingOverviewItem>("select [Id], [Reference], [SubCruise], [FirstName], [LastName], [Lunch], [TotalPrice], [IsLocked], [Updated], " +
 																	 "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
 																	 "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid " +
 																	 "from [Booking] B where [CruiseId] = @CruiseId",
@@ -214,7 +214,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = DbUtil.Open())
 			{
-				var items = await db.QueryAsync<BookingPaxItem>("select BP.[Id], BP.[Group], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[CabinTypeId], B.[Reference] " +
+				var items = await db.QueryAsync<BookingPaxItem>("select BP.[Id], BP.[Group], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[CabinTypeId], B.[Reference], B.[SubCruise] " +
 																"from [BookingPax] BP " +
 																"left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
 																"left join [Booking] B on BC.[BookingId] = B.[Id] " +
@@ -236,7 +236,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 			using(var db = DbUtil.Open())
 			{
-				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [FirstName], [LastName], [Created], [Updated], " +
+				var items = await db.QueryAsync<BookingDashboardItem>("select top (@Limit) [Id], [Reference], [SubCruise], [FirstName], [LastName], [Created], [Updated], " +
 																	  "(select count(*) from [BookingCabin] BC where BC.[BookingId] = B.[Id]) as NumberOfCabins, " +
 																	  "(select count(*) from [BookingPax] BP where BP.[BookingCabinId] in (select [Id] from [BookingCabin] BC where BC.[BookingId] = B.[Id])) as NumberOfPax " +
 																	  "from [Booking] B where [CruiseId] = @CruiseId " +

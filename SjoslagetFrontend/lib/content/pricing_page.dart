@@ -47,12 +47,12 @@ class PricingPage implements OnInit {
     }
   }
 
-  String priceByName(String name) {
+  String priceByName(String subCruise, String name) {
     if (isLoading) {
       return '';
     }
 
-    final CruiseCabin cabin = cabins.firstWhere((c) => c.name == name, orElse: () => null);
+    final CruiseCabin cabin = cabins.firstWhere((c) => c.subCruise == subCruise && c.name == name, orElse: () => null);
     return null != cabin ? CurrencyFormatter.formatIntAsSEK(cabin.pricePerPax) : '-';
   }
 }

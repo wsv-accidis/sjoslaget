@@ -10,11 +10,9 @@ img.product-image-sj {
 	border: 0;
 	box-shadow: none;
 	height: 140px;
-	max-width: 100px;
 }
 
 img.product-image-vk {
-	/* For Vårkryssen */
 	border: 0;
 	box-shadow: none;
 	filter: drop-shadow(2px 2px 1px darkgray);

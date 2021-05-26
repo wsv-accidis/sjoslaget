@@ -12,7 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 {
 	public sealed class UsersController : ApiController
 	{
-		readonly Logger _log = LogManager.GetLogger(typeof(UsersController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(UsersController));
 		readonly AecUsersController _usersController;
 
 		public UsersController(AecUsersController usersController)

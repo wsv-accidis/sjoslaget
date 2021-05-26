@@ -2,10 +2,13 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Sjoslaget.WebService;
+using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Db;
 using Accidis.WebServices.Services;
+using Dapper;
 using DryIoc;
 using DryIoc.WebApi;
 using Microsoft.Owin;
@@ -96,6 +99,7 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<ReportingService>(Reuse.Singleton);
 			container.Register<ReportRepository>(Reuse.Singleton);
 
+			SqlMapper.AddTypeHandler(new SubCruiseCodeTypeHandler());
 			return container;
 		}
 
@@ -107,7 +111,7 @@ namespace Accidis.Sjoslaget.WebService
 			LogManager.Configuration = AecLoggingConfiguration.CreateForDatabase(DbUtil.ConnectionString, LogLevel.Info);
 #endif
 
-			var logger = LogManager.GetLogger(typeof(Startup).Name);
+			var logger = LogManager.GetLogger(nameof(Startup));
 			logger.Debug("Starting up.");
 			return logger;
 		}

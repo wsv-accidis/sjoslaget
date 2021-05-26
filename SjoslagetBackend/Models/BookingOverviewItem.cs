@@ -6,6 +6,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 	{
 		public Guid Id { get; set; }
 		public string Reference { get; set; }
+		public string SubCruise { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Lunch { get; set; }

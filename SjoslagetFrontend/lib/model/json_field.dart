@@ -42,6 +42,7 @@ const String PRICE_PER_PAX = 'PricePerPax';
 const String PRODUCTS = 'Products';
 const String PRODUCT_TYPE_ID = 'TypeId';
 const String QUANTITY = 'Quantity';
+const String SUBCRUISE = 'SubCruise';
 const String TOP_CONTACTS = 'TopContacts';
 const String TOP_GROUPS = 'TopGroups';
 const String TOTAL_PRICE = 'TotalPrice';

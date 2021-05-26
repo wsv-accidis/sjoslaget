@@ -12,7 +12,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class CruiseController : ApiController
 	{
 		readonly CruiseRepository _cruiseRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(CruiseController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(CruiseController));
 
 		public CruiseController(CruiseRepository cruiseRepository)
 		{

@@ -24,7 +24,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		static DateTime? _lastPoll;
 
 		readonly BookingRepository _bookingRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(PrinterController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(PrinterController));
 
 		public PrinterController(BookingRepository bookingRepository)
 		{

@@ -1,6 +1,4 @@
 ﻿using System;
-using Accidis.Sjoslaget.WebService.Db;
-using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Models
 {
@@ -18,11 +16,6 @@ namespace Accidis.Sjoslaget.WebService.Models
 		SubCruiseCode(string value)
 		{
 			_value = value;
-		}
-
-		static SubCruiseCode()
-		{
-			SqlMapper.AddTypeHandler(new SubCruiseCodeTypeHandler());
 		}
 
 		public override bool Equals(object obj)

@@ -19,7 +19,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		const int AgeDistributionMinAge = 18;
 
 		readonly CruiseRepository _cruiseRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(ReportingService).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(ReportingService));
 		readonly ReportRepository _reportRepository;
 
 		public ReportingService(CruiseRepository cruiseRepository, ReportRepository reportRepository)

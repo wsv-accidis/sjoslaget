@@ -9,6 +9,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 		public Guid Id { get; set; }
 		public Guid CabinTypeId { get; set; }
 		public string Reference { get; set; }
+		public string SubCruise { get; set; }
 		public string Group { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
