@@ -6,8 +6,8 @@ environment:
   sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
-  angular: ^6.0.0
-  angular_components: ^1.0.2
+  angular: ^6.0.1
+  angular_components: ^1.0.3
   angular_forms: ^3.0.0
   angular_router: ^2.0.0
   chartjs:
