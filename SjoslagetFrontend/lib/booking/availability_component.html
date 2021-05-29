@@ -1,25 +1,31 @@
 <spinner-widget *ngIf="isLoading"></spinner-widget>
 
-<table cellpadding="0" cellspacing="0" border="0" *ngIf="!isLoading">
-	<tr>
-		<th>
-			Typ
-		</th>
-		<th>
-			Lediga
-		</th>
-		<th></th>
-	</tr>
-	<tr *ngFor="let cabin of cabins">
-		<td>
-			{{ cabin.name }}
-		</td>
-		<td>
-			{{ getAvailability(cabin.id) }}
-		</td>
-		<td class="progress">
-			<material-progress [activeProgress]="getAvailability(cabin.id)" [max]="cabin.count">
-			</material-progress>
-		</td>
-	</tr>
-</table>
+<div *ngIf="!isLoading">
+	<div class="sub-cruise" *ngFor="let subCruise of subCruises">
+		<h3>{{ subCruise.name }}</h3>
+
+		<table cellpadding="0" cellspacing="0" border="0" *ngIf="!isLoading">
+			<tr>
+				<th>
+					Typ
+				</th>
+				<th>
+					Lediga
+				</th>
+				<th></th>
+			</tr>
+			<tr *ngFor="let cabin of getCabins(subCruise.code)">
+				<td>
+					{{ cabin.name }}
+				</td>
+				<td>
+					{{ getAvailability(cabin.id) }}
+				</td>
+				<td class="progress">
+					<material-progress [activeProgress]="getAvailability(cabin.id)" [max]="cabin.count">
+					</material-progress>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -47,6 +47,11 @@ h2 {
 	font-weight: lighter;
 }
 
+h3 {
+	margin-bottom: 5px;
+	font-weight: lighter;
+}
+
 img {
 	border: 1px solid darkgray;
 	box-shadow: 2px 2px 4px darkgray;

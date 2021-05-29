@@ -10,6 +10,7 @@ const String CABINS_TOTAL = 'CabinsTotal';
 const String CABIN_TYPE_ID = 'CabinTypeId';
 const String CAPACITY = 'Capacity';
 const String CAPACITY_TOTAL = 'CapacityTotal';
+const String CODE = 'Code';
 const String COUNT = 'Count';
 const String CREATED = 'Created';
 const String DELETED = 'Deleted';
