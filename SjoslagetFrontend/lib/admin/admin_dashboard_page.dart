@@ -12,6 +12,7 @@ import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/booking_dashboard_item.dart';
 import '../model/cruise.dart';
+import '../model/sub_cruise.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
@@ -47,6 +48,8 @@ class AdminDashboardPage implements OnInit, OnDestroy {
 	bool get isLoadingBookings => null == recentlyUpdatedBookings;
 
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
+
+	String formatSubCruise(String code) => SubCruise.codeToLabel(code);
 
 	void logOut() {
 		_clientFactory.clear();

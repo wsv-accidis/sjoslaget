@@ -59,6 +59,9 @@
 		<th style="width: 100px">
 			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
 		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="subCruise" title="Kryssning"></sortable-column-header>
+		</th>
 		<th style="width: 70px">
 			<sortable-column-header key="cabinType" title="Hytt"></sortable-column-header>
 		</th>
@@ -86,6 +89,9 @@
 			<a [routerLink]="AdminRoutes.bookingUrl(pax.reference)" class="mono">
 				{{ pax.reference }}
 			</a>
+		</td>
+		<td>
+			{{ formatSubCruise(pax.subCruise) }}
 		</td>
 		<td>
 			{{ pax.cabinType }}

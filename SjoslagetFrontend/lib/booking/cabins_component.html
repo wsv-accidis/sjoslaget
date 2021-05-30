@@ -181,11 +181,11 @@
 		</material-button>
 	</div>
 
-	<h2 style="margin-top: 20px">Ditt val av kryssning</h2>
+	<h2 style="margin-top: 20px">Val av kryssning för bokningen</h2>
 
 	<div *ngIf="isLoaded">
 		<material-button *ngFor="let sub of subCruises"
-						 [class]="sub.code == subCruise ? 'control-blue' : 'control-gray'"
+						 [class]="sub.code == subCruise ? 'control-green' : 'control-gray'"
 						 [disabled]="disableAddCabins"
 						 raised
 						 (trigger)="switchSubCruise(sub.code)">
@@ -198,6 +198,7 @@
 
 		<p *ngIf="hasSwitchedSubCruise">
 			Glöm inte att spara bokningen så fort du har bytt kryssning så att hytterna reserveras - det är inte säkert att det finns tillräckligt många hytter kvar på ditt nya val av kryssning!
+			Valet gäller hela bokningen, även hytter du redan bokat flyttas över.
 		</p>
 	</div>
 

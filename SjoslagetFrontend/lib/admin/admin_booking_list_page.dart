@@ -14,186 +14,197 @@ import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/printer_repository.dart';
 import '../model/booking_overview_item.dart';
+import '../model/sub_cruise.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 import 'booking_preview_component.dart';
 
-@Component(
-	selector: 'admin-booking-list-page',
-	templateUrl: 'admin_booking_list_page.html',
-	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_list_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, sjoslagetMaterialDirectives, BookingPreviewComponent, SortableColumnHeader, SortableColumns, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: <dynamic>[AdminRoutes]
-)
+@Component(selector: 'admin-booking-list-page', templateUrl: 'admin_booking_list_page.html', styleUrls: [
+  '../content/content_styles.css',
+  'admin_styles.css',
+  'admin_booking_list_page.css'
+], directives: <dynamic>[
+  coreDirectives,
+  routerDirectives,
+  sjoslagetMaterialDirectives,
+  BookingPreviewComponent,
+  SortableColumnHeader,
+  SortableColumns,
+  SpinnerWidget
+], providers: <dynamic>[
+  materialProviders
+], exports: <dynamic>[
+  AdminRoutes
+])
 class AdminBookingListPage implements OnInit, OnDestroy {
-	static const String LOCKED = 'locked';
-	static const int PAGE_LIMIT = 20;
+  static const String LOCKED = 'locked';
+  static const int PAGE_LIMIT = 20;
 
-	final BookingRepository _bookingRepository;
-	final ClientFactory _clientFactory;
-	final PrinterRepository _printerRepository;
+  final BookingRepository _bookingRepository;
+  final ClientFactory _clientFactory;
+  final PrinterRepository _printerRepository;
 
-	List<BookingOverviewItem> _bookings;
-	String _filterLunch = '';
-	String _filterStatus = BookingPaymentModel.STATUS_NONE;
-	String _filterText = '';
-	Timer _timer;
+  List<BookingOverviewItem> _bookings;
+  String _filterLunch = '';
+  String _filterStatus = BookingPaymentModel.STATUS_NONE;
+  String _filterText = '';
+  Timer _timer;
 
-	@ViewChild('bookingPreview')
-	BookingPreviewComponent bookingPreview;
+  @ViewChild('bookingPreview')
+  BookingPreviewComponent bookingPreview;
 
-	List<BookingOverviewItem> bookingsView;
-	final PagingSupport paging = PagingSupport(PAGE_LIMIT);
-	bool printerIsAvailable = false;
-	SortableState sort = SortableState('reference', false);
+  List<BookingOverviewItem> bookingsView;
+  final PagingSupport paging = PagingSupport(PAGE_LIMIT);
+  bool printerIsAvailable = false;
+  SortableState sort = SortableState('reference', false);
 
-	AdminBookingListPage(this._bookingRepository, this._clientFactory, this._printerRepository);
+  AdminBookingListPage(this._bookingRepository, this._clientFactory, this._printerRepository);
 
-	String get filterLunch => _filterLunch;
+  String get filterLunch => _filterLunch;
 
-	set filterLunch(String value) {
-		_filterLunch = value;
-		_refreshView();
-	}
+  set filterLunch(String value) {
+    _filterLunch = value;
+    _refreshView();
+  }
 
-	String get filterStatus => _filterStatus;
+  String get filterStatus => _filterStatus;
 
-	set filterStatus(String value) {
-		_filterStatus = value;
-		_refreshView();
-	}
+  set filterStatus(String value) {
+    _filterStatus = value;
+    _refreshView();
+  }
 
-	String get filterText => _filterText;
+  String get filterText => _filterText;
 
-	set filterText(String value) {
-		_filterText = value;
-		_refreshView();
-	}
+  set filterText(String value) {
+    _filterText = value;
+    _refreshView();
+  }
 
-	bool get isLoading => null == bookingsView;
+  bool get isLoading => null == bookingsView;
 
-	String formatCurrency(Decimal amount) => CurrencyFormatter.formatDecimalAsSEK(amount);
+  String formatCurrency(Decimal amount) => CurrencyFormatter.formatDecimalAsSEK(amount);
 
-	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
+  String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
-	String getStatus(BookingOverviewItem item) {
-		if (item.isLocked)
-			return LOCKED;
-		return item.status;
-	}
+  String formatSubCruise(String code) => SubCruise.codeToLabel(code);
 
-	@override
-	Future<void> ngOnInit() async {
-		paging.refreshCallback = _refreshView;
+  String getStatus(BookingOverviewItem item) {
+    if (item.isLocked) return LOCKED;
+    return item.status;
+  }
 
-		await refresh();
-		await _refreshPrinterState();
+  @override
+  Future<void> ngOnInit() async {
+    paging.refreshCallback = _refreshView;
 
-		_timer = Timer.periodic(Duration(seconds: 30), _tick);
-	}
+    await refresh();
+    await _refreshPrinterState();
 
-	@override
-	void ngOnDestroy() {
-		if (null != _timer)
-			_timer.cancel();
-	}
+    _timer = Timer.periodic(Duration(seconds: 30), _tick);
+  }
 
-	void onFilterChanged() {
-		_refreshView();
-	}
+  @override
+  void ngOnDestroy() {
+    if (null != _timer) _timer.cancel();
+  }
 
-	void onSortChanged(SortableState state) {
-		sort = state;
-		_refreshView();
-	}
+  void onFilterChanged() {
+    _refreshView();
+  }
 
-	void openPreviewPopup(BookingOverviewItem booking) {
-		bookingPreview.open(booking);
-	}
+  void onSortChanged(SortableState state) {
+    sort = state;
+    _refreshView();
+  }
 
-	Future<Null> printBooking(BookingOverviewItem booking) async {
-		final client = _clientFactory.getClient();
-		await _printerRepository.enqueue(client, booking.reference);
-	}
+  void openPreviewPopup(BookingOverviewItem booking) {
+    bookingPreview.open(booking);
+  }
 
-	Future<void> refresh() async {
-		try {
-			final client = _clientFactory.getClient();
-			_bookings = await _bookingRepository.getOverview(client);
-			_refreshView();
-		} catch (e) {
-			print('Failed to load list of bookings: ${e.toString()}');
-			// Just ignore this here, we will be stuck in the loading state until the user refreshes
-		}
-	}
+  Future<Null> printBooking(BookingOverviewItem booking) async {
+    final client = _clientFactory.getClient();
+    await _printerRepository.enqueue(client, booking.reference);
+  }
 
-	int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
-		if (sort.desc) {
-			// Swap the items when using descending sort, so we can keep the rest identical
-			final BookingOverviewItem temp = two;
-			two = one;
-			one = temp;
-		}
+  Future<void> refresh() async {
+    try {
+      final client = _clientFactory.getClient();
+      _bookings = await _bookingRepository.getOverview(client);
+      _refreshView();
+    } catch (e) {
+      print('Failed to load list of bookings: ${e.toString()}');
+      // Just ignore this here, we will be stuck in the loading state until the user refreshes
+    }
+  }
 
-		switch (sort.column) {
-			case 'status':
-				return _statusToInt(one) - _statusToInt(two);
-			case 'reference':
-				return one.reference.compareTo(two.reference);
-			case 'contact':
-				return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
-			case 'lunch':
-				return one.lunch.compareTo(two.lunch);
-			case 'noOfCabins':
-				return one.numberOfCabins - two.numberOfCabins;
-			case 'amountPaid':
-				return one.amountPaid.compareTo(two.amountPaid);
-			case 'amountRemaining':
-				return one.amountRemaining.compareTo(two.amountRemaining);
-			case 'updated':
-				return two.updated.compareTo(one.updated);
-			default:
-				print('Unrecognized column \"${sort.column}\", no sort applied.');
-				return 0;
-		}
-	}
+  int _bookingComparator(BookingOverviewItem one, BookingOverviewItem two) {
+    if (sort.desc) {
+      // Swap the items when using descending sort, so we can keep the rest identical
+      final BookingOverviewItem temp = two;
+      two = one;
+      one = temp;
+    }
 
-	Future<Null> _refreshPrinterState() async {
-		final client = _clientFactory.getClient();
-		printerIsAvailable = await _printerRepository.isAvailable(client);
-	}
+    switch (sort.column) {
+      case 'status':
+        return _statusToInt(one) - _statusToInt(two);
+      case 'reference':
+        return one.reference.compareTo(two.reference);
+      case 'subCruise':
+        return SubCruise.codeToOrdinal(one.subCruise) - SubCruise.codeToOrdinal(two.subCruise);
+      case 'contact':
+        return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
+      case 'lunch':
+        return one.lunch.compareTo(two.lunch);
+      case 'noOfCabins':
+        return one.numberOfCabins - two.numberOfCabins;
+      case 'amountPaid':
+        return one.amountPaid.compareTo(two.amountPaid);
+      case 'amountRemaining':
+        return one.amountRemaining.compareTo(two.amountRemaining);
+      case 'updated':
+        return two.updated.compareTo(one.updated);
+      default:
+        print('Unrecognized column \"${sort.column}\", no sort applied.');
+        return 0;
+    }
+  }
 
-	void _refreshView() {
-		Iterable<BookingOverviewItem> filtered = _bookings;
+  Future<void> _refreshPrinterState() async {
+    final client = _clientFactory.getClient();
+    printerIsAvailable = await _printerRepository.isAvailable(client);
+  }
 
-		if (isNotEmpty(_filterText)) {
-			final filterText = _filterText.toLowerCase().trim();
-			filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
-		}
-		if (BookingPaymentModel.STATUS_NONE != _filterStatus) {
-			filtered = filtered.where((b) => getStatus(b) == _filterStatus);
-		}
-		if (isNotEmpty(_filterLunch)) {
-			filtered = filtered.where((b) => b.lunch == _filterLunch);
-		}
+  void _refreshView() {
+    Iterable<BookingOverviewItem> filtered = _bookings;
 
-		// Can't sort an iterable in Dart without turning it to a list first
-		final List<BookingOverviewItem> sorted = filtered.toList(growable: false);
-		sorted.sort(_bookingComparator);
+    if (isNotEmpty(_filterText)) {
+      final filterText = _filterText.toLowerCase().trim();
+      filtered = filtered.where((b) => '${b.reference} ${b.firstName} ${b.lastName}'.toLowerCase().contains(filterText));
+    }
+    if (BookingPaymentModel.STATUS_NONE != _filterStatus) {
+      filtered = filtered.where((b) => getStatus(b) == _filterStatus);
+    }
+    if (isNotEmpty(_filterLunch)) {
+      filtered = filtered.where((b) => b.lunch == _filterLunch);
+    }
 
-		bookingsView = paging.apply(sorted);
-	}
+    // Can't sort an iterable in Dart without turning it to a list first
+    final List<BookingOverviewItem> sorted = filtered.toList(growable: false);
+    sorted.sort(_bookingComparator);
 
-	static int _statusToInt(BookingOverviewItem item) {
-		if (item.isLocked)
-			return 4;
+    bookingsView = paging.apply(sorted);
+  }
 
-		return item.statusAsInt;
-	}
+  static int _statusToInt(BookingOverviewItem item) {
+    if (item.isLocked) return 4;
 
-	Future<Null> _tick(Timer ignored) async {
-		await _refreshPrinterState();
-	}
+    return item.statusAsInt;
+  }
+
+  Future<Null> _tick(Timer ignored) async {
+    await _refreshPrinterState();
+  }
 }

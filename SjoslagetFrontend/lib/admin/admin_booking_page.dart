@@ -26,262 +26,261 @@ import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
-@Component(
-	selector: 'admin-booking-page',
-	templateUrl: 'admin_booking_page.html',
-	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ModalDialog, PaymentHistoryComponent, ProductsComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: <dynamic>[AdminRoutes]
-)
+@Component(selector: 'admin-booking-page', templateUrl: 'admin_booking_page.html', styleUrls: [
+  '../content/content_styles.css',
+  'admin_styles.css',
+  'admin_booking_page.css'
+], directives: <dynamic>[
+  coreDirectives,
+  routerDirectives,
+  formDirectives,
+  sjoslagetMaterialDirectives,
+  CabinsComponent,
+  ModalDialog,
+  PaymentHistoryComponent,
+  ProductsComponent,
+  SpinnerWidget
+], providers: <dynamic>[
+  materialProviders
+], exports: <dynamic>[
+  AdminRoutes
+])
 class AdminBookingPage implements OnActivate {
-	final BookingRepository _bookingRepository;
-	final ClientFactory _clientFactory;
-	final CruiseRepository _cruiseRepository;
-	final PaymentRepository _paymentRepository;
-	final Router _router;
-	final UserRepository _userRepository;
+  final BookingRepository _bookingRepository;
+  final ClientFactory _clientFactory;
+  final CruiseRepository _cruiseRepository;
+  final PaymentRepository _paymentRepository;
+  final Router _router;
+  final UserRepository _userRepository;
 
-	bool _isLockingUnlocking = false;
+  bool _isLockingUnlocking = false;
 
-	@ViewChild('cabins')
-	CabinsComponent cabins;
+  @ViewChild('cabins')
+  CabinsComponent cabins;
 
-	@ViewChild('deleteBookingDialog')
-	ModalDialog deleteBookingDialog;
+  @ViewChild('deleteBookingDialog')
+  ModalDialog deleteBookingDialog;
 
-	@ViewChild('products')
-	ProductsComponent products;
+  @ViewChild('products')
+  ProductsComponent products;
 
-	BookingSource booking;
-	String bookingError;
-	String discount;
-	bool isSaving = false;
-	String newPinCode;
-	String payment;
-	String paymentError;
-	String resetPinCodeError;
+  BookingSource booking;
+  String bookingError;
+  String discount;
+  bool isSaving = false;
+  String newPinCode;
+  String payment;
+  String paymentError;
+  String resetPinCodeError;
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._paymentRepository, this._router, this._userRepository);
+  AdminBookingPage(
+      this._bookingRepository, this._clientFactory, this._cruiseRepository, this._paymentRepository, this._router, this._userRepository);
 
-	bool get canDelete => !isSaving;
+  bool get canDelete => !isSaving;
 
-	bool get canLock => null != booking && !booking.isLocked;
+  bool get canLock => null != booking && !booking.isLocked;
 
-	bool get canUnlock => null != booking && booking.isLocked;
+  bool get canUnlock => null != booking && booking.isLocked;
 
-	bool get canSave => !cabins.isEmpty && cabins.isValid && products.isValid && !isSaving;
+  bool get canSave => !cabins.isEmpty && cabins.isValid && products.isValid && !isSaving;
 
-	bool get hasBookingError => isNotEmpty(bookingError);
+  bool get hasBookingError => isNotEmpty(bookingError);
 
-	bool get hasCabins => hasLoaded && numberOfCabins > 0;
+  bool get hasCabins => hasLoaded && numberOfCabins > 0;
 
-	bool get hasLoaded => null != booking;
+  bool get hasLoaded => null != booking;
 
-	bool get hasPaymentError => isNotEmpty(paymentError);
+  bool get hasPaymentError => isNotEmpty(paymentError);
 
-	bool get hasResetPinCode => isNotEmpty(newPinCode);
+  bool get hasResetPinCode => isNotEmpty(newPinCode);
 
-	bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
+  bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
 
-	bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
+  bool get isLockingUnlocking => _isLockingUnlocking || isSaving;
 
-	String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
+  String get latestPaymentFormatted => null != booking && null != booking.payment ? DateTimeFormatter.format(booking.payment.latest) : '';
 
-	int get numberOfCabins => booking.cabins.length;
+  int get numberOfCabins => booking.cabins.length;
 
-	int get numberOfPax => booking.cabins.fold(0, (sum, cabin) => sum + cabin.pax.where((p) => !p.isEmpty).length);
+  int get numberOfPax => booking.cabins.fold(0, (sum, cabin) => sum + cabin.pax.where((p) => !p.isEmpty).length);
 
-	Future<void> deleteBooking() async {
-		if (isSaving)
-			return;
-		if (!await deleteBookingDialog.openAsync())
-			return;
+  Future<void> deleteBooking() async {
+    if (isSaving) return;
+    if (!await deleteBookingDialog.openAsync()) return;
 
-		isSaving = true;
+    isSaving = true;
 
-		try {
-			final client = _clientFactory.getClient();
-			await _bookingRepository.deleteBooking(client, booking.reference);
-		} catch (e) {
-			print('Failed to delete booking: ${e.toString()}');
-		} finally {
-			isSaving = false;
-		}
+    try {
+      final client = _clientFactory.getClient();
+      await _bookingRepository.deleteBooking(client, booking.reference);
+    } catch (e) {
+      print('Failed to delete booking: ${e.toString()}');
+    } finally {
+      isSaving = false;
+    }
 
-		await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
-	}
+    await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
+  }
 
-	Future<void> lockUnlockBooking() async {
-		if (!hasLoaded || isLockingUnlocking)
-			return;
+  Future<void> lockUnlockBooking() async {
+    if (!hasLoaded || isLockingUnlocking) return;
 
-		_isLockingUnlocking = true;
-		try {
-			final client = _clientFactory.getClient();
-			final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
-			booking.isLocked = isLocked;
-		} catch (e) {
-			print('Failed to lock/unlock booking: ${e.toString()}');
-		} finally {
-			_isLockingUnlocking = false;
-		}
-	}
+    _isLockingUnlocking = true;
+    try {
+      final client = _clientFactory.getClient();
+      final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
+      booking.isLocked = isLocked;
+    } catch (e) {
+      print('Failed to lock/unlock booking: ${e.toString()}');
+    } finally {
+      _isLockingUnlocking = false;
+    }
+  }
 
-	@override
-	Future<void> onActivate(_, RouterState routerState) async {
-		final String reference = routerState.parameters['ref'];
+  @override
+  Future<void> onActivate(_, RouterState routerState) async {
+    final String reference = routerState.parameters['ref'];
 
-		try {
-			final client = _clientFactory.getClient();
-			booking = await _bookingRepository.getBooking(client, reference);
+    try {
+      final client = _clientFactory.getClient();
+      booking = await _bookingRepository.getBooking(client, reference);
 
-			final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
-			cabins.amountPaid = booking.payment.total;
-			cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
-			cabins.discountPercent = booking.discount;
+      final List<CruiseCabin> cruiseCabins = await _cruiseRepository.getActiveCruiseCabins(client);
+      cabins.amountPaid = booking.payment.total;
+      cabins.bookingCabins = BookingCabinView.listOfBookingCabinToList(booking.cabins, cruiseCabins);
+      cabins.discountPercent = booking.discount;
+      cabins.subCruise = booking.subCruise;
 
-			products.showProductNote = false;
-			products.quantitiesFromBooking = booking.products;
-			cabins.registerAddonProvider(products);
+      products.showProductNote = false;
+      products.quantitiesFromBooking = booking.products;
+      cabins.registerAddonProvider(products);
 
-			cabins.validateAll();
+      cabins.validateAll();
 
-			_refreshPayment();
-		} catch (e) {
-			print('Failed to load booking: ${e.toString()}');
-			// Just ignore this here, we will be stuck in the loading state until the user refreshes
-		}
-	}
+      _refreshPayment();
+    } catch (e) {
+      print('Failed to load booking: ${e.toString()}');
+      // Just ignore this here, we will be stuck in the loading state until the user refreshes
+    }
+  }
 
-	Future<void> registerPayment() async {
-		if (isSaving)
-			return;
+  Future<void> registerPayment() async {
+    if (isSaving) return;
 
-		isSaving = true;
-		paymentError = null;
+    isSaving = true;
+    paymentError = null;
 
-		try {
-			final Decimal paymentDec = ValueConverter.parseDecimal(payment);
-			if (null == paymentDec) {
-				paymentError = 'Felaktigt belopp. Kontrollera att fältet bara innehåller siffror, eventuellt minustecken och decimalpunkt.';
-				return;
-			}
+    try {
+      final Decimal paymentDec = ValueConverter.parseDecimal(payment);
+      if (null == paymentDec) {
+        paymentError = 'Felaktigt belopp. Kontrollera att fältet bara innehåller siffror, eventuellt minustecken och decimalpunkt.';
+        return;
+      }
 
-			try {
-				final client = _clientFactory.getClient();
-				final PaymentSummary result = await _paymentRepository.registerPayment(client, booking.reference, paymentDec);
+      try {
+        final client = _clientFactory.getClient();
+        final PaymentSummary result = await _paymentRepository.registerPayment(client, booking.reference, paymentDec);
 
-				cabins.amountPaid = result.total;
-				booking.payment = result;
+        cabins.amountPaid = result.total;
+        booking.payment = result;
 
-				_refreshPayment();
-			} catch (e) {
-				print('Failed to register payment: ${e.toString()}');
-				paymentError = 'Någonting gick fel när betalningen skulle registreras. Försök igen.';
-			}
-		} finally {
-			isSaving = false;
-		}
-	}
+        _refreshPayment();
+      } catch (e) {
+        print('Failed to register payment: ${e.toString()}');
+        paymentError = 'Någonting gick fel när betalningen skulle registreras. Försök igen.';
+      }
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	Future<void> resetPinCode() async {
-		if (isSaving)
-			return;
+  Future<void> resetPinCode() async {
+    if (isSaving) return;
 
-		isSaving = true;
-		resetPinCodeError = null;
+    isSaving = true;
+    resetPinCodeError = null;
 
-		try {
-			final client = _clientFactory.getClient();
-			final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
+    try {
+      final client = _clientFactory.getClient();
+      final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
 
-			if (isNotEmpty(pinCode))
-				newPinCode = pinCode;
-		} catch (e) {
-			print('Failed to reset PIN code: ${e.toString()}');
-			resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
-		} finally {
-			isSaving = false;
-		}
-	}
+      if (isNotEmpty(pinCode)) newPinCode = pinCode;
+    } catch (e) {
+      print('Failed to reset PIN code: ${e.toString()}');
+      resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	Future<void> saveBooking() async {
-		// This is very similar to saveBooking in booking_cabins_page, keep the two in sync
+  Future<void> saveBooking() async {
+    // This is very similar to saveBooking in booking_cabins_page, keep the two in sync
 
-		if (isSaving)
-			return;
+    if (isSaving) return;
 
-		isSaving = true;
-		cabins.disableAddCabins = true;
-		bookingError = null;
+    isSaving = true;
+    cabins.disableAddCabins = true;
+    bookingError = null;
 
-		try {
-			final tuple = await BookingSupportUtils.saveBooking(
-				_clientFactory,
-				_bookingRepository,
-				booking,
-				cabins,
-				products,
-				BookingResult(booking.reference, null)
-			);
+    try {
+      final tuple = await BookingSupportUtils.saveBooking(
+          _clientFactory, _bookingRepository, booking, cabins, products, BookingResult(booking.reference, null));
 
-			// item1 is BookingResult
-			// item2 is String (bookingError)
-			if (null == tuple.item1) {
-				bookingError = tuple.item2;
-				return;
-			}
+      // item1 is BookingResult
+      // item2 is String (bookingError)
+      if (null == tuple.item1) {
+        bookingError = tuple.item2;
+        return;
+      }
 
-			await cabins.refreshAvailability();
-			await products.refreshAvailability();
-			cabins.onSaved();
-		} finally {
-			cabins.disableAddCabins = false;
-			isSaving = false;
-		}
-	}
+      await cabins.refreshAvailability();
+      await products.refreshAvailability();
+      cabins.onSaved();
+    } finally {
+      cabins.disableAddCabins = false;
+      isSaving = false;
+    }
+  }
 
-	Future<void> updateDiscount() async {
-		if (isSaving)
-			return;
+  Future<void> updateDiscount() async {
+    if (isSaving) return;
 
-		isSaving = true;
-		paymentError = null;
+    isSaving = true;
+    paymentError = null;
 
-		try {
-			int discountInt;
-			try {
-				discountInt = int.parse(discount.replaceAll('%', ''));
-			} catch (e) {
-				print('Exception parsing discount amount: ${e.toString()}');
-				paymentError = 'Felaktig rabatt. Kontrollera att fältet bara innehåller siffror.';
-				return;
-			}
+    try {
+      int discountInt;
+      try {
+        discountInt = int.parse(discount.replaceAll('%', ''));
+      } catch (e) {
+        print('Exception parsing discount amount: ${e.toString()}');
+        paymentError = 'Felaktig rabatt. Kontrollera att fältet bara innehåller siffror.';
+        return;
+      }
 
-			try {
-				final client = _clientFactory.getClient();
-				await _paymentRepository.updateDiscount(client, booking.reference, discountInt);
+      try {
+        final client = _clientFactory.getClient();
+        await _paymentRepository.updateDiscount(client, booking.reference, discountInt);
 
-				cabins.discountPercent = discountInt;
-				booking.discount = discountInt;
+        cabins.discountPercent = discountInt;
+        booking.discount = discountInt;
 
-				_refreshPayment();
-			} catch (e) {
-				print('Failed to update discount: ${e.toString()}');
-				paymentError = 'Någonting gick fel när rabatten skulle sparas. Försök igen.';
-			}
-		} finally {
-			isSaving = false;
-		}
-	}
+        _refreshPayment();
+      } catch (e) {
+        print('Failed to update discount: ${e.toString()}');
+        paymentError = 'Någonting gick fel när rabatten skulle sparas. Försök igen.';
+      }
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	void _refreshPayment() {
-		final remainingPrice = cabins.priceRemaining;
-		if (remainingPrice.ceilToDouble() > 0.0) {
-			payment = CurrencyFormatter.formatDecimalForInput(remainingPrice);
-		}
+  void _refreshPayment() {
+    final remainingPrice = cabins.priceRemaining;
+    if (remainingPrice.ceilToDouble() > 0.0) {
+      payment = CurrencyFormatter.formatDecimalForInput(remainingPrice);
+    }
 
-		discount = booking.discount.toString();
-	}
+    discount = booking.discount.toString();
+  }
 }
