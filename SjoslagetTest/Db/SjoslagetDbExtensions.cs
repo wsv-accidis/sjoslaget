@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using Accidis.Sjoslaget.WebService.Db;
 using Accidis.WebServices.Db;
 using Dapper;
 
@@ -7,6 +8,11 @@ namespace Accidis.Sjoslaget.Test.Db
 {
 	static class SjoslagetDbExtensions
 	{
+		static SjoslagetDbExtensions()
+		{
+			SqlMapper.AddTypeHandler(new SubCruiseCodeTypeHandler());
+		}
+
 		static Guid _cabinTypeId;
 		static Guid _cabinTypeBId;
 		static Guid _cruiseId;
@@ -42,7 +48,7 @@ namespace Accidis.Sjoslaget.Test.Db
 			db.Execute("insert into [CruiseCabin] ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @NumberOfCabins, @PricePerPax)",
 				new {CruiseId = _cruiseId, CabinTypeId = _cabinTypeId, NumberOfCabins = config.NumberOfCabins, PricePerPax = config.PricePerPax});
 			db.Execute("insert into [CruiseCabin] ([CruiseId], [CabinTypeId], [Count], [PricePerPax]) values (@CruiseId, @CabinTypeId, @NumberOfCabins, @PricePerPax)",
-				new { CruiseId = _cruiseId, CabinTypeId = _cabinTypeBId, NumberOfCabins = config.NumberOfCabins, PricePerPax = config.PricePerPax });
+				new {CruiseId = _cruiseId, CabinTypeId = _cabinTypeBId, NumberOfCabins = config.NumberOfCabins, PricePerPax = config.PricePerPax});
 			db.Execute("insert into [CruiseProduct] ([CruiseId], [ProductTypeId], [Description], [Price]) values (@CruiseId, @ProductTypeId, '', @Price)",
 				new {CruiseId = _cruiseId, ProductTypeId = _productId, Price = config.ProductPrice});
 		}

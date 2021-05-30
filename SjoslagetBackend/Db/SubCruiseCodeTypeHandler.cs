@@ -4,7 +4,7 @@ using Dapper;
 
 namespace Accidis.Sjoslaget.WebService.Db
 {
-	sealed class SubCruiseCodeTypeHandler : SqlMapper.TypeHandler<SubCruiseCode>
+	public sealed class SubCruiseCodeTypeHandler : SqlMapper.TypeHandler<SubCruiseCode>
 	{
 		public override SubCruiseCode Parse(object value)
 		{
