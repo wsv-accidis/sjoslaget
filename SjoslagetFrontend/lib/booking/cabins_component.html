@@ -172,7 +172,7 @@
 	<h2 style="margin-top: 0">Lägg till hytt</h2>
 
 	<div *ngIf="isLoaded">
-		<material-button *ngFor="let cabin of cruiseCabins"
+		<material-button *ngFor="let cabin of getCruiseCabins()"
 						 class="control-blue"
 						 [disabled]="!hasAvailability(cabin.id) || disableAddCabins"
 						 raised
@@ -180,5 +180,22 @@
 			{{ cabin.name }} ({{ getAvailability(cabin.id) }})
 		</material-button>
 	</div>
+
+	<h2 style="margin-top: 20px">Ditt val av kryssning</h2>
+
+	<div *ngIf="isLoaded">
+		<material-button *ngFor="let sub of subCruises"
+						 [class]="sub.code == subCruise ? 'control-red' : 'control-blue'"
+						 [disabled]="disableAddCabins"
+						 raised
+						 (trigger)="switchSubCruise(sub.code)">
+			{{ sub.name }}
+		</material-button>
+
+		<p *ngIf="hasSwitchedSubCruise" class="super-important">
+			Glöm inte att spara bokningen så fort du har bytt kryssning så att hytterna reserveras - det är inte säkert att det finns tillräckligt många hytter kvar på ditt nya val av kryssning!
+		</p>
+	</div>
+
 	<material-progress [indeterminate]="true" *ngIf="!isLoaded"></material-progress>
 </div>

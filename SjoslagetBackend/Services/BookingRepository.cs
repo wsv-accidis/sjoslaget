@@ -236,7 +236,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		void CheckCabinTypesValidity(SubCruiseCode subCruiseForBooking, List<BookingSource.Cabin> sourceCabins, CruiseCabinWithType[] cabinTypes)
 		{
 			var typeDict = cabinTypes.ToDictionary(c => c.Id, c => c.SubCruise);
-			if(sourceCabins.Any(cabin => !typeDict.ContainsKey(cabin.TypeId) || !subCruiseForBooking.Equals(typeDict[cabin.TypeId])))
+			if(sourceCabins.Any(cabin => !typeDict.ContainsKey(cabin.TypeId) || !subCruiseForBooking.Equals(SubCruiseCode.FromString(typeDict[cabin.TypeId]))))
 				throw new BookingException($"One or more cabin types in the booking are not valid for sub-cruise {subCruiseForBooking}.");
 		}
 
