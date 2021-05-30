@@ -12,6 +12,11 @@ a:hover {
 	color: white;
 }
 
+.control-gray {
+	background-color: #5f5f5f;
+	color: white;
+}
+
 .control-green {
 	background-color: #0EBA3C;
 	color: white;

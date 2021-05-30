@@ -185,14 +185,18 @@
 
 	<div *ngIf="isLoaded">
 		<material-button *ngFor="let sub of subCruises"
-						 [class]="sub.code == subCruise ? 'control-red' : 'control-blue'"
+						 [class]="sub.code == subCruise ? 'control-blue' : 'control-gray'"
 						 [disabled]="disableAddCabins"
 						 raised
 						 (trigger)="switchSubCruise(sub.code)">
 			{{ sub.name }}
 		</material-button>
 
-		<p *ngIf="hasSwitchedSubCruise" class="super-important">
+		<p *ngIf="hasSubCruiseError" class="super-important">
+			{{ subCruiseError }}
+		</p>
+
+		<p *ngIf="hasSwitchedSubCruise">
 			Glöm inte att spara bokningen så fort du har bytt kryssning så att hytterna reserveras - det är inte säkert att det finns tillräckligt många hytter kvar på ditt nya val av kryssning!
 		</p>
 	</div>

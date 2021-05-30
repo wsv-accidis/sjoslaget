@@ -5,6 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/util.dart';
+import 'package:quiver/strings.dart';
 
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
@@ -36,6 +37,7 @@ class CabinsComponent implements OnInit {
   bool hasSwitchedSubCruise = false;
   bool readOnly = false;
   String subCruise = 'A';
+  String subCruiseError;
   List<SubCruise> subCruises;
 
   CabinsComponent(this._bookingValidator, this._clientFactory, this._cruiseRepository);
@@ -57,6 +59,8 @@ class CabinsComponent implements OnInit {
   bool get hasPayment => null != amountPaid && amountPaid.ceilToDouble() > 0.0;
 
   bool get hasPrice => price > 0;
+
+  bool get hasSubCruiseError => isNotEmpty(subCruiseError);
 
   bool get isEmpty => bookingCabins.isEmpty;
 
@@ -143,6 +147,7 @@ class CabinsComponent implements OnInit {
   }
 
   void onSaved() {
+    subCruiseError = null;
     hasSwitchedSubCruise = false;
     _pendingDeleteCabins.clear();
     for (BookingCabinView b in bookingCabins) b.isSaved = true;
@@ -168,6 +173,7 @@ class CabinsComponent implements OnInit {
     }
     if (bookingCabins.isEmpty) {
       subCruise = newSubCruise; // shortcut
+      subCruiseError = null;
       return;
     }
 
@@ -183,7 +189,7 @@ class CabinsComponent implements OnInit {
     }
 
     if (couldNotTransform) {
-      // TODO: Error message
+      subCruiseError = 'Det gick inte att byta kryssning. Förmodligen beror det på att hytterna inte finns tillgängliga. Kontakta oss om du behöver hjälp.';
       return;
     }
 
@@ -193,6 +199,7 @@ class CabinsComponent implements OnInit {
 
     subCruise = newSubCruise;
     hasSwitchedSubCruise = true;
+    subCruiseError = null;
   }
 
   String uniqueId(String prefix, int cabin, int pax) {
