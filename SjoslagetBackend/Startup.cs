@@ -19,10 +19,6 @@ using Microsoft.Owin.Security.OAuth;
 using NLog;
 using Owin;
 
-#if !DEBUG
-using Accidis.WebServices.Db;
-#endif
-
 [assembly: OwinStartup(typeof(Startup))]
 
 namespace Accidis.Sjoslaget.WebService
