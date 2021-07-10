@@ -7,10 +7,13 @@
 
 h2 {
 	color: black;
-	font-family: Raleway, Helvetica, Arial, sans-serif;
 	font-size: 20px;
 	margin-bottom: 10px;
 	margin-top: 10px;
+}
+
+h3 {
+	margin-top: 15px;
 }
 
 div.chart {

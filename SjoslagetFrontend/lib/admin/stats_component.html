@@ -21,27 +21,59 @@
 </div>
 <div class="chart onethird-width">
 	<h2>Bokade hytter</h2>
-	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasCabins">
+
+	<div *ngFor="let subCruise of subCruises">
+		<h3>{{ subCruise.name }}</h3>
+
+		<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasCabins">
+			<tr>
+				<th class="first-column">
+					Typ
+				</th>
+				<th>
+					Antal
+				</th>
+				<th>
+					Bokade
+				</th>
+				<th class="last-column">
+					%
+				</th>
+			</tr>
+			<tr *ngFor="let cabin of getCabins(subCruise.code)">
+				<td>
+					{{ cabin.name }}
+				</td>
+				<td>
+					{{ cabin.count }}
+				</td>
+				<td>
+					{{ getBookedCount(cabin) }}
+				</td>
+				<td>
+					 {{ getBookedPercent(cabin) }}%
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div class="chart onethird-width">
+	<h2>Största grupper</h2>
+	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasTopGroups">
 		<tr>
-			<th class="first-column">
-				Typ
+			<th>
+				Grupp
 			</th>
 			<th>
 				Antal
 			</th>
-			<th class="last-column">
-				Bokade (%)
-			</th>
 		</tr>
-		<tr *ngFor="let cabin of cabins">
+		<tr *ngFor="let pair of current.topGroups">
 			<td>
-				{{ cabin.name }}
+				{{ pair.key }}
 			</td>
 			<td>
-				{{ cabin.count }}
-			</td>
-			<td>
-				{{ getBookedCount(cabin) }} ({{ getBookedPercent(cabin) }}%)
+				{{ pair.value }}
 			</td>
 		</tr>
 	</table>
@@ -68,27 +100,6 @@
 			</td>
 			<td>
 				{{ getProductBookedCount(prod) }} ({{ getProductRatio(prod) }})
-			</td>
-		</tr>
-	</table>
-</div>
-<div class="chart onethird-width">
-	<h2>Största grupper</h2>
-	<table cellpadding="0" cellspacing="0" border="0" *ngIf="hasTopGroups">
-		<tr>
-			<th>
-				Grupp
-			</th>
-			<th>
-				Antal
-			</th>
-		</tr>
-		<tr *ngFor="let pair of current.topGroups">
-			<td>
-				{{ pair.key }}
-			</td>
-			<td>
-				{{ pair.value }}
 			</td>
 		</tr>
 	</table>
