@@ -20,6 +20,8 @@ class BookingProductView extends CruiseProduct {
 
 	String get priceFormatted => CurrencyFormatter.formatIntAsSEK(price);
 
+	String get quantityOrZero => str.isNotEmpty(quantity) ? quantity : '0';
+
 	static List<BookingProduct> listToListOfBookingProduct(List<BookingProductView> list) =>
 		list.map((b) => b._toBookingProduct()).toList(growable: false);
 

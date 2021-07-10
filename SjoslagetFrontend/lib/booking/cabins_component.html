@@ -168,6 +168,18 @@
 	Kvar att betala <span>{{ priceRemainingFormatted }}</span>
 </div>
 
+<div *ngIf="readOnly">
+	<h2 style="margin-top: 0">Val av kryssning för bokningen</h2>
+
+	<div *ngIf="isLoaded">
+		<material-button class="control-blue"
+						 disabled
+						 raised>
+			{{ nameOfSubCruise }}
+		</material-button>
+	</div>
+</div>
+
 <div *ngIf="!readOnly">
 	<h2 style="margin-top: 0">Lägg till hytt</h2>
 

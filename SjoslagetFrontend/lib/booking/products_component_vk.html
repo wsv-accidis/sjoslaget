@@ -34,7 +34,7 @@
 	</tr>
 	<tr *ngIf="readOnly">
 		<td *ngFor="let product of bookingProducts" class="product-readonly-quantity">
-			{{ product.quantity }} st × {{ product.priceFormatted }}
+			{{ product.quantityOrZero }} st × {{ product.priceFormatted }}
 		</td>
 	</tr>
 </table>

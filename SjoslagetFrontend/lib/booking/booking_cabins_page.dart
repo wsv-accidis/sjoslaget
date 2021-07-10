@@ -24,22 +24,13 @@ import 'booking_support_utils.dart';
 import 'cabins_component.dart';
 import 'products_component.dart';
 
-@Component(selector: 'booking-cabins-page', templateUrl: 'booking_cabins_page.html', styleUrls: [
-  '../content/content_styles.css',
-  'booking_cabins_page.css'
-], directives: <dynamic>[
-  coreDirectives,
-  routerDirectives,
-  formDirectives,
-  sjoslagetMaterialDirectives,
-  CabinsComponent,
-  ProductsComponent,
-  SpinnerWidget
-], providers: <dynamic>[
-  materialProviders
-], exports: <dynamic>[
-  ContentRoutes
-])
+@Component(
+    selector: 'booking-cabins-page',
+    templateUrl: 'booking_cabins_page.html',
+    styleUrls: ['../content/content_styles.css', 'booking_cabins_page.css'],
+    directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, sjoslagetMaterialDirectives, CabinsComponent, ProductsComponent, SpinnerWidget],
+    providers: <dynamic>[materialProviders],
+    exports: <dynamic>[ContentRoutes])
 class BookingCabinsPage implements OnInit {
   final BookingRepository _bookingRepository;
   final ClientFactory _clientFactory;
@@ -81,16 +72,16 @@ class BookingCabinsPage implements OnInit {
   Future<void> ngOnInit() async {
     if (window.sessionStorage.containsKey(BookingComponent.BOOKING)) {
       /*
-			 * Initialize a new booking where the previously supplied details are in session storage.
-			 */
+	   * Initialize a new booking where the previously supplied details are in session storage.
+	   */
       bookingDetails = BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
       cabins.registerAddonProvider(products);
       cabins.subCruise = bookingDetails.subCruise;
       isNewBooking = true;
     } else if (_clientFactory.hasCredentials && !_clientFactory.isAdmin) {
       /*
-			 * Initialize from an existing booking which we have already authenticated for.
-			 */
+	   * Initialize from an existing booking which we have already authenticated for.
+	   */
       final String reference = _clientFactory.authenticatedUser;
       Cruise cruise;
       List<CruiseCabin> cruiseCabins;
@@ -103,8 +94,7 @@ class BookingCabinsPage implements OnInit {
         booking = await _bookingRepository.getBooking(client, reference);
       } catch (e) {
         print('Failed to get cabins or booking due to an exception: ${e.toString()}');
-        loadingError =
-            'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
+        loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
         cabins.disableAddCabins = true;
         return;
       }
@@ -127,9 +117,9 @@ class BookingCabinsPage implements OnInit {
       isNewBooking = false;
     } else {
       /*
-			 * Failure case, navigate out of here. User is an admin, or has no booking.
-			 * TODO Handle the case where an admin tries to create a booking through the normal user interface.
-			 */
+	   * Failure case, navigate out of here. User is an admin, or has no booking.
+	   * TODO Handle the case where an admin tries to create a booking through the normal user interface.
+	   */
       await _router.navigateByUrl(ContentRoutes.booking.toUrl());
     }
   }

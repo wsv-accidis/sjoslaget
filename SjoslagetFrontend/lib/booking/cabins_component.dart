@@ -88,6 +88,8 @@ class CabinsComponent implements OnInit {
 
   String get priceWithDiscountFormatted => CurrencyFormatter.formatDecimalAsSEK(priceWithDiscount);
 
+  String get nameOfSubCruise => subCruises.firstWhere((c) => c.code == subCruise).name;
+
   void addCabin(String id) {
     final cabin = _getCruiseCabin(id);
     final bookingCabin = BookingCabinView.fromCruiseCabin(cabin);
