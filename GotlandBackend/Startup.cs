@@ -80,6 +80,7 @@ namespace Accidis.Gotland.WebService
 		{
 			var container = new Container().WithWebApi(config);
 
+			container.Register<AecCredentialsGenerator, CredentialsGenerator>(Reuse.Singleton);
 			container.Register<AecOAuthProvider>(Reuse.Singleton);
 			container.Register<AecPaymentRepository>(Reuse.Singleton);
 			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
