@@ -38,8 +38,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 						AgeDistribution = await _reportingService.GetAgeDistribution(db, cruise),
 						BookingsByPayment = await _reportingService.GetNumberOfBookingsByPaymentStatus(db, cruise),
 						Genders = await _reportingService.GetGenders(db, cruise),
-						TopContacts = await _reportingService.GetTopContacts(db, cruise, 10),
-						TopGroups = await _reportingService.GetTopGroups(db, cruise, 10)
+						TopContacts = await _reportingService.GetTopContacts(db, cruise, 15),
+						TopGroups = await _reportingService.GetTopGroups(db, cruise, 15)
 					},
 					WebConfig.DynamicDataMaxAge);
 			}
