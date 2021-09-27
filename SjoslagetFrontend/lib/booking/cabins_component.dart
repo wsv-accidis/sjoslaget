@@ -64,7 +64,7 @@ class CabinsComponent implements OnInit {
 
   bool get isEmpty => bookingCabins.isEmpty;
 
-  bool get isLoaded => null != _availability && null != cruiseCabins;
+  bool get isLoaded => null != _availability && null != cruiseCabins && null != subCruises;
 
   bool get isValid => bookingCabins.every((b) => b.isValid);
 

@@ -15,7 +15,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 	{
 		const string DobFormat = "dd.MM.yyyy";
 
-		static readonly string[] ExportedFields = new[]
+		static readonly string[] ExportedFields =
 		{
 			nameof(BookingPax.LastName),
 			nameof(BookingPax.FirstName),
@@ -31,6 +31,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		Cruise _cruise;
 		bool _onlyFullyPaid;
 		int _rowNo;
+		string _subCruise;
 		DateTime? _updatedSince;
 
 		public ExportToExcelGenerator(CabinRepository cabinRepository, ProductRepository productRepository)
@@ -39,10 +40,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_productRepository = productRepository;
 		}
 
-		public async Task<Workbook> ExportToWorkbookAsync(Cruise cruise, bool onlyFullyPaid, DateTime? updatedSince)
+		public async Task<Workbook> ExportToWorkbookAsync(Cruise cruise, bool onlyFullyPaid, string subCruise, DateTime? updatedSince)
 		{
 			_cruise = cruise;
 			_onlyFullyPaid = onlyFullyPaid;
+			_subCruise = subCruise;
 			_updatedSince = updatedSince;
 
 			using(var db = DbUtil.Open())
@@ -92,7 +94,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			return sheet;
 		}
 
-		static Cell CreateHeaderCell(String text)
+		static Cell CreateHeaderCell(string text)
 		{
 			return new Cell(CellType.Text)
 			{
@@ -156,11 +158,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			SetCell(sheet, row, 0, cabinNo.ToString(), null, true, null);
 			SetCell(sheet, row, 1, cabinTypeName, null, true, null);
-			SetCell(sheet, row, 2, String.Empty, null, true, null);
-			SetCell(sheet, row, 3, String.Empty, null, true, null);
-			SetCell(sheet, row, 4, String.Empty, null, true, null);
-			SetCell(sheet, row, 5, String.Empty, null, true, null);
-			SetCell(sheet, row, 6, String.Empty, null, true, null);
+			SetCell(sheet, row, 2, string.Empty, null, true, null);
+			SetCell(sheet, row, 3, string.Empty, null, true, null);
+			SetCell(sheet, row, 4, string.Empty, null, true, null);
+			SetCell(sheet, row, 5, string.Empty, null, true, null);
+			SetCell(sheet, row, 6, string.Empty, null, true, null);
 			SetCell(sheet, row, 7, reference, null, true, null);
 
 			if(_updatedSince.HasValue)
@@ -202,7 +204,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				for(int emptyPaxIdx = cabin.Count(); emptyPaxIdx < cabinType.Capacity; emptyPaxIdx++)
 				{
 					string[] changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == emptyPaxIdx).Select(c => c.FieldName).ToArray();
-					if(changesInThisRow.Contains(BookingChange.Removed, StringComparer.Ordinal) && !changesInThisRow.Contains(BookingChange.Added, StringComparer.Ordinal))
+					if(changesInThisRow.Contains(BookingChange.Removed, StringComparer.Ordinal) &&
+					   !changesInThisRow.Contains(BookingChange.Added, StringComparer.Ordinal))
 						CreateRowForRemovedPax(sheet, _rowNo++, _cabinNo, cabinType.Name, booking.Reference);
 				}
 			}
@@ -224,11 +227,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 			var bookingsResult = await db.QueryAsync<BookingDbRow>("select [Id], [Reference], [TotalPrice], " +
 																   "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid, " +
 																   "iif([Created] > @UpdatedSince, 1, 0) IsCreated " +
-																   "from [Booking] B where [CruiseId] = @CruiseId " +
+																   "from [Booking] B where [CruiseId] = @CruiseId AND [SubCruise] = @SubCruise " +
 																   "order by [Reference]",
 				new
 				{
 					CruiseId = _cruise.Id,
+					SubCruise = _subCruise,
 					UpdatedSince = _updatedSince
 				});
 
@@ -239,11 +243,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 			Dictionary<Guid, CabinType> cabinTypes = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
 			foreach(BookingDbRow booking in allBookings)
 			{
-				var paxResult = await db.QueryAsync<PaxDbRow>("select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
-															  "from [BookingPax] BP " +
-															  "left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
-															  "where BC.[BookingId] = @BookingId " +
-															  "order by BC.[Order], BP.[Order]",
+				var paxResult = await db.QueryAsync<PaxDbRow>(
+					"select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
+					"from [BookingPax] BP " +
+					"left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
+					"where BC.[BookingId] = @BookingId " +
+					"order by BC.[Order], BP.[Order]",
 					new {BookingId = booking.Id});
 
 				ChangeDbRow[] bookingChanges;
@@ -281,14 +286,21 @@ namespace Accidis.Sjoslaget.WebService.Services
 			}
 		}
 
-		static bool IsAddedPax(string fieldName) => BookingChange.Added.Equals(fieldName);
+		static bool IsAddedPax(string fieldName)
+		{
+			return BookingChange.Added.Equals(fieldName);
+		}
 
-		static bool IsExportedField(string fieldName) => ExportedFields.Contains(fieldName);
+		static bool IsExportedField(string fieldName)
+		{
+			return ExportedFields.Contains(fieldName);
+		}
 
 		static void SetCell(Worksheet sheet, int row, int col, string content, string fieldName, bool mustHighlight, string[] changedFields)
 		{
 			sheet[row, col] = content;
-			if(mustHighlight || changedFields.Contains(BookingChange.Added, StringComparer.Ordinal) || changedFields.Contains(fieldName, StringComparer.Ordinal))
+			if(mustHighlight || changedFields.Contains(BookingChange.Added, StringComparer.Ordinal) ||
+			   changedFields.Contains(fieldName, StringComparer.Ordinal))
 				sheet[row, col].Fill.BackgroundColor = Color.Yellow;
 		}
 

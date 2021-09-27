@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
 using Simplexcel;
@@ -16,7 +17,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 	public sealed class ExportController : ApiController
 	{
 		const string UpdatedSinceFormat = "yyyyMMdd";
-		const string FilenameFormat = "Export_{0:yyyyMMdd_HHmmss}.xlsx";
+		const string FilenameFormat = "Export_{0}_{1:yyyyMMdd_HHmmss}.xlsx";
 
 		readonly CabinRepository _cabinRepository;
 		readonly CruiseRepository _cruiseRepository;
@@ -31,23 +32,24 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Excel(bool onlyFullyPaid = false, string updatedSince = null)
+		public async Task<IHttpActionResult> Excel(bool onlyFullyPaid = false, string updatedSince = null, string subCruise = null)
 		{
 			var activeCruise = await _cruiseRepository.GetActiveAsync();
 			if(null == activeCruise)
 				return NotFound();
 
-			DateTime? updatedSinceDate = String.IsNullOrEmpty(updatedSince)
+			SubCruiseCode subCruiseCode = string.IsNullOrEmpty(subCruise) ? SubCruiseCode.First : SubCruiseCode.FromString(subCruise);
+			DateTime? updatedSinceDate = string.IsNullOrEmpty(updatedSince)
 				? null
 				: new DateTime?(DateTime.ParseExact(updatedSince, UpdatedSinceFormat, CultureInfo.InvariantCulture));
 
 			var exportToExcelGenerator = new ExportToExcelGenerator(_cabinRepository, _productRepository);
-			Workbook workbook = await exportToExcelGenerator.ExportToWorkbookAsync(activeCruise, onlyFullyPaid, updatedSinceDate);
+			Workbook workbook = await exportToExcelGenerator.ExportToWorkbookAsync(activeCruise, onlyFullyPaid, subCruiseCode.ToString(), updatedSinceDate);
 
-			return CreateHttpResponseMessage(workbook);
+			return CreateHttpResponseMessage(workbook, subCruise);
 		}
 
-		ResponseMessageResult CreateHttpResponseMessage(Workbook workbook)
+		ResponseMessageResult CreateHttpResponseMessage(Workbook workbook, string subCruise)
 		{
 			var buffer = new MemoryStream();
 			workbook.Save(buffer);
@@ -56,7 +58,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 			content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
 			{
-				FileName = String.Format(FilenameFormat, DateTime.Now)
+				FileName = string.Format(FilenameFormat, subCruise, DateTime.Now)
 			};
 
 			var result = new HttpResponseMessage(HttpStatusCode.OK) {Content = content};

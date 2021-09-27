@@ -11,7 +11,9 @@
 	Här exporterar du alla bokningar för nuvarande kryssning i Microsoft Excel-format.
 </p>
 
-<form #exportForm="ngForm" (submit)="doExport()">
+<spinner-widget *ngIf="!isLoaded"></spinner-widget>
+
+<form #exportForm="ngForm" (submit)="doExport()" *ngIf="isLoaded">
 	<div style="margin-bottom: 0;">
 		Markera bokningar uppdaterade sedan:
 		<material-input [(ngModel)]="updatedSince"
@@ -26,13 +28,24 @@
 	</div>
 
 	<div>
-		Inkludera
+		Inkludera:
 		<material-radio-group [(ngModel)]="onlyFullyPaid">
 			<material-radio value="true" title="Endast färdigbetalade bokningar">
 				Endast färdigbetalade bokningar
 			</material-radio>
 			<material-radio value="false" title="Alla bokningar">
 				Alla bokningar
+			</material-radio>
+		</material-radio-group>
+	</div>
+
+	<div>
+		Från kryssning:
+		<material-radio-group [(ngModel)]="subCruise">
+			<material-radio *ngFor="let sub of subCruises"
+							[title]="sub.name"
+							[value]="sub.code">
+				{{ sub.name }}
 			</material-radio>
 		</material-radio-group>
 	</div>
