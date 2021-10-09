@@ -24,7 +24,7 @@ class StartPage implements OnInit {
   StartPage(this._clientFactory, this._cruiseRepository);
 
   @override
-  Future<Null> ngOnInit() async {
+  Future<void> ngOnInit() async {
     try {
       final client = _clientFactory.getClient();
       final Cruise cruise = await _cruiseRepository.getActiveCruise(client);
