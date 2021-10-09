@@ -114,7 +114,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 				{
 					Id = booking.Id,
 					Reference = booking.Reference,
-					FullName = String.Concat(booking.FirstName, ' ', booking.LastName),
+					FullName = string.Concat(booking.FirstName, ' ', booking.LastName),
+					SubCruise = booking.SubCruise.ToString()
 				};
 
 				var cabinsQuery = await db.QueryAsync<NameCountPair>("select CT.[Name], COUNT(*) [Count] " +
@@ -123,7 +124,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 																	 "where BC.[BookingId] = @Id " +
 																	 "group by CT.[Name], CT.[Order] " +
 																	 "order by CT.[Order]",
-					new {Id = booking.Id});
+					new { Id = booking.Id });
 				label.Cabins = cabinsQuery.ToArray();
 
 				var productsQuery = await db.QueryAsync<NameCountPair>("select PT.[Name], BP.[Quantity] [Count] " +
@@ -131,7 +132,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 																	   "left join [ProductType] PT on BP.[ProductTypeId] = PT.[Id] " +
 																	   "where BP.[BookingId] = @Id " +
 																	   "order by PT.[Order]",
-					new {Id = booking.Id});
+					new { Id = booking.Id });
 				label.Products = productsQuery.ToArray();
 
 				return label;
@@ -144,6 +145,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			public Guid Id { get; set; }
 			public string Reference { get; set; }
 			public string FullName { get; set; }
+			public string SubCruise { get; set; }
 			public NameCountPair[] Cabins { get; set; }
 			public NameCountPair[] Products { get; set; }
 		}

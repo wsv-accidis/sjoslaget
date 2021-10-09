@@ -13,6 +13,9 @@ public final class BookingLabel {
     @Json(name = "FullName")
     public String fullName;
 
+    @Json(name = "SubCruise")
+    public String subCruise;
+
     @Json(name = "Cabins")
     public List<NameCountPair> cabins;
 
@@ -25,6 +28,19 @@ public final class BookingLabel {
 
     public String getProductsText() {
         return concatNameCountPairs(products);
+    }
+
+    public String getSubCruiseText() {
+        switch (subCruise) {
+            case "A":
+                return "1";
+            case "B":
+                return "2";
+            case "AB":
+                return "1+2";
+            default:
+                return "";
+        }
     }
 
     @SuppressLint("DefaultLocale")

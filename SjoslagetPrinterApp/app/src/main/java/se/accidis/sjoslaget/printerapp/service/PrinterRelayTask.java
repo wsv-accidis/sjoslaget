@@ -90,7 +90,7 @@ public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
             }
 
             mPrinter.startPTTPrint(mPrinterConfig.getTemplateIndex(), PrinterConfig.PRINT_CHARSET);
-            mPrinter.replaceTextName(label.reference, "Reference");
+            mPrinter.replaceTextName(getReferenceWithSubCruiseIfPresent(label), "Reference");
             mPrinter.replaceTextName(label.fullName, "FullName");
             mPrinter.replaceTextName(label.getCabinsText(), "Cabins");
             mPrinter.replaceTextName(label.getProductsText(), "Products");
@@ -112,6 +112,15 @@ public final class PrinterRelayTask extends AsyncTask<Void, Void, Void> {
             final Intent intent = new Intent(LocalBroadcasts.ACTION_PRINTING_DONE);
             intent.putExtra(LocalBroadcasts.EXTRA_BOOKING_REF, label.reference);
             mBroadcasts.sendBroadcast(intent);
+        }
+    }
+
+    private String getReferenceWithSubCruiseIfPresent(BookingLabel label) {
+        final String subCruise = label.getSubCruiseText();
+        if (subCruise.isEmpty()) {
+            return label.reference;
+        } else {
+            return String.format("%s (%s)", label.reference, subCruise);
         }
     }
 
