@@ -12,14 +12,18 @@ import 'content_routes.dart';
 @Component(
     selector: 'start-page',
     styleUrls: ['content_styles.css', 'start_page.css'],
-    templateUrl: 'start_page.html',
+    templateUrl: 'start_page_teaser.html',
     directives: <dynamic>[coreDirectives, routerDirectives, AvailabilityComponent],
     exports: [ContentRoutes])
+class StartPage {
+  // Simple static teaser page for now
+}
+/*
 class StartPage implements OnInit {
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
 
-  bool cruiseIsUnlocked;
+  bool cruiseIsUnlocked = false;
 
   StartPage(this._clientFactory, this._cruiseRepository);
 
@@ -35,3 +39,4 @@ class StartPage implements OnInit {
     }
   }
 }
+*/

@@ -10,6 +10,13 @@ div.hashtag {
 	font-weight: lighter;
 }
 
+h1.teaser-title {
+	font-size: xx-large;
+	font-weight: lighter;
+	margin-bottom: 30px;
+	text-align: center;
+}
+
 div.top-link {
 	font-size: larger;
 	text-align: center;
