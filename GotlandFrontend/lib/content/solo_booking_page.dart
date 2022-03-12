@@ -17,7 +17,8 @@ import 'content_routes.dart';
     selector: 'solo-booking-page',
     templateUrl: 'solo_booking_page.html',
     styleUrls: ['content_styles.css', 'solo_booking_page.css'],
-    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, SoloComponent, SpinnerWidget])
+    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, SoloComponent, SpinnerWidget],
+    exports: [ContentRoutes])
 class SoloBookingPage implements OnInit {
   final BookingRepository _bookingRepository;
   final ClientFactory _clientFactory;

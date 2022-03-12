@@ -8,7 +8,7 @@ import '../client/allocation_repository.dart';
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
-import '../client/external_booking_repository.dart';
+import '../client/day_booking_repository.dart';
 import '../client/payment_repository.dart';
 import '../client/queue_admin_repository.dart';
 import '../client/user_repository.dart';
@@ -17,7 +17,7 @@ import 'admin_alloc_list_page.template.dart';
 import 'admin_booking_list_page.template.dart';
 import 'admin_booking_page.template.dart';
 import 'admin_dashboard_page.template.dart';
-import 'admin_external_booking_list_page.template.dart';
+import 'admin_day_booking_list_page.template.dart';
 import 'admin_login_page.template.dart';
 import 'admin_pax_list_page.template.dart';
 import 'admin_routes.dart';
@@ -34,7 +34,7 @@ import 'admin_user_page.template.dart';
 		ClientFactory,
 		ClassProvider<ClientProvider>(ClientProvider, useClass: ClientFactory),
 		EventRepository,
-		ExternalBookingRepository,
+		DayBookingRepository,
 		ClassProvider<PaymentHistoryProvider>(PaymentHistoryProvider, useClass: PaymentRepository),
 		PaymentRepository,
 		QueueAdminRepository,
@@ -49,7 +49,7 @@ class AdminComponent {
 		RouteDefinition(routePath: AdminRoutes.booking, component: AdminBookingPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.bookingList, component: AdminBookingListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.dashboard, component: AdminDashboardPageNgFactory),
-		RouteDefinition(routePath: AdminRoutes.externalBookingList, component: AdminExternalBookingListPageNgFactory),
+		RouteDefinition(routePath: AdminRoutes.dayBookingList, component: AdminDayBookingListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.login, component: AdminLoginPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.paxList, component: AdminPaxListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.user, component: AdminUserPageNgFactory),

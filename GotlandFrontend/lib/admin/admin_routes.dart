@@ -8,7 +8,7 @@ class AdminRoutes {
 	static final RoutePath allocationList = RoutePath(path: 'boenden');
 	static final RoutePath booking = RoutePath(path: 'bokning/:ref');
 	static final RoutePath bookingList = RoutePath(path: 'bokningar');
-	static final RoutePath externalBookingList = RoutePath(path: 'externa-bokningar');
+	static final RoutePath dayBookingList = RoutePath(path: 'dagbiljetter');
 	static final RoutePath login = RoutePath(path: 'login');
 	static final RoutePath paxList = RoutePath(path: 'deltagare');
 	static final RoutePath user = RoutePath(path: 'byt-losenord');

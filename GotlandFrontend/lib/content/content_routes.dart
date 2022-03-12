@@ -7,6 +7,7 @@ class ContentRoutes {
   static final RoutePath about = RoutePath(path: 'allt-om', parent: AppRoutes.content);
   static final RoutePath booking = RoutePath(path: 'bokning', parent: AppRoutes.content);
   static final RoutePath contact = RoutePath(path: 'kontakt', parent: AppRoutes.content);
+  static final RoutePath day = RoutePath(path: 'dagbiljett', parent: AppRoutes.content);
   static final RoutePath pricing = RoutePath(path: 'priser', parent: AppRoutes.content);
   static final RoutePath solo = RoutePath(path: 'stroplats', parent: AppRoutes.content);
 }

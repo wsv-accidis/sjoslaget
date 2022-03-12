@@ -7,37 +7,37 @@ import 'package:frontend_shared/widget/paging_support.dart';
 import 'package:frontend_shared/widget/sortable_columns.dart';
 
 import '../client/client_factory.dart';
-import '../client/external_booking_repository.dart';
-import '../model/external_booking.dart';
-import '../model/external_booking_type.dart';
+import '../client/day_booking_repository.dart';
+import '../model/day_booking.dart';
+import '../model/day_booking_type.dart';
 import '../util/food.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
 @Component(
-    selector: 'admin-external-booking-list-page',
-    templateUrl: 'admin_external_booking_list_page.html',
-    styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_external_booking_list_page.css'],
+    selector: 'admin-day-booking-list-page',
+    templateUrl: 'admin_day_booking_list_page.html',
+    styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_day_booking_list_page.css'],
     directives: <dynamic>[coreDirectives, formDirectives, routerDirectives, gotlandMaterialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
     providers: <dynamic>[materialProviders],
     exports: <dynamic>[AdminRoutes])
-class AdminExternalBookingListPage implements OnInit {
+class AdminDayBookingListPage implements OnInit {
   static const int PAGE_LIMIT = 40;
   static const String STATUS_CONFIRMED = 'confirmed';
   static const String STATUS_NOT_CONFIRMED = 'not-confirmed';
 
-  final ExternalBookingRepository _bookingRepository;
+  final DayBookingRepository _bookingRepository;
   final ClientFactory _clientFactory;
 
-  List<ExternalBooking> _bookings;
-  Map<String, ExternalBookingType> _types;
+  List<DayBooking> _bookings;
+  Map<String, DayBookingType> _types;
 
-  List<ExternalBooking> bookingsView;
+  List<DayBooking> bookingsView;
   final PagingSupport paging = PagingSupport(PAGE_LIMIT);
   SortableState sort = SortableState('name', false);
 
-  AdminExternalBookingListPage(this._bookingRepository, this._clientFactory);
+  AdminDayBookingListPage(this._bookingRepository, this._clientFactory);
 
   bool get isLoading => null == bookingsView;
 
@@ -47,7 +47,7 @@ class AdminExternalBookingListPage implements OnInit {
 
   String formatType(String typeId) => _types.containsKey(typeId) ? '${_types[typeId].title} (${_types[typeId].price} kr)' : '-';
 
-  String getStatus(ExternalBooking booking) => booking.paymentConfirmed ? STATUS_CONFIRMED : STATUS_NOT_CONFIRMED;
+  String getStatus(DayBooking booking) => booking.paymentConfirmed ? STATUS_CONFIRMED : STATUS_NOT_CONFIRMED;
 
   @override
   Future<void> ngOnInit() async {
@@ -72,14 +72,14 @@ class AdminExternalBookingListPage implements OnInit {
       _bookings = await _bookingRepository.getList(client);
       _refreshView();
     } catch (e) {
-      print('Failed to load list of external bookings: ${e.toString()}');
+      print('Failed to load list of day bookings: ${e.toString()}');
       // Just ignore this here, we will be stuck in the loading state until the user refreshes
     }
   }
 
-  int _comparator(ExternalBooking one, ExternalBooking two) {
+  int _comparator(DayBooking one, DayBooking two) {
     if (sort.desc) {
-      final ExternalBooking temp = two;
+      final DayBooking temp = two;
       two = one;
       one = temp;
     }
@@ -100,9 +100,9 @@ class AdminExternalBookingListPage implements OnInit {
   }
 
   void _refreshView() {
-    Iterable<ExternalBooking> filtered = _bookings;
+    Iterable<DayBooking> filtered = _bookings;
 
-    final List<ExternalBooking> sorted = filtered.toList(growable: false);
+    final List<DayBooking> sorted = filtered.toList(growable: false);
     sorted.sort(_comparator);
 
     bookingsView = paging.apply(sorted);

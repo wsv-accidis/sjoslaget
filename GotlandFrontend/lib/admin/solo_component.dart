@@ -3,8 +3,10 @@ import 'dart:html';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 
 import '../booking/booking_validator.dart';
+import '../content/about_routes.dart';
 import '../model/solo_view.dart';
 import '../util/food.dart';
 import '../util/gender.dart';
@@ -14,8 +16,9 @@ import '../widgets/components.dart';
     selector: 'solo-component',
     styleUrls: ['../content/content_styles.css', '../content/booking_styles.css', 'solo_component.css'],
     templateUrl: 'solo_component.html',
-    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives],
-    providers: <dynamic>[materialProviders])
+    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives],
+    providers: <dynamic>[materialProviders],
+    exports: [AboutRoutes])
 class SoloComponent implements OnInit {
   final BookingValidator _bookingValidator;
 

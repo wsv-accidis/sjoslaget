@@ -1,10 +1,20 @@
 <h1>
-	Absolut Gotland - Biljetter utan boende
+	Dagbiljetter
 </h1>
 
 <p>
-	Här köper du som bor på Gotland en biljett till AG utan boende! Du har fortfarande full tillgång till alla aktiviteter och spelningar
-	samt båda sittningarna, men inget boende på området och ingen frukost. Varmt välkommen!
+	Om du bor på Gotland eller löser ditt boende på egen hand kan du köpa en dagbiljett, som ger tillträde till allt som AG har att erbjuda
+	förutom just sovplats (och frukost). Observera att du <strong>inte kan övernatta på området</strong> med en dagbiljett, senast 04:00 bör
+	du ha lämnat, men du är varmt välkommen från 08:00 igen!
+</p>
+
+<p>
+	Du som verkligen vill ha ett boende kan istället skriva upp dig på <a [routerLink]="ContentRoutes.solo.toUrl()">väntelistan för ströplatser</a>.
+</p>
+
+<p>
+	Dagbiljetten gäller under hela AG och det finns inget sista datum att köpa, även om det finns en liten risk att de tar slut. Betalning ska ske
+	omedelbart efter köp på något av sätten som ges nedan. Om du är medlem i Rindi får du 100 kr rabatt på biljetten - ta med bevis på medlemskap vid uthämtning.
 </p>
 
 <form #bookingForm="ngForm" (submit)="submit()">
@@ -28,7 +38,7 @@
 
 		<p class="price-info">
 			Biljettens pris är <strong>{{ priceFormatted }}</strong>. Betalning kan ske med via Swish till <strong>0735329410</strong> (Henric Zethelius)
-			eller via Bankgiro till <strong>299-5272</strong> (OMO Media AB). Skriv ditt namn i meddelandefältet för säkerhets skull.
+			eller via Bankgiro till <strong>299-5272</strong> (HZ Event & Consulting AB). Skriv ditt namn i meddelandefältet för säkerhets skull.
 		</p>
 
 		<material-button [disabled]="!canSubmit"

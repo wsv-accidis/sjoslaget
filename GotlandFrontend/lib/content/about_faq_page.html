@@ -2,18 +2,24 @@
 
 <h3>När öppnar/stänger bokningen?</h3>
 
+<!--
 <p>
 	Vi öppnar den 6:e mars klockan 19:00 och det finns en nedräkning här på sidan. Eftersom biljetterna brukar ta slut inom några
 	minuter så finns inget sista bokningsdatum, bokningen stänger helt enkelt när det är fullt.
 </p>
-
-<!--
-<p>
-	Bokningen öppnade och stängde den 1:a mars, eftersom alla platser sålde slut på några sekunder. Det kan komma avbokningar, så
-	skriv upp dig på vår <a [routerLink]="ContentRoutes.solo.toUrl()">väntelista</a> eller <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a>
-	om du är intresserad av en plats.
-</p>
 -->
+
+<p>
+	Bokningen öppnade och stängde den 6:a mars, eftersom alla platser sålde slut på några sekunder. Om du är intresserad av en
+	plats så kan det fortfarande vara möjligt - <a [routerLink]="ContentRoutes.booking.toUrl()">läs här om alternativen</a>.
+</p>
+
+<h3>När är sista datum att betala?</h3>
+
+<p>
+	Sista betalningsdatum är den <strong>25:e mars</strong> vilket innebär att pengarna bör ha kommit in till oss ett par dagar
+	senare. Vid utebliven betalning kan platserna släppas till ett annat lag - men vi kontaktar er naturligtvis först.
+</p>
 
 <h3>Måste man vara studerande eller medlem i en studentförening för att åka?</h3>
 
@@ -34,7 +40,7 @@
 
 <p>
 	Ja, det kommer alltid avbokningar så du kan chansa på att det blir en plats ledig och med största sannolikhet lyckas vi klämma
-	in dig någonstans. <!--<a [routerLink]="ContentRoutes.solo.toUrl()">Skriv upp dig här</a> så hör vi av oss om något dyker upp.-->
+	in dig någonstans. <a [routerLink]="ContentRoutes.booking.toUrl()">Läs här om alternativen</a>.
 </p>
 
 <h3>Jag behöver specialkost, går det att ordna?</h3>

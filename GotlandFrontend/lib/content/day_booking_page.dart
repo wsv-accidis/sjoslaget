@@ -1,27 +1,30 @@
 import 'package:angular/angular.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' as str show isNotBlank;
 
 import '../admin/solo_component.dart';
 import '../client/client_factory.dart';
-import '../client/external_booking_repository.dart';
-import '../model/external_booking_source.dart';
-import '../model/external_booking_type.dart';
+import '../client/day_booking_repository.dart';
+import '../model/day_booking_source.dart';
+import '../model/day_booking_type.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
+import 'content_routes.dart';
 
 @Component(
-    selector: 'external-booking-page',
-    templateUrl: 'external_booking_page.html',
-    styleUrls: ['../content/content_styles.css', 'external_booking_page.css'],
-    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, SoloComponent, SpinnerWidget])
-class ExternalBookingPage implements OnInit {
+    selector: 'day-booking-page',
+    templateUrl: 'day_booking_page.html',
+    styleUrls: ['../content/content_styles.css', 'day_booking_page.css'],
+    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, SoloComponent, SpinnerWidget],
+    exports: [ContentRoutes])
+class DayBookingPage implements OnInit {
   final ClientFactory _clientFactory;
-  final ExternalBookingRepository _externalBookingRepository;
+  final DayBookingRepository _dayBookingRepository;
 
   bool _memberOfRindi;
-  List<ExternalBookingType> _types;
+  List<DayBookingType> _types;
   bool hasError = false;
   bool isSaving = false;
   String lastSavedName;
@@ -29,7 +32,7 @@ class ExternalBookingPage implements OnInit {
   @ViewChild('booking')
   SoloComponent booking;
 
-  ExternalBookingType type;
+  DayBookingType type;
 
   bool get canSubmit => !isSaving && !isLoading && !booking.isEmpty && booking.isValid;
 
@@ -46,17 +49,17 @@ class ExternalBookingPage implements OnInit {
 
   String get priceFormatted => CurrencyFormatter.formatDecimalAsSEK(type.price);
 
-  ExternalBookingPage(this._clientFactory, this._externalBookingRepository);
+  DayBookingPage(this._clientFactory, this._dayBookingRepository);
 
   @override
   Future<void> ngOnInit() async {
     _clientFactory.clear();
     try {
       final client = _clientFactory.getClient();
-      _types = await _externalBookingRepository.getTypes(client);
+      _types = await _dayBookingRepository.getTypes(client);
 
       if (2 != _types.length) {
-        print('Invalid data from server, expected two types of external bookings.');
+        print('Invalid data from server, expected two types of day bookings.');
         return;
       }
 
@@ -75,10 +78,10 @@ class ExternalBookingPage implements OnInit {
 
     try {
       final client = _clientFactory.getClient();
-      final source = ExternalBookingSource.fromSoloView(booking.view, type.id);
-      await _externalBookingRepository.saveBooking(client, source);
+      final source = DayBookingSource.fromSoloView(booking.view, type.id);
+      await _dayBookingRepository.saveBooking(client, source);
     } catch (e) {
-      print('Failed to save external booking: ${e.toString()}');
+      print('Failed to save day booking: ${e.toString()}');
       hasError = true;
     } finally {
       if (!hasError) {

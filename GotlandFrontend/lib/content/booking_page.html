@@ -2,7 +2,7 @@
 	Bokning
 </h1>
 
-<p>
+<p *ngIf="isInCountdown || isOpen">
 	Bokningen till Absolut Gotland går till så här: Du som lagledare fyller i god tid innan bokningen öppnar i ditt namn
 	och kontaktuppgifter, lagets namn och storlek här på sidan. Då får du tillgång till <strong>nedräkningen</strong>
 	och sedan gäller det att vara orimligt snabb på knappen när räknaren når noll. Läs igenom
@@ -22,9 +22,24 @@
 </p>
 
 <p *ngIf="isClosed">
-	Bokningen har stängt för i år - men hoppet är inte ute för dig som vill åka med på AG. Du kan skriva upp dig på vår <strong><a [routerLink]="ContentRoutes.solo.toUrl()">väntelista</a></strong>
-	så hör vi av oss ifall det blir några avbokningar eller extrastugor, och vi tar även emot anmälan för lag som vill bo på <strong><a [routerLink]="ContentRoutes.contact.toUrl()">campingen</a></strong>.
-	Kontakta oss så ska vi göra vårt bästa för att även du ska få uppleva Absolut Gotland i år!
+	Bokningen har tyvärr stängt för i år! Men hoppet är inte ute för dig som vill åka med på AG:
+</p>
+
+<ul *ngIf="isClosed">
+	<li>
+		Anmäl dig på <strong><a [routerLink]="ContentRoutes.solo.toUrl()">väntelistan</a></strong> för att bli kontaktad om det sker några avbokningar.
+	</li>
+	<li>
+		Köp en <strong><a [routerLink]="ContentRoutes.day.toUrl()">dagbiljett</a></strong> om du har löst boende utanför Kneippbyn så får du tillgång till allt vad AG kan erbjuda.
+	</li>
+	<li>
+		Vi kan ordna plats i <strong>campingen</strong> för lag och enskilda som inte fick stugor. <a [routerLink]="ContentRoutes.contact.toUrl()">Kontakta oss</a> så hjälper vi er.
+	</li>
+</ul>
+
+<p>
+	Om du har frågor eller funderingar, problem eller vill ha hjälp med något rörande din bokning kan du när som helst
+	<strong><a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a></strong> så ska vi hjälpa till!
 </p>
 
 <div *ngIf="isInCountdown || isOpen">

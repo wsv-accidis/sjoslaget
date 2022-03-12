@@ -70,7 +70,7 @@
 	<material-checkbox [(ngModel)]="acceptRules"
 					   ngControl="acceptRules"
 					   class="rules-and-toc-checks">
-		Jag har läst och förstått <a href="/allt-om/regler">Reglerna som gäller på Absolut Gotland</a>.
+		Jag har läst och förstått <a [routerLink]="AboutRoutes.rules.toUrl()">Reglerna som gäller på Absolut Gotland</a>.
 	</material-checkbox>
 </div>
 <div>

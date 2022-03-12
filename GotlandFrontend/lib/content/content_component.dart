@@ -5,6 +5,7 @@ import 'about_component.template.dart';
 import 'booking_page.template.dart';
 import 'contact_page.template.dart';
 import 'content_routes.dart';
+import 'day_booking_page.template.dart';
 import 'not_found_page.template.dart';
 import 'pricing_page.template.dart';
 import 'solo_booking_page.template.dart';
@@ -17,6 +18,7 @@ class ContentComponent {
     RouteDefinition(routePath: ContentRoutes.about, component: AboutComponentNgFactory),
     RouteDefinition(routePath: ContentRoutes.booking, component: BookingPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.contact, component: ContactPageNgFactory),
+    RouteDefinition(routePath: ContentRoutes.day, component: DayBookingPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.pricing, component: PricingPageNgFactory),
     RouteDefinition(routePath: ContentRoutes.solo, component: SoloBookingPageNgFactory),
     RouteDefinition(path: '.+', component: NotFoundPageNgFactory),
