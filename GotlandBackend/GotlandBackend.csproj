@@ -158,7 +158,7 @@
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
-    <Compile Include="Controllers\ExternalController.cs" />
+    <Compile Include="Controllers\DayBookingController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\QueueAdminController.cs" />
     <Compile Include="Controllers\QueueController.cs" />
@@ -178,11 +178,11 @@
     <Compile Include="Models\CabinClass.cs" />
     <Compile Include="Models\CabinClassDetail.cs" />
     <Compile Include="Models\ClaimedCapacity.cs" />
-    <Compile Include="Models\ExternalBooking.cs" />
+    <Compile Include="Models\DayBooking.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />
-    <Compile Include="Models\ExternalBookingSource.cs" />
-    <Compile Include="Models\ExternalBookingType.cs" />
+    <Compile Include="Models\DayBookingSource.cs" />
+    <Compile Include="Models\DayBookingType.cs" />
     <Compile Include="Models\QueueDashboardItem.cs" />
     <Compile Include="Models\SoloBookingSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -193,7 +193,7 @@
     <Compile Include="Services\CredentialsGenerator.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\EventRepository.cs" />
-    <Compile Include="Services\ExternalBookingRepository.cs" />
+    <Compile Include="Services\DayBookingRepository.cs" />
     <Compile Include="Services\IntervalCalculator.cs" />
     <Compile Include="Services\WebConfig.cs" />
     <Compile Include="Startup.cs" />

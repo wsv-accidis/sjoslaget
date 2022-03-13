@@ -30,7 +30,7 @@ import 'payment_component.dart';
 	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
 	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaymentComponent, PaymentHistoryComponent, PaxComponent, ModalDialog, SpinnerWidget],
 	providers: <dynamic>[materialProviders],
-	exports: <dynamic>[AdminRoutes, ValidationSupport]
+	exports: <dynamic>[AdminRoutes]
 )
 class AdminBookingPage implements OnActivate {
 	final BookingRepository _bookingRepository;
@@ -68,7 +68,6 @@ class AdminBookingPage implements OnActivate {
 			: 'Bekräftelse inte skickad';
 
 	bool get hasBookingResult => null != bookingResult;
-
 
 	bool get hasSentConfirmation => null != booking.confirmationSent;
 

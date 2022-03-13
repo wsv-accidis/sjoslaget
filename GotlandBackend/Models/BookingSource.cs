@@ -8,7 +8,6 @@ namespace Accidis.Gotland.WebService.Models
 	public class BookingSource
 	{
 		public const int MaximumPaxInBooking = 20;
-
 		public string Reference { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }

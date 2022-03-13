@@ -92,7 +92,7 @@ namespace Accidis.Gotland.WebService
 			container.Register<CabinRepository>(Reuse.Singleton);
 			container.Register<CredentialsGenerator>(Reuse.Singleton);
 			container.Register<EventRepository>(Reuse.Singleton);
-			container.Register<ExternalBookingRepository>(Reuse.Singleton);
+			container.Register<DayBookingRepository>(Reuse.Singleton);
 
 			return container;
 		}

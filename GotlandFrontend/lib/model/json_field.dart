@@ -26,6 +26,7 @@ const String ID = 'Id';
 const String INTERNAL_NOTES = 'InternalNotes';
 const String IS_IN_COUNTDOWN = 'IsInCountdown';
 const String IS_LOCKED = 'IsLocked';
+const String IS_MEMBER = 'IsMember';
 const String IS_OPEN_AND_NOT_LOCKED = 'IsOpenAndNotLocked';
 const String LASTNAME = 'LastName';
 const String NAME = 'Name';

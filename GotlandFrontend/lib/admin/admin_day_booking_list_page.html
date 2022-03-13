@@ -32,36 +32,36 @@
 	   [sortColumn]="sort.column"
 	   [sortDesc]="sort.desc">
 	<tr>
-		<th style="width: 120px">
+		<th style="width: 100px">
 			<sortable-column-header key="paymentStatus" title="Betalning"></sortable-column-header>
 		</th>
 		<th>
 			<sortable-column-header key="name" title="Namn"></sortable-column-header>
 		</th>
-		<th style="width: 150px">
-			Telefon
+		<th style="width: 120px">
+			<sortable-column-header key="phone" title="Telefon"></sortable-column-header>
 		</th>
 		<th style="width: 120px">
-			Födelsedatum
+			<sortable-column-header key="dob" title="Födelsedatum"></sortable-column-header>
 		</th>
-		<th style="width: 120px">
+		<th style="width: 110px">
 			<sortable-column-header key="food" title="Kost"></sortable-column-header>
 		</th>
-		<th style="width: 320px">
-			Biljett
+		<th style="width: 220px">
+			<sortable-column-header key="type" title="Biljett"></sortable-column-header>
 		</th>
 		<th style="width: 140px">
-			<sortable-column-header key="created" title="Skapad"></sortable-column-header>
+			<sortable-column-header key="updated" title="Uppdaterad"></sortable-column-header>
 		</th>
 	</tr>
 	<tr *ngFor="let booking of bookingsView">
 		<td [ngSwitch]="getStatus(booking)">
-			<span *ngSwitchWhen="'confirmed'" class="status-confirmed">Bekräftad</span>
-			<span *ngSwitchWhen="'not-confirmed'" class="status-not-confirmed">Ej bekräftad</span>
+			<span *ngSwitchWhen="'confirmed'" class="status-confirmed">Betalad</span>
+			<span *ngSwitchWhen="'not-confirmed'" class="status-not-confirmed">Ej betald</span>
 			<span *ngSwitchDefault>-</span>
 		</td>
 		<td>
-			<a href="mailto:{{ booking.email }}">
+			<a [routerLink]="AdminRoutes.dayBookingUrl(booking.id)">
 				{{ booking.firstName }} {{ booking.lastName }}
 			</a>
 		</td>
@@ -75,10 +75,10 @@
 			{{ formatFood(booking.food) }}
 		</td>
 		<td>
-			{{ formatType(booking.type) }}
+			{{ formatType(booking.typeId) }}
 		</td>
 		<td>
-			{{ formatDateTime(booking.created) }}
+			{{ formatDateTime(booking.updated) }}
 		</td>
 	</tr>
 </table>

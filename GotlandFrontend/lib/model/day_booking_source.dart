@@ -5,12 +5,32 @@ import 'solo_booking_source.dart';
 import 'solo_view.dart';
 
 class DayBookingSource extends SoloBookingSource {
-  DayBookingSource(String firstName, String lastName, String phoneNo, String email, String dob, String food, String gender, this.type) : super(firstName, lastName, phoneNo, email, dob, food, gender);
+  DayBookingSource(String firstName, String lastName, String phoneNo, String email, String dob, String food,
+      String gender, this.typeId, this.paymentConfirmed)
+      : super(firstName, lastName, phoneNo, email, dob, food, gender);
 
-  factory DayBookingSource.fromSoloView(SoloView solo, String type) => DayBookingSource(solo.firstName, solo.lastName, solo.phoneNo, solo.email, solo.dob, solo.food, solo.gender, type);
+  final String typeId;
+  final bool paymentConfirmed;
 
-  final String type;
+  factory DayBookingSource.fromJson(String jsonStr) {
+    final Map<String, dynamic> map = json.decode(jsonStr);
+    return DayBookingSource(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[DOB], map[FOOD], map[GENDER],
+        map[TYPE_ID], map[PAYMENT_CONFIRMED]);
+  }
+
+  factory DayBookingSource.fromSoloView(SoloView solo, String typeId) => DayBookingSource(
+      solo.firstName, solo.lastName, solo.phoneNo, solo.email, solo.dob, solo.food, solo.gender, typeId, false);
 
   @override
-  String toJson() => json.encode({FIRSTNAME: firstName, LASTNAME: lastName, PHONE_NO: phoneNo, EMAIL: email, DOB: dob, FOOD: food, GENDER: gender, TYPE_ID: type});
+  String toJson() => json.encode({
+        FIRSTNAME: firstName,
+        LASTNAME: lastName,
+        PHONE_NO: phoneNo,
+        EMAIL: email,
+        DOB: dob,
+        FOOD: food,
+        GENDER: gender,
+        TYPE_ID: typeId,
+        PAYMENT_CONFIRMED: paymentConfirmed
+      });
 }

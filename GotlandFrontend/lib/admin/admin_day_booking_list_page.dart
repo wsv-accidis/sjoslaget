@@ -8,20 +8,30 @@ import 'package:frontend_shared/widget/sortable_columns.dart';
 
 import '../client/client_factory.dart';
 import '../client/day_booking_repository.dart';
-import '../model/day_booking.dart';
+import '../model/day_booking_list_item.dart';
 import '../model/day_booking_type.dart';
 import '../util/food.dart';
 import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'admin_routes.dart';
 
-@Component(
-    selector: 'admin-day-booking-list-page',
-    templateUrl: 'admin_day_booking_list_page.html',
-    styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_day_booking_list_page.css'],
-    directives: <dynamic>[coreDirectives, formDirectives, routerDirectives, gotlandMaterialDirectives, SortableColumnHeader, SortableColumns, SpinnerWidget],
-    providers: <dynamic>[materialProviders],
-    exports: <dynamic>[AdminRoutes])
+@Component(selector: 'admin-day-booking-list-page', templateUrl: 'admin_day_booking_list_page.html', styleUrls: [
+  '../content/content_styles.css',
+  'admin_styles.css',
+  'admin_day_booking_list_page.css'
+], directives: <dynamic>[
+  coreDirectives,
+  formDirectives,
+  routerDirectives,
+  gotlandMaterialDirectives,
+  SortableColumnHeader,
+  SortableColumns,
+  SpinnerWidget
+], providers: <dynamic>[
+  materialProviders
+], exports: <dynamic>[
+  AdminRoutes
+])
 class AdminDayBookingListPage implements OnInit {
   static const int PAGE_LIMIT = 40;
   static const String STATUS_CONFIRMED = 'confirmed';
@@ -30,10 +40,10 @@ class AdminDayBookingListPage implements OnInit {
   final DayBookingRepository _bookingRepository;
   final ClientFactory _clientFactory;
 
-  List<DayBooking> _bookings;
+  List<DayBookingListItem> _bookings;
   Map<String, DayBookingType> _types;
 
-  List<DayBooking> bookingsView;
+  List<DayBookingListItem> bookingsView;
   final PagingSupport paging = PagingSupport(PAGE_LIMIT);
   SortableState sort = SortableState('name', false);
 
@@ -45,9 +55,10 @@ class AdminDayBookingListPage implements OnInit {
 
   String formatFood(String food) => Food.asString(food);
 
-  String formatType(String typeId) => _types.containsKey(typeId) ? '${_types[typeId].title} (${_types[typeId].price} kr)' : '-';
+  String formatType(String typeId) =>
+      _types.containsKey(typeId) ? '${_types[typeId].title} (${_types[typeId].price} kr)' : '-';
 
-  String getStatus(DayBooking booking) => booking.paymentConfirmed ? STATUS_CONFIRMED : STATUS_NOT_CONFIRMED;
+  String getStatus(DayBookingListItem booking) => booking.paymentConfirmed ? STATUS_CONFIRMED : STATUS_NOT_CONFIRMED;
 
   @override
   Future<void> ngOnInit() async {
@@ -77,9 +88,9 @@ class AdminDayBookingListPage implements OnInit {
     }
   }
 
-  int _comparator(DayBooking one, DayBooking two) {
+  int _comparator(DayBookingListItem one, DayBookingListItem two) {
     if (sort.desc) {
-      final DayBooking temp = two;
+      final DayBookingListItem temp = two;
       two = one;
       one = temp;
     }
@@ -89,10 +100,16 @@ class AdminDayBookingListPage implements OnInit {
         return _statusAsInt(getStatus(one)) - _statusAsInt(getStatus(two));
       case 'name':
         return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
+      case 'phone':
+        return one.phoneNo.compareTo(two.phoneNo);
+      case 'dob':
+		  return one.dob.compareTo(two.dob);
       case 'food':
         return one.food.compareTo(two.food);
-      case 'created':
-        return two.created.compareTo(one.created);
+      case 'type':
+        return _typeAsTitle(one.typeId).compareTo(_typeAsTitle(two.typeId));
+      case 'updated':
+        return two.updated.compareTo(one.updated);
       default:
         print('Unrecognized column \"${sort.column}\", no sort applied.');
         return 0;
@@ -100,9 +117,9 @@ class AdminDayBookingListPage implements OnInit {
   }
 
   void _refreshView() {
-    Iterable<DayBooking> filtered = _bookings;
+    Iterable<DayBookingListItem> filtered = _bookings;
 
-    final List<DayBooking> sorted = filtered.toList(growable: false);
+    final List<DayBookingListItem> sorted = filtered.toList(growable: false);
     sorted.sort(_comparator);
 
     bookingsView = paging.apply(sorted);
@@ -118,4 +135,6 @@ class AdminDayBookingListPage implements OnInit {
         return 2;
     }
   }
+
+  String _typeAsTitle(String typeId) => _types.containsKey(typeId) ? _types[typeId].title : '';
 }

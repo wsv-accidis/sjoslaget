@@ -13,41 +13,42 @@ import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 import 'content_routes.dart';
 
-@Component(
-    selector: 'day-booking-page',
-    templateUrl: 'day_booking_page.html',
-    styleUrls: ['../content/content_styles.css', 'day_booking_page.css'],
-    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives, routerDirectives, SoloComponent, SpinnerWidget],
-    exports: [ContentRoutes])
+@Component(selector: 'day-booking-page', templateUrl: 'day_booking_page.html', styleUrls: [
+  '../content/content_styles.css',
+  'day_booking_page.css'
+], directives: <dynamic>[
+  coreDirectives,
+  formDirectives,
+  gotlandMaterialDirectives,
+  routerDirectives,
+  SoloComponent,
+  SpinnerWidget
+], exports: [
+  ContentRoutes
+])
 class DayBookingPage implements OnInit {
   final ClientFactory _clientFactory;
   final DayBookingRepository _dayBookingRepository;
 
-  bool _memberOfRindi;
-  List<DayBookingType> _types;
+  DayBookingType _typeMember;
+  DayBookingType _typeNonMember;
   bool hasError = false;
   bool isSaving = false;
   String lastSavedName;
+  bool memberOfRindi;
 
   @ViewChild('booking')
   SoloComponent booking;
-
-  DayBookingType type;
 
   bool get canSubmit => !isSaving && !isLoading && !booking.isEmpty && booking.isValid;
 
   bool get hasSaved => str.isNotBlank(lastSavedName);
 
-  bool get isLoading => null == booking || null == type;
-
-  bool get memberOfRindi => _memberOfRindi;
-
-  set memberOfRindi(bool value) {
-    _memberOfRindi = value;
-    type = value ? _types[0] : _types[1];
-  }
+  bool get isLoading => null == booking || null == _typeMember || null == _typeNonMember;
 
   String get priceFormatted => CurrencyFormatter.formatDecimalAsSEK(type.price);
+
+  DayBookingType get type => memberOfRindi ? _typeMember : _typeNonMember;
 
   DayBookingPage(this._clientFactory, this._dayBookingRepository);
 
@@ -56,12 +57,9 @@ class DayBookingPage implements OnInit {
     _clientFactory.clear();
     try {
       final client = _clientFactory.getClient();
-      _types = await _dayBookingRepository.getTypes(client);
-
-      if (2 != _types.length) {
-        print('Invalid data from server, expected two types of day bookings.');
-        return;
-      }
+      final types = await _dayBookingRepository.getTypes(client);
+      _typeMember = types.firstWhere((t) => t.isMember);
+      _typeNonMember = types.firstWhere((t) => !t.isMember);
 
       // Initalize to non-member first
       memberOfRindi = false;
@@ -78,6 +76,7 @@ class DayBookingPage implements OnInit {
 
     try {
       final client = _clientFactory.getClient();
+
       final source = DayBookingSource.fromSoloView(booking.view, type.id);
       await _dayBookingRepository.saveBooking(client, source);
     } catch (e) {

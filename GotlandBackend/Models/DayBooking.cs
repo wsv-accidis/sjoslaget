@@ -2,9 +2,11 @@
 
 namespace Accidis.Gotland.WebService.Models
 {
-	public sealed class ExternalBooking
+	public sealed class DayBooking
 	{
 		public Guid Id { get; set; }
+		public Guid EventId { get; set; }
+		public string Reference { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
@@ -15,5 +17,6 @@ namespace Accidis.Gotland.WebService.Models
 		public Guid TypeId { get; set; }
 		public bool PaymentConfirmed { get; set; }
 		public DateTime Created { get; set; }
+		public DateTime Updated { get; set; }
 	}
 }

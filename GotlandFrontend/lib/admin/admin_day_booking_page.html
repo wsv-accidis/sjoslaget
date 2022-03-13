@@ -1,0 +1,23 @@
+<h1>
+	Redigera dagbiljett
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+	<span></span>
+	<material-icon icon="how_to_reg"></material-icon>
+	<a [routerLink]="AdminRoutes.dayBookingList.toUrl()">Dagbiljetter</a>
+</div>
+
+<p>
+	Här redigerar du bokningen och registerar när den är betalad.
+</p>
+
+<div class="spinner-widget" *ngIf="(isLoading && !hasLoadingError) || isSaving">
+	<spinner-widget></spinner-widget>
+</div>
+
+<p class="super-important loading-error" *ngIf="hasLoadingError">
+	{{ loadingError }}
+</p>
