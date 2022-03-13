@@ -9,13 +9,13 @@ using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
-	public sealed class DayBookingController : ApiController
+	public sealed class DayBookingsController : ApiController
 	{
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(DayBookingController).Name);
+		readonly Logger _log = LogManager.GetLogger(typeof(DayBookingsController).Name);
 
-		public DayBookingController(EventRepository eventRepository, DayBookingRepository dayBookingRepository)
+		public DayBookingsController(EventRepository eventRepository, DayBookingRepository dayBookingRepository)
 		{
 			_eventRepository = eventRepository;
 			_dayBookingRepository = dayBookingRepository;

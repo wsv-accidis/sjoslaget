@@ -1,5 +1,5 @@
 <h1>
-	Redigera dagbiljett
+	Redigera dagbiljett {{ null != booking ? booking.reference : '' }}
 </h1>
 
 <div class="admin-menu">
@@ -11,13 +11,127 @@
 </div>
 
 <p>
-	Här redigerar du bokningen och registerar när den är betalad.
+	Här redigerar du dagbiljetten och registerar när den är betalad.
 </p>
-
-<div class="spinner-widget" *ngIf="(isLoading && !hasLoadingError) || isSaving">
-	<spinner-widget></spinner-widget>
-</div>
 
 <p class="super-important loading-error" *ngIf="hasLoadingError">
 	{{ loadingError }}
 </p>
+
+<form #bookingForm="ngForm">
+	<input type="submit" class="hidden-submit"/>
+	<div *ngIf="!isLoading && !isSaving">
+		<div>
+			<material-input [(ngModel)]="booking.firstName"
+							class="first-name-field"
+							[error]="booking.firstNameError"
+							floatingLabel
+							(keyup)="validate($event)"
+							label="Förnamn"
+							ngControl="firstName">
+			</material-input>
+
+			<material-input [(ngModel)]="booking.lastName"
+							class="last-name-field"
+							[error]="booking.lastNameError"
+							floatingLabel
+							(keyup)="validate($event)"
+							label="Efternamn"
+							ngControl="lastName">
+			</material-input>
+		</div>
+		<div>
+			<material-input [(ngModel)]="booking.phoneNo"
+							class="phone-no-field"
+							[error]="booking.phoneNoError"
+							floatingLabel
+							(keyup)="validate($event)"
+							label="Telefonnummer"
+							ngControl="phoneNo"
+							type="tel">
+			</material-input>
+
+			<material-input [(ngModel)]="booking.email"
+							class="email-field"
+							[error]="booking.emailError"
+							floatingLabel
+							(keyup)="validate($event)"
+							label="E-postadress"
+							ngControl="email"
+							type="email">
+			</material-input>
+		</div>
+		<div>
+			<material-dropdown-select [buttonText]="genderToString(booking.gender)"
+									  class="gender-field"
+									  [error]="booking.genderError"
+									  [options]="genderOptions"
+									  [itemRenderer]="genderToString"
+									  [selection]="booking.genderSelection"
+									  width="2">
+			</material-dropdown-select>
+
+			<material-dropdown-select [buttonText]="foodToString(booking.food)"
+									  class="food-field"
+									  [error]="booking.foodError"
+									  [options]="foodOptions"
+									  [itemRenderer]="foodToString"
+									  [selection]="booking.foodSelection"
+									  width="2">
+			</material-dropdown-select>
+
+			<material-input [(ngModel)]="booking.dob"
+							class="dob-field"
+							[error]="booking.dobError"
+							floatingLabel
+							(keyup)="validate($event)"
+							label="Födelsedatum (ÅÅMMDD)"
+							ngControl="dob">
+			</material-input>
+		</div>
+		<div>
+			<material-dropdown-select [buttonText]="typeToString(booking.type)"
+									  class="type-field"
+									  [error]="booking.typeError"
+									  [options]="typeOptions"
+									  [itemRenderer]="typeToString"
+									  [selection]="booking.typeSelection"
+									  width="4">
+			</material-dropdown-select>
+
+			<material-checkbox [(ngModel)]="booking.paymentConfirmed"
+							   ngControl="paymentConfirmed"
+							   class="payment-check">
+				Betalning mottagen
+			</material-checkbox>
+		</div>
+		<div class="buttons">
+			<material-button class="control-blue"
+							 [disabled]="!canSubmit"
+							 raised
+							 (trigger)="saveBooking()">
+				Spara bokningen
+			</material-button>
+
+			<material-button class="control-red"
+							 raised
+							 (trigger)="deleteBooking()">
+				Radera bokningen
+			</material-button>
+		</div>
+	</div>
+
+	<div class="spinner-widget" *ngIf="(isLoading && !hasLoadingError) || isSaving">
+		<spinner-widget></spinner-widget>
+	</div>
+
+	<p class="super-important booking-error" *ngIf="hasBookingError">
+		{{ bookingError }}
+	</p>
+</form>
+
+<modal-dialog #deleteBookingDialog
+			  action="Ja, radera"
+			  title="Radera dagbiljett"
+			  message="Är du säker? Dagbiljetten raderas permanent. Det här går inte att ångra.">
+</modal-dialog>

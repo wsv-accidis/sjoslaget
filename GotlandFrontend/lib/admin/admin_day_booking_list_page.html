@@ -35,6 +35,9 @@
 		<th style="width: 100px">
 			<sortable-column-header key="paymentStatus" title="Betalning"></sortable-column-header>
 		</th>
+		<th style="width: 100px">
+			<sortable-column-header key="reference" title="Referens"></sortable-column-header>
+		</th>
 		<th>
 			<sortable-column-header key="name" title="Namn"></sortable-column-header>
 		</th>
@@ -61,7 +64,12 @@
 			<span *ngSwitchDefault>-</span>
 		</td>
 		<td>
-			<a [routerLink]="AdminRoutes.dayBookingUrl(booking.id)">
+			<a [routerLink]="AdminRoutes.dayBookingUrl(booking.reference)" class="mono">
+				{{ booking.reference }}
+			</a>
+		</td>
+		<td>
+			<a [routerLink]="AdminRoutes.dayBookingUrl(booking.reference)">
 				{{ booking.firstName }} {{ booking.lastName }}
 			</a>
 		</td>

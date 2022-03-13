@@ -1,7 +1,7 @@
 import 'package:angular_components/angular_components.dart' show SelectionModel, SingleSelectionModel;
 import 'package:quiver/strings.dart' as str show isBlank, isNotEmpty;
 
-class SoloView {
+class SoloBookingView {
   String firstName;
   String firstNameError;
   String lastName;

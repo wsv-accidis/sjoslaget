@@ -78,7 +78,7 @@ class DayBookingPage implements OnInit {
       final client = _clientFactory.getClient();
 
       final source = DayBookingSource.fromSoloView(booking.view, type.id);
-      await _dayBookingRepository.saveBooking(client, source);
+      await _dayBookingRepository.createBooking(client, source);
     } catch (e) {
       print('Failed to save day booking: ${e.toString()}');
       hasError = true;

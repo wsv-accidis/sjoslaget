@@ -98,12 +98,14 @@ class AdminDayBookingListPage implements OnInit {
     switch (sort.column) {
       case 'paymentStatus':
         return _statusAsInt(getStatus(one)) - _statusAsInt(getStatus(two));
+      case 'reference':
+        return one.reference.compareTo(two.reference);
       case 'name':
         return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
       case 'phone':
         return one.phoneNo.compareTo(two.phoneNo);
       case 'dob':
-		  return one.dob.compareTo(two.dob);
+        return one.dob.compareTo(two.dob);
       case 'food':
         return one.food.compareTo(two.food);
       case 'type':

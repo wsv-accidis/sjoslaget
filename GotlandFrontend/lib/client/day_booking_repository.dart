@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import '../model/day_booking_list_item.dart';
 import '../model/day_booking_source.dart';
 import '../model/day_booking_type.dart';
+import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
@@ -15,10 +16,21 @@ class DayBookingRepository {
 
   DayBookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
+  Future<void> deleteBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.delete('$_apiRoot/daybookings/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+  }
+
   Future<DayBookingSource> getBooking(Client client, String id) async {
     Response response;
     try {
-      response = await client.get('$_apiRoot/daybooking/$id');
+      response = await client.get('$_apiRoot/daybookings/$id');
     } catch (e) {
       throw IOException.fromException(e);
     }
@@ -30,7 +42,7 @@ class DayBookingRepository {
   Future<List<DayBookingListItem>> getList(Client client) async {
     Response response;
     try {
-      response = await client.get('$_apiRoot/daybooking/list');
+      response = await client.get('$_apiRoot/daybookings/list');
     } catch (e) {
       throw IOException.fromException(e);
     }
@@ -43,7 +55,7 @@ class DayBookingRepository {
   Future<List<DayBookingType>> getTypes(Client client) async {
     Response response;
     try {
-      response = await client.get('$_apiRoot/daybooking/types');
+      response = await client.get('$_apiRoot/daybookings/types');
     } catch (e) {
       throw IOException.fromException(e);
     }
@@ -53,16 +65,39 @@ class DayBookingRepository {
     return jsonBody.map((dynamic value) => DayBookingType.fromMap(value)).toList();
   }
 
+  Future<void> createBooking(Client client, DayBookingSource booking) async {
+    final headers = ClientUtil.createJsonHeaders();
+
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/daybookings/create', headers: headers, body: booking.toJson());
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    if (HttpStatus.OK == response.statusCode)
+      return;
+    else if (HttpStatus.BAD_REQUEST == response.statusCode)
+      throw BookingException();
+    else
+      throw IOException.fromResponse(response);
+  }
+
   Future<void> saveBooking(Client client, DayBookingSource booking) async {
     final headers = ClientUtil.createJsonHeaders();
 
     Response response;
     try {
-      response = await client.post('$_apiRoot/daybooking/create', headers: headers, body: booking.toJson());
+      response = await client.post('$_apiRoot/daybookings/update', headers: headers, body: booking.toJson());
     } catch (e) {
       throw IOException.fromException(e);
     }
 
-    if (HttpStatus.OK != response.statusCode) throw IOException.fromResponse(response);
+    if (HttpStatus.OK == response.statusCode)
+      return;
+    else if (HttpStatus.BAD_REQUEST == response.statusCode)
+      throw BookingException();
+    else
+      throw IOException.fromResponse(response);
   }
 }

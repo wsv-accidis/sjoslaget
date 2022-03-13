@@ -5,7 +5,7 @@ class AdminRoutes {
   static final RoutePath allocationList = RoutePath(path: 'boenden');
   static final RoutePath booking = RoutePath(path: 'bokning/:ref');
   static final RoutePath bookingList = RoutePath(path: 'bokningar');
-  static final RoutePath dayBooking = RoutePath(path: 'dagbiljett/:id');
+  static final RoutePath dayBooking = RoutePath(path: 'dagbiljett/:ref');
   static final RoutePath dayBookingList = RoutePath(path: 'dagbiljetter');
   static final RoutePath login = RoutePath(path: 'login');
   static final RoutePath paxList = RoutePath(path: 'deltagare');
@@ -13,5 +13,5 @@ class AdminRoutes {
 
   static String bookingUrl(String ref) => booking.toUrl(parameters: <String, String>{'ref': ref});
 
-  static String dayBookingUrl(String id) => dayBooking.toUrl(parameters: <String, String>{'id': id});
+  static String dayBookingUrl(String ref) => dayBooking.toUrl(parameters: <String, String>{'ref': ref});
 }

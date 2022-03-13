@@ -158,7 +158,7 @@
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CabinsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
-    <Compile Include="Controllers\DayBookingController.cs" />
+    <Compile Include="Controllers\DayBookingsController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\QueueAdminController.cs" />
     <Compile Include="Controllers\QueueController.cs" />

@@ -59,8 +59,6 @@ class AdminBookingPage implements OnActivate {
 	String loadingError;
 	int noOfPax = 0;
 
-	bool get canDelete => !isSaving;
-
 	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
 
 	String get confirmationSentMessage =>

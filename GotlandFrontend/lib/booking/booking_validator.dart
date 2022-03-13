@@ -1,12 +1,25 @@
-import 'package:Gotland/model/solo_view.dart';
 import 'package:angular/angular.dart';
 import 'package:frontend_shared/util.dart' show ValidationSupport;
 import 'package:quiver/strings.dart' as str show isBlank;
 
 import '../model/booking_pax_view.dart';
+import '../model/day_booking_view.dart';
+import '../model/solo_booking_view.dart';
 
 @Injectable()
 class BookingValidator {
+  bool validateDay(DayBookingView day) {
+    validateSolo(day);
+
+    if (null == day.type) {
+      day.typeError = 'Ange biljettyp.';
+    } else {
+      day.typeError = null;
+    }
+
+    return day.isValid;
+  }
+
   bool validatePax(BookingPaxView pax) {
     pax.clearErrors();
 
@@ -63,7 +76,7 @@ class BookingValidator {
     return pax.isValid;
   }
 
-  bool validateSolo(SoloView solo) {
+  bool validateSolo(SoloBookingView solo) {
     solo.clearErrors();
 
     if (str.isBlank(solo.firstName)) {

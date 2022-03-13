@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'json_field.dart';
-import 'solo_view.dart';
+import 'solo_booking_view.dart';
 
 class SoloBookingSource {
   SoloBookingSource(this.firstName, this.lastName, this.phoneNo, this.email, this.dob, this.food, this.gender);
-
-  factory SoloBookingSource.fromSoloView(SoloView solo) => SoloBookingSource(solo.firstName, solo.lastName, solo.phoneNo, solo.email, solo.dob, solo.food, solo.gender);
 
   final String firstName;
   final String lastName;
@@ -16,5 +14,16 @@ class SoloBookingSource {
   final String food;
   final String gender;
 
-  String toJson() => json.encode({FIRSTNAME: firstName, LASTNAME: lastName, PHONE_NO: phoneNo, EMAIL: email, DOB: dob, FOOD: food, GENDER: gender});
+  factory SoloBookingSource.fromSoloView(SoloBookingView solo) =>
+      SoloBookingSource(solo.firstName, solo.lastName, solo.phoneNo, solo.email, solo.dob, solo.food, solo.gender);
+
+  String toJson() => json.encode({
+        FIRSTNAME: firstName,
+        LASTNAME: lastName,
+        PHONE_NO: phoneNo,
+        EMAIL: email,
+        DOB: dob,
+        FOOD: food,
+        GENDER: gender
+      });
 }

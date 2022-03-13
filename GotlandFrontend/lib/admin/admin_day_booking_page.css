@@ -1,0 +1,28 @@
+.buttons {
+	margin-top: 40px;
+}
+.food-field {
+	width: 120px;
+	margin-right: 20px;
+}
+.first-name-field {
+	width: 200px;
+	margin-right: 20px;
+}
+.gender-field {
+	width: 120px;
+	margin-right: 20px;
+}
+.last-name-field {
+	width: 200px;
+}
+.payment-check {
+	margin-top: -5px;
+}
+.phone-no-field {
+	width: 150px;
+	margin-right: 20px;
+}
+.type-field {
+	width: 250px;
+}

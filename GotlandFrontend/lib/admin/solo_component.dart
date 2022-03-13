@@ -7,7 +7,7 @@ import 'package:angular_router/angular_router.dart';
 
 import '../booking/booking_validator.dart';
 import '../content/about_routes.dart';
-import '../model/solo_view.dart';
+import '../model/solo_booking_view.dart';
 import '../util/food.dart';
 import '../util/gender.dart';
 import '../widgets/components.dart';
@@ -22,7 +22,7 @@ import '../widgets/components.dart';
 class SoloComponent implements OnInit {
   final BookingValidator _bookingValidator;
 
-  SoloView view = SoloView();
+  SoloBookingView view = SoloBookingView();
   bool acceptRules = false;
   bool acceptToc = false;
 
