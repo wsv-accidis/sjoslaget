@@ -11,85 +11,92 @@ import '../model/cabin_class_detail.dart';
 import '../model/claimed_capacity.dart';
 import '../model/event.dart';
 import '../model/json_field.dart';
+import '../model/paid_capacity.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
 class EventRepository {
-	final String _apiRoot;
+  final String _apiRoot;
 
-	EventRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
+  EventRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
-	Future<Event> getActiveEvent(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/event/active');
-		} on ExpirationException {
-			rethrow; // special case for OAuth2 expiration
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<Event> getActiveEvent(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/event/active');
+    } on ExpirationException {
+      rethrow; // special case for OAuth2 expiration
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		return Event.fromJson(response.body);
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    return Event.fromJson(response.body);
+  }
 
-	Future<List<CabinClass>> getActiveCabinClasses(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/cabins/active');
-		} on ExpirationException {
-			rethrow; // special case for OAuth2 expiration
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<List<CabinClass>> getActiveCabinClasses(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/cabins/active');
+    } on ExpirationException {
+      rethrow; // special case for OAuth2 expiration
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final List jsonBody = json.decode(response.body);
-		return jsonBody
-			.map((dynamic value) => CabinClass.fromMap(value))
-			.toList();
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    final List jsonBody = json.decode(response.body);
+    return jsonBody.map((dynamic value) => CabinClass.fromMap(value)).toList();
+  }
 
-	Future<List<CabinClassDetail>> getCabinClassDetails(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/cabins/details');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<List<CabinClassDetail>> getCabinClassDetails(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/cabins/details');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final List jsonBody = json.decode(response.body);
-		return jsonBody
-			.map((dynamic value) => CabinClassDetail.fromMap(value))
-			.toList();
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    final List jsonBody = json.decode(response.body);
+    return jsonBody.map((dynamic value) => CabinClassDetail.fromMap(value)).toList();
+  }
 
-	Future<List<ClaimedCapacity>> getClaimedCapacity(Client client) async {
-		Response response;
-		try {
-			response = await client.get('$_apiRoot/cabins/claimedCapacity');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<List<ClaimedCapacity>> getClaimedCapacity(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/cabins/claimedCapacity');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final List jsonBody = json.decode(response.body);
-		return jsonBody
-			.map((dynamic value) => ClaimedCapacity.fromMap(value))
-			.toList();
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    final List jsonBody = json.decode(response.body);
+    return jsonBody.map((dynamic value) => ClaimedCapacity.fromMap(value)).toList();
+  }
 
-	Future<bool> lockUnlockEvent(Client client) async {
-		Response response;
-		try {
-			response = await client.put('$_apiRoot/event/lock');
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
+  Future<PaidCapacity> getPaidCapacity(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/cabins/paidCapacity');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
 
-		HttpStatus.throwIfNotSuccessful(response);
-		final Map<String, dynamic> jsonBody = json.decode(response.body);
-		return jsonBody[IS_LOCKED];
-	}
+    HttpStatus.throwIfNotSuccessful(response);
+    return PaidCapacity.fromJson(response.body);
+  }
+
+  Future<bool> lockUnlockEvent(Client client) async {
+    Response response;
+    try {
+      response = await client.put('$_apiRoot/event/lock');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+    final Map<String, dynamic> jsonBody = json.decode(response.body);
+    return jsonBody[IS_LOCKED];
+  }
 }
