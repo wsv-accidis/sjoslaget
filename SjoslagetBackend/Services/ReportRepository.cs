@@ -12,15 +12,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				await db.ExecuteAsync("delete from [Report] where [CruiseId] = @CruiseId and [Date] = cast(@Date as date)",
-					new {CruiseId = report.CruiseId, Date = report.Date});
+				await db.ExecuteAsync("delete from [Report] where [CruiseId] = @CruiseId and [SubCruise] = @SubCruise and [Date] = cast(@Date as date)",
+					new {CruiseId = report.CruiseId, SubCruise = report.SubCruise, Date = report.Date});
 
-				await db.ExecuteAsync("insert into [Report] ([CruiseId], [Date], [BookingsCreated], [BookingsTotal], [CabinsTotal], [PaxTotal], [CapacityTotal]) values (@CruiseId, @Date, @BookingsCreated, @BookingsTotal, @CabinsTotal, @PaxTotal, @CapacityTotal)",
-					new {report.CruiseId, report.Date, report.BookingsCreated, report.BookingsTotal, report.CabinsTotal, report.PaxTotal, report.CapacityTotal});
+				await db.ExecuteAsync("insert into [Report] ([CruiseId], [SubCruise], [Date], [BookingsCreated], [BookingsTotal], [CabinsTotal], [PaxTotal], [CapacityTotal]) " +
+									  "values (@CruiseId, @SubCruise, @Date, @BookingsCreated, @BookingsTotal, @CabinsTotal, @PaxTotal, @CapacityTotal)",
+					new {report.CruiseId, report.SubCruise, report.Date, report.BookingsCreated, report.BookingsTotal, report.CabinsTotal, report.PaxTotal, report.CapacityTotal});
 			}
 		}
 
-		public async Task<Report[]> GetActiveAsync(Cruise cruise)
+		public async Task<Report[]> GetActiveAsync(Cruise cruise, SubCruiseCode subCruise)
 		{
 			using(var db = DbUtil.Open())
 			{

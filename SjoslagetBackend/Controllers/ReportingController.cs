@@ -35,11 +35,12 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			{
 				return this.OkCacheControl(new
 					{
-						AgeDistribution = await _reportingService.GetAgeDistribution(db, cruise),
+						// TODO
+						AgeDistribution = await _reportingService.GetAgeDistribution(db, cruise, SubCruiseCode.None),
 						BookingsByPayment = await _reportingService.GetNumberOfBookingsByPaymentStatus(db, cruise),
-						Genders = await _reportingService.GetGenders(db, cruise),
-						TopContacts = await _reportingService.GetTopContacts(db, cruise, 15),
-						TopGroups = await _reportingService.GetTopGroups(db, cruise, 15)
+						Genders = await _reportingService.GetGenders(db, cruise, SubCruiseCode.None),
+						TopContacts = await _reportingService.GetTopContacts(db, cruise, SubCruiseCode.None, 15),
+						TopGroups = await _reportingService.GetTopGroups(db, cruise, SubCruiseCode.None, 15)
 					},
 					WebConfig.DynamicDataMaxAge);
 			}
@@ -53,7 +54,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			if(null == cruise)
 				return NotFound();
 
-			Report[] reports = await _reportRepository.GetActiveAsync(cruise);
+			// TODO
+			Report[] reports = await _reportRepository.GetActiveAsync(cruise, SubCruiseCode.None);
 			return this.OkCacheControl(ReportSummary.FromReports(reports), WebConfig.DynamicDataMaxAge);
 		}
 

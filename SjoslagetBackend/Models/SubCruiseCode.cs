@@ -4,10 +4,12 @@ namespace Accidis.Sjoslaget.WebService.Models
 {
 	public sealed class SubCruiseCode
 	{
+		const string NoneValue = "";
 		const string FirstValue = "A";
 		const string SecondValue = "B";
 		const string BothValue = FirstValue + SecondValue;
 
+		public static readonly SubCruiseCode None = new SubCruiseCode(NoneValue);
 		public static readonly SubCruiseCode First = new SubCruiseCode(FirstValue);
 		public static readonly SubCruiseCode Second = new SubCruiseCode(SecondValue);
 		public static readonly SubCruiseCode Both = new SubCruiseCode(BothValue);
@@ -31,6 +33,8 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 			switch(s.ToUpperInvariant())
 			{
+				case NoneValue:
+					return None;
 				case FirstValue:
 					return First;
 				case SecondValue:

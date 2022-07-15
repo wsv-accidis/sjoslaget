@@ -6,6 +6,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 	{
 		public Guid Id { get; set; }
 		public Guid CruiseId { get; set; }
+		public string SubCruise { get; set; }
 		public DateTime Date { get; set; }
 		public int BookingsCreated { get; set; }
 		public int BookingsTotal { get; set; }
