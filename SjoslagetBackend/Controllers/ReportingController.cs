@@ -25,22 +25,23 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Current()
+		public async Task<IHttpActionResult> Current(string subCruise)
 		{
 			var cruise = await _cruiseRepository.GetActiveAsync();
 			if(null == cruise)
 				return NotFound();
 
+			var subCruiseCode = SubCruiseCode.FromString(subCruise ?? string.Empty);
 			using(var db = DbUtil.Open())
 			{
 				return this.OkCacheControl(new
 					{
-						// TODO
-						AgeDistribution = await _reportingService.GetAgeDistribution(db, cruise, SubCruiseCode.None),
-						BookingsByPayment = await _reportingService.GetNumberOfBookingsByPaymentStatus(db, cruise),
-						Genders = await _reportingService.GetGenders(db, cruise, SubCruiseCode.None),
-						TopContacts = await _reportingService.GetTopContacts(db, cruise, SubCruiseCode.None, 15),
-						TopGroups = await _reportingService.GetTopGroups(db, cruise, SubCruiseCode.None, 15)
+						AgeDistribution = await _reportingService.GetAgeDistribution(db, cruise, subCruiseCode),
+						// Bookings per subcruise is not supported, so we null this one if a subcruise is provided
+						BookingsByPayment = SubCruiseCode.None != subCruiseCode ? null : await _reportingService.GetNumberOfBookingsByPaymentStatus(db, cruise),
+						Genders = await _reportingService.GetGenders(db, cruise, subCruiseCode),
+						TopContacts = await _reportingService.GetTopContacts(db, cruise, subCruiseCode, 15),
+						TopGroups = await _reportingService.GetTopGroups(db, cruise, subCruiseCode, 15)
 					},
 					WebConfig.DynamicDataMaxAge);
 			}
@@ -48,14 +49,14 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Summary()
+		public async Task<IHttpActionResult> Summary(string subCruise)
 		{
 			var cruise = await _cruiseRepository.GetActiveAsync();
 			if(null == cruise)
 				return NotFound();
 
-			// TODO
-			Report[] reports = await _reportRepository.GetActiveAsync(cruise, SubCruiseCode.None);
+			var subCruiseCode = SubCruiseCode.FromString(subCruise ?? string.Empty);
+			Report[] reports = await _reportRepository.GetActiveAsync(cruise, subCruiseCode);
 			return this.OkCacheControl(ReportSummary.FromReports(reports), WebConfig.DynamicDataMaxAge);
 		}
 

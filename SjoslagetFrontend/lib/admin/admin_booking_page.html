@@ -27,9 +27,12 @@
 <form #bookingForm="ngForm">
 	<cabins-component #cabins></cabins-component>
 
-	<h2 class="booking-subtitle-padded">Tillägg</h2>
+	<div style="visibility: hidden">
+		<!-- Not used for Sjöslaget 2022 -->
+		<h2 class="booking-subtitle-padded">Tillägg</h2>
 
-	<products-component #products></products-component>
+		<products-component #products></products-component>
+	</div>
 
 	<h2 class="booking-subtitle">Kontaktperson</h2>
 

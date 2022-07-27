@@ -28,17 +28,20 @@ class BookingPreviewComponentPopup implements OnInit {
   final BookingRepository _bookingRepository;
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
+
   List<CruiseCabin> _cabins;
   List<CruiseProduct> _products;
 
-  BookingSource booking;
+  @Input()
+  BookingOverviewItem bookingItem;
 
-  String formatSubCruise(String code) => SubCruise.codeToLabel(code);
+  BookingSource booking;
 
   bool get hasInternalNotes => null != booking && isNotEmpty(booking.internalNotes);
 
-  @Input()
-  BookingOverviewItem bookingItem;
+  bool get hasProducts => null != booking && booking.products.isNotEmpty;
+
+  bool get isLoaded => null != booking;
 
   BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository);
 
@@ -54,7 +57,10 @@ class BookingPreviewComponentPopup implements OnInit {
     return result;
   }
 
-  bool get isLoaded => null != booking;
+  int get numberOfPax {
+    if (null == booking) return 0;
+    return booking.cabins.fold(0, (int total, cabin) => total += cabin.pax.length);
+  }
 
   List<SummaryView> get productSummary {
     final result = <SummaryView>[];
@@ -62,14 +68,11 @@ class BookingPreviewComponentPopup implements OnInit {
 
     for (CruiseProduct productType in _products) {
       final bookingProduct = booking.products.firstWhere((bp) => bp.productTypeId == productType.id, orElse: () => null);
-      if (null != bookingProduct && bookingProduct.quantity > 0)
-        result.add(SummaryView(productType.id, productType.name, bookingProduct.quantity));
+      if (null != bookingProduct && bookingProduct.quantity > 0) result.add(SummaryView(productType.id, productType.name, bookingProduct.quantity));
     }
 
     return result;
   }
-
-  bool get hasProducts => null != booking && booking.products.isNotEmpty;
 
   @override
   Future<void> ngOnInit() async {
@@ -88,6 +91,8 @@ class BookingPreviewComponentPopup implements OnInit {
       // Just ignore this here, we will be stuck in the loading state
     }
   }
+
+  String formatSubCruise(String code) => SubCruise.codeToLabel(code);
 }
 
 @Component(

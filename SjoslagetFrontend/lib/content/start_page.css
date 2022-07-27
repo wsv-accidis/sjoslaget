@@ -10,9 +10,9 @@ div.hashtag {
 	font-weight: lighter;
 }
 
-h1.teaser-title {
-	font-size: xx-large;
-	font-weight: lighter;
+h1.teaser-countdown {
+	font-family: 'Roboto Mono', monospace;
+	font-size: xxx-large;
 	margin-bottom: 30px;
 	text-align: center;
 }

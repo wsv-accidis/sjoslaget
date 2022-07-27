@@ -7,6 +7,7 @@ import '../booking/availability_component.dart';
 import '../client/client_factory.dart';
 import '../client/cruise_repository.dart';
 import '../model/cruise.dart';
+import '../util/countdown.dart';
 import 'content_routes.dart';
 
 @Component(
@@ -15,13 +16,27 @@ import 'content_routes.dart';
     templateUrl: 'start_page_teaser.html',
     directives: <dynamic>[coreDirectives, routerDirectives, AvailabilityComponent],
     exports: [ContentRoutes])
-class StartPage {
-  // Simple static teaser page for now
-}
-/*
-class StartPage implements OnInit {
+class StartPage implements OnInit, OnDestroy {
+  static const int COUNTDOWN_REFRESH_INTERVAL = 100;
+
+  /* 
+    We're leavin' together
+    But still it's farewell
+    And maybe we'll come back
+    To Earth, who can tell?
+    I guess there is no one to blame
+    We're leaving ground (leaving ground)
+    Will things ever be the same again?
+    It's the ...
+   */
+  final Countdown _countdown = Countdown(DateTime(2022, 7, 31, 12));
+
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
+
+  bool _isDestroyed = false;
+
+  String countdownFormatted = '';
 
   bool cruiseIsUnlocked = false;
 
@@ -37,6 +52,25 @@ class StartPage implements OnInit {
       print('Failed to load active cruise: ${e.toString()}');
       // Safe to ignore as it just means we won't show the availability on the start page
     }
+
+    if (!cruiseIsUnlocked && !_countdown.isElapsed) {
+      Timer(const Duration(milliseconds: COUNTDOWN_REFRESH_INTERVAL), _refreshCountdown);
+    }
+  }
+
+  @override
+  void ngOnDestroy() {
+    _isDestroyed = true;
+  }
+
+  void _refreshCountdown() {
+    if (_isDestroyed) return;
+    if (_countdown.isElapsed) {
+      countdownFormatted = '';
+      return;
+    }
+
+    countdownFormatted = _countdown.toString();
+    Timer(const Duration(milliseconds: COUNTDOWN_REFRESH_INTERVAL), _refreshCountdown);
   }
 }
-*/

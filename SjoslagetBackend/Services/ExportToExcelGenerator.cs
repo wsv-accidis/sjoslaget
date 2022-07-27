@@ -21,7 +21,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 			nameof(BookingPax.FirstName),
 			nameof(BookingPax.Dob),
 			nameof(BookingPax.Gender),
-			nameof(BookingPax.Nationality)
+			nameof(BookingPax.Nationality),
+			nameof(BookingPax.Group)
 		};
 
 		readonly CabinRepository _cabinRepository;
@@ -70,10 +71,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet[row, 4] = CreateHeaderCell("Födelsedatum");
 			sheet[row, 5] = CreateHeaderCell("Kön");
 			sheet[row, 6] = CreateHeaderCell("Nationalitet");
-			sheet[row, 7] = CreateHeaderCell("Bokningsref");
+			sheet[row, 7] = CreateHeaderCell("Förening");
+			sheet[row, 8] = CreateHeaderCell("Bokningsref");
 
 			if(_updatedSince.HasValue)
-				sheet[row, 8] = CreateHeaderCell("Ändrad");
+				sheet[row, 9] = CreateHeaderCell("Ändrad");
 		}
 
 		static Worksheet CreateCabinsWorksheet()
@@ -90,6 +92,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			sheet.ColumnWidths[6] = 12;
 			sheet.ColumnWidths[7] = 12;
 			sheet.ColumnWidths[8] = 12;
+			sheet.ColumnWidths[9] = 12;
 
 			return sheet;
 		}
@@ -133,6 +136,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			DateOfBirth dob,
 			Gender gender,
 			string nationality,
+			string group,
 			string reference,
 			bool isCreated,
 			string[] changes
@@ -145,12 +149,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 4, dob.Format(DobFormat), nameof(BookingPax.Dob), isCreated, changes);
 			SetCell(sheet, row, 5, gender.ToString().ToUpperInvariant(), nameof(BookingPax.Gender), isCreated, changes);
 			SetCell(sheet, row, 6, nationality.ToUpperInvariant(), nameof(BookingPax.Nationality), isCreated, changes);
-			SetCell(sheet, row, 7, reference, null, isCreated, changes);
+			SetCell(sheet, row, 7, group, nameof(BookingPax.Group), isCreated, changes);
+			SetCell(sheet, row, 8, reference, null, isCreated, changes);
 
 			if(_updatedSince.HasValue && (isCreated || changes.Any(c => IsExportedField(c) || IsAddedPax(c))))
 			{
 				bool isNew = isCreated || changes.Any(IsAddedPax);
-				SetCell(sheet, row, 8, isNew ? "Ny" : "Ändrad", null, true, null);
+				SetCell(sheet, row, 9, isNew ? "Ny" : "Ändrad", null, true, null);
 			}
 		}
 
@@ -163,10 +168,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 			SetCell(sheet, row, 4, string.Empty, null, true, null);
 			SetCell(sheet, row, 5, string.Empty, null, true, null);
 			SetCell(sheet, row, 6, string.Empty, null, true, null);
-			SetCell(sheet, row, 7, reference, null, true, null);
+			SetCell(sheet, row, 7, string.Empty, null, true, null);
+			SetCell(sheet, row, 8, reference, null, true, null);
 
 			if(_updatedSince.HasValue)
-				SetCell(sheet, row, 8, "Borttagen", null, true, null);
+				SetCell(sheet, row, 9, "Borttagen", null, true, null);
 		}
 
 		void CreateRowsForBooking(Worksheet sheet, BookingDbRow booking, PaxDbRow[] paxInBooking,
@@ -194,6 +200,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 						pax.Dob,
 						pax.Gender,
 						pax.Nationality,
+						pax.Group,
 						booking.Reference,
 						booking.IsCreated,
 						changesInThisRow
@@ -244,7 +251,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			foreach(BookingDbRow booking in allBookings)
 			{
 				var paxResult = await db.QueryAsync<PaxDbRow>(
-					"select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
+					"select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Group], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
 					"from [BookingPax] BP " +
 					"left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
 					"where BC.[BookingId] = @BookingId " +
@@ -331,6 +338,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			public Gender Gender { get; set; }
 			public DateOfBirth Dob { get; set; }
 			public string Nationality { get; set; }
+			public string Group { get; set; }
 			public Guid CabinTypeId { get; set; }
 		}
 		// ReSharper restore UnusedAutoPropertyAccessor.Local, ClassNeverInstantiated.Local, MemberCanBePrivate.Local

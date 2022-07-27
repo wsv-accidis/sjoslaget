@@ -56,9 +56,12 @@
 
 	<cabins-component #cabins></cabins-component>
 
-	<h2 style="margin-bottom: 5px; margin-top: 30px">Beställ tillägg</h2>
+	<div style="visibility: hidden">
+		<!-- Not used for Sjöslaget 2022 -->
+		<h2 style="margin-bottom: 5px; margin-top: 30px">Beställ tillägg</h2>
 
-	<products-component #products></products-component>
+		<products-component #products></products-component>
+	</div>
 
 	<div *ngIf="!cabins.readOnly">
 		<h2 style="margin-top: 30px">Spara bokningen</h2>

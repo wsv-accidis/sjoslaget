@@ -57,6 +57,6 @@ namespace Accidis.Sjoslaget.WebService.Models
 			return summary;
 		}
 
-		static String DateToString(DateTime d) => d.ToString("yyyy-MM-dd");
+		static string DateToString(DateTime d) => d.ToString("yyyy-MM-dd");
 	}
 }
