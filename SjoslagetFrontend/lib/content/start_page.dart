@@ -53,9 +53,11 @@ class StartPage implements OnInit, OnDestroy {
       // Safe to ignore as it just means we won't show the availability on the start page
     }
 
+	/*
     if (!cruiseIsUnlocked && !_countdown.isElapsed) {
       Timer(const Duration(milliseconds: COUNTDOWN_REFRESH_INTERVAL), _refreshCountdown);
     }
+	*/
   }
 
   @override
