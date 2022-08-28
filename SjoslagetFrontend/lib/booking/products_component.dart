@@ -63,7 +63,7 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 	}
 
 	@override
-	Future<Null> ngOnInit() async {
+	Future<void> ngOnInit() async {
 		try {
 			final client = _clientFactory.getClient();
 			cruiseProducts = await _cruiseRepository.getActiveCruiseProducts(client);
@@ -76,7 +76,7 @@ class ProductsComponent implements BookingAddonProvider, OnInit {
 		}
 	}
 
-	Future<Null> refreshAvailability() async {
+	Future<void> refreshAvailability() async {
 		try {
 			final client = _clientFactory.getClient();
 			_availability = await _cruiseRepository.getProductsAvailability(client);

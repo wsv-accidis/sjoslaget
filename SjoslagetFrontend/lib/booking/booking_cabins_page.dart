@@ -76,7 +76,11 @@ class BookingCabinsPage implements OnInit {
 	   */
       bookingDetails = BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
       cabins.registerAddonProvider(products);
-      cabins.subCruise = bookingDetails.subCruise;
+
+	  // Sjöslaget 2022 hack since we only have one cruise
+	  cabins.subCruise = bookingDetails.subCruise = 'A';
+      //cabins.subCruise = bookingDetails.subCruise;
+
       isNewBooking = true;
     } else if (_clientFactory.hasCredentials && !_clientFactory.isAdmin) {
       /*

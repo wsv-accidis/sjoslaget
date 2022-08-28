@@ -34,7 +34,7 @@ class BookingLoginComponent {
 
 	String get loggedInUser => _clientFactory.authenticatedUser;
 
-	Future<Null> logIn() async {
+	Future<void> logIn() async {
 		try {
 			await _clientFactory.authenticate(bookingRef, pinCode);
 		} catch (e) {

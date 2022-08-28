@@ -47,7 +47,7 @@ class AdminDeletedListPage implements OnInit {
 	String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
 	@override
-	Future<Null> ngOnInit() async {
+	Future<void> ngOnInit() async {
 		await refresh();
 	}
 
@@ -56,7 +56,7 @@ class AdminDeletedListPage implements OnInit {
 		_refreshView();
 	}
 
-	Future<Null> refresh() async {
+	Future<void> refresh() async {
 		try {
 			final client = _clientFactory.getClient();
 			_bookings = await _deletedBookingRepository.getAll(client);

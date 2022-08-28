@@ -8,7 +8,7 @@ import 'package:frontend_shared/model/booking_payment_model.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/paging_support.dart';
 import 'package:frontend_shared/widget/sortable_columns.dart';
-import 'package:quiver/strings.dart' show isNotEmpty;
+import 'package:quiver/strings.dart' show isEmpty, isNotEmpty;
 
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
@@ -88,6 +88,8 @@ class AdminBookingListPage implements OnInit, OnDestroy {
 
   String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
+  String formatLunch(String lunch) => (isEmpty(lunch) || lunch == '-') ? '-' : '$lunch:00';
+
   String formatSubCruise(String code) => SubCruise.codeToLabel(code);
 
   String getStatus(BookingOverviewItem item) {
@@ -123,7 +125,7 @@ class AdminBookingListPage implements OnInit, OnDestroy {
     bookingPreview.open(booking);
   }
 
-  Future<Null> printBooking(BookingOverviewItem booking) async {
+  Future<void> printBooking(BookingOverviewItem booking) async {
     final client = _clientFactory.getClient();
     await _printerRepository.enqueue(client, booking.reference);
   }
@@ -204,7 +206,7 @@ class AdminBookingListPage implements OnInit, OnDestroy {
     return item.statusAsInt;
   }
 
-  Future<Null> _tick(Timer ignored) async {
+  Future<void> _tick(Timer ignored) async {
     await _refreshPrinterState();
   }
 }

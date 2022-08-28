@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:frontend_shared/model.dart' show BookingResult;
 import 'package:tuple/tuple.dart';
+import 'package:quiver/strings.dart' show isEmpty;
 
 import '../client/availability_exception.dart';
 import '../client/booking_exception.dart';
@@ -19,8 +20,8 @@ import 'cabins_component.dart';
 import 'products_component.dart';
 
 class BookingSupportUtils {
-  static Future<Tuple2<BookingResult, String>> saveBooking(ClientFactory clientFactory, BookingRepository bookingRepository,
-      BookingDetails bookingDetails, CabinsComponent cabins, ProductsComponent products, BookingResult bookingResult) async {
+  static Future<Tuple2<BookingResult, String>> saveBooking(ClientFactory clientFactory, BookingRepository bookingRepository, BookingDetails bookingDetails,
+      CabinsComponent cabins, ProductsComponent products, BookingResult bookingResult) async {
     final List<BookingCabin> cabinsToSave = BookingCabinView.listToListOfBookingCabin(cabins.bookingCabins);
     final List<BookingProduct> productsToSave = BookingProductView.listToListOfBookingProduct(products.bookingProducts);
     final client = clientFactory.getClient();
@@ -29,6 +30,9 @@ class BookingSupportUtils {
     String bookingError;
 
     try {
+      // Suppress validation failures due to lunch missing - not all cruises have this
+      if (isEmpty(bookingDetails.lunch)) bookingDetails.lunch = '-';
+
       bookingDetails.subCruise = cabins.subCruise;
       result = await bookingRepository.saveOrUpdateBooking(client, bookingDetails, cabinsToSave, productsToSave);
       return Tuple2(result, null);
@@ -65,8 +69,7 @@ class BookingSupportUtils {
     }
   }
 
-  static String _getAvailabilityError(
-      CabinsComponent cabins, ProductsComponent products, List<BookingCabin> savedCabins, List<BookingProduct> savedProducts) {
+  static String _getAvailabilityError(CabinsComponent cabins, ProductsComponent products, List<BookingCabin> savedCabins, List<BookingProduct> savedProducts) {
     // Calling this depends on having refreshed availability first
 
     bool hasCabinAvailabilityError = false;
@@ -78,8 +81,7 @@ class BookingSupportUtils {
 
       if (available < inBooking) {
         hasCabinAvailabilityError = true;
-        error +=
-            ' Det finns $inBooking hytt(er) av typen ${cabin.name} i bokningen, men det bara ${available + inSavedBooking} kvar att boka.';
+        error += ' Det finns $inBooking hytt(er) av typen ${cabin.name} i bokningen, men det bara ${available + inSavedBooking} kvar att boka.';
       }
     }
 

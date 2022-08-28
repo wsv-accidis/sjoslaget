@@ -1,36 +1,13 @@
 <h1>Priser</h1>
 
 <p>
-	Biljettens pris beror på vilken slags hytt du vill bo i, i övrigt är det ingen skillnad.
-	På enkelkryssarna (sön-mån & mån-tis) ingår en rejäl lunchbuffé. I dubbelkrysspriset ingår två lunchbufféer,
-	det vill säga en per dag.
+	Biljettens pris beror på vilken slags hytt du vill bo i, i övrigt är det ingen skillnad. En rejäl middagsbuffé ingår i priset.
 </p>
 
 <p>
 	Ni betalar alltid för hela hytten så priserna gäller förutsatt att hytten är full. Om pris per person
 	exempelvis är 600 kr, och hytten rymmer fyra personer, så betalar ni 2 400 kr oavsett hur många som bor i hytten.
 </p>
-
-<!--
-<table cellpadding="8" cellspacing="0" *ngIf="null != cabins">
-	<tr>
-		<th>Biljett</th>
-		<th>Pris/person</th>
-		<th>Beskrivning</th>
-	</tr>
-	<tr *ngFor="let cabin of cabins">
-		<td class="border">
-			{{cabin.name}}
-		</td>
-		<td class="border">
-			{{cabin.pricePerPax}} kr
-		</td>
-		<td class="border">
-			{{cabin.description}}
-		</td>
-	</tr>
-</table>
--->
 
 <div *ngIf="!isLoading">
 	<h2>DeLuxe</h2>
@@ -42,7 +19,7 @@
 	<img src="gfx/cabins/Galaxy_Deluxe.jpg" alt="DeLuxe-hytt">
 
 	<ul>
-		<li>DeLuxe - {{ priceByName("A", "Deluxe") }} per person, eller {{ priceByName("AB", "Deluxe") }} för dubbelkryss</li>
+		<li>DeLuxe - {{ priceByName("A", "Deluxe") }} per person</li>
 	</ul>
 
 	<h2>
@@ -57,10 +34,10 @@
 	<img src="gfx/cabins/Galaxy_A4.jpg" alt="A4-hytt">
 
 	<ul>
-		<li>A4 - {{ priceByName("A", "A4") }} per person, eller {{ priceByName("AB", "A4") }} för dubbelkryss</li>
-		<li>A3 - {{ priceByName("A", "A3") }} per person, eller {{ priceByName("AB", "A3") }} för dubbelkryss</li>
-		<li>A2 - {{ priceByName("A", "A2") }} per person, eller {{ priceByName("AB", "A2") }} för dubbelkryss</li>
-		<li>Apre - {{ priceByName("A", "Apre") }} per person, eller {{ priceByName("AB", "Apre") }} för dubbelkryss</li>
+		<li>A4 - {{ priceByName("A", "A4") }} per person</li>
+		<li>A3 - {{ priceByName("A", "A3") }} per person</li>
+		<li>A2 - {{ priceByName("A", "A2") }} per person</li>
+		<li>Apre - {{ priceByName("A", "Apre") }} per person</li>
 	</ul>
 
 	<h2>
@@ -75,9 +52,9 @@
 	<img src="gfx/cabins/Galaxy_B4.jpg" alt="B4-hytt">
 
 	<ul>
-		<li>B4 - {{ priceByName("A", "B4") }} per person, eller {{ priceByName("AB", "B4") }} för dubbelkryss</li>
-		<li>B3 - {{ priceByName("A", "B3") }} per person, eller {{ priceByName("AB", "B3") }} för dubbelkryss</li>
-		<li>B2 - {{ priceByName("A", "B2") }} per person, eller {{ priceByName("AB", "B2") }} för dubbelkryss</li>
+		<li>B4 - {{ priceByName("A", "B4") }} per person</li>
+		<li>B3 - {{ priceByName("A", "B3") }} per person</li>
+		<li>B2 - {{ priceByName("A", "B2") }} per person</li>
 	</ul>
 
 	<h2>
@@ -90,13 +67,13 @@
 	</p>
 
 	<ul>
-		<li>E4 - {{ priceByName("A", "E4") }} per person, eller {{ priceByName("AB", "E4") }} för dubbelkryss</li>
-		<li>E3 - {{ priceByName("A", "E3") }} per person, eller {{ priceByName("AB", "E3") }} för dubbelkryss</li>
-		<li>E2 - {{ priceByName("A", "E2") }} per person, eller {{ priceByName("AB", "E2") }} för dubbelkryss</li>
+		<li>E4 - {{ priceByName("A", "E4") }} per person</li>
+		<li>E3 - {{ priceByName("A", "E3") }} per person</li>
+		<li>E2 - {{ priceByName("A", "E2") }} per person</li>
 	</ul>
 
 	<p>
-		Mer info om hytterna finns på <a href="https://se.tallink.com/galaxy#tabs-content-7">Tallink Siljas hemsida</a>.
+		Mer info om hytterna finns på <a href="https://se.tallink.com/baltic-queen#tabs-content-7">Tallink Siljas hemsida</a>.
 		Sviterna går inte att boka på Sjöslaget.
 	</p>
 </div>

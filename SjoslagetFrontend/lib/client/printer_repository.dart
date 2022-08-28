@@ -14,7 +14,7 @@ class PrinterRepository {
 
 	PrinterRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot);
 
-	Future<Null> enqueue(Client client, String reference) async {
+	Future<void> enqueue(Client client, String reference) async {
 		Response response;
 		try {
 			response = await client.put('$_apiRoot/printer/enqueue/$reference');

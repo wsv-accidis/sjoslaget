@@ -33,7 +33,7 @@ class AdminUserPage {
 
 	String get username => _clientFactory.authenticatedUser;
 
-	Future<Null> changePassword() async {
+	Future<void> changePassword() async {
 		error = null;
 
 		try {

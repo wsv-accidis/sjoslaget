@@ -1,6 +1,5 @@
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/model/booking_payment_model.dart';
-import 'package:quiver/strings.dart' as str show isEmpty;
 
 import 'json_field.dart';
 
@@ -29,6 +28,4 @@ class BookingOverviewItem extends BookingPaymentModel {
       json[NUMBER_OF_CABINS],
       json[IS_LOCKED],
       DateTime.parse(json[UPDATED]));
-
-  String get lunchFormatted => str.isEmpty(lunch) ? '' : '$lunch:00';
 }

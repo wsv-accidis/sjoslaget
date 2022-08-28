@@ -45,7 +45,7 @@ class BookingPage implements OnInit {
 
   bool get isCruiseLocked => null == cruise || cruise.isLocked;
 
-  Future<Null> doInit() async {
+  Future<void> doInit() async {
     try {
       final client = _clientFactory.getClient();
       cruise = await _cruiseRepository.getActiveCruise(client);
@@ -58,7 +58,7 @@ class BookingPage implements OnInit {
   }
 
   @override
-  Future<Null> ngOnInit() async {
+  Future<void> ngOnInit() async {
     try {
       await doInit();
     } on ExpirationException catch (e) {
@@ -68,12 +68,12 @@ class BookingPage implements OnInit {
     }
   }
 
-  Future<Null> submitDetails() async {
+  Future<void> submitDetails() async {
     if (!acceptToc) {
       return;
     }
     if (str.isEmpty(lunch)) {
-      // Vårkryssen doesn't use lunch so just set a dummy value
+      // Not all cruises use lunch so just set a dummy value
       lunch = '-';
     }
 
