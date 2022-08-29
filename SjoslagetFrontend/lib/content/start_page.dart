@@ -13,7 +13,7 @@ import 'content_routes.dart';
 @Component(
     selector: 'start-page',
     styleUrls: ['content_styles.css', 'start_page.css'],
-    templateUrl: 'start_page_teaser.html',
+    templateUrl: 'start_page.html',
     directives: <dynamic>[coreDirectives, routerDirectives, AvailabilityComponent],
     exports: [ContentRoutes])
 class StartPage implements OnInit, OnDestroy {
@@ -29,7 +29,7 @@ class StartPage implements OnInit, OnDestroy {
     Will things ever be the same again?
     It's the ...
    */
-  final Countdown _countdown = Countdown(DateTime(2022, 7, 31, 12));
+  final Countdown _countdown = Countdown(DateTime(2022, 8, 31, 12));
 
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
@@ -53,11 +53,9 @@ class StartPage implements OnInit, OnDestroy {
       // Safe to ignore as it just means we won't show the availability on the start page
     }
 
-	/*
     if (!cruiseIsUnlocked && !_countdown.isElapsed) {
       Timer(const Duration(milliseconds: COUNTDOWN_REFRESH_INTERVAL), _refreshCountdown);
     }
-	*/
   }
 
   @override
