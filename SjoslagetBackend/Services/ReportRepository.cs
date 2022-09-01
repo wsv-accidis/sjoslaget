@@ -26,7 +26,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<Report>("select * from [Report] where [CruiseId] = @CruiseId and [SubCruise] = @SubCruise order by [Date]",
-					new {Id = cruise.Id, SubCruise = subCruise});
+					new {CruiseId = cruise.Id, SubCruise = subCruise});
 				return result.ToArray();
 			}
 		}

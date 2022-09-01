@@ -28,7 +28,7 @@ namespace Accidis.Sjoslaget.WebService.Models
 
 		public static SubCruiseCode FromString(string s)
 		{
-			if(string.IsNullOrEmpty(s))
+			if(null == s)
 				throw new ArgumentNullException(nameof(s));
 
 			switch(s.ToUpperInvariant())

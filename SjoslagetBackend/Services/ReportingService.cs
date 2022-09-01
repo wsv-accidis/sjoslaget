@@ -36,7 +36,8 @@ namespace Accidis.Sjoslaget.WebService.Services
 				if(null == cruise || cruise.IsLocked)
 					return; // nothing to do
 
-				foreach(SubCruiseCode subCruise in new[] { SubCruiseCode.None, SubCruiseCode.First, SubCruiseCode.Second, SubCruiseCode.Both })
+				// TODO: Should check which subcruises actually exist for the current cruise instead of a hardcoded list
+				foreach(SubCruiseCode subCruise in new[] { SubCruiseCode.None, SubCruiseCode.First /*, SubCruiseCode.Second, SubCruiseCode.Both */ })
 				{
 					Report report = await CreateReport(cruise, subCruise);
 					await _reportRepository.CreateOrUpdateAsync(report);

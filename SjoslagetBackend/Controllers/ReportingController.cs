@@ -25,7 +25,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Current(string subCruise)
+		public async Task<IHttpActionResult> Current(string subCruise = "")
 		{
 			var cruise = await _cruiseRepository.GetActiveAsync();
 			if(null == cruise)
@@ -49,7 +49,7 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
-		public async Task<IHttpActionResult> Summary(string subCruise)
+		public async Task<IHttpActionResult> Summary(string subCruise = "")
 		{
 			var cruise = await _cruiseRepository.GetActiveAsync();
 			if(null == cruise)
