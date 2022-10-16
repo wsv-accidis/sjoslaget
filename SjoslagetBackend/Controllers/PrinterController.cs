@@ -33,8 +33,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 
 		bool PrinterHasTimedOut => !_lastPoll.HasValue || DateTime.UtcNow - _lastPoll.Value > PrinterQueueTimeout;
 
-		[Authorize(Roles = Roles.Admin)]
 		[HttpPut]
+		[Authorize(Roles = Roles.Admin)]
 		public async Task<IHttpActionResult> Enqueue(string reference)
 		{
 			BookingLabel label;
@@ -115,8 +115,18 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					Id = booking.Id,
 					Reference = booking.Reference,
 					FullName = string.Concat(booking.FirstName, ' ', booking.LastName),
-					SubCruise = booking.SubCruise.ToString()
+					SubCruise = booking.SubCruise.ToString(),
+					Lunch = booking.Lunch
 				};
+
+				var amountPaid = await db.QueryFirstOrDefaultAsync<decimal>("select sum([Amount]) from [BookingPayment] where [BookingId] = @Id", 
+					new { Id = booking.Id });
+				label.IsNotPaid = amountPaid < booking.TotalPrice;
+
+				var numberOfPax = await db.QueryFirstOrDefaultAsync<int>("select count(*) from [BookingPax] where [BookingCabinId] in " +
+																		 "(select [Id] from [BookingCabin] where [BookingId] = @Id)",
+					new { Id = booking.Id });
+				label.NumberOfPax = numberOfPax;
 
 				var cabinsQuery = await db.QueryAsync<NameCountPair>("select CT.[Name], COUNT(*) [Count] " +
 																	 "from [BookingCabin] BC " +
@@ -146,6 +156,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 			public string Reference { get; set; }
 			public string FullName { get; set; }
 			public string SubCruise { get; set; }
+			public string Lunch { get; set; }
+			public bool IsNotPaid { get; set; }
+			public int NumberOfPax { get; set; }
 			public NameCountPair[] Cabins { get; set; }
 			public NameCountPair[] Products { get; set; }
 		}
