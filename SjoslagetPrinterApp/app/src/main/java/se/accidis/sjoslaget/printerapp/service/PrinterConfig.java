@@ -71,13 +71,12 @@ public final class PrinterConfig {
         /*
          * These values are configured in the printer's flash using the
          * P-Touch Transfer Manager utility
+         *
+         * We ony support 62 mm continuous
          */
-        if (labelIndex == LabelInfo.QL700.W29H90.ordinal()) {
-            return 1; // 29 x 90 mm label
-        } else if (labelIndex == LabelInfo.QL700.W62.ordinal()) {
-            return 2; // 62 mm continuous monochrome
-        } else if (labelIndex == LabelInfo.QL700.W62RB.ordinal()) {
-            return 3; // 62 mm continuous red/black
+        if (labelIndex == LabelInfo.QL700.W62.ordinal()
+                || labelIndex == LabelInfo.QL700.W62RB.ordinal()) {
+            return 1;
         } else {
             throw new PrinterException("No supported labels in printer.", R.string.error_labels);
         }
