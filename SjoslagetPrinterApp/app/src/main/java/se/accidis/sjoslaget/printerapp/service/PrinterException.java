@@ -1,6 +1,6 @@
 package se.accidis.sjoslaget.printerapp.service;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 final class PrinterException extends Exception {
     private final int mResId;
