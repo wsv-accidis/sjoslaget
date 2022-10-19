@@ -13,7 +13,7 @@ import 'content_routes.dart';
 @Component(
     selector: 'start-page',
     styleUrls: ['content_styles.css', 'start_page.css'],
-    templateUrl: 'start_page.html',
+    templateUrl: 'start_page_teaser.html',
     directives: <dynamic>[coreDirectives, routerDirectives, AvailabilityComponent],
     exports: [ContentRoutes])
 class StartPage implements OnInit, OnDestroy {
