@@ -15,7 +15,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		readonly AllocationRepository _allocationRepository;
 		readonly BookingRepository _bookingRepository;
 		readonly EventRepository _eventRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(AllocationController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(AllocationController));
 
 		public AllocationController(AllocationRepository allocationRepository, BookingRepository bookingRepository, EventRepository eventRepository)
 		{

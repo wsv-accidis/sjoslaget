@@ -13,7 +13,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		readonly BookingCandidateRepository _candidateRepository;
 		readonly EventRepository _eventRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(QueueAdminController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(QueueAdminController));
 
 		public QueueAdminController(BookingCandidateRepository candidateRepository, EventRepository eventRepository)
 		{

@@ -13,7 +13,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(DayBookingsController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(DayBookingsController));
 
 		public DayBookingsController(EventRepository eventRepository, DayBookingRepository dayBookingRepository)
 		{

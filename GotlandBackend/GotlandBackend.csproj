@@ -191,6 +191,7 @@
     <Compile Include="Models\BookingAllocation.cs" />
     <Compile Include="Models\BookingCandidate.cs" />
     <Compile Include="Models\BookingCandidateResponse.cs" />
+    <Compile Include="Models\BookingCandidateReusedException.cs" />
     <Compile Include="Models\BookingException.cs" />
     <Compile Include="Models\BookingListItem.cs" />
     <Compile Include="Models\BookingPax.cs" />

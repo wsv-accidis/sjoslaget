@@ -7,6 +7,7 @@ using Accidis.WebServices.Db;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
 using Accidis.WebServices.Web;
+using DryIoc;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
@@ -16,7 +17,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		readonly BookingRepository _bookingRepository;
 		readonly BookingCandidateRepository _candidateRepository;
 		readonly EventRepository _eventRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(QueueController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(QueueController));
 
 		public QueueController(BookingRepository bookingRepository, BookingCandidateRepository candidateRepository, EventRepository eventRepository)
 		{
@@ -42,7 +43,7 @@ namespace Accidis.Gotland.WebService.Controllers
 
 				Guid candidateId = ParseGuid(c);
 				int placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
-				return Ok(new {PlaceInQueue = placeInQueue});
+				return Ok(new { PlaceInQueue = placeInQueue });
 			}
 			catch(NotFoundException)
 			{
@@ -165,15 +166,21 @@ namespace Accidis.Gotland.WebService.Controllers
 				}
 
 				BookingResult result = await _bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
-				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id, placeInQueue);
+				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id,
+					placeInQueue);
 
 				await SendBookingCreatedMailAsync(evnt, candidate, result);
 				return Ok(result);
 			}
+			catch(BookingCandidateReusedException ex)
+			{
+				// If a booking already exists with this candidate, return it instead of failing the request.
+				// This allows recovery from the failure state where the 
+				return Ok(new BookingResult { Reference = ex.ExistingReference });
+			}
 			catch(BookingException)
 			{
-				// An attempt was made to create a second booking from the same candidate
-				return Conflict();
+				return BadRequest();
 			}
 			catch(FormatException)
 			{

@@ -12,7 +12,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	public sealed class EventController : ApiController
 	{
 		readonly EventRepository _eventRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(EventController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(EventController));
 
 		public EventController(EventRepository eventRepository)
 		{

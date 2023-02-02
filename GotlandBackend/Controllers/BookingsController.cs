@@ -15,7 +15,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		readonly BookingRepository _bookingRepository;
 		readonly EventRepository _eventRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(BookingsController));
 		readonly AecPaymentRepository _paymentRepository;
 
 		public BookingsController(BookingRepository bookingRepository, EventRepository eventRepository, AecPaymentRepository paymentRepository)

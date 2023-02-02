@@ -15,7 +15,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	public sealed class PaymentsController : ApiController
 	{
 		readonly BookingRepository _bookingRepository;
-		readonly Logger _log = LogManager.GetLogger(typeof(BookingsController).Name);
+		readonly Logger _log = LogManager.GetLogger(nameof(BookingsController));
 		readonly AecPaymentsController<Booking> _paymentsController;
 
 		public PaymentsController(BookingRepository bookingRepository, AecPaymentsController<Booking> paymentsController)

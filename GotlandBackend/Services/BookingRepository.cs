@@ -111,10 +111,12 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
-				if(0 != await db.ExecuteScalarAsync<int>("select count(*) from [Booking] where [CandidateId] = @Id", new {Id = candidate.Id}))
+				var existingRef = await db.ExecuteScalarAsync<string>("select [Reference] from [Booking] where [CandidateId] = @Id",
+						new { Id = candidate.Id });
+				if(!string.IsNullOrEmpty(existingRef))
 				{
-					_log.Warn($"An attempt was made to create a second booking from the same candidate = {candidate.Id}");
-					throw new BookingException("A booking has already been created from this candidate.");
+					_log.Warn($"An attempt was made to create a second booking from the same candidate = {candidate.Id}, existing reference = {existingRef}");
+					throw new BookingCandidateReusedException(existingRef);
 				}
 
 				booking = Booking.FromCandidate(candidate, placeInQueue, evnt.Id, _credentialsGenerator.GenerateBookingReference());

@@ -5,7 +5,9 @@ using Accidis.Gotland.Test.Db;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
+using Dapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -105,6 +107,77 @@ namespace Accidis.Gotland.Test.Services
 			Assert.AreEqual(placeInQueue, booking.QueueNo);
 			Assert.AreEqual(String.Empty, booking.SpecialRequest);
 			Assert.AreEqual(0.0m, booking.TotalPrice);
+		}
+
+		[TestMethod]
+		public async Task GivenCandidate_WhenTryToCreateBookingTwice_ShouldReturnOriginalBooking()
+		{
+			var bookingRepository = GetBookingRepositoryForTest();
+			var candidateRepository = BookingCandidateRepositoryTest.CreateBookingCandidateRepositoryForTest();
+			var evnt = await EventRepositoryTest.GetEventForTestAsync();
+			var candidate = BookingCandidateRepositoryTest.GetBookingCandidateForTest();
+			candidate.Id = await candidateRepository.CreateAsync(candidate);
+
+			var originalResult = await bookingRepository.CreateFromCandidateAsync(evnt, candidate, 1);
+			Assert.IsFalse(string.IsNullOrEmpty(originalResult.Reference));
+			Assert.IsFalse(string.IsNullOrEmpty(originalResult.Password));
+
+			bool expectedExceptionThrown = false;
+			try
+			{
+				await bookingRepository.CreateFromCandidateAsync(evnt, candidate, 1);
+			}
+			catch (BookingCandidateReusedException ex)
+			{
+				expectedExceptionThrown = true;
+				Assert.AreEqual(originalResult.Reference, ex.ExistingReference);
+			}
+			finally
+			{
+				Assert.IsTrue(expectedExceptionThrown);
+			}
+		}
+
+		[TestMethod]
+		public async Task GivenManyCandidates_WhenCreatingBookings_ShouldAllSucceed()
+		{
+			var candidateRepository = BookingCandidateRepositoryTest.CreateBookingCandidateRepositoryForTest();
+
+			const int numberOfCandidates = 500;
+			var candidates = new List<Guid>();
+
+			// Create hundreds of candidates
+			for (int i = 0; i < numberOfCandidates; i++)
+			{
+				var candidate = BookingCandidateRepositoryTest.GetBookingCandidateForTest();
+				candidate.FirstName = "Candidate " + i;
+				var id = await candidateRepository.CreateAsync(candidate);
+				await candidateRepository.EnqueueAsync(id);
+				candidates.Add(id);
+			}
+
+			var evnt = await EventRepositoryTest.GetEventForTestAsync();
+			var bookingRepository = GetBookingRepositoryForTest();
+			var tasks = new List<Task>();
+
+			// Create a booking from each candidate
+			using (var db = DbUtil.Open())
+			{
+				foreach (var candidateId in candidates)
+				{
+					var candidate = await candidateRepository.FindByIdAsync(db, candidateId);
+					var placeInQueue = await candidateRepository.FindPlaceInQueueAsync(db, candidateId);
+					tasks.Add(bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue));
+				}
+			}
+
+			await Task.WhenAll(tasks);
+
+			using (var db = DbUtil.Open())
+			{
+				int numberOfBookings = await db.QueryFirstAsync<int>("select count(*) from [Booking]");
+				Assert.AreEqual(numberOfCandidates, numberOfBookings, "Not every candidate yielded a booking.");
+			}
 		}
 
 		[TestInitialize]
