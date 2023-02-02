@@ -19,7 +19,7 @@ namespace Accidis.Gotland.WebService.Content {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Emails {
@@ -72,10 +72,10 @@ namespace Accidis.Gotland.WebService.Content {
         ///för att visa din bokning och hur mycket du ska betala. Du kommer
         ///på samma sida att kunna se när betalningen kommit in.
         ///
-        ///Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
+        ///Vårt Bankgiro är 299-5272 och betalningsmottagare är HZ Event &amp; Consulting AB.
         ///Betala så snart som möjligt!
         ///
-        ///VIKTIGT: Du måste ange bokningsreferensen som med [rest of string was truncated]&quot;;.
+        ///VIKTIGT: Du måste ange bokningsrefere [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BookingConfirmedEmail {
             get {

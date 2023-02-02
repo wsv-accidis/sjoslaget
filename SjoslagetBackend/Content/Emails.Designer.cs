@@ -19,7 +19,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Emails {
@@ -73,8 +73,7 @@ namespace Accidis.Sjoslaget.WebService.Content {
         ///Gå till sjoslaget.se/bokning och mata in referens samt PIN-kod för att visa
         ///din bokning och se det totala beloppet att betala.
         ///
-        ///Vårt Bankgiro är 299-5272 och betalningsmottagare är OMO Media AB.
-        ///Betala så [rest of string was truncated]&quot;;.
+        ///Vårt Bankgiro är 299-5272 och betalningsmottagare är HZ Event &amp; Consulting AB [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BookingCreatedEmail {
             get {
