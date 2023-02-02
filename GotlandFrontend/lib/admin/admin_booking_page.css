@@ -23,3 +23,13 @@
 .details {
 	margin-bottom: 20px;
 }
+
+.reset-pin-form {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.reset-pin-form .reset-pin-result span {
+	font-size: larger;
+	font-weight: bold;
+}

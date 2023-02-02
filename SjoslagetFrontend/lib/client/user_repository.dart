@@ -11,23 +11,5 @@ import 'client_factory.dart' show SJOSLAGET_API_ROOT;
 
 @Injectable()
 class UserRepository extends UserRepositoryBase {
-	final String _apiRoot;
-
-	UserRepository(@Inject(SJOSLAGET_API_ROOT) this._apiRoot) : super(_apiRoot);
-
-	Future<String> resetPinCode(Client client, String reference) async {
-		final headers = ClientUtil.createJsonHeaders();
-		final source = json.encode({REFERENCE: reference});
-
-		Response response;
-		try {
-			response = await client.post('$_apiRoot/users/resetPinCode', headers: headers, body: source);
-		} catch (e) {
-			throw IOException.fromException(e);
-		}
-
-		HttpStatus.throwIfNotSuccessful(response);
-		final Map body = json.decode(response.body);
-		return body[PASSWORD];
-	}
+	UserRepository(@Inject(SJOSLAGET_API_ROOT) String apiRoot) : super(apiRoot);
 }

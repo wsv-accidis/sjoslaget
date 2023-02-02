@@ -13,6 +13,7 @@ import 'package:quiver/strings.dart' show isNotEmpty;
 import '../client/booking_repository.dart';
 import '../client/client_factory.dart';
 import '../client/event_repository.dart';
+import '../client/user_repository.dart';
 import '../model/booking_pax_view.dart';
 import '../model/booking_source.dart';
 import '../model/cabin_class.dart';
@@ -38,6 +39,7 @@ class AdminBookingPage implements OnActivate {
 	final EventRepository _eventRepository;
 	final Router _router;
 	final TempCredentialsStore _tempCredentialsStore;
+	final UserRepository _userRepository;
 
 	@ViewChild('allocation')
 	AllocationComponent allocation;
@@ -57,7 +59,9 @@ class AdminBookingPage implements OnActivate {
 	List<CabinClass> cabinClasses;
 	bool isSaving = false;
 	String loadingError;
+	String newPinCode;
 	int noOfPax = 0;
+	String resetPinCodeError;
 
 	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
 
@@ -75,11 +79,15 @@ class AdminBookingPage implements OnActivate {
 
 	bool get hasPax => numberOfPax > 0;
 
+	bool get hasResetPinCode => isNotEmpty(newPinCode);
+
+	bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
+
 	bool get isLoading => null == booking;
 
 	int get numberOfPax => null != booking ? booking.pax.length : 0;
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
+	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore, this._userRepository);
 
 	void addEmptyPax() {
 		pax.addEmptyPax();
@@ -143,6 +151,27 @@ class AdminBookingPage implements OnActivate {
 		if (null != bookingResult && bookingResult.reference != reference) {
 			bookingResult = null;
 			_tempCredentialsStore.clear();
+		}
+	}
+
+	Future<void> resetPinCode() async {
+		if (isSaving)
+			return;
+
+		isSaving = true;
+		resetPinCodeError = null;
+
+		try {
+			final client = _clientFactory.getClient();
+			final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
+
+			if (isNotEmpty(pinCode))
+				newPinCode = pinCode;
+		} catch (e) {
+			print('Failed to reset PIN code: ${e.toString()}');
+			resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
+		} finally {
+			isSaving = false;
 		}
 	}
 

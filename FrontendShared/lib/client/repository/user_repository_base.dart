@@ -28,4 +28,20 @@ class UserRepositoryBase {
 
 		HttpStatus.throwIfNotSuccessful(response);
 	}
+
+  Future<String> resetPinCode(Client client, String reference) async {
+    final headers = ClientUtil.createJsonHeaders();
+    final source = json.encode({REFERENCE: reference});
+
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/users/resetPinCode', headers: headers, body: source);
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+    final Map body = json.decode(response.body);
+    return body[PASSWORD];
+  }
 }
