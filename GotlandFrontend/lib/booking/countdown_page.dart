@@ -6,6 +6,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/model.dart';
+import 'package:quiver/strings.dart' show isEmpty;
 
 import '../booking/booking_routes.dart';
 import '../client/booking_exception.dart';
@@ -30,7 +31,7 @@ class CountdownPage implements OnInit, OnDestroy {
   static const int MAX_SUBMIT_ATTEMPTS = 3;
   static const int PING_INTERVAL = 60000;
   static const int RANDOM_DELAY_MIN = 5000;
-  static const int RANDOM_DELAY_MAX = 10000;
+  static const int RANDOM_DELAY_MAX = 30000;
   static const int TICK_INTERVAL = 100;
 
   static const List<String> BUTTON_TEXT = <String>[
@@ -102,6 +103,7 @@ class CountdownPage implements OnInit, OnDestroy {
 
   String buttonText = '';
   String countdownFormatted;
+  String existingBookingRef = '';
   bool hasBookingError = false;
   bool hasError = false;
   bool waitingForServer = false;
@@ -148,17 +150,20 @@ class CountdownPage implements OnInit, OnDestroy {
       final client = _clientFactory.getClient();
       _bookingResult = await _queueRepository.toBooking(client, _countdown.candidateId);
       _clearErrors();
-    } on BookingException catch (e) {
-      // If we end up here the booking was created on the backend already, so everything is OK after all
-      print('Conflict when creating booking: ${e.toString()}');
-      hasBookingError = true;
     } catch (e) {
       // We have a queue position but failed to create a booking
       print('Failed to create booking: ${e.toString()}');
       hasError = true;
     }
 
-    if (null == _bookingResult) return;
+    if (null == _bookingResult)
+		return;
+	if (isEmpty(_bookingResult.password)) {
+		print('Booking already exists with ref: ${_bookingResult.reference}.');
+		hasBookingError = true;
+		existingBookingRef = _bookingResult.reference;
+		return;
+	}
 
     _tempCredentialsStore.save(_bookingResult);
 
@@ -166,6 +171,7 @@ class CountdownPage implements OnInit, OnDestroy {
       await _clientFactory.authenticate(_bookingResult.reference, _bookingResult.password);
     } catch (e) {
       print('Booking was created but failed to authenticate: ${e.toString()}');
+	  hasError = true;
       return;
     }
 

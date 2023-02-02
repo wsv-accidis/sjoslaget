@@ -26,7 +26,8 @@
 	Hoppsan! Någonting gick snett. Det är bäst att du försöker igen.
 </div>
 <div *ngIf="hasBookingError">
-	Bokningen har redan skapats. Du bör inom några minuter få ett e-mail med bokningsuppgifter.
-	Om inte, hör av dig så ska vi lösa problemet.
+	Bokningen kan inte laddas just nu på grund av överbelastning, men du behåller din plats i kön!<br />
+	Kolla den angivna mailen, om du har fått ditt bekräftelsemail så kan du <a [routerLink]="ContentRoutes.booking.toUrl()">logga in här</a> för att öppna din bokning.<br />
+	Om inget mail kommer inom några minuter, hör av dig till oss så ska vi hjälpa dig. Ange bokningsreferens <strong>{{ existingBookingRef }}</strong>.
 </div>
 </p>

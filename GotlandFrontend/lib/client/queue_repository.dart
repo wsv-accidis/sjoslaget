@@ -79,8 +79,8 @@ class QueueRepository {
 
 		if (HttpStatus.OK == response.statusCode)
 			return BookingResult.fromJson(response.body);
-		else if (HttpStatus.CONFLICT == response.statusCode)
-			// There is already a booking for this candidate
+		else if (HttpStatus.BAD_REQUEST == response.statusCode)
+			// Something went wrong when creating the booking
 			throw BookingException();
 		else
 			throw IOException.fromResponse(response);
