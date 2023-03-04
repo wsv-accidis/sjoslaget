@@ -4,6 +4,8 @@
 img.swish {
 	float: right;
 	margin-left: 30px;
+	border: 0;
+	box-shadow: none;
 }
 h3 {
 	margin-bottom: 0;
