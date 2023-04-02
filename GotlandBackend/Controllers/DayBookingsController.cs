@@ -11,6 +11,9 @@ namespace Accidis.Gotland.WebService.Controllers
 {
 	public sealed class DayBookingsController : ApiController
 	{
+		// TODO: Calculate this dynamically
+		private const int MaxDayBookings2023 = 181;
+
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
 		readonly Logger _log = LogManager.GetLogger(nameof(DayBookingsController));
@@ -29,6 +32,10 @@ namespace Accidis.Gotland.WebService.Controllers
 				Event evnt = await _eventRepository.GetActiveAsync();
 				if (null == evnt)
 					return NotFound();
+
+				int count = await _dayBookingRepository.GetCount(evnt);
+				if(count >= MaxDayBookings2023)
+					return Conflict();
 
 				string reference = await _dayBookingRepository.CreateAsync(evnt, booking);
 				_log.Info("Created day booking {0}.", reference);

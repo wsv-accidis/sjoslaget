@@ -59,8 +59,12 @@
 		Bokningen för <strong>{{ lastSavedName }}</strong> skapades. Välkommen till AG!
 	</p>
 
+	<p class="super-important" *ngIf="hasSoldOutError">
+		Tyvärr är dagbiljetterna slutsålda för i år. Kontakta oss gärna om du har frågor.
+	</p>
+
 	<p class="super-important" *ngIf="hasError">
-		Någonting gick fel när bokningen skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta ansvarig för sidan.
+		Någonting gick fel när bokningen skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta oss.
 	</p>
 </div>
 

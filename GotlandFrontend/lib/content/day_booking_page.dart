@@ -7,6 +7,7 @@ import 'package:quiver/strings.dart' as str show isNotBlank;
 import '../admin/solo_component.dart';
 import '../client/client_factory.dart';
 import '../client/day_booking_repository.dart';
+import '../client/sold_out_exception.dart';
 import '../model/day_booking_source.dart';
 import '../model/day_booking_type.dart';
 import '../widgets/components.dart';
@@ -33,6 +34,7 @@ class DayBookingPage implements OnInit {
   DayBookingType _typeMember;
   DayBookingType _typeNonMember;
   bool hasError = false;
+  bool hasSoldOutError = false;
   bool isSaving = false;
   String lastSavedName;
   bool memberOfRindi;
@@ -72,18 +74,21 @@ class DayBookingPage implements OnInit {
 
   Future<void> submit() async {
     hasError = false;
+    hasSoldOutError = false;
     isSaving = true;
 
     try {
       final client = _clientFactory.getClient();
-
       final source = DayBookingSource.fromSoloView(booking.view, type.id);
       await _dayBookingRepository.createBooking(client, source);
+    } on SoldOutException catch (ignored) {
+      print('Sold out trying to save day booking.');
+      hasSoldOutError = true;
     } catch (e) {
       print('Failed to save day booking: ${e.toString()}');
       hasError = true;
     } finally {
-      if (!hasError) {
+      if (!hasError && !hasSoldOutError) {
         lastSavedName = '${booking.view.firstName} ${booking.view.lastName}';
         booking.clear();
       }

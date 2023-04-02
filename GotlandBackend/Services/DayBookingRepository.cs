@@ -21,11 +21,11 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			SoloBookingSource.Validate(booking);
 
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 			{
 				string reference = _credentialsGenerator.GenerateDayBookingReference();
 				await db.ExecuteScalarAsync<Guid>("insert into [DayBooking] ([EventId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Gender], [Dob], [Food], [TypeId]) " +
-												  "values (@EventId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Gender, @Dob, @Food, @TypeId)",
+				                                  "values (@EventId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Gender, @Dob, @Food, @TypeId)",
 					new
 					{
 						EventId = evnt.Id,
@@ -47,13 +47,13 @@ namespace Accidis.Gotland.WebService.Services
 
 		public async Task DeleteAsync(DayBooking booking)
 		{
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("delete from [DayBooking] where [Id] = @Id", new { Id = booking.Id });
 		}
 
 		public async Task<DayBooking> FindByReferenceAsync(string reference)
 		{
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 				return await FindByReferenceAsync(db, reference);
 		}
 
@@ -63,9 +63,15 @@ namespace Accidis.Gotland.WebService.Services
 			return result.FirstOrDefault();
 		}
 
+		public async Task<int> GetCount(Event evnt)
+		{
+			using(var db = DbUtil.Open())
+				return await db.ExecuteScalarAsync<int>("select count(*) from [DayBooking] where [EventId] = @EventId", new { EventId = evnt.Id });
+		}
+
 		public async Task<DayBooking[]> GetListAsync(Event evnt)
 		{
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<DayBooking>("select * from [DayBooking] where [EventId] = @EventId order by [Created] desc",
 					new { EventId = evnt.Id });
@@ -75,7 +81,7 @@ namespace Accidis.Gotland.WebService.Services
 
 		public async Task<DayBookingType[]> GetTypesAsync()
 		{
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<DayBookingType>("select * from [DayBookingType] order by [Order]");
 				return result.ToArray();
@@ -86,13 +92,14 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			SoloBookingSource.Validate(source);
 
-			using (var db = DbUtil.Open())
+			using(var db = DbUtil.Open())
 			{
 				var booking = await FindByReferenceAsync(db, source.Reference);
-				if (null == booking || booking.EventId != evnt.Id)
+				if(null == booking || booking.EventId != evnt.Id)
 					throw new BookingException($"Day booking with reference {source.Reference} not found or not in active event.");
 
-				await db.ExecuteAsync("update [DayBooking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Gender] = @Gender, [Dob] = @Dob, [Food] = @Food, [TypeId] = @TypeId, [PaymentConfirmed] = @PaymentConfirmed, [Updated] = sysdatetime() where [Id] = @Id",
+				await db.ExecuteAsync(
+					"update [DayBooking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Gender] = @Gender, [Dob] = @Dob, [Food] = @Food, [TypeId] = @TypeId, [PaymentConfirmed] = @PaymentConfirmed, [Updated] = sysdatetime() where [Id] = @Id",
 					new
 					{
 						Id = booking.Id,

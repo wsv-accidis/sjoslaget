@@ -9,6 +9,7 @@ import '../model/day_booking_source.dart';
 import '../model/day_booking_type.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
+import 'sold_out_exception.dart';
 
 @Injectable()
 class DayBookingRepository {
@@ -79,6 +80,8 @@ class DayBookingRepository {
       return;
     else if (HttpStatus.BAD_REQUEST == response.statusCode)
       throw BookingException();
+	else if (HttpStatus.CONFLICT == response.statusCode)
+	  throw SoldOutException();
     else
       throw IOException.fromResponse(response);
   }
