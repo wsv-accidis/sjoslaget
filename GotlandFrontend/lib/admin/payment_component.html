@@ -1,9 +1,11 @@
 <p *ngIf="!hasPayment && !hasDiscount">
 	Bokningens totala pris är <span>{{ priceWithDiscountFormatted }}</span>.
+	När betalningen har registrerats kommer den att synas här. Tänk på att det kan ta några dagar, eftersom alla inbetalningar prickas av manuellt.
 </p>
 
 <p *ngIf="!hasPayment && hasDiscount">
 	Bokningens totala pris är <span>{{ priceWithDiscountFormatted }}</span>. <span>{{ discountPercent }}%</span> rabatt (<span>{{ discountValueFormatted }}</span>) är tillämpad.
+	När betalningen har registrerats kommer den att synas här. Tänk på att det kan ta några dagar, eftersom alla inbetalningar prickas av manuellt.
 </p>
 
 <p *ngIf="hasPayment && !hasDiscount">

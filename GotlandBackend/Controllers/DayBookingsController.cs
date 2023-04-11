@@ -12,7 +12,8 @@ namespace Accidis.Gotland.WebService.Controllers
 	public sealed class DayBookingsController : ApiController
 	{
 		// TODO: Calculate this dynamically
-		private const int MaxDayBookings2023 = 181;
+		// TODO: Also the corresponding constant PaidCapacity.maxCapacity in the frontend
+		private const int MaxDayBookings2023 = 201;
 
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
