@@ -13,7 +13,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		// TODO: Calculate this dynamically
 		// TODO: Also the corresponding constant PaidCapacity.maxCapacity in the frontend
-		private const int MaxDayBookings2023 = 201;
+		private const int MaxDayBookings2023 = 221;
 
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
