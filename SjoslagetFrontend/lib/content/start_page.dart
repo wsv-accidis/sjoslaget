@@ -13,22 +13,13 @@ import 'content_routes.dart';
 @Component(
     selector: 'start-page',
     styleUrls: ['content_styles.css', 'start_page.css'],
-    templateUrl: 'start_page_teaser.html',
+    templateUrl: 'start_page.html',
     directives: <dynamic>[coreDirectives, routerDirectives, AvailabilityComponent],
     exports: [ContentRoutes])
 class StartPage implements OnInit, OnDestroy {
   static const int COUNTDOWN_REFRESH_INTERVAL = 100;
 
-  /* 
-    We're leavin' together
-    But still it's farewell
-    And maybe we'll come back
-    To Earth, who can tell?
-    I guess there is no one to blame
-    We're leaving ground (leaving ground)
-    Will things ever be the same again?
-    It's the ...
-   */
+  // Not used for 2023
   final Countdown _countdown = Countdown(DateTime(2022, 8, 31, 12));
 
   final ClientFactory _clientFactory;
