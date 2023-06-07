@@ -119,9 +119,9 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 					Lunch = booking.Lunch
 				};
 
-				var amountPaid = await db.QueryFirstOrDefaultAsync<decimal>("select sum([Amount]) from [BookingPayment] where [BookingId] = @Id", 
+				var amountPaid = await db.QueryFirstOrDefaultAsync<decimal?>("select sum([Amount]) from [BookingPayment] where [BookingId] = @Id", 
 					new { Id = booking.Id });
-				label.IsNotPaid = amountPaid < booking.TotalPrice;
+				label.IsNotPaid = amountPaid.GetValueOrDefault(0m) < booking.TotalPrice;
 
 				var numberOfPax = await db.QueryFirstOrDefaultAsync<int>("select count(*) from [BookingPax] where [BookingCabinId] in " +
 																		 "(select [Id] from [BookingCabin] where [BookingId] = @Id)",
