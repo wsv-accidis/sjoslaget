@@ -2,6 +2,9 @@
 	<spinner-widget *ngIf="!isLoaded"></spinner-widget>
 
 	<div *ngIf="isLoaded">
+		<a class="print-button" (click)="printBooking()" href="javascript:" *ngIf="printerIsAvailable">
+			<material-icon icon="print"></material-icon>
+		</a>
 		<a [routerLink]="AdminRoutes.bookingUrl(booking.reference)">
 			<h1 class="mono">{{ booking.reference }}</h1>
 		</a>

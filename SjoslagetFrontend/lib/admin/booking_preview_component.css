@@ -29,6 +29,10 @@ div.popup-container h1 {
 	margin-bottom: 10px;
 }
 
+a.print-button {
+	float: right;
+}
+
 ul {
 	list-style-type: none;
 	margin: 0;

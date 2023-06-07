@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Sjoslaget/client/printer_repository.dart';
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_router/angular_router.dart';
@@ -28,6 +29,7 @@ class BookingPreviewComponentPopup implements OnInit {
   final BookingRepository _bookingRepository;
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
+  final PrinterRepository _printerRepository;
 
   List<CruiseCabin> _cabins;
   List<CruiseProduct> _products;
@@ -36,6 +38,7 @@ class BookingPreviewComponentPopup implements OnInit {
   BookingOverviewItem bookingItem;
 
   BookingSource booking;
+  bool printerIsAvailable;
 
   bool get hasInternalNotes => null != booking && isNotEmpty(booking.internalNotes);
 
@@ -43,7 +46,7 @@ class BookingPreviewComponentPopup implements OnInit {
 
   bool get isLoaded => null != booking;
 
-  BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository);
+  BookingPreviewComponentPopup(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._printerRepository);
 
   List<SummaryView> get cabinSummary {
     final result = <SummaryView>[];
@@ -86,6 +89,7 @@ class BookingPreviewComponentPopup implements OnInit {
       _cabins = await _cruiseRepository.getActiveCruiseCabins(client);
       _products = await _cruiseRepository.getActiveCruiseProducts(client);
       booking = await _bookingRepository.getBooking(client, bookingItem.reference);
+	  printerIsAvailable = await _printerRepository.isAvailable(client);
     } catch (e) {
       print('Failed to load booking: ${e.toString()}');
       // Just ignore this here, we will be stuck in the loading state
@@ -93,6 +97,11 @@ class BookingPreviewComponentPopup implements OnInit {
   }
 
   String formatSubCruise(String code) => SubCruise.codeToLabel(code);
+
+  Future<void> printBooking() async {
+	  final client = _clientFactory.getClient();
+	  await _printerRepository.enqueue(client, booking.reference);
+  }
 }
 
 @Component(
