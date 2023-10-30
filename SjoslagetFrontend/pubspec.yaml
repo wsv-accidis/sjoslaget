@@ -16,6 +16,7 @@ dependencies:
   decimal:
   frontend_shared:
     path: ../FrontendShared
+  meta: <=1.9.1
   oauth2:
     git:
       url: https://github.com/wsv-accidis/oauth2.git

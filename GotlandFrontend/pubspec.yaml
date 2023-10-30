@@ -12,6 +12,7 @@ dependencies:
   angular_router: ^2.0.0
   frontend_shared:
     path: ../FrontendShared
+  meta: <=1.9.1
   quiver: '>=2.0.0 <3.0.0'
 
 dev_dependencies:
