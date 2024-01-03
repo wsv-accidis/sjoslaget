@@ -1,0 +1,28 @@
+<h1>
+	Exportera
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<p>
+	Här exporterar du alla bokningar i Microsoft Excel-format.
+</p>
+
+<div style="margin-top: 20px">
+	<material-button class="control-blue"
+					 [disabled]="isDownloading"
+					 raised
+					 (trigger)="doExportBookings()">
+		Ladda ned bokningar
+	</material-button>
+
+	<material-button class="control-blue"
+					 [disabled]="isDownloading"
+					 raised
+					 (trigger)="doExportDayBookings()">
+		Ladda ned dagbiljetter
+	</material-button>
+</div>

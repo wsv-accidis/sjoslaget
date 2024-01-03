@@ -17,6 +17,7 @@ import 'admin_alloc_list_page.template.dart';
 import 'admin_booking_list_page.template.dart';
 import 'admin_booking_page.template.dart';
 import 'admin_dashboard_page.template.dart';
+import 'admin_export_page.template.dart';
 import 'admin_day_booking_list_page.template.dart';
 import 'admin_day_booking_page.template.dart';
 import 'admin_login_page.template.dart';
@@ -52,6 +53,7 @@ class AdminComponent {
 		RouteDefinition(routePath: AdminRoutes.dashboard, component: AdminDashboardPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.dayBooking, component: AdminDayBookingPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.dayBookingList, component: AdminDayBookingListPageNgFactory),
+		RouteDefinition(routePath: AdminRoutes.export, component: AdminExportPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.login, component: AdminLoginPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.paxList, component: AdminPaxListPageNgFactory),
 		RouteDefinition(routePath: AdminRoutes.user, component: AdminUserPageNgFactory),
