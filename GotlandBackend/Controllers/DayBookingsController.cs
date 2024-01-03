@@ -25,6 +25,34 @@ namespace Accidis.Gotland.WebService.Controllers
 			_dayBookingRepository = dayBookingRepository;
 		}
 
+		[Authorize(Roles = Roles.Admin)]
+		[HttpPut]
+		public async Task<IHttpActionResult> Confirm(string reference)
+		{
+			try
+			{
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				var booking = await _dayBookingRepository.FindByReferenceAsync(reference);
+				if(null == booking)
+					return NotFound();
+
+				await SendDayBookingConfirmedMailAsync(evnt, booking);
+				await _dayBookingRepository.UpdateConfirmationSentAsync(booking);
+
+				_log.Info("Sent confirmation for day booking {0}.", booking.Reference);
+
+				return Ok();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while sending a confirmation e-mail.");
+				throw;
+			}
+		}
+
 		[HttpPost]
 		public async Task<IHttpActionResult> Create(DayBookingSource booking)
 		{
@@ -148,6 +176,19 @@ namespace Accidis.Gotland.WebService.Controllers
 			{
 				_log.Error(ex, "An unexpected exception occurred while updating the day booking.");
 				throw;
+			}
+		}
+
+		async Task SendDayBookingConfirmedMailAsync(Event evnt, DayBooking booking)
+		{
+			try
+			{
+				using(var emailSender = new EmailSender())
+					await emailSender.SendDayBookingConfirmedMailAsync(evnt.Name, booking.Email, booking.Reference);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "Failed to send e-mail on confirmed day booking.");
 			}
 		}
 	}

@@ -17,6 +17,17 @@ class DayBookingRepository {
 
   DayBookingRepository(@Inject(GOTLAND_API_ROOT) this._apiRoot);
 
+  Future<void> confirmBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.put('$_apiRoot/daybookings/confirm/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+  }
+
   Future<void> deleteBooking(Client client, String reference) async {
     Response response;
     try {
@@ -80,8 +91,8 @@ class DayBookingRepository {
       return;
     else if (HttpStatus.BAD_REQUEST == response.statusCode)
       throw BookingException();
-	else if (HttpStatus.CONFLICT == response.statusCode)
-	  throw SoldOutException();
+    else if (HttpStatus.CONFLICT == response.statusCode)
+      throw SoldOutException();
     else
       throw IOException.fromResponse(response);
   }

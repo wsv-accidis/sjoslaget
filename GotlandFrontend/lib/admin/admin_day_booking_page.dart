@@ -5,6 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:frontend_shared/util.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
 import 'package:frontend_shared/widget/modal_dialog.dart';
 
@@ -51,7 +52,16 @@ class AdminDayBookingPage implements OnActivate {
   String loadingError;
   SelectionOptions<DayBookingType> typeOptions;
 
+  bool get canSendConfirmation => booking.paymentConfirmed && null == booking.confirmationSent;
+
   bool get canSubmit => booking.isValid && !isSaving;
+
+  String get confirmationSentMessage {
+    if (!booking.paymentConfirmed) return 'Biljetten är inte betalad ännu';
+    return null != booking.confirmationSent
+        ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
+        : 'Bekräftelse inte skickad';
+  }
 
   SelectionOptions<String> get foodOptions => Food.getOptions();
 
@@ -64,6 +74,22 @@ class AdminDayBookingPage implements OnActivate {
   bool get isLoading => null == booking || null == types;
 
   AdminDayBookingPage(this._bookingValidator, this._dayBookingRepository, this._clientFactory, this._router);
+
+  Future<void> confirmBooking() async {
+    if (isSaving) return;
+
+    isSaving = true;
+
+    try {
+      final client = _clientFactory.getClient();
+      await _dayBookingRepository.confirmBooking(client, booking.reference);
+      booking.confirmationSent = DateTime.now();
+    } catch (e) {
+      print('Failed to confirm day booking: ${e.toString()}');
+    } finally {
+      isSaving = false;
+    }
+  }
 
   Future<void> deleteBooking() async {
     if (isSaving) return;

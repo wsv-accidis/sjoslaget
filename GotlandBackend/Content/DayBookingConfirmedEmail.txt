@@ -1,0 +1,21 @@
+Hej!
+
+Vi har tagit emot betalning för din dagbiljett med referens {BOOKING_REF}
+till {EVENT_NAME}.
+
+Du hämtar ditt deltagararmband i stabsstugan vid ankomst. Ta med dig någon
+form av legitimation och bevis på medlemskap i Rindi om du är medlem.
+
+Varmt välkommen!
+
+------------------------------------------------------------------------------
+
+Det här är ett automatiskt genererat meddelande som du får därför att den
+här e-postadressen har använts i en bokning till {EVENT_NAME}. Det här är
+inte spam, någon (antagligen du) har bett om att få det här mailet skickat
+till den här e-postadressen.
+
+Om du inte har gjort någon bokning ber vi dig snarast kontakta
+oss på info@absolutgotland.se så att vi kan avhjälpa problemet.
+
+Besök absolutgotland.se för mer information om vårt evenemang.

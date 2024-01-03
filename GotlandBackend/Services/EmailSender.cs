@@ -11,6 +11,17 @@ namespace Accidis.Gotland.WebService.Services
 		const string BookingRefKey = "{BOOKING_REF}";
 		const string PinCodeKey = "{PIN_CODE}";
 
+		public async Task SendDayBookingConfirmedMailAsync(string eventName, string recipient, string bookingRef)
+		{
+			var buffer = new StringBuilder(Emails.DayBookingConfirmedEmail);
+			buffer.Replace(EventNameKey, eventName);
+			buffer.Replace(BookingRefKey, bookingRef);
+
+			var subject = Emails.DayBookingConfirmedSubject.Replace(EventNameKey, eventName);
+
+			await SendMailAsync(recipient, subject, buffer.ToString());
+		}
+
 		public async Task SendBookingCreatedMailAsync(string eventName, string recipient, string bookingRef, string pinCode)
 		{
 			var buffer = new StringBuilder(Emails.BookingCreatedEmail);

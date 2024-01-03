@@ -118,6 +118,14 @@
 							 (trigger)="deleteBooking()">
 				Radera bokningen
 			</material-button>
+
+			<material-button class="control-green"
+							 [disabled]="!canSendConfirmation"
+							 raised
+							 [title]="confirmationSentMessage"
+							 (trigger)="confirmBooking()">
+				Skicka bekräftelse
+			</material-button>
 		</div>
 	</div>
 

@@ -130,4 +130,10 @@
   <data name="BookingCreatedSubject" xml:space="preserve">
     <value>Din bokning till {EVENT_NAME}</value>
   </data>
+  <data name="DayBookingConfirmedEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>DayBookingConfirmedEmail.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="DayBookingConfirmedSubject" xml:space="preserve">
+    <value>Din dagbiljett till {EVENT_NAME}</value>
+  </data>
 </root>

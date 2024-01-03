@@ -10,6 +10,7 @@ class DayBookingView extends SoloBookingView {
   String typeError;
   SingleSelectionModel<DayBookingType> typeSelection;
   bool paymentConfirmed;
+  DateTime confirmationSent;
 
   bool get hasTypeError => str.isNotEmpty(typeError);
 
@@ -29,6 +30,7 @@ class DayBookingView extends SoloBookingView {
     genderSelection = SelectionModel<String>.single(selected: source.gender);
     typeSelection = SelectionModel<DayBookingType>.single(selected: types.firstWhere((t) => t.id == source.typeId));
     paymentConfirmed = source.paymentConfirmed;
+	confirmationSent = source.confirmationSent;
   }
 
   @override
@@ -37,8 +39,8 @@ class DayBookingView extends SoloBookingView {
     typeError = null;
   }
 
-  DayBookingSource toDayBookingSource() =>
-      DayBookingSource(reference, firstName, lastName, phoneNo, email, dob, food, gender, type.id, paymentConfirmed);
+  DayBookingSource toDayBookingSource() => DayBookingSource(
+      reference, firstName, lastName, phoneNo, email, dob, food, gender, type.id, paymentConfirmed, confirmationSent);
 
   T _selectedOrNull<T>(SelectionModel<T> selection) => selection.isNotEmpty ? selection.selectedValues.first : null;
 }

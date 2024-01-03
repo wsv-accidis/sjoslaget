@@ -19,7 +19,7 @@ namespace Accidis.Gotland.WebService.Content {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Emails {
@@ -119,6 +119,38 @@ namespace Accidis.Gotland.WebService.Content {
         internal static string BookingCreatedSubject {
             get {
                 return ResourceManager.GetString("BookingCreatedSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hej!
+        ///
+        ///Vi har tagit emot betalning för din dagbiljett med referens {BOOKING_REF}
+        ///till {EVENT_NAME}.
+        ///
+        ///Du hämtar ditt deltagararmband i stabsstugan vid ankomst. Ta med dig någon
+        ///form av legitimation och bevis på medlemskap i Rindi om du är medlem.
+        ///
+        ///Varmt välkommen!
+        ///
+        ///------------------------------------------------------------------------------
+        ///
+        ///Det här är ett automatiskt genererat meddelande som du får därför att den
+        ///här e-postadressen har använts i en bokning till {EVENT_NAME}. Det här är
+        ///inte s [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DayBookingConfirmedEmail {
+            get {
+                return ResourceManager.GetString("DayBookingConfirmedEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Din dagbiljett till {EVENT_NAME}.
+        /// </summary>
+        internal static string DayBookingConfirmedSubject {
+            get {
+                return ResourceManager.GetString("DayBookingConfirmedSubject", resourceCulture);
             }
         }
     }

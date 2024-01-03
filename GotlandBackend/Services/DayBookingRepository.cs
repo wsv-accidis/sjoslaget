@@ -115,5 +115,11 @@ namespace Accidis.Gotland.WebService.Services
 					});
 			}
 		}
+
+		public async Task UpdateConfirmationSentAsync(DayBooking booking)
+		{
+			using(var db = DbUtil.Open())
+				await db.ExecuteAsync("update [DayBooking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new { Id = booking.Id });
+		}
 	}
 }

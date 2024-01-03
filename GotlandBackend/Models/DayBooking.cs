@@ -16,6 +16,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string Food { get; set; }
 		public Guid TypeId { get; set; }
 		public bool PaymentConfirmed { get; set; }
+		public DateTime? ConfirmationSent { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }
 	}
