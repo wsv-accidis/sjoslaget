@@ -13,12 +13,14 @@ namespace Accidis.Gotland.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
+		public string GroupName { get; set; }
 		public string SpecialRequest { get; set; }
 		public string InternalNotes { get; set; }
 		public int Discount { get; set; }
 		public decimal TotalPrice { get; set; }
 		public Guid? CandidateId { get; set; }
 		public int QueueNo { get; set; }
+		public bool IsLocked { get; set; }
 		public DateTime? ConfirmationSent { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime Updated { get; set; }
@@ -34,6 +36,7 @@ namespace Accidis.Gotland.WebService.Models
 				Email = candidate.Email,
 				PhoneNo = candidate.PhoneNo,
 				TeamName = candidate.TeamName,
+				GroupName = candidate.GroupName,
 				QueueNo = placeInQueue
 			};
 		}

@@ -24,6 +24,41 @@
 	margin-bottom: 20px;
 }
 
+.details-first-name-field {
+	width: 250px;
+	margin-right: 20px;
+}
+
+.details-last-name-field {
+	width: 250px;
+}
+
+.details-phone-no-field {
+	width: 200px;
+	margin-right: 20px;
+}
+
+.details-dob-field {
+	width: 200px;
+}
+
+.details-email-field {
+	width: 350px;
+}
+
+.details-group-name-field {
+	width: 220px;
+}
+
+.details-team-name-field {
+	width: 280px;
+	margin-right: 20px;
+}
+
+.details-notes-field {
+	width: 700px;
+}
+
 .reset-pin-form {
 	margin-top: 20px;
 	margin-bottom: 20px;

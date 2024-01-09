@@ -41,6 +41,8 @@ namespace Accidis.Gotland.WebService.Controllers
 
 				await SendBookingConfirmedMailAsync(evnt, booking);
 				await _bookingRepository.UpdateConfirmationSentAsync(booking);
+				booking.IsLocked = true;
+				await _bookingRepository.UpdateLockedAsync(booking);
 
 				_log.Info("Sent confirmation for booking {0}.", booking.Reference);
 
@@ -154,6 +156,33 @@ namespace Accidis.Gotland.WebService.Controllers
 		}
 
 		[Authorize(Roles = Roles.Admin)]
+		[HttpPut]
+		public async Task<IHttpActionResult> Lock(string reference)
+		{
+			try
+			{
+				Event evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				Booking booking = await _bookingRepository.FindByReferenceAsync(reference);
+				if(null == booking)
+					return NotFound();
+
+				booking.IsLocked = !booking.IsLocked;
+				await _bookingRepository.UpdateLockedAsync(booking);
+				_log.Info("{0} booking {1}.", booking.IsLocked ? "Locked" : "Unlocked", booking.Reference);
+
+				return Ok(new { IsLocked = booking.IsLocked });
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while locking/unlocking a booking.");
+				throw;
+			}
+		}
+
+		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
 		public async Task<IHttpActionResult> Pax()
 		{
@@ -212,8 +241,15 @@ namespace Accidis.Gotland.WebService.Controllers
 
 				if(IsUnauthorized(bookingSource.Reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to update.");
-				if(!AuthContext.IsAdmin && evnt.IsLocked)
-					return BadRequest("The event has been locked and the booking can no longer be edited.");
+
+				if(!AuthContext.IsAdmin)
+				{
+					if(evnt.IsLocked)
+						return BadRequest("The event has been locked and the booking can no longer be edited.");
+					var bookingIsLocked = await _bookingRepository.IsBookingLockedAsync(bookingSource.Reference);
+					if(bookingIsLocked)
+						return BadRequest("The booking has been locked and can no longer be edited.");
+				}
 
 				BookingResult result = await _bookingRepository.UpdateAsync(evnt, bookingSource, AuthContext.IsAdmin);
 				_log.Info("Updated booking {0}.", result.Reference);

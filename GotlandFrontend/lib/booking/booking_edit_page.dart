@@ -27,138 +27,147 @@ import '../widgets/components.dart';
 import '../widgets/spinner_widget.dart';
 
 @Component(
-	selector: 'booking-page',
-	styleUrls: ['../content/content_styles.css', 'booking_edit_page.css'],
-	templateUrl: 'booking_edit_page.html',
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, PaxComponent, PaymentComponent, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: [AboutRoutes, ContentRoutes]
-)
+    selector: 'booking-page',
+    styleUrls: ['../content/content_styles.css', 'booking_edit_page.css'],
+    templateUrl: 'booking_edit_page.html',
+    directives: <dynamic>[
+      coreDirectives,
+      routerDirectives,
+      formDirectives,
+      gotlandMaterialDirectives,
+      PaxComponent,
+      PaymentComponent,
+      SpinnerWidget
+    ],
+    providers: <dynamic>[materialProviders],
+    exports: [AboutRoutes, ContentRoutes])
 class BookingEditPage implements OnInit {
-	final AllocationRepository _allocationRepository;
-	final BookingRepository _bookingRepository;
-	final ClientFactory _clientFactory;
-	final EventRepository _eventRepository;
-	final Router _router;
-	final TempCredentialsStore _tempCredentialsStore;
+  final AllocationRepository _allocationRepository;
+  final BookingRepository _bookingRepository;
+  final ClientFactory _clientFactory;
+  final EventRepository _eventRepository;
+  final Router _router;
+  final TempCredentialsStore _tempCredentialsStore;
 
-	@ViewChild('pax')
-	PaxComponent pax;
+  @ViewChild('pax')
+  PaxComponent pax;
 
-	List<BookingAllocationView> allocation;
-	BookingSource booking;
-	String bookingError;
-	List<CabinClass> cabinClasses;
-	BookingResult credentials;
-	bool isReadOnly = false;
-	bool isSaving = false;
-	String loadingError;
-	BookingQueueStats queueStats;
+  List<BookingAllocationView> allocation;
+  BookingSource booking;
+  String bookingError;
+  List<CabinClass> cabinClasses;
+  BookingResult credentials;
+  bool isReadOnly = false;
+  bool isSaving = false;
+  String loadingError;
+  BookingQueueStats queueStats;
 
-	bool get canAddPax => pax.count < TEAM_SIZE_MAX;
+  bool get canAddPax => pax.count < TEAM_SIZE_MAX;
 
-	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
+  bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
 
-	bool get hasAllocation => null != allocation && allocation.isNotEmpty;
+  bool get hasAllocation => null != allocation && allocation.isNotEmpty && isReadOnly;
 
-	bool get hasCredentials => null != credentials;
+  bool get hasCredentials => null != credentials;
 
-	bool get hasBookingError => isNotEmpty(bookingError);
+  bool get hasBookingError => isNotEmpty(bookingError);
 
-	bool get hasLoadingError => isNotEmpty(loadingError);
+  bool get hasLoadingError => isNotEmpty(loadingError);
 
-	bool get hasQueueStats => null != queueStats && !queueStats.isEmpty;
+  bool get hasQueueStats => null != queueStats && !queueStats.isEmpty;
 
-	bool get isLoaded => null != booking;
+  bool get isLoaded => null != booking;
 
-	bool get isNewBooking => isLoaded && pax.isEmpty && !isReadOnly;
+  bool get isNewBooking => isLoaded && pax.isEmpty && !isReadOnly;
 
-	int get price => hasAllocation ? allocation.fold(0, (sum, a) => sum + a.price) : 200;
+  int get price => hasAllocation ? allocation.fold(0, (sum, a) => sum + a.price) : 200;
 
-	BookingEditPage(this._allocationRepository, this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore);
+  BookingEditPage(this._allocationRepository, this._bookingRepository, this._clientFactory, this._eventRepository,
+      this._router, this._tempCredentialsStore);
 
-	@override
-	Future<void> ngOnInit() async {
-		if (!_clientFactory.hasCredentials || _clientFactory.isAdmin) {
-			print('Booking page opened without credentials or while logged in as admin.');
-			await _router.navigateByUrl(ContentRoutes.booking.toUrl());
-			return;
-		}
+  @override
+  Future<void> ngOnInit() async {
+    if (!_clientFactory.hasCredentials || _clientFactory.isAdmin) {
+      print('Booking page opened without credentials or while logged in as admin.');
+      await _router.navigateByUrl(ContentRoutes.booking.toUrl());
+      return;
+    }
 
-		final String reference = _clientFactory.authenticatedUser;
-		try {
-			final client = _clientFactory.getClient();
-			final event = await _eventRepository.getActiveEvent(client);
-			isReadOnly = event.isLocked;
-			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
-			booking = await _bookingRepository.getBooking(client, reference);
-			queueStats = await _bookingRepository.getQueueStats(client, reference);
-			allocation = await _loadAllocation(client, reference);
-		} catch (e) {
-			print('Failed to get booking due to an exception: ${e.toString()}');
-			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
-			return;
-		}
+    final String reference = _clientFactory.authenticatedUser;
+    try {
+      final client = _clientFactory.getClient();
+      final event = await _eventRepository.getActiveEvent(client);
+      cabinClasses = await _eventRepository.getActiveCabinClasses(client);
+      booking = await _bookingRepository.getBooking(client, reference);
+      isReadOnly = event.isLocked || booking.isLocked;
+      queueStats = await _bookingRepository.getQueueStats(client, reference);
+      allocation = await _loadAllocation(client, reference);
+    } catch (e) {
+      print('Failed to get booking due to an exception: ${e.toString()}');
+      loadingError =
+          'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen. Om felet kvarstår, kontakta oss.';
+      return;
+    }
 
-		credentials = _tempCredentialsStore.load();
-		pax.isReadOnly = isReadOnly;
+    credentials = _tempCredentialsStore.load();
+    pax.isReadOnly = isReadOnly;
 
-		if (!isReadOnly && booking.pax.isEmpty) {
-			// For new bookings, helpfully create a bunch of empty rows
-			final int teamSize = queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
-			pax.emptyPax = teamSize;
-		} else {
-			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
-		}
-	}
+    if (!isReadOnly && booking.pax.isEmpty) {
+      // For new bookings, helpfully create a bunch of empty rows
+      final int teamSize =
+          queueStats.teamSize <= 0 || queueStats.teamSize > TEAM_SIZE_MAX ? TEAM_SIZE_DEFAULT : queueStats.teamSize;
+      pax.emptyPax = teamSize;
+    } else {
+      pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
+    }
+  }
 
-	void addEmptyPax() {
-		if (canAddPax) {
-			pax.addEmptyPax();
-		}
-	}
+  void addEmptyPax() {
+    if (canAddPax) {
+      pax.addEmptyPax();
+    }
+  }
 
-	Future<void> saveAndExit() async {
-		if (!isReadOnly) {
-			await saveBooking();
-		}
-		if (null == bookingError) {
-			_clientFactory.clear();
-			await _router.navigateByUrl(ContentRoutes.booking.toUrl());
-		}
-	}
+  Future<void> saveAndExit() async {
+    if (!isReadOnly) {
+      await saveBooking();
+    }
+    if (null == bookingError) {
+      _clientFactory.clear();
+      await _router.navigateByUrl(ContentRoutes.booking.toUrl());
+    }
+  }
 
-	Future<void> saveBooking() async {
-		_tempCredentialsStore.clear();
+  Future<void> saveBooking() async {
+    _tempCredentialsStore.clear();
 
-		if (isSaving)
-			return;
+    if (isSaving) return;
 
-		isSaving = true;
-		try {
-			bookingError = null;
+    isSaving = true;
+    try {
+      bookingError = null;
 
-			booking.pax = BookingPaxView.listToListOfBookingPax(pax.paxViews);
-			try {
-				final client = _clientFactory.getClient();
-				await _bookingRepository.saveBooking(client, booking);
-			} catch (e) {
-				bookingError = 'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta oss.';
-			}
-		} finally {
-			isSaving = false;
-		}
-	}
+      booking.pax = BookingPaxView.listToListOfBookingPax(pax.paxViews);
+      try {
+        final client = _clientFactory.getClient();
+        await _bookingRepository.saveBooking(client, booking);
+      } catch (e) {
+        bookingError =
+            'Någonting gick fel när din bokning skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen. Om problemet kvarstår, kontakta oss.';
+      }
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	Future<List<BookingAllocationView>> _loadAllocation(Client client, String reference) async {
-		final alloc = await _allocationRepository.getAllocation(client, reference);
+  Future<List<BookingAllocationView>> _loadAllocation(Client client, String reference) async {
+    final alloc = await _allocationRepository.getAllocation(client, reference);
 
-		if (alloc.isNotEmpty) {
-			final details = await _eventRepository.getCabinClassDetails(client);
-			return BookingAllocationView.fromListOfBookingAllocation(alloc, cabinClasses, details);
-		} else {
-			return <BookingAllocationView>[];
-		}
-	}
+    if (alloc.isNotEmpty) {
+      final details = await _eventRepository.getCabinClassDetails(client);
+      return BookingAllocationView.fromListOfBookingAllocation(alloc, cabinClasses, details);
+    } else {
+      return <BookingAllocationView>[];
+    }
+  }
 }
-

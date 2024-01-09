@@ -16,147 +16,145 @@ import '../util/gender.dart';
 import '../widgets/components.dart';
 
 @Component(
-	selector: 'pax-component',
-	styleUrls: ['../content/content_styles.css', 'pax_component.css'],
-	templateUrl: 'pax_component.html',
-	directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives],
-	providers: <dynamic>[materialProviders]
-)
+    selector: 'pax-component',
+    styleUrls: ['../content/content_styles.css', 'pax_component.css'],
+    templateUrl: 'pax_component.html',
+    directives: <dynamic>[coreDirectives, formDirectives, gotlandMaterialDirectives],
+    providers: <dynamic>[materialProviders])
 class PaxComponent implements OnInit {
-	static const int MAX_NO_OF_PAX = 20;
+  static const int MAX_NO_OF_PAX = 20;
 
-	final BookingValidator _bookingValidator;
-	final ClientFactory _clientFactory;
-	final EventRepository _eventRepository;
-	final _onCountChange = StreamController<int>.broadcast();
+  final BookingValidator _bookingValidator;
+  final ClientFactory _clientFactory;
+  final EventRepository _eventRepository;
+  final _onCountChange = StreamController<int>.broadcast();
 
-	@Input()
-	bool hidePricing = false;
+  @Input()
+  bool hidePricing = false;
 
-	@Output()
-	Stream get onCountChange => _onCountChange.stream;
+  @Output()
+  Stream get onCountChange => _onCountChange.stream;
 
-	List<BookingPaxView> paxViews = <BookingPaxView>[];
-	List<CabinClass> cabinClasses;
-	SelectionOptions<CabinClass> cabinClassOptions;
-	bool isReadOnly = false;
+  List<BookingPaxView> paxViews = <BookingPaxView>[];
+  List<CabinClass> cabinClasses;
+  SelectionOptions<CabinClass> cabinClassOptions;
+  bool isReadOnly = false;
 
-	int get count => paxViews.length;
+  int get count => paxViews.length;
 
-	SelectionOptions<String> get foodOptions => Food.getOptions();
+  SelectionOptions<String> get foodOptions => Food.getOptions();
 
-	SelectionOptions<String> get genderOptions => Gender.getOptions();
+  SelectionOptions<String> get genderOptions => Gender.getOptions();
 
-	bool get hasPrice => priceOfPaxPreferred > 0;
+  bool get hasPrice => priceOfPaxPreferred > 0;
 
-	bool get isEmpty => paxViews.isEmpty || paxViews.every((p) => p.isEmpty);
+  bool get isEmpty => paxViews.isEmpty || paxViews.every((p) => p.isEmpty);
 
-	bool get isLoaded => null != cabinClasses;
+  bool get isLoaded => null != cabinClasses;
 
-	bool get isValid => paxViews.every((p) => p.isValid);
+  bool get isValid => paxViews.every((p) => p.isValid);
 
-	int get priceOfPaxMax => paxViews.fold(0, (sum, a) => sum + a.priceMax);
+  int get priceOfPaxMax => paxViews.fold(0, (sum, a) => sum + a.priceMax);
 
-	int get priceOfPaxMin => paxViews.fold(0, (sum, a) => sum + a.priceMin);
+  int get priceOfPaxMin => paxViews.fold(0, (sum, a) => sum + a.priceMin);
 
-	int get priceOfPaxPreferred => paxViews.fold(0, (sum, a) => sum + a.pricePreferred);
+  int get priceOfPaxPreferred => paxViews.fold(0, (sum, a) => sum + a.pricePreferred);
 
-	String get priceMaxFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMax);
+  String get priceMaxFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMax);
 
-	String get priceMinFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMin);
+  String get priceMinFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxMin);
 
-	String get pricePreferredFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxPreferred);
+  String get pricePreferredFormatted => CurrencyFormatter.formatIntAsSEK(priceOfPaxPreferred);
 
-	set emptyPax(int count) {
-		paxViews.clear();
-		for (int i = 0; i < count; i++) {
-			addEmptyPax();
-		}
-	}
+  set emptyPax(int count) {
+    paxViews.clear();
+    for (int i = 0; i < count; i++) {
+      addEmptyPax();
+    }
+  }
 
-	set pax(List<BookingPaxView> list) {
-		list.forEach(_addListeners);
-		paxViews = list;
-		_onCountChange.add(count);
-	}
+  set pax(List<BookingPaxView> list) {
+    list.forEach(_addListeners);
+    paxViews = list;
+    _onCountChange.add(count);
+  }
 
-	PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
+  PaxComponent(this._bookingValidator, this._clientFactory, this._eventRepository);
 
-	@override
-	Future<void> ngOnInit() async {
-		try {
-			final client = _clientFactory.getClient();
-			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
-		} catch (e) {
-			// Ignore this here - we will be stuck in the loading state until the user refreshes
-			print('Failed to get data due to an exception: ${e.toString()}');
-			return;
-		}
+  @override
+  Future<void> ngOnInit() async {
+    try {
+      final client = _clientFactory.getClient();
+      cabinClasses = await _eventRepository.getActiveCabinClasses(client);
+    } catch (e) {
+      // Ignore this here - we will be stuck in the loading state until the user refreshes
+      print('Failed to get data due to an exception: ${e.toString()}');
+      return;
+    }
 
-		cabinClassOptions = SelectionOptions.fromList(cabinClasses);
-	}
+    cabinClassOptions = SelectionOptions.fromList(cabinClasses);
+  }
 
-	void addEmptyPax() {
-		final BookingPaxView view = BookingPaxView.createEmpty();
-		_addListeners(view);
-		paxViews.add(view);
-		_onCountChange.add(count);
-	}
+  void addEmptyPax() {
+    final BookingPaxView view = BookingPaxView.createEmpty();
+    _addListeners(view);
+    paxViews.add(view);
+    _onCountChange.add(count);
+  }
 
-	String cabinClassToString(dynamic c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
+  String cabinClassToString(dynamic c) => '${c.name} (${CurrencyFormatter.formatDecimalAsSEK(c.pricePerPax)})';
 
-	String cabinClassToStringLabel(CabinClass c, String which) {
-		if (null == c) {
-			switch (which) {
-				case 'min':
-					return 'Lägsta boende';
-				case 'max':
-					return 'Högsta boende';
-				case 'pref':
-					return 'Önskat boende';
-				default:
-					return '';
-			}
-		}
-		else
-			return cabinClassToString(c);
-	}
+  String cabinClassToStringLabel(CabinClass c, String which) {
+    if (null == c) {
+      switch (which) {
+        case 'min':
+          return 'Lägsta boende';
+        case 'max':
+          return 'Högsta boende';
+        case 'pref':
+          return 'Önskat boende';
+        default:
+          return '';
+      }
+    } else
+      return cabinClassToString(c);
+  }
 
-	void deletePax(int idx) {
-		paxViews.removeAt(idx);
-		_onCountChange.add(count);
-	}
+  void deletePax(int idx) {
+    paxViews.removeAt(idx);
+    _onCountChange.add(count);
+  }
 
-	String foodToString(dynamic f) => Food.asString(f);
+  String foodToString(dynamic f) => Food.asString(f);
 
-	String genderToString(dynamic g) => Gender.asString(g);
+  String genderToString(dynamic g) => Gender.asString(g);
 
-	String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
+  String uniqueId(String prefix, int pax) => '${prefix}_${pax.toString()}';
 
-	void validate(Event event) {
-		final idx = _findBookingIndex(event.target);
-		if (idx >= 0 && idx < paxViews.length) {
-			_bookingValidator.validatePax(paxViews[idx]);
-		}
-	}
+  void validate(Event event) {
+    final idx = _findBookingIndex(event.target);
+    if (idx >= 0 && idx < paxViews.length) {
+      _bookingValidator.validatePax(paxViews[idx]);
+    }
+  }
 
-	void _addListeners(BookingPaxView view) {
-		// Change detection for <material-dropdown-select> is annoying
-		view.foodSelection.selectionChanges.listen(_validateAll);
-		view.genderSelection.selectionChanges.listen(_validateAll);
-		view.cabinClassMinSelection.selectionChanges.listen(_validateAll);
-		view.cabinClassPreferredSelection.selectionChanges.listen(_validateAll);
-		view.cabinClassMaxSelection.selectionChanges.listen(_validateAll);
-	}
+  void _addListeners(BookingPaxView view) {
+    // Change detection for <material-dropdown-select> is annoying
+    view.foodSelection.selectionChanges.listen(_validateAll);
+    view.genderSelection.selectionChanges.listen(_validateAll);
+    view.cabinClassMinSelection.selectionChanges.listen(_validateAll);
+    view.cabinClassPreferredSelection.selectionChanges.listen(_validateAll);
+    view.cabinClassMaxSelection.selectionChanges.listen(_validateAll);
+  }
 
-	int _findBookingIndex(HtmlElement target) {
-		if (!target.dataset.containsKey('idx')) {
-			return null == target.parent ? -1 : _findBookingIndex(target.parent);
-		}
-		return int.parse(target.dataset['idx']);
-	}
+  int _findBookingIndex(HtmlElement target) {
+    if (!target.dataset.containsKey('idx')) {
+      return null == target.parent ? -1 : _findBookingIndex(target.parent);
+    }
+    return int.parse(target.dataset['idx']);
+  }
 
-	void _validateAll(dynamic ignored) {
-		paxViews.forEach(_bookingValidator.validatePax);
-	}
+  void _validateAll(dynamic ignored) {
+    paxViews.forEach(_bookingValidator.validatePax);
+  }
 }

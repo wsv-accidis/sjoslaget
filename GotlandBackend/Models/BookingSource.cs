@@ -14,9 +14,11 @@ namespace Accidis.Gotland.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
+		public string GroupName { get; set; }
 		public string SpecialRequest { get; set; }
 		public string InternalNotes { get; set; }
 		public int Discount { get; set; }
+		public bool IsLocked { get; set; }
 		public DateTime? ConfirmationSent { get; set; }
 		public List<PaxSource> Pax { get; set; }
 		public PaymentSummary Payment { get; set; }
@@ -31,9 +33,11 @@ namespace Accidis.Gotland.WebService.Models
 				Email = booking.Email,
 				PhoneNo = booking.PhoneNo,
 				TeamName = booking.TeamName,
+				GroupName = booking.GroupName,
 				SpecialRequest = booking.SpecialRequest,
 				InternalNotes = booking.InternalNotes,
 				Discount = booking.Discount,
+				IsLocked = booking.IsLocked,
 				ConfirmationSent = booking.ConfirmationSent,
 				Pax = pax.Select(p => new PaxSource
 				{

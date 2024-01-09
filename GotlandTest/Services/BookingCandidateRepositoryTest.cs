@@ -94,6 +94,7 @@ namespace Accidis.Gotland.Test.Services
 				Email = "test@example.com",
 				PhoneNo = "123456",
 				TeamName = "Team Student",
+				GroupName = "Mästerimästeriet",
 				TeamSize = 20
 			};
 		}

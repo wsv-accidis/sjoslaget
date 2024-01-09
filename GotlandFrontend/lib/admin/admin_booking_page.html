@@ -48,65 +48,76 @@
 	<h2 class="booking-subtitle-padded">Lag och kontaktperson</h2>
 
 	<div *ngIf="!isLoading" class="details">
-		<material-input [(ngModel)]="booking.teamName"
-						ngControl="teamName"
-						floatingLabel
-						label="Lagnamn"
-						required
-						requiredErrorMsg="Ange lagnamn."
-						style="width: 250px; margin-right: 20px">
-		</material-input>
+		<div>
+			<material-input [(ngModel)]="booking.teamName"
+							ngControl="teamName"
+							class="details-team-name-field"
+							floatingLabel
+							label="Lagnamn"
+							required
+							requiredErrorMsg="Ange lagnamn.">
+			</material-input>
 
-		<material-input [(ngModel)]="booking.firstName"
-						ngControl="firstName"
-						floatingLabel
-						label="Förnamn"
-						required
-						requiredErrorMsg="Ange förnamn."
-						style="width: 200px; margin-right: 20px">
-		</material-input>
+			<material-input [(ngModel)]="booking.groupName"
+							ngControl="groupName"
+							class="details-group-name-field"
+							floatingLabel
+							label="Förening/skola">
+			</material-input>
+		</div>
+		<div>
+			<material-input [(ngModel)]="booking.firstName"
+							ngControl="firstName"
+							class="details-first-name-field"
+							floatingLabel
+							label="Förnamn"
+							required
+							requiredErrorMsg="Ange förnamn.">
+			</material-input>
 
-		<material-input [(ngModel)]="booking.lastName"
-						ngControl="lastName"
-						floatingLabel
-						label="Efternamn"
-						required
-						requiredErrorMsg="Ange efternamn."
-						style="width: 200px">
-		</material-input>
-		<br>
+			<material-input [(ngModel)]="booking.lastName"
+							ngControl="lastName"
+							class="details-last-name-field"
+							floatingLabel
+							label="Efternamn"
+							required
+							requiredErrorMsg="Ange efternamn.">
+			</material-input>
+		</div>
+		<div>
+			<material-input [(ngModel)]="booking.phoneNo"
+							ngControl="phoneNo"
+							class="details-phone-no-field"
+							floatingLabel
+							label="Telefonnummer"
+							required
+							requiredErrorMsg="Ange telefonnummer."
+							pattern="[0-9()+\- ]+"
+							type="tel">
+			</material-input>
 
-		<material-input [(ngModel)]="booking.phoneNo"
-						ngControl="phoneNo"
-						floatingLabel
-						label="Telefonnummer"
-						required
-						requiredErrorMsg="Ange telefonnummer."
-						pattern="[0-9()+\- ]+"
-						style="width: 150px; margin-right: 20px"
-						type="tel">
-		</material-input>
-
-		<material-input [(ngModel)]="booking.email"
-						ngControl="email"
-						floatingLabel
-						label="E-postadress"
-						required
-						requiredErrorMsg="Ange e-postadress."
-						pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
-						style="width: 300px"
-						type="email">
-		</material-input>
-		<br>
-
-		<material-input [(ngModel)]="booking.specialRequest"
-						ngControl="specialRequest"
-						[displayBottomPanel]="false"
-						floatingLabel
-						label="Särskilda önskemål"
-						multiline
-						style="width: 700px">
-		</material-input>
+			<material-input [(ngModel)]="booking.email"
+							ngControl="email"
+							class="details-email-field"
+							floatingLabel
+							label="E-postadress"
+							required
+							requiredErrorMsg="Ange e-postadress."
+							pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
+							style="width: 300px"
+							type="email">
+			</material-input>
+		</div>
+		<div>
+			<material-input [(ngModel)]="booking.specialRequest"
+							ngControl="specialRequest"
+							class="details-notes-field"
+							[displayBottomPanel]="false"
+							floatingLabel
+							label="Särskilda önskemål"
+							multiline>
+			</material-input>
+		</div>
 	</div>
 
 	<h2 class="booking-subtitle">Interna anteckningar</h2>
@@ -114,8 +125,8 @@
 	<div *ngIf="!isLoading">
 		<material-input [(ngModel)]="booking.internalNotes"
 						ngControl="internalNotes"
+						class="details-notes-field"
 						label="Interna anteckningar (ej synliga för kontaktperson)"
-						style="width: 700px"
 						multiline>
 		</material-input>
 	</div>
@@ -149,6 +160,22 @@
 						 (trigger)="confirmBooking()">
 			Skicka bekräftelse
 		</material-button>
+
+		<material-button *ngIf="isLocked && hasSentConfirmation"
+						 class="control-green"
+						 raised
+						 [title]="confirmationSentMessage"
+						 (trigger)="lockUnlockBooking()">
+			Lås upp bokningen
+		</material-button>
+
+		<material-button *ngIf="!isLocked && hasSentConfirmation"
+						 class="control-blue"
+						 raised
+						 [title]="confirmationSentMessage"
+						 (trigger)="lockUnlockBooking()">
+			Lås bokningen
+		</material-button>
 	</div>
 </form>
 
@@ -158,8 +185,8 @@
 
 <div *ngIf="!isLoading" class="allocation">
 	<p>
-		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen.
-		När tilldelningen är klar är det lämpligt att skicka en bekräftelse så att kontaktpersonen ser sina boenden och pris.
+		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen
+		när bokningen är bekräftad och låst. Skicka en bekräftelse så fort tilldelningen är klar.
 	</p>
 
 	<allocation-component #allocation
