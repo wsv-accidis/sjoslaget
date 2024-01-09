@@ -41,6 +41,7 @@ class BookingPage implements OnInit {
   String lastName;
   String phoneNo;
   String email;
+  String groupName;
   String teamName;
   int teamSize = TEAM_SIZE_DEFAULT;
   SelectionModel<int> teamSizeSelection = SelectionModel.single(selected: TEAM_SIZE_DEFAULT);
@@ -78,7 +79,7 @@ class BookingPage implements OnInit {
   }
 
   Future<void> submitDetails() async {
-    final candidate = BookingDetails(firstName, lastName, phoneNo, email, teamName, teamSize);
+    final candidate = BookingDetails(firstName, lastName, phoneNo, email, groupName, teamName, teamSize);
     CandidateResponse response;
 
     try {

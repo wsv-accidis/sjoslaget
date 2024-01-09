@@ -133,6 +133,14 @@
 					{{ booking.firstName }} {{ booking.lastName }}
 				</td>
 			</tr>
+			<tr *ngIf="hasGroupName">
+				<th>
+					Förening/skola
+				</th>
+				<td>
+					{{ booking.groupName }}
+				</td>
+			</tr>
 			<tr>
 				<th>
 					Särskilda önskemål

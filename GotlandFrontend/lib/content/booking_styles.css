@@ -15,6 +15,13 @@
 .email-field {
 	width: 250px;
 }
+.group-name-field {
+	width: 420px;
+}
+.team-name-field {
+	width: 290px;
+	margin-right: 20px;
+}
 material-checkbox.rules-and-toc-checks {
 	font-size: smaller;
 	margin-left: 0;

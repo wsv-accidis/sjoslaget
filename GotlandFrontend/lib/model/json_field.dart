@@ -21,6 +21,7 @@ const String EMAIL = 'Email';
 const String FIRSTNAME = 'FirstName';
 const String FOOD = 'Food';
 const String GENDER = 'Gender';
+const String GROUP_NAME = 'GroupName';
 const String HAS_OPENED = 'HasOpened';
 const String ID = 'Id';
 const String INTERNAL_NOTES = 'InternalNotes';

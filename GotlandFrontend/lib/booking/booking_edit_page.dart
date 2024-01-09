@@ -63,6 +63,8 @@ class BookingEditPage implements OnInit {
 
 	bool get hasCredentials => null != credentials;
 
+	bool get hasGroupName => isLoaded && isNotEmpty(booking.groupName);
+
 	bool get hasBookingError => isNotEmpty(bookingError);
 
 	bool get hasLoadingError => isNotEmpty(loadingError);

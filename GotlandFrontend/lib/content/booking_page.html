@@ -95,13 +95,21 @@
 			</material-input>
 		</div>
 		<div>
+			<material-input [(ngModel)]="groupName"
+							ngControl="groupName"
+							class="group-name-field"
+							floatingLabel
+							label="Förening/skola (valfri uppg.)">
+			</material-input>
+		</div>
+		<div>
 			<material-input [(ngModel)]="teamName"
 							ngControl="teamName"
+							class="team-name-field"
 							floatingLabel
 							label="Lagnamn"
 							required
-							requiredErrorMsg="Ange lagets namn."
-							style="width: 290px; margin-right: 20px">
+							requiredErrorMsg="Ange lagets namn.">
 			</material-input>
 
 			<material-dropdown-select [buttonText]="teamSizeToString(teamSize)"
