@@ -18,7 +18,7 @@
 </p>
 
 <p *ngIf="isReadOnly">
-	Din bokning är nu låst för egna ändringar. Om du behöver ändra något, <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a> så ska vi se vad vi kan göra.
+	Din bokning är nu låst för ändringar. Om du behöver ändra något, <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a> så ska vi se vad vi kan göra.
 	Du kan alltid ändra namn på deltagare men för ändringar som innebär skillnad i antal deltagare eller typ av boende finns vissa begränsningar.
 </p>
 
@@ -69,7 +69,7 @@
 
 <form #bookingForm="ngForm">
 	<pax-component #pax
-				   [hidePricing]="hasAllocation">
+				   [hidePricing]="hasAllocation || isReadOnly">
 	</pax-component>
 
 	<div class="spinner-widget" *ngIf="(!isLoaded && !hasLoadingError) || isSaving">
@@ -133,12 +133,12 @@
 					{{ booking.firstName }} {{ booking.lastName }}
 				</td>
 			</tr>
-			<tr *ngIf="hasGroupName">
+			<tr>
 				<th>
 					Förening/skola
 				</th>
 				<td>
-					{{ booking.groupName }}
+					{{ booking.groupName.isNotEmpty ? booking.groupName : '-' }}
 				</td>
 			</tr>
 			<tr>

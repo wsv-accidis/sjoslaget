@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:Gotland/model/solo_booking_source.dart';
 import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:frontend_shared/model/booking_result.dart';
@@ -11,6 +10,8 @@ import '../model/booking_list_item.dart';
 import '../model/booking_pax_list_item.dart';
 import '../model/booking_queue_stats.dart';
 import '../model/booking_source.dart';
+import '../model/json_field.dart';
+import '../model/solo_booking_source.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
@@ -104,6 +105,19 @@ class BookingRepository {
 
     HttpStatus.throwIfNotSuccessful(response);
     return BookingQueueStats.fromJson(response.body);
+  }
+
+  Future<bool> lockUnlockBooking(Client client, String reference) async {
+    Response response;
+    try {
+      response = await client.put('$_apiRoot/bookings/lock/$reference');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+    final Map<String, dynamic> jsonBody = json.decode(response.body);
+    return jsonBody[IS_LOCKED];
   }
 
   Future<BookingResult> saveBooking(Client client, BookingSource booking) async {

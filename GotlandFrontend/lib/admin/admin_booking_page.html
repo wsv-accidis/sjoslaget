@@ -160,6 +160,22 @@
 						 (trigger)="confirmBooking()">
 			Skicka bekräftelse
 		</material-button>
+
+		<material-button *ngIf="isLocked && hasSentConfirmation"
+						 class="control-green"
+						 raised
+						 [title]="confirmationSentMessage"
+						 (trigger)="lockUnlockBooking()">
+			Lås upp bokningen
+		</material-button>
+
+		<material-button *ngIf="!isLocked && hasSentConfirmation"
+						 class="control-blue"
+						 raised
+						 [title]="confirmationSentMessage"
+						 (trigger)="lockUnlockBooking()">
+			Lås bokningen
+		</material-button>
 	</div>
 </form>
 
@@ -169,8 +185,8 @@
 
 <div *ngIf="!isLoading" class="allocation">
 	<p>
-		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen.
-		När tilldelningen är klar är det lämpligt att skicka en bekräftelse så att kontaktpersonen ser sina boenden och pris.
+		Välj boende, ange antal bäddar och skriv vid behov en notering om vilket boende som avses. Denna information blir synlig för kontaktpersonen
+		när bokningen är bekräftad och låst. Skicka en bekräftelse så fort tilldelningen är klar.
 	</p>
 
 	<allocation-component #allocation

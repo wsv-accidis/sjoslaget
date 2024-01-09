@@ -25,173 +25,200 @@ import 'allocation_component.dart';
 import 'pax_component.dart';
 import 'payment_component.dart';
 
-@Component(
-	selector: 'admin-booking-page',
-	templateUrl: 'admin_booking_page.html',
-	styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'admin_booking_page.css'],
-	directives: <dynamic>[coreDirectives, routerDirectives, formDirectives, gotlandMaterialDirectives, AllocationComponent, PaymentComponent, PaymentHistoryComponent, PaxComponent, ModalDialog, SpinnerWidget],
-	providers: <dynamic>[materialProviders],
-	exports: <dynamic>[AdminRoutes]
-)
+@Component(selector: 'admin-booking-page', templateUrl: 'admin_booking_page.html', styleUrls: [
+  '../content/content_styles.css',
+  'admin_styles.css',
+  'admin_booking_page.css'
+], directives: <dynamic>[
+  coreDirectives,
+  routerDirectives,
+  formDirectives,
+  gotlandMaterialDirectives,
+  AllocationComponent,
+  PaymentComponent,
+  PaymentHistoryComponent,
+  PaxComponent,
+  ModalDialog,
+  SpinnerWidget
+], providers: <dynamic>[
+  materialProviders
+], exports: <dynamic>[
+  AdminRoutes
+])
 class AdminBookingPage implements OnActivate {
-	final BookingRepository _bookingRepository;
-	final ClientFactory _clientFactory;
-	final EventRepository _eventRepository;
-	final Router _router;
-	final TempCredentialsStore _tempCredentialsStore;
-	final UserRepository _userRepository;
+  final BookingRepository _bookingRepository;
+  final ClientFactory _clientFactory;
+  final EventRepository _eventRepository;
+  final Router _router;
+  final TempCredentialsStore _tempCredentialsStore;
+  final UserRepository _userRepository;
 
-	@ViewChild('allocation')
-	AllocationComponent allocation;
+  @ViewChild('allocation')
+  AllocationComponent allocation;
 
-	@ViewChild('deleteBookingDialog')
-	ModalDialog deleteBookingDialog;
+  @ViewChild('deleteBookingDialog')
+  ModalDialog deleteBookingDialog;
 
-	@ViewChild('payment')
-	PaymentComponent payment;
+  @ViewChild('payment')
+  PaymentComponent payment;
 
-	@ViewChild('pax')
-	PaxComponent pax;
+  @ViewChild('pax')
+  PaxComponent pax;
 
-	BookingSource booking;
-	BookingResult bookingResult;
-	String bookingError;
-	List<CabinClass> cabinClasses;
-	bool isSaving = false;
-	String loadingError;
-	String newPinCode;
-	int noOfPax = 0;
-	String resetPinCodeError;
+  BookingSource booking;
+  BookingResult bookingResult;
+  String bookingError;
+  List<CabinClass> cabinClasses;
+  bool isSaving = false;
+  String loadingError;
+  String newPinCode;
+  int noOfPax = 0;
+  String resetPinCodeError;
 
-	bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
+  bool get canSave => !pax.isEmpty && pax.isValid && !isSaving;
 
-	String get confirmationSentMessage =>
-		hasSentConfirmation ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
-			: 'Bekräftelse inte skickad';
+  String get confirmationSentMessage => hasSentConfirmation
+      ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
+      : 'Bekräftelse inte skickad';
 
-	bool get hasBookingResult => null != bookingResult;
+  bool get hasBookingResult => null != bookingResult;
 
-	bool get hasSentConfirmation => null != booking.confirmationSent;
+  bool get hasSentConfirmation => null != booking.confirmationSent;
 
-	bool get hasBookingError => isNotEmpty(bookingError);
+  bool get hasBookingError => isNotEmpty(bookingError);
 
-	bool get hasLoadingError => isNotEmpty(loadingError);
+  bool get hasLoadingError => isNotEmpty(loadingError);
 
-	bool get hasPax => numberOfPax > 0;
+  bool get hasPax => numberOfPax > 0;
 
-	bool get hasResetPinCode => isNotEmpty(newPinCode);
+  bool get hasResetPinCode => isNotEmpty(newPinCode);
 
-	bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
+  bool get hasResetPinCodeError => isNotEmpty(resetPinCodeError);
 
-	bool get isLoading => null == booking;
+  bool get isLoading => null == booking;
 
-	int get numberOfPax => null != booking ? booking.pax.length : 0;
+  bool get isLocked => null != booking && booking.isLocked;
 
-	AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router, this._tempCredentialsStore, this._userRepository);
+  int get numberOfPax => null != booking ? booking.pax.length : 0;
 
-	void addEmptyPax() {
-		pax.addEmptyPax();
-	}
+  AdminBookingPage(this._bookingRepository, this._clientFactory, this._eventRepository, this._router,
+      this._tempCredentialsStore, this._userRepository);
 
-	Future<void> confirmBooking() async {
-		if (isSaving)
-			return;
+  void addEmptyPax() {
+    pax.addEmptyPax();
+  }
 
-		isSaving = true;
+  Future<void> confirmBooking() async {
+    if (isSaving) return;
 
-		try {
-			final client = _clientFactory.getClient();
-			await _bookingRepository.confirmBooking(client, booking.reference);
-			booking.confirmationSent = DateTime.now();
-		} catch (e) {
-			print('Failed to confirm booking: ${e.toString()}');
-		} finally {
-			isSaving = false;
-		}
-	}
+    isSaving = true;
 
-	Future<void> deleteBooking() async {
-		if (isSaving)
-			return;
-		if (!await deleteBookingDialog.openAsync())
-			return;
+    try {
+      final client = _clientFactory.getClient();
+      await _bookingRepository.confirmBooking(client, booking.reference);
+      booking.confirmationSent = DateTime.now();
+      booking.isLocked = true;
+    } catch (e) {
+      print('Failed to confirm booking: ${e.toString()}');
+    } finally {
+      isSaving = false;
+    }
+  }
 
-		isSaving = true;
+  Future<void> deleteBooking() async {
+    if (isSaving) return;
+    if (!await deleteBookingDialog.openAsync()) return;
 
-		try {
-			final client = _clientFactory.getClient();
-			await _bookingRepository.deleteBooking(client, booking.reference);
-		} catch (e) {
-			print('Failed to delete booking: ${e.toString()}');
-		} finally {
-			isSaving = false;
-		}
+    isSaving = true;
 
-		await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
-	}
+    try {
+      final client = _clientFactory.getClient();
+      await _bookingRepository.deleteBooking(client, booking.reference);
+    } catch (e) {
+      print('Failed to delete booking: ${e.toString()}');
+    } finally {
+      isSaving = false;
+    }
 
-	@override
-	Future<void> onActivate(_, RouterState routerState) async {
-		final String reference = routerState.parameters['ref'];
+    await _router.navigateByUrl(AdminRoutes.dashboard.toUrl());
+  }
 
-		try {
-			final client = _clientFactory.getClient();
-			booking = await _bookingRepository.getBooking(client, reference);
-			cabinClasses = await _eventRepository.getActiveCabinClasses(client);
-			pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
+  Future<void> lockUnlockBooking() async {
+    if (isSaving) return;
 
-			await allocation.load();
-		} catch (e) {
-			print('Failed to load booking: ${e.toString()}');
-			loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';
-			return;
-		}
+    isSaving = true;
 
-		bookingResult = _tempCredentialsStore.load();
-		if (null != bookingResult && bookingResult.reference != reference) {
-			bookingResult = null;
-			_tempCredentialsStore.clear();
-		}
-	}
+    try {
+      final client = _clientFactory.getClient();
+      final bool isLocked = await _bookingRepository.lockUnlockBooking(client, booking.reference);
+      booking.isLocked = isLocked;
+    } catch (e) {
+      print('Failed to lock/unlock booking: ${e.toString()}');
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	Future<void> resetPinCode() async {
-		if (isSaving)
-			return;
+  @override
+  Future<void> onActivate(_, RouterState routerState) async {
+    final String reference = routerState.parameters['ref'];
 
-		isSaving = true;
-		resetPinCodeError = null;
+    try {
+      final client = _clientFactory.getClient();
+      booking = await _bookingRepository.getBooking(client, reference);
+      cabinClasses = await _eventRepository.getActiveCabinClasses(client);
+      pax.pax = BookingPaxView.listOfBookingPaxToList(booking.pax, cabinClasses);
 
-		try {
-			final client = _clientFactory.getClient();
-			final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
+      await allocation.load();
+    } catch (e) {
+      print('Failed to load booking: ${e.toString()}');
+      loadingError = 'Någonting gick fel och bokningen kunde inte hämtas. Ladda om sidan och försök igen.';
+      return;
+    }
 
-			if (isNotEmpty(pinCode))
-				newPinCode = pinCode;
-		} catch (e) {
-			print('Failed to reset PIN code: ${e.toString()}');
-			resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
-		} finally {
-			isSaving = false;
-		}
-	}
+    bookingResult = _tempCredentialsStore.load();
+    if (null != bookingResult && bookingResult.reference != reference) {
+      bookingResult = null;
+      _tempCredentialsStore.clear();
+    }
+  }
 
-	Future<void> saveBooking() async {
-		if (isSaving)
-			return;
+  Future<void> resetPinCode() async {
+    if (isSaving) return;
 
-		isSaving = true;
-		try {
-			bookingError = null;
+    isSaving = true;
+    resetPinCodeError = null;
 
-			booking.pax = BookingPaxView.listToListOfBookingPax(pax.paxViews);
-			try {
-				final client = _clientFactory.getClient();
-				await _bookingRepository.saveBooking(client, booking);
-			} catch (e) {
-				bookingError = 'Någonting gick fel när bokningen skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen.';
-			}
-		} finally {
-			isSaving = false;
-		}
-	}
+    try {
+      final client = _clientFactory.getClient();
+      final String pinCode = await _userRepository.resetPinCode(client, booking.reference);
+
+      if (isNotEmpty(pinCode)) newPinCode = pinCode;
+    } catch (e) {
+      print('Failed to reset PIN code: ${e.toString()}');
+      resetPinCodeError = 'Någonting gick fel när PIN-koden skulle återställas. Försök igen.';
+    } finally {
+      isSaving = false;
+    }
+  }
+
+  Future<void> saveBooking() async {
+    if (isSaving) return;
+
+    isSaving = true;
+    try {
+      bookingError = null;
+
+      booking.pax = BookingPaxView.listToListOfBookingPax(pax.paxViews);
+      try {
+        final client = _clientFactory.getClient();
+        await _bookingRepository.saveBooking(client, booking);
+      } catch (e) {
+        bookingError =
+            'Någonting gick fel när bokningen skulle sparas. Kontrollera att alla uppgifter är riktigt angivna och försök igen.';
+      }
+    } finally {
+      isSaving = false;
+    }
+  }
 }

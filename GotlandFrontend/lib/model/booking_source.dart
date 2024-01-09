@@ -17,12 +17,26 @@ class BookingSource {
   String specialRequest;
   String internalNotes;
   int discount;
+  bool isLocked;
   DateTime confirmationSent;
   List<BookingPax> pax;
   PaymentSummary payment;
 
-  BookingSource(this.reference, this.firstName, this.lastName, this.email, this.phoneNo, this.teamName, this.groupName,
-      this.specialRequest, this.internalNotes, this.discount, this.confirmationSent, this.pax, this.payment);
+  BookingSource(
+      this.reference,
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.phoneNo,
+      this.teamName,
+      this.groupName,
+      this.specialRequest,
+      this.internalNotes,
+      this.discount,
+      this.isLocked,
+      this.confirmationSent,
+      this.pax,
+      this.payment);
 
   factory BookingSource.fromJson(String jsonStr) {
     final Map<String, dynamic> map = json.decode(jsonStr);
@@ -41,6 +55,7 @@ class BookingSource {
         map[SPECIAL_REQUEST],
         map[INTERNAL_NOTES],
         map[DISCOUNT],
+        map[IS_LOCKED],
         ValueConverter.parseDateTime(map[CONFIRMATION_SENT]),
         pax,
         PaymentSummary.fromMap(map[PAYMENT]));
