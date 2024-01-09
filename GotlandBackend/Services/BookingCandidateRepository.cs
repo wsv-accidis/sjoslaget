@@ -19,8 +19,18 @@ namespace Accidis.Gotland.WebService.Services
 
 			using(var db = DbUtil.Open())
 			{
-				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [BookingCandidate] ([FirstName], [LastName], [Email], [PhoneNo], [TeamName], [TeamSize]) output inserted.[Id] values (@FirstName, @LastName, @Email, @PhoneNo, @TeamName, @TeamSize)",
-					new {FirstName = candidate.FirstName, LastName = candidate.LastName, Email = candidate.Email, PhoneNo = candidate.PhoneNo, TeamName = candidate.TeamName, TeamSize = candidate.TeamSize});
+				Guid id = await db.ExecuteScalarAsync<Guid>(
+					"insert into [BookingCandidate] ([FirstName], [LastName], [Email], [PhoneNo], [TeamName], [TeamSize], [GroupName]) output inserted.[Id] values (@FirstName, @LastName, @Email, @PhoneNo, @TeamName, @TeamSize, @GroupName)",
+					new
+					{
+						FirstName = candidate.FirstName,
+						LastName = candidate.LastName,
+						Email = candidate.Email,
+						PhoneNo = candidate.PhoneNo,
+						TeamName = candidate.TeamName,
+						TeamSize = candidate.TeamSize,
+						GroupName = candidate.GroupName ?? string.Empty
+					});
 
 				return id;
 			}
@@ -47,10 +57,10 @@ namespace Accidis.Gotland.WebService.Services
 						return no;
 
 					no = await db.ExecuteScalarAsync<int>("insert into [BookingQueue] ([CandidateId]) output inserted.No values (@Id)",
-						new {Id = candidateId});
+						new { Id = candidateId });
 
 					await db.ExecuteAsync("update [BookingCandidate] set [DeleteProtected] = 1 where [Id] = @Id",
-						new {Id = candidateId});
+						new { Id = candidateId });
 
 					return no;
 				}
@@ -74,14 +84,14 @@ namespace Accidis.Gotland.WebService.Services
 
 		public async Task<BookingCandidate> FindByIdAsync(SqlConnection db, Guid id)
 		{
-			var result = await db.QueryAsync<BookingCandidate>("select * from [BookingCandidate] where [Id] = @Id", new {Id = id});
+			var result = await db.QueryAsync<BookingCandidate>("select * from [BookingCandidate] where [Id] = @Id", new { Id = id });
 			return result.FirstOrDefault();
 		}
 
 		public async Task<int> FindPlaceInQueueAsync(SqlConnection db, Guid candidateId)
 		{
 			return await db.QueryFirstOrDefaultAsync<int>("select [No] from [BookingQueue] where [CandidateId] = @Id",
-				new {Id = candidateId});
+				new { Id = candidateId });
 		}
 
 		public async Task<int> GetNumberOfActiveAsync()
@@ -89,7 +99,7 @@ namespace Accidis.Gotland.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				return await db.ExecuteScalarAsync<int>("select count(*) from [BookingCandidate] where [KeepAlive] > dateadd(minute, @Treshold, getdate())",
-					new {Treshold = -ActiveTresholdMinutes});
+					new { Treshold = -ActiveTresholdMinutes });
 			}
 		}
 
@@ -105,7 +115,7 @@ namespace Accidis.Gotland.WebService.Services
 					"left join [Booking] B on BC.[Id] = B.[CandidateId] " +
 					"where BC.[DeleteProtected] = 1 or BC.[KeepAlive] > dateadd(minute, @Treshold, getdate()) " +
 					"order by ISNULL(BQ.[No], 999999), BC.[Created]",
-					new {Treshold = -ActiveTresholdMinutes});
+					new { Treshold = -ActiveTresholdMinutes });
 
 				return items.Select(row => new QueueDashboardItem
 				{
@@ -128,7 +138,7 @@ namespace Accidis.Gotland.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				int didUpdate = await db.ExecuteScalarAsync<int>("update [BookingCandidate] set [KeepAlive] = sysdatetime() output 1 where [Id] = @Id",
-					new {Id = candidateId});
+					new { Id = candidateId });
 				return didUpdate != 0;
 			}
 		}

@@ -10,6 +10,7 @@ namespace Accidis.Gotland.WebService.Models
 		public string Email { get; set; }
 		public string PhoneNo { get; set; }
 		public string TeamName { get; set; }
+		public string GroupName { get; set; }
 		public int TeamSize { get; set; }
 		public DateTime Created { get; set; }
 

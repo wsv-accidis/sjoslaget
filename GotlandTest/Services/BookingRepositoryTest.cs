@@ -104,6 +104,7 @@ namespace Accidis.Gotland.Test.Services
 			Assert.AreEqual(booking.Email, newCandidate.Email);
 			Assert.AreEqual(booking.PhoneNo, newCandidate.PhoneNo);
 			Assert.AreEqual(booking.TeamName, newCandidate.TeamName);
+			Assert.AreEqual(booking.GroupName, newCandidate.GroupName);
 			Assert.AreEqual(placeInQueue, booking.QueueNo);
 			Assert.AreEqual(String.Empty, booking.SpecialRequest);
 			Assert.AreEqual(0.0m, booking.TotalPrice);
