@@ -177,7 +177,7 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 			catch(Exception ex)
 			{
-				_log.Error(ex, "An unexpected exception occurred while sending a confirmation e-mail.");
+				_log.Error(ex, "An unexpected exception occurred while locking/unlocking a booking.");
 				throw;
 			}
 		}
