@@ -1,97 +1,193 @@
 <h1>Hur bokningen går till</h1>
 
 <p>
-	Bokning sker via den här webbplatsen och du anmäler ditt lag om mellan 1 och 20 personer. Du som bokar är lagledare tillika
-	<strong>kontaktperson</strong> och ansvarar för att samla ihop personuppgifter och pengar från alla deltagare. Du ansvarar
-	även för att det boende ni hyr under vistelsen lämnas tillbaka städat och välbehållet. Vi försöker se till att alla lag får egna
-	boenden, men för att så många som möjligt ska få plats kan det bli nödvändigt att dela.
+	En bokning till AG kallas för ett <strong>lag</strong> och har en kontaktperson som kallas
+	<strong>lagledare</strong>. Ett lag kan bestå av en enda person, men som mest 20 personer. Eftersom vi alltid får
+	många fler bokningar till AG än vad det finns platser, sker ett slags lottning där ni har större chans att få
+	plats ju snabbare ni bokar.
+</p>
+
+<h2>
+	Lagledarens uppgift
+</h2>
+
+<p>
+	Lagledaren ansvarar för att samla in uppgifter och pengar från alla i laget. Lagledaren är också den som ytterst
+	ansvarar för att hela laget följer de <a [routerLink]="AboutRoutes.rules.toUrl()">regler som gäller</a>, och att
+	boendet som laget hyr under vistelsen lämnas tillbaka städat och välbehållet.
 </p>
 
 <p>
-	Du som lagledare kommer att behöva följande information:
+	Lagledaren behöver samla in följande information:
 </p>
 
 <ul>
-	<li>Namn, telefonnummer och e-postadress till dig själv där vi kan nå dig.</li>
-	<li>Hur många ni är i laget. Max 20 per lag, men det går utmärkt att anmäla flera lag.</li>
-	<li>För varje deltagare: För- och efternamn, kön (ej obligatoriskt), födelsedatum, kostpreferens, typ av boende (minsta, högsta, helst).</li>
+	<li>Lagledarens namn, telefonnummer och e-postadress där vi kan nå denne.</li>
+	<li>Hur många det är i laget. Max 20 personer, flera lag kan dock ha samma lagledare.</li>
+	<li>För varje deltagare: För- och efternamn, kön (ej obligatoriskt), födelsedatum, kostpreferens, typ av boende
+		(minsta, högsta, helst).</li>
 </ul>
 
 <p>
-	Det finns två alternativ för mat, antingen kött eller vegansk kost. Båda alternativen är fria från gluten, laktos, nötter och fläskkött.
-	Deltagare som har ytterligare medicinska behov av specialkost ska <a href="mailto:info@absolutgotland.se">skicka e-post</a> till oss.
+	Det finns två alternativ för mat, antingen kött eller vegansk kost. Båda alternativen är <strong>fria från gluten,
+	laktos, nötter och fläskkött.</strong> Deltagare som har ytterligare medicinska behov av specialkost måste
+	<a href="mailto:info@absolutgotland.se">kontakta</a> oss.
 </p>
 
 <p>
-	Eftersom vi vet att biljetterna till AG brukar ta slut väldigt fort sker ett slags lottning. Innan bokningen öppnat visas en
-	<strong>nedräkning</strong> på bokningssidan. När nedräkningen når noll visas en länk - ju snabbare du klickar på länken, desto
-	högre upp hamnar du i bokningskön. Du får veta din köplats direkt och kan sedan i lugn och ro fylla i uppgifterna på alla
-	deltagare i ditt lag.
-</p>
-
-<p>
-	Kort därefter sker en matchning där vi matchar alla lag mot de boenden som finns tillgängliga och sedan
-	får du besked om resultatet per mail. När matchningen är klar kan du inte längre göra ändringar i din bokning själv.
-</p>
-
-<p>
-	På sidan <a [routerLink]="ContentRoutes.pricing.toUrl()">Priser</a> kan du läsa mer om vilka typer av boenden som finns.
-	Varje deltagare kan välja en lägsta- och högstanivå. Eftersom vi (och ni) helst håller ihop lagen är det bäst och enklast
-	om så många som möjligt i laget har samma preferenser kring boende.
-</p>
-
-<p>
-	För att <strong>öka dina chanser</strong> att få plats bör du vara så flexibel som möjligt kring boende. Det kan bli ströplatser
-	över i olika stugor - ange vid bokning om du kan tänka dig att dela stuga med ett annat lag!
+	Det är lagledaren som ska hämta ut nycklarna till boendet vid incheckning. Se därför till att lagledaren är bland
+	de första i laget som anländer, om ni inte alla reser tillsammans.
+	<a href="mailto:info@absolutgotland.se">Kontakta</a> oss om ni behöver byta lagledare.
 </p>
 
 <h2>
-	Resor
+	Val av boende
 </h2>
 
 <p>
-	När du har fått en bekräftelsen är det viktigt att också boka resan så fort som möjligt. Du kan boka båtbiljett med
-	<a href="https://www.destinationgotland.se/">Destination Gotland</a> eller flygbiljett med antingen	<a href="https://www.flygbra.se/destinationer/visby/">BRA</a>
-	eller <a href="https://www.sas.se/resmal/sverige/visby/">SAS</a>. Eller inte alls - om du har den stora förmånen att
-	redan bo på Gotland!
+	De olika <a [routerLink]="ContentRoutes.pricing.toUrl()">boenden</a> som finns är indelade i kategorierna 0-5, där
+	högre siffra innebär dyrare och lyxigare boende. Vid bokningen anger ni minsta, högsta och önskad nivå. Varje
+	deltagare kan ha olika preferenser, men <strong>för högsta chans att få plats bör ni vara så flexibla som
+	möjligt</strong> och alla deltagare bör ha samma preferenser.
 </p>
 
 <p>
-	På sidan med <a [routerLink]="AboutRoutes.program.toUrl()">Program och datum</a> kommer vi att lista rekommenderade
-	avgångar som passar bra med när AG öppnar på torsdagen, samt efter städningen på söndag. Vi kommer även att posta
-	praktisk info kring resor på vår <a href="https://www.facebook.com/absolutgotland/">Facebooksida</a>.
+	När ni skickat in alla uppgifter sker en matchning där vi försöker passa in allas önskemål mot de boenden
+	som finns tillgängliga. Lagledaren får en bekräftelse per e-post om laget har fått plats. Därefter kan ni inte
+	längre själva göra ändringar i bokningen.
 </p>
 
 <p>
-	För dig som väljer att komma med bil finns gott om parkering vid Kneippbyn.
+	Vi försöker i möjligaste mån se till att varje lag får sitt eget boende, men i vissa fall kan det bli nödvändigt
+	att dela för att så många som möjligt ska få plats. Särskilda önskemål kring boende ordnar vi efter bästa förmåga.
 </p>
 
 <h2>
-	Betalning och ändringar/avbokning
+	Nedräkning till bokningsstart
 </h2>
 
 <p>
-	Så fort bokningen är gjord får du en <strong>bokningsreferens</strong> och <strong>PIN-kod</strong> som du kan använda
-	för att öppna din bokning på nytt. Inom tre timmar från att bokningen öppnat kan du själv göra ändringar och lägga till/ta bort
-	deltagare. Därefter låses bokningarna för ändringar tills dess boendena är tilldelade.
+	På <a [routerLink]="ContentRoutes.booking.toUrl()">bokningssidan</a> kan du se när bokningen öppnar. När det börjar
+	närma sig kan lagledaren genom att fylla i sina uppgifter öppna <strong>nedräkningen</strong> - så fort denna når
+	noll visas en länk som det är viktigt att <strong>klicka på så fort som möjligt</strong>. Ju snabbare klick, desto
+	högre prioritet har er bokning.
 </p>
 
 <p>
-	När ditt lag har fått boenden får lagledaren ett mail och kan se de tilldelade stugorna eller campingplatsen genom
-	att logga in med bokingsreferens och PIN-kod. Det går nu att göra ändringar genom att <a [routerLink]="ContentRoutes.contact.toUrl()">kontakta oss</a>
-	och berätta vad som behöver ändras. <strong>Betalning</strong> ska ske så snart som möjligt efter tilldelning, men senast den <strong>31:a mars</strong>.
+	När lagledaren gjort detta visas ett formulär där alla deltagares uppgifter ska fyllas i. Ni bör fylla i detta så
+	fort som möjligt men hur lång tid det tar påverkar inte köplatsen. Lag som inte fyllt i uppgifter kan dock hoppas
+	över när matchningen av boenden väl påbörjas, vilket normalt sker några timmar efter bokningsstart.
+</p>
+
+<p>
+	Lagledaren får ett e-mail med <strong>bokningsreferens</strong> och <strong>PIN-kod</strong>. Spara dessa!
+	Vid incheckning är det bokningsreferensen som lagledaren ska känna till och uppgifterna behövs även för att logga
+	in och se status på bokningen.
+</p>
+
+<p>
+	Får laget inte plats hamnar det automatiskt på väntelistan och vi kontaktar då lagledaren om det skulle bli
+	platser	lediga.
+</p>
+
+<h2>
+	Ändringar och avbokningar
+</h2>
+
+<p>
+	Om någon deltagare inte längre kan åka så är det i första hand upp till laget att själva hitta en ersättare. Om ni
+	behöver byta deltagare eller lagledare, <a href="mailto:info@absolutgotland.se">kontakta</a> oss så hjälper vi
+	till, efter det att bokningen har låsts.
+</p>
+
+<p>
+	Om laget inte själva kan hitta en ersättare så kan vi fråga bland de som står på väntelistan. Skulle detta inte
+	heller lyckas, tillhör platsen fortfarande och ska betalas av laget som bokade den från början.
+	<strong>Återbetalning av biljetter sker alltså normalt inte.</strong> Sista datum för alla typer av ändringar är
+	en vecka innan AG.
+</p>
+
+<p>
+	Camping (nivå 0) är möjligt att avboka med återbetalning fram till en vecka innan AG. Dagbiljetter (se nedan) kan
+	avbokas med återbetalning fram till och med dagen innan AG.
+</p>
+
+<h2>
+	Betalning
+</h2>
+
+<p>
+	När lagledaren fått bekräftelsen om att laget fått platser på AG ska betalning ske så snart som möjligt, men absolut
+	senast den sista dagen i månaden då bokningen öppnar. Betala helst hela bokningen i en enda överföring. Lagledaren
+	kan se om betalningen är mottagen genom att logga in med bokningsreferens och PIN-kod. Det tar oftast några dagar
+	efter betalning innan den syns där. Det skickas inte ut något mail som bekräftar att betalningen tagit emot.
 </p>
 
 <p>
 	Betalning ska ske till <strong>Bankgiro 299-5272</strong> med mottagare <strong>HZ Event & Consulting AB</strong>.
 	På inbetalningen ska anges <strong>bokningsreferens</strong> och <strong>kontaktpersonens namn</strong>.
-	Du måste inte betala hela bokningen på en gång, det går att delbetala. Du får inget mail som
-	bekräftar mottagen betalning, utan det ser du genom att logga in i bokningen.
 </p>
 
 <p>
-	Det går att byta deltagare i befintliga bokningar ända fram till evenemangets början men om enstaka personer i en bokning vill
-	avboka ankommer det i första hand på lagledaren att själv hitta en ersättare. I andra hand har vi en kölista på personer som
-	väntar på plats, så om laget kan acceptera att dela med andra kan vi hjälpa till att fylla upp eventuella ströplatser. Hör
-	av oss vid behov! Camping är undantaget där vi kan ta emot avbokningar utan krav på ersättare ända fram till sista betalningsdatum.
+	Vid utebliven betalning kommer vi i första hand försöka ta kontakt med lagledaren. Lyckas inte detta, kommer
+	bokningen att tas bort och platserna tillfalla något annat lag.
+</p>
+
+<h2>
+	Resa till Kneippbyn
+</h2>
+
+<p>
+	När du har fått en bekräftelsen är det viktigt att också boka resan så fort som möjligt. Du kan boka båtbiljett med
+	<a href="https://www.destinationgotland.se/">Destination Gotland</a> eller flygbiljett med antingen <a href="https://www.flygbra.se/destinationer/visby/">BRA</a>
+	eller <a href="https://www.sas.se/resmal/sverige/visby/">SAS</a>. Eller inte alls - om du har den stora förmånen att
+	redan bo på Gotland!
+</p>
+
+<p>
+	På sidan med <a [routerLink]="AboutRoutes.program.toUrl()">programmet</a> kommer vi att lista rekommenderade
+	avgångar som passar bra med när AG öppnar på torsdagen, samt efter städningen på söndag. Vi kommer även att posta
+	praktisk info kring resor på vår <a href="https://www.facebook.com/absolutgotland/">Facebooksida</a>.
+</p>
+
+<p>
+	För dig som väljer att komma med bil finns det gratis parkering vid Kneippbyn och laddstolpar för elbil.
+</p>
+
+<h2>
+	Dagbiljetter
+</h2>
+
+<p>
+	För dig som inte behöver något boende på Kneippbyn finns det <strong>dagbiljetter</strong> att köpa. De flesta som
+	köper dagbiljett bor på Gotland men det enda viktiga är att ha ett boende utanför Kneippbyn, då man inte får vistas
+	på området mellan kl 04:00-08:00. Frukost ingår inte för den som har dagbiljett, men i övrigt är det ingen
+	skillnad.
+</p>
+
+<p>
+	Dagbiljetter betalas via Swish eller Bankgiro direkt vid bokning. Medlemmar i
+	<a href="https://www.rindi.com/">Gotlands Studentkår Rindi</a> får ett billigare biljettpris.
+</p>
+
+<p>
+	Det går att köpa dagbiljetter när som helst, även under själva AG, genom att besöka Stabstugan. Observera dock att
+	de kan ta slut. Dagbiljetter kan avbokas med återbetalning fram till och med dagen innan AG öppnar.
+</p>
+
+<h2>
+	Överlåtelse och vidareförsäljning av biljetter
+</h2>
+
+<p>
+	Det är tillåtet att överlåta sin biljett till någon annan, läs ovan under rubriken Ändringar. Det är dock inte
+	tillåtet att reservera platser i syfte att sälja dessa vidare eller att lägga in felaktiga namn i en bokning.
+	Vid överlåtelse är det den som överlåter biljetten som ska ta emot betalning direkt av den som tar över den. Skulle
+	betalningen utebli av någon anledning, tillhör biljetten fortfarande den tidigare ägaren.
+</p>
+
+<p>
+	<a href="mailto:info@absolutgotland.se">Kontakta</a> oss alltid i samband med överlåtelse av biljetter så ska vi
+	försöka hjälpa till så gott det går. Observera dock att biljetter inte återbetalas (undantaget camping och
+	dagbiljetter).
 </p>
