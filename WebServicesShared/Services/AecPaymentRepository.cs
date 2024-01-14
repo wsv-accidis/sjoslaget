@@ -13,7 +13,7 @@ namespace Accidis.WebServices.Services
 		{
 			using(var db = DbUtil.Open())
 				await db.ExecuteAsync("insert into [BookingPayment] (BookingId, Amount) values (@BookingId, @Amount)",
-					new {BookingId = booking.Id, Amount = amount});
+					new { BookingId = booking.Id, Amount = amount });
 		}
 
 		public async Task<Payment[]> GetPaymentsByBookingAsync(IBookingPaymentModel booking)
@@ -21,7 +21,7 @@ namespace Accidis.WebServices.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<Payment>("select [Amount], [Created] from [BookingPayment] where [BookingId] = @BookingId order by [Created]",
-					new {BookingId = booking.Id});
+					new { BookingId = booking.Id });
 
 				return result.ToArray();
 			}
@@ -32,7 +32,7 @@ namespace Accidis.WebServices.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryFirstOrDefaultAsync<PaymentSummary>("select sum([Amount]) [Total], max([Created]) [Latest] from [BookingPayment] where [BookingId] = @BookingId group by [BookingId]",
-					new {BookingId = booking.Id});
+					new { BookingId = booking.Id });
 
 				return result ?? PaymentSummary.Empty;
 			}

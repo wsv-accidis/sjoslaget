@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Controllers;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
@@ -69,8 +69,8 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Tuple<string, string> result = await _usersController.ResetPinCode(booking.Reference);
-				return Ok(new BookingResult {Reference = result.Item1, Password = result.Item2});
+				var result = await _usersController.ResetPinCode(booking.Reference);
+				return Ok(new BookingResult { Reference = result.Item1, Password = result.Item2 });
 			}
 			catch(NotFoundException)
 			{

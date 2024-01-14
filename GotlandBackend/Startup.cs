@@ -5,6 +5,7 @@ using Accidis.Gotland.WebService;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Controllers;
 using Accidis.WebServices.Services;
 using DryIoc;
 using DryIoc.WebApi;
@@ -15,7 +16,6 @@ using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
 using NLog;
 using Owin;
-
 #if !DEBUG
 using Accidis.WebServices.Db;
 #endif
@@ -39,7 +39,7 @@ namespace Accidis.Gotland.WebService
 
 		static void Bootstrap(Logger logger)
 		{
-			Task.Run((Action) (async () =>
+			Task.Run((Action)(async () =>
 			{
 				if(await AecUserManager.CreateDefaultUserIfStoreIsEmptyAsync(AuthConfig.StartupAdminUser, AuthConfig.StartupAdminPassword))
 					logger.Warn("Database was empty, created default admin user.");
@@ -62,14 +62,14 @@ namespace Accidis.Gotland.WebService
 				AllowInsecureHttp = true,
 #endif
 				Provider = container.Resolve<AecOAuthProvider>(),
-				TokenEndpointPath = new PathString("/api/token"),
+				TokenEndpointPath = new PathString("/api/token")
 			};
 
 			var jwtOptions = new JwtBearerAuthenticationOptions
 			{
 				AuthenticationMode = AuthenticationMode.Active,
-				AllowedAudiences = new[] {AuthConfig.Audience},
-				IssuerSecurityKeyProviders = new[] {new SymmetricKeyIssuerSecurityKeyProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
+				AllowedAudiences = new[] { AuthConfig.Audience },
+				IssuerSecurityKeyProviders = new[] { new SymmetricKeyIssuerSecurityKeyProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret) }
 			};
 
 			app.UseOAuthAuthorizationServer(oauthOptions);
@@ -112,21 +112,21 @@ namespace Accidis.Gotland.WebService
 
 		static HttpConfiguration CreateHttpConfiguration()
 		{
-			HttpConfiguration config = new HttpConfiguration();
+			var config = new HttpConfiguration();
 			config.MapHttpAttributeRoutes();
 
 			config.Routes.MapHttpRoute(
 				"ControllerActionIdApi",
 				"api/{controller}/{action}/{reference}",
 				new { },
-				new {reference = CredentialsGenerator.BookingReferencePattern}
+				new { reference = CredentialsGenerator.BookingReferencePattern }
 			);
 
 			config.Routes.MapHttpRoute(
 				"ControllerIdApi",
 				"api/{controller}/{reference}",
 				new { },
-				new {reference = CredentialsGenerator.BookingReferencePattern}
+				new { reference = CredentialsGenerator.BookingReferencePattern }
 			);
 
 			config.Routes.MapHttpRoute(

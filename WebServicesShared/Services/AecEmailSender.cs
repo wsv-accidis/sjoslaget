@@ -6,7 +6,7 @@ namespace Accidis.WebServices.Services
 {
 	public class AecEmailSender : IDisposable
 	{
-		readonly SmtpClient _client = new SmtpClient {EnableSsl = true};
+		readonly SmtpClient _client = new SmtpClient { EnableSsl = true };
 
 		public void Dispose()
 		{

@@ -2,8 +2,9 @@
 using System.Threading.Tasks;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
+using Accidis.WebServices.Services;
 
-namespace Accidis.WebServices.Services
+namespace Accidis.WebServices.Controllers
 {
 	public sealed class AecPaymentsController<TBooking>
 		where TBooking : IBookingPaymentModel
@@ -21,11 +22,11 @@ namespace Accidis.WebServices.Services
 
 		public async Task<int?> Discount(string reference, PaymentSource discount, FindBookingByReferenceDelegate findBookingByReference, UpdateDiscountDelegate updateDiscount)
 		{
-			TBooking booking = await findBookingByReference(reference);
+			var booking = await findBookingByReference(reference);
 			if(null == booking)
 				throw new NotFoundException();
 
-			int amount = Convert.ToInt32(discount.Amount);
+			var amount = Convert.ToInt32(discount.Amount);
 			amount = Math.Max(Math.Min(amount, 100), 0);
 
 			if(amount != booking.Discount)
@@ -40,7 +41,7 @@ namespace Accidis.WebServices.Services
 
 		public async Task<Payment[]> Get(string reference, FindBookingByReferenceDelegate findBookingByReference)
 		{
-			TBooking booking = await findBookingByReference(reference);
+			var booking = await findBookingByReference(reference);
 			if(null == booking)
 				throw new NotFoundException();
 
@@ -49,7 +50,7 @@ namespace Accidis.WebServices.Services
 
 		public async Task<PaymentSummary> Pay(string reference, PaymentSource payment, FindBookingByReferenceDelegate findBookingByReference)
 		{
-			TBooking booking = await findBookingByReference(reference);
+			var booking = await findBookingByReference(reference);
 			if(null == booking)
 				throw new NotFoundException();
 

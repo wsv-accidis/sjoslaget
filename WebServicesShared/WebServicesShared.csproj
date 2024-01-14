@@ -144,8 +144,8 @@
     <Compile Include="Models\UserPasswordChange.cs" />
     <Compile Include="Services\AecLoggingConfiguration.cs" />
     <Compile Include="Services\AecPaymentRepository.cs" />
-    <Compile Include="Services\AecPaymentsController.cs" />
-    <Compile Include="Services\AecUsersController.cs" />
+    <Compile Include="Controllers\AecPaymentsController.cs" />
+    <Compile Include="Controllers\AecUsersController.cs" />
     <Compile Include="Db\DateOfBirthTypeHandler.cs" />
     <Compile Include="Db\GenderTypeHandler.cs" />
     <Compile Include="Db\DbUtil.cs" />

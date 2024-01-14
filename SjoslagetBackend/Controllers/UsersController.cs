@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Controllers;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using Accidis.WebServices.Web;
 using NLog;
 
@@ -70,8 +70,8 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		{
 			try
 			{
-				Tuple<string, string> result = await _usersController.ResetPinCode(booking.Reference);
-				return Ok(new BookingResult {Reference = result.Item1, Password = result.Item2});
+				var result = await _usersController.ResetPinCode(booking.Reference);
+				return Ok(new BookingResult { Reference = result.Item1, Password = result.Item2 });
 			}
 			catch(NotFoundException)
 			{
@@ -93,11 +93,11 @@ namespace Accidis.Sjoslaget.WebService.Controllers
 		[Route("api/whoami")]
 		public IHttpActionResult WhoAmI()
 		{
-			string userName = AuthContext.UserName;
-			if(String.IsNullOrEmpty(userName))
+			var userName = AuthContext.UserName;
+			if(string.IsNullOrEmpty(userName))
 				throw new InvalidOperationException("Request is authorized, but username was null or empty.");
 
-			return this.OkNoCache(new {UserName = userName});
+			return this.OkNoCache(new { UserName = userName });
 		}
 	}
 }

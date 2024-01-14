@@ -4,9 +4,9 @@ using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
+using Accidis.WebServices.Controllers;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
-using Accidis.WebServices.Services;
 using Accidis.WebServices.Web;
 using NLog;
 
@@ -30,7 +30,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				int? amount = await _paymentsController.Discount(reference, discount, _bookingRepository.FindByReferenceAsync, _bookingRepository.UpdateDiscountAsync);
+				var amount = await _paymentsController.Discount(reference, discount, _bookingRepository.FindByReferenceAsync, _bookingRepository.UpdateDiscountAsync);
 				if(amount.HasValue)
 					_log.Info("Set discount to {0}% for booking {1}.", amount.Value, reference);
 
@@ -73,7 +73,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				PaymentSummary summary = await _paymentsController.Pay(reference, payment, _bookingRepository.FindByReferenceAsync);
+				var summary = await _paymentsController.Pay(reference, payment, _bookingRepository.FindByReferenceAsync);
 
 				if(payment.Amount != 0)
 					_log.Info("Registered payment of {0} kr for booking {1}.", payment.Amount, reference);

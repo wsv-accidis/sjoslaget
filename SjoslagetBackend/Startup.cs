@@ -6,7 +6,7 @@ using Accidis.Sjoslaget.WebService.Db;
 using Accidis.Sjoslaget.WebService.Models;
 using Accidis.Sjoslaget.WebService.Services;
 using Accidis.WebServices.Auth;
-using Accidis.WebServices.Db;
+using Accidis.WebServices.Controllers;
 using Accidis.WebServices.Services;
 using Dapper;
 using DryIoc;
@@ -38,7 +38,7 @@ namespace Accidis.Sjoslaget.WebService
 
 		static void Bootstrap(Logger logger)
 		{
-			Task.Run((Action) (async () =>
+			Task.Run((Action)(async () =>
 			{
 				if(await AecUserManager.CreateDefaultUserIfStoreIsEmptyAsync(AuthConfig.StartupAdminUser, AuthConfig.StartupAdminPassword))
 					logger.Warn("Database was empty, created default admin user.");
@@ -61,14 +61,14 @@ namespace Accidis.Sjoslaget.WebService
 				AllowInsecureHttp = true,
 #endif
 				Provider = container.Resolve<AecOAuthProvider>(),
-				TokenEndpointPath = new PathString("/api/token"),
+				TokenEndpointPath = new PathString("/api/token")
 			};
 
 			var jwtOptions = new JwtBearerAuthenticationOptions
 			{
 				AuthenticationMode = AuthenticationMode.Active,
-				AllowedAudiences = new[] {AuthConfig.Audience},
-				IssuerSecurityKeyProviders = new[] {new SymmetricKeyIssuerSecurityKeyProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret)}
+				AllowedAudiences = new[] { AuthConfig.Audience },
+				IssuerSecurityKeyProviders = new[] { new SymmetricKeyIssuerSecurityKeyProvider(AuthConfig.Issuer, AuthConfig.AudienceSecret) }
 			};
 
 			app.UseOAuthAuthorizationServer(oauthOptions);
@@ -83,7 +83,7 @@ namespace Accidis.Sjoslaget.WebService
 			container.Register<AecOAuthProvider>(Reuse.Singleton);
 			container.Register<AecPaymentRepository>(Reuse.Singleton);
 			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
-			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
+			container.Register(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecUsersController>(Reuse.Singleton);
 			container.Register<BookingCabinsComparer>(Reuse.Singleton);
 			container.Register<BookingRepository>(Reuse.Singleton);
@@ -115,21 +115,21 @@ namespace Accidis.Sjoslaget.WebService
 
 		static HttpConfiguration CreateHttpConfiguration()
 		{
-			HttpConfiguration config = new HttpConfiguration();
+			var config = new HttpConfiguration();
 			config.MapHttpAttributeRoutes();
 
 			config.Routes.MapHttpRoute(
 				"ControllerActionIdApi",
 				"api/{controller}/{action}/{reference}",
 				new { },
-				new {reference = CredentialsGenerator.BookingReferencePattern}
+				new { reference = CredentialsGenerator.BookingReferencePattern }
 			);
 
 			config.Routes.MapHttpRoute(
 				"ControllerIdApi",
 				"api/{controller}/{reference}",
 				new { },
-				new {reference = CredentialsGenerator.BookingReferencePattern}
+				new { reference = CredentialsGenerator.BookingReferencePattern }
 			);
 
 			config.Routes.MapHttpRoute(

@@ -14,7 +14,7 @@ namespace Accidis.WebServices.Services
 				Name = "db",
 				ConnectionString = connectionString,
 				CommandText = "insert into [Log] ([Timestamp], [Level], [Logger], [Message], [Callsite], [Exception], [UserName], [Method], [Url], [RemoteAddress], [LocalAddress]) " +
-							  "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
+				              "values (@Timestamp, @Level, @Logger, @Message, @Callsite, @Exception, @UserName, @Method, @Url, @RemoteAddress, @LocalAddress)",
 				Parameters =
 				{
 					new DatabaseParameterInfo("@Timestamp", "${date:universalTime=true}"),
@@ -39,7 +39,7 @@ namespace Accidis.WebServices.Services
 		public static LoggingConfiguration CreateForDebug(LogLevel logLevel)
 		{
 			var config = new LoggingConfiguration();
-			var target = new DebuggerTarget {Name = "debug"};
+			var target = new DebuggerTarget { Name = "debug" };
 			config.AddTarget(target);
 			config.LoggingRules.Add(new LoggingRule("*", logLevel, target));
 			return config;
