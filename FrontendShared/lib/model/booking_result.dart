@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'json_field.dart';
 
 class BookingResult {
-	String reference;
-	String password;
+	final String reference;
+	final String password;
 
 	BookingResult(this.reference, this.password);
 

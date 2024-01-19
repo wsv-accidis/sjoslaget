@@ -3,14 +3,14 @@
 </h1>
 
 <div class="admin-menu">
-	<material-icon icon="arrow_back"></material-icon>
-	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
-	<span></span>
 	<material-icon icon="view_list"></material-icon>
 	<a [routerLink]="AdminRoutes.bookingList.toUrl()">Bokningar</a>
 	<span></span>
 	<material-icon icon="people"></material-icon>
 	<a [routerLink]="AdminRoutes.paxList.toUrl()">Deltagare</a>
+	<span></span>
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
 </div>
 
 <p>
@@ -104,7 +104,6 @@
 							required
 							requiredErrorMsg="Ange e-postadress."
 							pattern="[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.([a-zA-Z]{2,6})"
-							style="width: 300px"
 							type="email">
 			</material-input>
 		</div>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Accidis.WebServices.Db;
 using Accidis.WebServices.Models;
@@ -12,8 +11,10 @@ namespace Accidis.WebServices.Services
 		public async Task CreateAsync(IBookingPaymentModel booking, decimal amount)
 		{
 			using(var db = DbUtil.Open())
+			{
 				await db.ExecuteAsync("insert into [BookingPayment] (BookingId, Amount) values (@BookingId, @Amount)",
 					new { BookingId = booking.Id, Amount = amount });
+			}
 		}
 
 		public async Task<Payment[]> GetPaymentsByBookingAsync(IBookingPaymentModel booking)

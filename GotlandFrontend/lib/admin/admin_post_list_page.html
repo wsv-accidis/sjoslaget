@@ -1,0 +1,51 @@
+<h1>
+	Nyheter
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="article"></material-icon>
+	<a href="javascript:" (click)="createPost()">Skriv nyhet</a>
+	<span></span>
+	<material-icon icon="refresh"></material-icon>
+	<a href="javascript:" (click)="refresh()">Uppdatera</a>
+	<span></span>
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<div class="spinner-widget" *ngIf="isLoading">
+	<spinner-widget></spinner-widget>
+</div>
+
+<table *ngIf="!isLoading" class="posts">
+	<tr>
+		<th style="width: 80px"></th>
+		<th>
+			Text
+		</th>
+		<th style="width: 150px">
+			Skapad
+		</th>
+		<th style="width: 150px">
+			Uppdaterad
+		</th>
+	</tr>
+	<tr *ngFor="let post of posts">
+		<td>
+			<a [routerLink]="AdminRoutes.postUrl(post.id)">
+				Redigera
+			</a>
+		</td>
+		<td>
+			{{ ellipsify(post.contentPreview) }}
+		</td>
+		<td>
+			{{ formatDateTime(post.created) }}
+		</td>
+		<td>
+			{{ formatDateTime(post.updated) }}
+		</td>
+	</tr>
+</table>
+
+<div class="page-end-block"></div>

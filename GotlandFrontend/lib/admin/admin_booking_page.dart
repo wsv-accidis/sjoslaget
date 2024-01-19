@@ -5,7 +5,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/admin/payment_history_component.dart';
-import 'package:frontend_shared/model.dart' show BookingResult;
+import 'package:frontend_shared/model/booking_result.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
@@ -206,9 +206,9 @@ class AdminBookingPage implements OnActivate {
     if (isSaving) return;
 
     isSaving = true;
-    try {
-      bookingError = null;
+	bookingError = null;
 
+    try {
       booking.pax = BookingPaxView.listToListOfBookingPax(pax.paxViews);
       try {
         final client = _clientFactory.getClient();

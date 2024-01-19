@@ -10,9 +10,13 @@ class AdminRoutes {
   static final RoutePath export = RoutePath(path: 'exportera');
   static final RoutePath login = RoutePath(path: 'login');
   static final RoutePath paxList = RoutePath(path: 'deltagare');
+  static final RoutePath post = RoutePath(path: 'nyheter/:id');
+  static final RoutePath postList = RoutePath(path: 'nyheter');
   static final RoutePath user = RoutePath(path: 'byt-losenord');
 
   static String bookingUrl(String ref) => booking.toUrl(parameters: <String, String>{'ref': ref});
 
   static String dayBookingUrl(String ref) => dayBooking.toUrl(parameters: <String, String>{'ref': ref});
+
+  static String postUrl(String id) => post.toUrl(parameters: <String,String>{'id': id});
 }

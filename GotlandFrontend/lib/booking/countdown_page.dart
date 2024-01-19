@@ -5,7 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
-import 'package:frontend_shared/model.dart';
+import 'package:frontend_shared/model/booking_result.dart';
 import 'package:quiver/strings.dart' show isEmpty;
 
 import '../booking/booking_routes.dart';
@@ -131,13 +131,13 @@ class CountdownPage implements OnInit, OnDestroy {
     }
 
     _updateButton(null);
-    _buttonTimer = Timer.periodic(Duration(milliseconds: BUTTON_CYCLE_INTERVAL), _updateButton);
+    _buttonTimer = Timer.periodic(const Duration(milliseconds: BUTTON_CYCLE_INTERVAL), _updateButton);
 
     _tick(null);
-    _countdownTimer = Timer.periodic(Duration(milliseconds: TICK_INTERVAL), _tick);
+    _countdownTimer = Timer.periodic(const Duration(milliseconds: TICK_INTERVAL), _tick);
 
     await _ping(null);
-    _pingTimer = Timer.periodic(Duration(milliseconds: PING_INTERVAL), _ping);
+    _pingTimer = Timer.periodic(const Duration(milliseconds: PING_INTERVAL), _ping);
 
     if (countdownIsElapsed) {
       print('Countdown has already elapsed, go directly to booking.');
@@ -156,14 +156,13 @@ class CountdownPage implements OnInit, OnDestroy {
       hasError = true;
     }
 
-    if (null == _bookingResult)
-		return;
-	if (isEmpty(_bookingResult.password)) {
-		print('Booking already exists with ref: ${_bookingResult.reference}.');
-		hasBookingError = true;
-		existingBookingRef = _bookingResult.reference;
-		return;
-	}
+    if (null == _bookingResult) return;
+    if (isEmpty(_bookingResult.password)) {
+      print('Booking already exists with ref: ${_bookingResult.reference}.');
+      hasBookingError = true;
+      existingBookingRef = _bookingResult.reference;
+      return;
+    }
 
     _tempCredentialsStore.save(_bookingResult);
 
@@ -171,7 +170,7 @@ class CountdownPage implements OnInit, OnDestroy {
       await _clientFactory.authenticate(_bookingResult.reference, _bookingResult.password);
     } catch (e) {
       print('Booking was created but failed to authenticate: ${e.toString()}');
-	  hasError = true;
+      hasError = true;
       return;
     }
 
@@ -199,7 +198,8 @@ class CountdownPage implements OnInit, OnDestroy {
         // Add a random delay. This has NO impact on the queue position that this user
         // gets, as one has already been assigned. It only serves to reduce server load.
         final int delay = RANDOM_DELAY_MIN + _random.nextInt(RANDOM_DELAY_MAX - RANDOM_DELAY_MIN);
-        print('Claimed queue position ${_queueResponse.placeInQueue.toString()}, creating booking after ${delay.toString()} ms.');
+        print(
+            'Claimed queue position ${_queueResponse.placeInQueue.toString()}, creating booking after ${delay.toString()} ms.');
         await Future<void>.delayed(Duration(milliseconds: delay), createBooking);
       } else {
         hasError = true;

@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +35,9 @@
   <ItemGroup>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.1.28\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig, Version=0.34.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.34.0\lib\net462\Markdig.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -82,6 +87,9 @@
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp, Version=2.88.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkiaSharp.2.88.7\lib\net462\SkiaSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -135,6 +143,13 @@
     <Compile Include="Auth\AecUserManager.cs" />
     <Compile Include="Auth\AecUserStore.cs" />
     <Compile Include="Auth\AecUserTokenProvider.cs" />
+    <Compile Include="Exceptions\ImageException.cs" />
+    <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\PostImage.cs" />
+    <Compile Include="Models\PostResult.cs" />
+    <Compile Include="Models\PostImageSource.cs" />
+    <Compile Include="Models\PostListItem.cs" />
+    <Compile Include="Models\PostSource.cs" />
     <Compile Include="Models\BookingReference.cs" />
     <Compile Include="Models\BookingResult.cs" />
     <Compile Include="Models\IBookingPaymentModel.cs" />
@@ -143,6 +158,7 @@
     <Compile Include="Models\PaymentSource.cs" />
     <Compile Include="Models\PaymentSummary.cs" />
     <Compile Include="Models\UserPasswordChange.cs" />
+    <Compile Include="Services\AecPostImageRepository.cs" />
     <Compile Include="Services\AecLoggingConfiguration.cs" />
     <Compile Include="Services\AecPaymentRepository.cs" />
     <Compile Include="Controllers\AecPaymentsController.cs" />
@@ -159,9 +175,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Auth\AecCredentialsGenerator.cs" />
     <Compile Include="Services\AecEmailSender.cs" />
+    <Compile Include="Services\AecPostRepository.cs" />
     <Compile Include="Web\ApiControllerExtensions.cs" />
     <Compile Include="Web\OkCacheControlResult.cs" />
     <Compile Include="Web\OkNoCacheResult.cs" />
+    <Compile Include="Web\OkEtagResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -169,4 +187,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\SkiaSharp.NativeAssets.macOS.2.88.7\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.macOS.2.88.7\build\net462\SkiaSharp.NativeAssets.macOS.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\SkiaSharp.NativeAssets.macOS.2.88.7\build\net462\SkiaSharp.NativeAssets.macOS.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SkiaSharp.NativeAssets.macOS.2.88.7\build\net462\SkiaSharp.NativeAssets.macOS.targets'))" />
+    <Error Condition="!Exists('..\packages\SkiaSharp.NativeAssets.Win32.2.88.7\build\net462\SkiaSharp.NativeAssets.Win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SkiaSharp.NativeAssets.Win32.2.88.7\build\net462\SkiaSharp.NativeAssets.Win32.targets'))" />
+  </Target>
+  <Import Project="..\packages\SkiaSharp.NativeAssets.Win32.2.88.7\build\net462\SkiaSharp.NativeAssets.Win32.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.Win32.2.88.7\build\net462\SkiaSharp.NativeAssets.Win32.targets')" />
 </Project>

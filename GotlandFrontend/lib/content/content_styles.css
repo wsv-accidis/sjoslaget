@@ -41,6 +41,10 @@ h1 {
 }
 
 h2 {
+	font-size: 22px;
+}
+
+h3 {
 	font-size: 18px;
 }
 
@@ -48,22 +52,6 @@ img {
 	border: 1px solid darkgray;
 	box-shadow: 2px 2px 4px darkgray;
 	max-width: 100%;
-}
-
-iframe {
-	border: 0;
-	margin-left: -10px;
-	max-width: 100%;
-	width: 487px;
-}
-
-iframe.facebook-box {
-	height: 600px;
-	width: 500px;
-}
-
-iframe.facebook-box-compact {
-	height: 80px;
 }
 
 .mono {

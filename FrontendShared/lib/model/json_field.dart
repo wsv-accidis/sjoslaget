@@ -1,9 +1,17 @@
 const String AMOUNT = 'Amount';
+const String CONTENT = 'Content';
+const String CONTENT_HTML = 'ContentHtml';
+const String CONTENT_PREVIEW = 'ContentPreview';
 const String CREATED = 'Created';
 const String CURRENT_PASSWORD = 'CurrentPassword';
+const String ID = 'Id';
+const String IMAGE_BYTES = 'ImageBytes';
+const String IMAGES = 'Images';
 const String LATEST = 'Latest';
 const String NEW_PASSWORD = 'NewPassword';
 const String PASSWORD = 'Password';
+const String POST_ID = 'PostId';
 const String REFERENCE = 'Reference';
 const String TOTAL = 'Total';
 const String USERNAME = 'Username';
+const String UPDATED = 'Updated';

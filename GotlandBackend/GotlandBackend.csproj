@@ -193,6 +193,7 @@
     <Compile Include="Controllers\DayBookingsController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
+    <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\QueueAdminController.cs" />
     <Compile Include="Controllers\QueueController.cs" />
     <Compile Include="Controllers\UsersController.cs" />

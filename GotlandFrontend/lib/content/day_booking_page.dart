@@ -81,7 +81,7 @@ class DayBookingPage implements OnInit {
       final client = _clientFactory.getClient();
       final source = DayBookingSource.fromSoloView(booking.view, type.id);
       await _dayBookingRepository.createBooking(client, source);
-    } on SoldOutException catch (ignored) {
+    } on SoldOutException {
       print('Sold out trying to save day booking.');
       hasSoldOutError = true;
     } catch (e) {

@@ -1,0 +1,23 @@
+.post-container {
+	border-bottom: 1px solid darkgray;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.post-content {
+	max-width: 100%;
+	margin-top: -5px;
+}
+
+.post-footer {
+	font-size: smaller;
+	font-style: italic;
+	margin-top: 5px;
+}
+
+.post-image {
+	border: 1px solid darkgray;
+	box-shadow: 2px 2px 4px darkgray;
+	height: auto;
+	max-width: 100%;
+}

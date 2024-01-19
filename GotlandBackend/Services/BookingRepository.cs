@@ -39,8 +39,8 @@ namespace Accidis.Gotland.WebService.Services
 				Email = "info@absolutgotland.se",
 				PhoneNo = "0",
 				TeamName = "TeamName",
-				SpecialRequest = String.Empty,
-				InternalNotes = String.Empty
+				SpecialRequest = string.Empty,
+				InternalNotes = string.Empty
 			};
 
 			using(var db = DbUtil.Open())
@@ -66,10 +66,10 @@ namespace Accidis.Gotland.WebService.Services
 				LastName = source.LastName,
 				Email = source.Email,
 				PhoneNo = source.PhoneNo,
-				TeamName = String.Concat(source.FirstName, ' ', source.LastName),
+				TeamName = string.Concat(source.FirstName, ' ', source.LastName),
 				GroupName = source.GroupName,
-				SpecialRequest = String.Empty,
-				InternalNotes = String.Empty
+				SpecialRequest = string.Empty,
+				InternalNotes = string.Empty
 			};
 
 			var pax = new BookingPax
@@ -113,7 +113,7 @@ namespace Accidis.Gotland.WebService.Services
 				await db.GetAppLockAsync(LockResource, LockTimeout);
 
 				var existingRef = await db.ExecuteScalarAsync<string>("select [Reference] from [Booking] where [CandidateId] = @Id",
-					new { Id = candidate.Id });
+					new { candidate.Id });
 				if(!string.IsNullOrEmpty(existingRef))
 				{
 					_log.Warn($"An attempt was made to create a second booking from the same candidate = {candidate.Id}, existing reference = {existingRef}");
@@ -133,24 +133,27 @@ namespace Accidis.Gotland.WebService.Services
 
 		public async Task DeleteAsync(Booking booking)
 		{
-			AecUser user = await _userManager.FindByNameAsync(booking.Reference);
+			var user = await _userManager.FindByNameAsync(booking.Reference);
 			if(null != user && user.IsBooking)
 				await _userManager.DeleteAsync(user);
 
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new { Id = booking.Id });
+			{
+				await db.ExecuteAsync("delete from [Booking] where [Id] = @Id", new { booking.Id });
+			}
 		}
 
 		public async Task<Booking> FindByReferenceAsync(string reference)
 		{
 			using(var db = DbUtil.Open())
+			{
 				return await FindByReferenceAsync(db, reference);
+			}
 		}
 
 		public async Task<Booking> FindByReferenceAsync(SqlConnection db, string reference)
 		{
-			var result = await db.QueryAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new { Reference = reference });
-			return result.FirstOrDefault();
+			return await db.QueryFirstOrDefaultAsync<Booking>("select * from [Booking] where [Reference] = @Reference", new { Reference = reference });
 		}
 
 		public async Task<BookingPax[]> GetPaxForBookingAsync(Booking booking)
@@ -158,7 +161,7 @@ namespace Accidis.Gotland.WebService.Services
 			using(var db = DbUtil.Open())
 			{
 				var result = await db.QueryAsync<BookingPax>("select * from [BookingPax] where [BookingId] = @Id order by [Order]",
-					new { Id = booking.Id });
+					new { booking.Id });
 				return result.ToArray();
 			}
 		}
@@ -222,42 +225,47 @@ namespace Accidis.Gotland.WebService.Services
 		public async Task<bool> IsBookingLockedAsync(string reference)
 		{
 			using(var db = DbUtil.Open())
+			{
 				return await db.QueryFirstOrDefaultAsync<bool>("select [IsLocked] from [Booking] where [Reference] = @Reference", new { Reference = reference });
+			}
 		}
 
 		public async Task UpdateConfirmationSentAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("update [Booking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new { Id = booking.Id });
+			{
+				await db.ExecuteAsync("update [Booking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new { booking.Id });
+			}
 		}
 
 		public async Task UpdateDiscountAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
 			{
-				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
+				var totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
 
 				await db.ExecuteAsync("update [Booking] set [Discount] = @Discount, [TotalPrice] = @TotalPrice where [Id] = @Id",
-					new { Id = booking.Id, Discount = booking.Discount, TotalPrice = totalPrice });
+					new { booking.Id, booking.Discount, TotalPrice = totalPrice });
 			}
 		}
 
 		public async Task UpdateLockedAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id", new { Id = booking.Id, IsLocked = booking.IsLocked });
+			{
+				await db.ExecuteAsync("update [Booking] set [IsLocked] = @IsLocked where [Id] = @Id", new { booking.Id, booking.IsLocked });
+			}
 		}
 
 		public async Task UpdateTotalPriceAsync(Booking booking)
 		{
 			using(var db = DbUtil.Open())
 			{
-				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
+				var totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
 				await db.ExecuteAsync("update [Booking] set [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
 					new
 					{
-						TotalPrice = totalPrice,
-						Id = booking.Id
+						TotalPrice = totalPrice, booking.Id
 					});
 			}
 		}
@@ -286,36 +294,32 @@ namespace Accidis.Gotland.WebService.Services
 
 				await DeletePax(db, booking);
 				await CreatePax(db, booking, source.Pax);
-				decimal totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
+				var totalPrice = await GetTotalPriceForBooking(db, booking.Id, booking.Discount);
 
 				if(allowUpdateDetails)
-				{
 					await db.ExecuteAsync(
 						"update [Booking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [TeamName] = @TeamName, [GroupName] = @GroupName, [SpecialRequest] = @SpecialRequest, [InternalNotes] = @InternalNotes, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
 						new
 						{
-							FirstName = source.FirstName,
-							LastName = source.LastName,
-							Email = source.Email,
-							PhoneNo = source.PhoneNo,
-							TeamName = source.TeamName,
-							GroupName = source.GroupName,
-							SpecialRequest = source.SpecialRequest ?? String.Empty,
-							InternalNotes = source.InternalNotes ?? String.Empty,
+							source.FirstName,
+							source.LastName,
+							source.Email,
+							source.PhoneNo,
+							source.TeamName,
+							source.GroupName,
+							SpecialRequest = source.SpecialRequest ?? string.Empty,
+							InternalNotes = source.InternalNotes ?? string.Empty,
 							TotalPrice = totalPrice,
-							Id = booking.Id
+							booking.Id
 						});
-				}
 				else
-				{
 					await db.ExecuteAsync("update [Booking] set [SpecialRequest] = @SpecialRequest, [TotalPrice] = @TotalPrice, [Updated] = sysdatetime() where [Id] = @Id",
 						new
 						{
-							SpecialRequest = source.SpecialRequest ?? String.Empty,
+							SpecialRequest = source.SpecialRequest ?? string.Empty,
 							TotalPrice = totalPrice,
-							Id = booking.Id
+							booking.Id
 						});
-				}
 
 				tran.Complete();
 			}
@@ -325,26 +329,25 @@ namespace Accidis.Gotland.WebService.Services
 
 		async Task CreateBooking(SqlConnection db, Guid candidateId, Booking booking)
 		{
-			Guid? candidateIdNullable = Guid.Empty == candidateId ? null : new Guid?(candidateId);
-			bool createdBooking = false;
+			var candidateIdNullable = Guid.Empty == candidateId ? null : new Guid?(candidateId);
+			var createdBooking = false;
 			while(!createdBooking)
-			{
 				try
 				{
-					Guid id = await db.ExecuteScalarAsync<Guid>(
+					var id = await db.ExecuteScalarAsync<Guid>(
 						"insert into [Booking] ([EventId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [TeamName], [GroupName], [CandidateId], [QueueNo]) output inserted.[Id] values (@EventId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @TeamName, @GroupName, @CandidateId, @QueueNo)",
 						new
 						{
-							EventId = booking.EventId,
-							Reference = booking.Reference,
-							FirstName = booking.FirstName,
-							LastName = booking.LastName,
-							Email = booking.Email,
-							PhoneNo = booking.PhoneNo,
-							TeamName = booking.TeamName,
-							GroupName = booking.GroupName ?? String.Empty,
+							booking.EventId,
+							booking.Reference,
+							booking.FirstName,
+							booking.LastName,
+							booking.Email,
+							booking.PhoneNo,
+							booking.TeamName,
+							GroupName = booking.GroupName ?? string.Empty,
 							CandidateId = candidateIdNullable,
-							QueueNo = booking.QueueNo
+							booking.QueueNo
 						});
 
 					createdBooking = true;
@@ -358,15 +361,14 @@ namespace Accidis.Gotland.WebService.Services
 					else
 						throw;
 				}
-			}
 		}
 
 		async Task CreatePax(SqlConnection db, Booking booking, List<BookingSource.PaxSource> sourceList)
 		{
-			int paxIdx = 0;
-			foreach(BookingSource.PaxSource paxSource in sourceList)
+			var paxIdx = 0;
+			foreach(var paxSource in sourceList)
 			{
-				BookingPax pax = BookingPax.FromSource(paxSource, booking.Id);
+				var pax = BookingPax.FromSource(paxSource, booking.Id);
 				await CreatePax(db, pax, paxIdx++);
 			}
 		}
@@ -377,15 +379,15 @@ namespace Accidis.Gotland.WebService.Services
 			                      "values (@BookingId, @FirstName, @LastName, @Gender, @Dob, @Food, @CabinClassMin, @CabinClassPreferred, @CabinClassMax, @Order)",
 				new
 				{
-					BookingId = pax.BookingId,
-					FirstName = pax.FirstName,
-					LastName = pax.LastName,
-					Gender = pax.Gender,
+					pax.BookingId,
+					pax.FirstName,
+					pax.LastName,
+					pax.Gender,
 					Dob = pax.Dob.ToString(),
-					Food = pax.Food,
-					CabinClassMin = pax.CabinClassMin,
-					CabinClassPreferred = pax.CabinClassPreferred,
-					CabinClassMax = pax.CabinClassMax,
+					pax.Food,
+					pax.CabinClassMin,
+					pax.CabinClassPreferred,
+					pax.CabinClassMax,
 					Order = idx
 				});
 		}
@@ -410,7 +412,7 @@ namespace Accidis.Gotland.WebService.Services
 			// Discount (only applies to price of cabins)
 			if(discount > 0)
 			{
-				decimal discountPrice = totalPrice * (discount / 100m);
+				var discountPrice = totalPrice * (discount / 100m);
 				totalPrice -= discountPrice;
 			}
 

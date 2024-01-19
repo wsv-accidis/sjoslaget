@@ -84,15 +84,17 @@ namespace Accidis.Gotland.WebService
 			container.Register<AecOAuthProvider>(Reuse.Singleton);
 			container.Register<AecPaymentRepository>(Reuse.Singleton);
 			container.Register<AecPaymentsController<Booking>>(Reuse.Singleton);
-			container.Register<AecUserManager>(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
+			container.Register<AecPostImageRepository>(Reuse.Singleton);
+			container.Register<AecPostRepository>(Reuse.Singleton);
+			container.Register(Made.Of(() => AecUserManager.Create()), Reuse.Singleton);
 			container.Register<AecUsersController>(Reuse.Singleton);
 			container.Register<AllocationRepository>(Reuse.Singleton);
 			container.Register<BookingRepository>(Reuse.Singleton);
 			container.Register<BookingCandidateRepository>(Reuse.Singleton);
 			container.Register<CabinRepository>(Reuse.Singleton);
 			container.Register<CredentialsGenerator>(Reuse.Singleton);
-			container.Register<EventRepository>(Reuse.Singleton);
 			container.Register<DayBookingRepository>(Reuse.Singleton);
+			container.Register<EventRepository>(Reuse.Singleton);
 
 			return container;
 		}
@@ -105,7 +107,7 @@ namespace Accidis.Gotland.WebService
 			LogManager.Configuration = AecLoggingConfiguration.CreateForDatabase(DbUtil.ConnectionString, LogLevel.Info);
 #endif
 
-			var logger = LogManager.GetLogger(typeof(Startup).Name);
+			var logger = LogManager.GetLogger(nameof(Startup));
 			logger.Debug("Starting up.");
 			return logger;
 		}

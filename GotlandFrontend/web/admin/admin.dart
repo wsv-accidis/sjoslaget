@@ -1,5 +1,5 @@
-import 'package:Gotland/admin/admin_component.template.dart';
-import 'package:Gotland/client/client_factory.dart' show GOTLAND_API_ROOT;
+import 'package:gotland/admin/admin_component.template.dart';
+import 'package:gotland/client/client_factory.dart' show GOTLAND_API_ROOT;
 import 'package:angular/angular.dart';
 
 import '../init.dart';

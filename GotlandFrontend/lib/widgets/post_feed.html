@@ -1,0 +1,8 @@
+<h2 *ngIf="hasPosts">Senaste nytt</h2>
+
+<div *ngIf="hasPosts">
+	<post-view *ngFor="let post of posts" [post]="post" [images]="getImagesFor(post)"></post-view>
+
+	<a href="javascript:" (click)="loadMore()" *ngIf="!isLoading && !noMorePosts">Visa äldre nyheter</a>
+	<span *ngIf="isLoading">Vänta ...</span>
+</div>

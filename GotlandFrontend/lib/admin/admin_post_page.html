@@ -1,0 +1,82 @@
+<h1>
+	Redigera nyhet
+</h1>
+
+<div class="admin-menu">
+	<material-icon icon="newspaper"></material-icon>
+	<a [routerLink]="AdminRoutes.postList.toUrl()">Nyheter</a>
+	<span></span>
+	<material-icon icon="arrow_back"></material-icon>
+	<a [routerLink]="AdminRoutes.dashboard.toUrl()">Huvudsidan</a>
+</div>
+
+<p>
+	Här skapar och redigerar du nyheter. Du kan använda <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a> för att formatera texten.
+</p>
+
+<p class="super-important loading-error" *ngIf="hasLoadingError">
+	{{ loadingError }}
+</p>
+
+<form #postForm="ngForm">
+	<input type="submit" class="hidden-submit"/>
+
+	<div *ngIf="!isLoading">
+		<material-input [(ngModel)]="post.content"
+						class="content-field"
+						[displayBottomPanel]="false"
+						floatingLabel
+						label="Text"
+						multiline>
+		</material-input>
+
+		<h3>Bilder</h3>
+
+		<p>
+			Markera en bild för att ta bort den. Välj en bild att ladda upp för att lägga till den.
+		</p>
+
+		<div *ngIf="hasImages" class="images-list">
+			<div *ngFor="let image of images" class="images-list-item">
+				<img [src]="image.src"/>
+				<material-checkbox [(ngModel)]="image.delete"
+								   [ngControl]="uniqueImageId(image.id)">
+				</material-checkbox>
+			</div>
+		</div>
+
+		<div class="upload-image-field">
+			<input #uploadImageInput type="file" accept="image/*">
+		</div>
+
+		<h3>Spara</h3>
+
+		<material-button class="control-green"
+						 [disabled]="isSaving || !hasText"
+						 raised
+						 (trigger)="savePost()">
+			Spara nyhet
+		</material-button>
+
+		<material-button class="control-red"
+						 [disabled]="isSaving || !isSaved"
+						 raised
+						 (trigger)="deletePost()">
+			Radera nyhet
+		</material-button>
+	</div>
+</form>
+
+<div *ngIf="!isLoading && isSaved" class="preview">
+	<h3>Förhandsgranska</h3>
+
+	<div class="preview-box">
+		<post-view [post]="post" [images]="images"></post-view>
+	</div>
+</div>
+
+<modal-dialog #deletePostDialog
+			  action="Ja, radera"
+			  title="Radera nyhet"
+			  message="Är du säker? Nyheten raderas permanent. Det här går inte att ångra.">
+</modal-dialog>

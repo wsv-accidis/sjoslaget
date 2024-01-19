@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:frontend_shared/model.dart' show PaymentSummary;
-import 'package:frontend_shared/util/value_converter.dart';
+import 'package:frontend_shared/model/payment_summary.dart';
+import 'package:frontend_shared/util.dart' show ValueConverter;
 
 import 'booking_pax.dart';
 import 'json_field.dart';
