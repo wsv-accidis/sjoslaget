@@ -18,5 +18,5 @@ class PostView {
   List<PostImageView> images;
 
   String get dateFormatted =>
-      null != post.updated ? DateTimeFormatter.format(post.updated) : '';
+      null != post.created ? DateTimeFormatter.format(post.created) : '';
 }
