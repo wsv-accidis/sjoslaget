@@ -17,6 +17,26 @@ class PostView {
   @Input()
   List<PostImageView> images;
 
-  String get dateFormatted =>
+  String get dateFormatted {
+    if (null == post.created) return '';
+
+    final sinceCreated = DateTime.now().difference(post.created);
+    if (!sinceCreated.isNegative && sinceCreated < Duration(hours: 24)) {
+      final minutes = sinceCreated.inMinutes -
+          sinceCreated.inHours * Duration.minutesPerHour;
+      return 'för ${sinceCreated.inHours} tim och $minutes min sedan.';
+    }
+    if (!sinceCreated.isNegative && sinceCreated < Duration(days: 7)) {
+      final minutes = sinceCreated.inMinutes -
+          sinceCreated.inHours * Duration.minutesPerHour;
+      final hours =
+          sinceCreated.inHours - sinceCreated.inDays * Duration.hoursPerDay;
+      return 'för ${sinceCreated.inDays} dag${sinceCreated.inDays > 1 ? 'ar' : ''}, $hours tim och $minutes min sedan.';
+    }
+
+    return DateTimeFormatter.format(post.created) + '.';
+  }
+
+  String get fullDateFormatted =>
       null != post.created ? DateTimeFormatter.format(post.created) : '';
 }

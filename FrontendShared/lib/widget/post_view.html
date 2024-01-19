@@ -1,5 +1,5 @@
 <div class="post-container">
-	<div class="post-content" [safeInnerHtml]="post.contentHtml"></div>
+	<div class="post-header" [title]="fullDateFormatted"><strong>Nyhet</strong> postad {{ dateFormatted }}</div>
 	<img class="post-image" *ngFor="let image of images" [src]="image.src" />
-	<div class="post-footer">Postat {{ dateFormatted }}</div>
+	<div class="post-content" [safeInnerHtml]="post.contentHtml"></div>
 </div>

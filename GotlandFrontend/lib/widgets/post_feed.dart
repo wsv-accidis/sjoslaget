@@ -7,7 +7,7 @@ import '../client/post_repository.dart';
 
 @Component(
     selector: 'post-feed',
-    styleUrls: ['../content/content_styles.css'],
+    styleUrls: ['../content/content_styles.css', 'post_feed.css'],
     templateUrl: 'post_feed.html',
     directives: <dynamic>[coreDirectives, PostView])
 class PostFeed extends PostFeedBase {
