@@ -21,6 +21,12 @@ class PostView {
     if (null == post.created) return '';
 
     final sinceCreated = DateTime.now().difference(post.created);
+    if (!sinceCreated.isNegative && sinceCreated < Duration(minutes: 5)) {
+      return 'alldeles nyss.';
+    }
+    if (!sinceCreated.isNegative && sinceCreated < Duration(minutes: 60)) {
+      return 'för ${sinceCreated.inMinutes} min sedan.';
+    }
     if (!sinceCreated.isNegative && sinceCreated < Duration(hours: 24)) {
       final minutes = sinceCreated.inMinutes -
           sinceCreated.inHours * Duration.minutesPerHour;
