@@ -3,10 +3,7 @@ table.second {
 }
 
 th, td {
-	padding-bottom: 4px;
-	padding-right: 8px;
-	padding-top: 4px;
-	border-bottom: 1px solid silver;
+	text-align: left;
 	white-space: nowrap;
 }
 

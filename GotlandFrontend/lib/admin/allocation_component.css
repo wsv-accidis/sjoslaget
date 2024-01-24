@@ -7,10 +7,9 @@ a.alloc-delete material-icon {
 	margin-left: -4px;
 }
 
-.allocations {
+table.allocations {
 	width: 900px;
 }
-
 
 div.booking-price {
 	float: right;

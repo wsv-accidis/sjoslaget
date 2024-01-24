@@ -12,7 +12,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
     selector: 'availability-component',
     templateUrl: 'availability_component.html',
-    styleUrls: ['../content/content_styles.css', 'availability_component.css'],
+    styleUrls: ['../content/content_styles.css', 'admin_styles.css', 'availability_component.css'],
     directives: <dynamic>[coreDirectives, MaterialProgressComponent, SpinnerWidget])
 class AvailabilityComponent {
   final ClientFactory _clientFactory;

@@ -11,7 +11,8 @@ class PaidCapacity {
 
   int get totalPercent => ((totalPax + totalDayPax) * 100 / maxCapacity).round();
 
-  int get paidPercent => ((totalPaxPaid + totalDayPaxPaid) * 100 / (totalPax + totalDayPax)).round();
+  int get paidPercent =>
+      totalPax + totalDayPax <= 0 ? 0 : ((totalPaxPaid + totalDayPaxPaid) * 100 / (totalPax + totalDayPax)).round();
 
   PaidCapacity(this.totalPax, this.totalDayPax, this.totalPaxPaid, this.totalDayPaxPaid);
 

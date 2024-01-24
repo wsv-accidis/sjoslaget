@@ -72,7 +72,13 @@ span.underline {
 }
 
 table {
+	border: 0;
+	border-collapse: collapse;
 	width: 100%;
+}
+
+table.padded td, table.padded th {
+	padding: 8px;
 }
 
 th {
