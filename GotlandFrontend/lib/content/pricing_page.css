@@ -1,5 +1,13 @@
-td {
+table.pricing-table {
+	max-width: 70%;
+}
+
+table.pricing-table td {
 	border-top: 1px solid silver;
+}
+
+table.pricing-table td.description {
+	border-top: 0;
 }
 
 th.feature-header {
@@ -13,4 +21,10 @@ td.feature-on {
 
 td.feature-off {
 	text-align: center;
+}
+
+@media (max-width: 700px) {
+	table.pricing-table {
+		max-width: 100% !important;
+	}
 }

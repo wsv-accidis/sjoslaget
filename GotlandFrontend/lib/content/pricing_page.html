@@ -4,15 +4,14 @@
 	Läs nedanför tabellen om vad som ingår i priset och hur du väljer logi när du bokar!
 </p>
 
-<table class="padded" *ngIf="isLoaded">
+<table class="padded pricing-table" *ngIf="isLoaded">
 	<tr>
-		<th>Kategori</th>
+		<th>Kat.</th>
 		<th>Pris</th>
 		<th class="feature-header">Säng</th>
 		<th class="feature-header">Badrum</th>
 		<th class="feature-header">Kök</th>
 		<th class="feature-header">Städning</th>
-		<th></th>
 	</tr>
 	<tr>
 		<td>0</td>
@@ -21,7 +20,10 @@
 		<td class="feature-off">✗</td>
 		<td class="feature-off">✗</td>
 		<td class="feature-off">✗</td>
-		<td>{{description(0)}}</td>
+		</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(0)}}</td>
 	</tr>
 	<tr>
 		<td>1</td>
@@ -30,7 +32,10 @@
 		<td class="feature-off">✗</td>
 		<td class="feature-off">✗</td>
 		<td class="feature-off">✗</td>
-		<td>{{description(1)}}</td>
+	</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(1)}}</td>
 	</tr>
 	<tr>
 		<td>2</td>
@@ -39,7 +44,10 @@
 		<td class="feature-off">✗</td>
 		<td class="feature-off">✗</td>
 		<td class="feature-on">✓</td>
-		<td>{{description(2)}}</td>
+	</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(2)}}</td>
 	</tr>
 	<tr>
 		<td>3</td>
@@ -48,7 +56,10 @@
 		<td class="feature-on">✓</td>
 		<td class="feature-off">✗</td>
 		<td class="feature-on">✓</td>
-		<td>{{description(3)}}</td>
+	</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(3)}}</td>
 	</tr>
 	<tr>
 		<td>4</td>
@@ -57,7 +68,10 @@
 		<td class="feature-on">✓</td>
 		<td class="feature-on">(✓)</td>
 		<td class="feature-off">✗</td>
-		<td>{{description(4)}}</td>
+	</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(4)}}</td>
 	</tr>
 	<tr>
 		<td>5</td>
@@ -66,7 +80,10 @@
 		<td class="feature-on">✓</td>
 		<td class="feature-on">✓</td>
 		<td class="feature-off">✗</td>
-		<td>{{description(5)}}</td>
+	</tr>
+	<tr>
+		<td class="description"></td>
+		<td class="description" colspan="5">{{description(5)}}</td>
 	</tr>
 </table>
 <spinner-widget *ngIf="!isLoaded"></spinner-widget>

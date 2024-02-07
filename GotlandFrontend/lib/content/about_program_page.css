@@ -1,5 +1,5 @@
 table.connections-table {
-	width: 80%;
+	max-width: 80%;
 }
 
 table > thead > tr > td {
@@ -9,4 +9,10 @@ table > thead > tr > td {
 tbody > tr > td {
 	border-left: 1px solid #006000;
 	border-top: 1px solid #006000;
+}
+
+@media (max-width: 700px) {
+	table.connections-table {
+		max-width: 100% !important;
+	}
 }
