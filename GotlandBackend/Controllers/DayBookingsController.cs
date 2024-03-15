@@ -13,7 +13,7 @@ namespace Accidis.Gotland.WebService.Controllers
 	{
 		// TODO: Calculate this dynamically
 		// TODO: Also the corresponding constant PaidCapacity.maxCapacity in the frontend
-		private const int MaxDayBookings2023 = 221;
+		const int MaxDayBookings2024 = 250;
 
 		readonly EventRepository _eventRepository;
 		readonly DayBookingRepository _dayBookingRepository;
@@ -63,7 +63,7 @@ namespace Accidis.Gotland.WebService.Controllers
 					return NotFound();
 
 				int count = await _dayBookingRepository.GetCount(evnt);
-				if(count >= MaxDayBookings2023)
+				if(count >= MaxDayBookings2024)
 					return Conflict();
 
 				string reference = await _dayBookingRepository.CreateAsync(evnt, booking);
