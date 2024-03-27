@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'json_field.dart';
 
 class PaidCapacity {
-  final int maxCapacity = 940; // TODO: Get this from backend instead
+  final int maxCapacity = 1002; // TODO: Get this from backend instead
   final int totalDayPax;
   final int totalDayPaxPaid;
   final int totalPax;
