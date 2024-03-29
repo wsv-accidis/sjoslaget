@@ -57,7 +57,7 @@ class AdminDayBookingPage implements OnActivate {
   bool get canSubmit => booking.isValid && !isSaving;
 
   String get confirmationSentMessage {
-    if (!booking.paymentConfirmed) return 'Biljetten är inte betalad ännu';
+    if (!booking.paymentConfirmed) return 'Biljetten är inte betald ännu';
     return null != booking.confirmationSent
         ? 'Bekräftelse skickad ${DateTimeFormatter.format(booking.confirmationSent)}'
         : 'Bekräftelse inte skickad';

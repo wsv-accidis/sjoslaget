@@ -3,6 +3,19 @@ table.bookings {
 	width: 80%;
 }
 
+div.bookings-filter h2 {
+	margin-bottom: 0;
+}
+
+div.bookings-filter .filter-field {
+	margin-left: 15px;
+	margin-right: 20px;
+}
+
+div.bookings-filter .filter-radio {
+	margin-right: 0;
+}
+
 div.bookings-paging {
 	margin-top: 10px;
 }

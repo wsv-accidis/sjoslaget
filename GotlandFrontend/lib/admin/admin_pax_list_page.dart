@@ -90,7 +90,7 @@ class AdminPaxListPage implements OnInit {
       case 'teamName':
         return one.teamName.compareTo(two.teamName);
       case 'name':
-        return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
+        return ValueComparer.compareStringPairIgnoreCase(one.firstName, one.lastName, two.firstName, two.lastName);
       case 'gender':
         return one.gender.compareTo(two.gender);
       case 'dob':

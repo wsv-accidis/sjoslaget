@@ -5,6 +5,7 @@ import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/paging_support.dart';
 import 'package:frontend_shared/widget/sortable_columns.dart';
+import 'package:quiver/strings.dart' show isNotEmpty;
 
 import '../client/client_factory.dart';
 import '../client/day_booking_repository.dart';
@@ -34,6 +35,7 @@ import 'admin_routes.dart';
 ])
 class AdminDayBookingListPage implements OnInit {
   static const int PAGE_LIMIT = 40;
+  static const String STATUS_NONE = 'none';
   static const String STATUS_CONFIRMED = 'confirmed';
   static const String STATUS_NOT_CONFIRMED = 'not-confirmed';
 
@@ -41,6 +43,8 @@ class AdminDayBookingListPage implements OnInit {
   final ClientFactory _clientFactory;
 
   List<DayBookingListItem> _bookings;
+  String _filterPayment = STATUS_NONE;
+  String _filterText = '';
   Map<String, DayBookingType> _types;
 
   List<DayBookingListItem> bookingsView;
@@ -50,6 +54,20 @@ class AdminDayBookingListPage implements OnInit {
   AdminDayBookingListPage(this._bookingRepository, this._clientFactory);
 
   bool get isLoading => null == bookingsView;
+
+  String get filterPayment => _filterPayment;
+
+  set filterPayment(String value) {
+    _filterPayment = value;
+    _refreshView();
+  }
+
+  String get filterText => _filterText;
+
+  set filterText(String value) {
+    _filterText = value;
+    _refreshView();
+  }
 
   String formatDateTime(DateTime dateTime) => DateTimeFormatter.format(dateTime);
 
@@ -101,7 +119,7 @@ class AdminDayBookingListPage implements OnInit {
       case 'reference':
         return one.reference.compareTo(two.reference);
       case 'name':
-        return ValueComparer.compareStringPair(one.firstName, one.lastName, two.firstName, two.lastName);
+        return ValueComparer.compareStringPairIgnoreCase(one.firstName, one.lastName, two.firstName, two.lastName);
       case 'phone':
         return one.phoneNo.compareTo(two.phoneNo);
       case 'dob':
@@ -120,6 +138,17 @@ class AdminDayBookingListPage implements OnInit {
 
   void _refreshView() {
     Iterable<DayBookingListItem> filtered = _bookings;
+
+    if (isNotEmpty(_filterText)) {
+      final filterText = _filterText.toLowerCase().trim();
+      filtered = filtered
+          .where((b) => '${b.reference} ${b.firstName} ${b.lastName} ${b.phoneNo}'.toLowerCase().contains(filterText));
+    }
+    if (STATUS_CONFIRMED == _filterPayment) {
+      filtered = filtered.where((b) => b.paymentConfirmed);
+    } else if (STATUS_NOT_CONFIRMED == _filterPayment) {
+      filtered = filtered.where((b) => !b.paymentConfirmed);
+    }
 
     final List<DayBookingListItem> sorted = filtered.toList(growable: false);
     sorted.sort(_comparator);

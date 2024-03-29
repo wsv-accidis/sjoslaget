@@ -14,6 +14,33 @@
 	<spinner-widget></spinner-widget>
 </div>
 
+<div *ngIf="!isLoading" class="bookings-filter">
+	<h2>Filtrera</h2>
+
+	Referens/namn/tfn
+
+	<material-input [(ngModel)]="filterText"
+					class="filter-field"
+					[displayBottomPanel]="false"
+					label="Skriv för att filtrera"
+					style="width: 250px">
+	</material-input>
+
+	<br/>Betalning
+
+	<material-radio-group [(ngModel)]="filterPayment">
+		<material-radio class="filter-radio" value="none" title="Alla">
+			Alla
+		</material-radio>
+		<material-radio class="filter-radio" value="confirmed" title="Betald">
+			Betald
+		</material-radio>
+		<material-radio class="filter-radio" value="not-confirmed" title="Ej betald">
+			Ej betald
+		</material-radio>
+	</material-radio-group>
+</div>
+
 <div *ngIf="!isLoading" class="bookings-paging">
 	{{ paging.numberOfResults }} bokning{{ paging.numberOfResults == 1 ? '' : 'ar' }} <span *ngIf="paging.hasResults">(visar {{ paging.pageOffsetStart }} - {{ paging.pageOffsetEnd }})</span>
 	<span class="paging-list" *ngIf="paging.hasMultiplePages">
@@ -56,7 +83,7 @@
 	</tr>
 	<tr *ngFor="let booking of bookingsView">
 		<td [ngSwitch]="getStatus(booking)">
-			<span *ngSwitchWhen="'confirmed'" class="status-confirmed">Betalad</span>
+			<span *ngSwitchWhen="'confirmed'" class="status-confirmed">Betald</span>
 			<span *ngSwitchWhen="'not-confirmed'" class="status-not-confirmed">Ej betald</span>
 			<span *ngSwitchDefault>-</span>
 		</td>
