@@ -1,9 +1,9 @@
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Accidis.Gotland.WebService.Models;
 using Accidis.WebServices.Db;
 using Dapper;
 using Simplexcel;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Accidis.Gotland.WebService.Services
 {
@@ -40,8 +40,10 @@ namespace Accidis.Gotland.WebService.Services
 			sheet[0, 4] = CreateHeaderCell("Efternamn");
 			sheet[0, 5] = CreateHeaderCell("Telefon");
 			sheet[0, 6] = CreateHeaderCell("E-post");
-			sheet[0, 7] = CreateHeaderCell("Antal i boende");
-			sheet[0, 8] = CreateHeaderCell("Antal i bokning");
+			sheet[0, 7] = CreateHeaderCell("Ant. i boende");
+			sheet[0, 8] = CreateHeaderCell("Tot. i bokning");
+			sheet[0, 9] = CreateHeaderCell("Varav kött");
+			sheet[0, 10] = CreateHeaderCell("Varav veg");
 		}
 
 		Worksheet CreateBookingsWorksheet()
@@ -58,6 +60,8 @@ namespace Accidis.Gotland.WebService.Services
 			sheet.ColumnWidths[6] = 30;
 			sheet.ColumnWidths[7] = 14;
 			sheet.ColumnWidths[8] = 14;
+			sheet.ColumnWidths[9] = 14;
+			sheet.ColumnWidths[10] = 14;
 			return sheet;
 		}
 
@@ -68,6 +72,7 @@ namespace Accidis.Gotland.WebService.Services
 			sheet[0, 2] = CreateHeaderCell("Födelsed.");
 			sheet[0, 3] = CreateHeaderCell("Betald");
 			sheet[0, 4] = CreateHeaderCell("Typ");
+			sheet[0, 5] = CreateHeaderCell("Kost");
 		}
 
 		Worksheet CreateDayBookingsWorksheet()
@@ -80,6 +85,7 @@ namespace Accidis.Gotland.WebService.Services
 			sheet.ColumnWidths[2] = 10;
 			sheet.ColumnWidths[3] = 10;
 			sheet.ColumnWidths[4] = 16;
+			sheet.ColumnWidths[5] = 16;
 			return sheet;
 		}
 
@@ -96,7 +102,7 @@ namespace Accidis.Gotland.WebService.Services
 		static Workbook CreateWorkbook(params Worksheet[] sheets)
 		{
 			var workbook = new Workbook();
-			foreach(Worksheet sheet in sheets)
+			foreach(var sheet in sheets)
 				workbook.Add(sheet);
 			return workbook;
 		}
@@ -105,15 +111,17 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			var result = await db.QueryAsync<BookingDbRow>(
 				"select C.[No], A.[Note], B.[Reference], B.[FirstName], B.[LastName], B.[PhoneNo], B.[Email], A.[NumberOfPax] [PaxInCabin], " +
-				"(select COUNT(*) from [BookingPax] P where P.[BookingId] = B.[Id]) as [PaxInBooking] " +
+				"(select COUNT(*) from [BookingPax] P where P.[BookingId] = B.[Id]) [PaxInBooking], " +
+				"(select COUNT(*) from [BookingPax] P where P.[BookingId] = B.[Id] and P.[Food] = 'm') [PaxFoodMeat], " +
+				"(select COUNT(*) from [BookingPax] P where P.[BookingId] = B.[Id] and P.[Food] = 'v') [PaxFoodVeg] " +
 				"from [BookingAllocation] A " +
 				"left join [Booking] B on A.[BookingId] = B.[Id] " +
 				"left join [EventCabinClassDetail] C on A.[CabinId] = C.[Id] " +
 				"where B.[EventId] = @EventId " +
 				"order by B.[Reference], C.[No], A.[Note], B.[FirstName], B.[LastName]", new { EventId = evnt.Id });
 
-			int rowNo = 1;
-			foreach(BookingDbRow row in result)
+			var rowNo = 1;
+			foreach(var row in result)
 			{
 				// TODO: The logic here is based on my usual style when writing notes, fragile if someone uses a different format
 				sheet[rowNo, 0] = GetMainInfoFromNote(row.Note);
@@ -126,6 +134,8 @@ namespace Accidis.Gotland.WebService.Services
 				sheet[rowNo, 6] = row.Email;
 				sheet[rowNo, 7] = row.PaxInCabin;
 				sheet[rowNo, 8] = row.PaxInBooking;
+				sheet[rowNo, 9] = row.PaxFoodMeat;
+				sheet[rowNo, 10] = row.PaxFoodVeg;
 				rowNo++;
 			}
 		}
@@ -133,25 +143,36 @@ namespace Accidis.Gotland.WebService.Services
 		async Task FetchAndCreateRowsForDayBookings(SqlConnection db, Event evnt, Worksheet sheet)
 		{
 			var result = await db.QueryAsync<DayBookingDbRow>(
-				"select [FirstName], [LastName], [Dob], [PaymentConfirmed], T.[Title] [Type] " +
+				"select [FirstName], [LastName], [Dob], [PaymentConfirmed], T.[Title] [Type], [Food] " +
 				"from [DayBooking] B " +
 				"left join [DayBookingType] T on B.[TypeId] = T.[Id] " +
 				"where [EventId] = @EventId " +
 				"order by [FirstName], [LastName]", new { EventId = evnt.Id });
 
-			int rowNo = 1;
-			foreach(DayBookingDbRow row in result)
+			var rowNo = 1;
+			foreach(var row in result)
 			{
 				sheet[rowNo, 0] = row.FirstName;
 				sheet[rowNo, 1] = row.LastName;
 				sheet[rowNo, 2] = row.Dob;
-				sheet[rowNo, 3] = row.PaymentConfirmed ? "Betald" : "";
+				sheet[rowNo, 3] = GetPaymentConfirmedDisplayName(row.PaymentConfirmed);
 				sheet[rowNo, 4] = row.Type;
+				sheet[rowNo, 5] = GetFoodDisplayName(row.Food);
 				rowNo++;
 			}
 		}
 
-		string GetMainInfoFromNote(string note)
+		static string GetFoodDisplayName(string food)
+		{
+			switch(food)
+			{
+				case "m": return "Kött";
+				case "v": return "Vegan";
+				default: return string.Empty;
+			}
+		}
+
+		static string GetMainInfoFromNote(string note)
 		{
 			if(string.IsNullOrWhiteSpace(note))
 				return "Camping";
@@ -163,7 +184,7 @@ namespace Accidis.Gotland.WebService.Services
 			return note.TrimEnd();
 		}
 
-		string GetExtraInfoFromNote(string note)
+		static string GetExtraInfoFromNote(string note)
 		{
 			var beginBracketIdx = note.IndexOf('(');
 			var endBracketIdx = note.LastIndexOf(')');
@@ -178,6 +199,11 @@ namespace Accidis.Gotland.WebService.Services
 			return string.Empty;
 		}
 
+		static string GetPaymentConfirmedDisplayName(bool paymentConfirmed)
+		{
+			return paymentConfirmed ? string.Empty : "EJ BETALD";
+		}
+
 		sealed class BookingDbRow
 		{
 			public int No { get; set; }
@@ -189,6 +215,8 @@ namespace Accidis.Gotland.WebService.Services
 			public string Email { get; set; }
 			public int PaxInCabin { get; set; }
 			public int PaxInBooking { get; set; }
+			public int PaxFoodMeat { get; set; }
+			public int PaxFoodVeg { get; set; }
 		}
 
 		sealed class DayBookingDbRow
@@ -198,6 +226,7 @@ namespace Accidis.Gotland.WebService.Services
 			public string Dob { get; set; }
 			public bool PaymentConfirmed { get; set; }
 			public string Type { get; set; }
+			public string Food { get; set; }
 		}
 	}
 }
