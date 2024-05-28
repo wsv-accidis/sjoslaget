@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:frontend_shared/model.dart' show BookingResult;
-import 'package:tuple/tuple.dart';
+import 'package:frontend_shared/model/booking_result.dart';
 import 'package:quiver/strings.dart' show isEmpty;
+import 'package:tuple/tuple.dart';
 
 import '../client/availability_exception.dart';
 import '../client/booking_exception.dart';

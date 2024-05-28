@@ -12,15 +12,6 @@ img.product-image-sj {
 	height: 140px;
 }
 
-img.product-image-vk {
-	border: 0;
-	box-shadow: none;
-	filter: drop-shadow(2px 2px 1px darkgray);
-	-webkit-filter: drop-shadow(2px 2px 1px darkgray);
-	margin-bottom: 5px;
-	width: 150px;
-}
-
 .product-limit {
 	color: darkgray;
 	margin-left: 5px;

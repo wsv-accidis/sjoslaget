@@ -12,7 +12,7 @@ import '../widgets/spinner_widget.dart';
 @Component(
     selector: 'pricing-page',
     styleUrls: ['content_styles.css', 'pricing_page.css'],
-    templateUrl: 'pricing_page_sj.html',
+    templateUrl: 'pricing_page.html',
     directives: <dynamic>[coreDirectives, SpinnerWidget])
 class PricingPage implements OnInit {
   final ClientFactory _clientFactory;

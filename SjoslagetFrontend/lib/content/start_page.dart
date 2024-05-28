@@ -19,7 +19,7 @@ import 'content_routes.dart';
 class StartPage implements OnInit, OnDestroy {
   static const int COUNTDOWN_REFRESH_INTERVAL = 100;
 
-  final Countdown _countdown = Countdown(DateTime(2023, 6, 16, 9));
+  final Countdown _countdown = Countdown(DateTime(2023, 6, 6, 16)); // TODO Set this when final
   final ClientFactory _clientFactory;
   final CruiseRepository _cruiseRepository;
 

@@ -5,7 +5,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
-import 'package:frontend_shared/model.dart';
+import 'package:frontend_shared/model/booking_result.dart';
 import 'package:quiver/strings.dart' show equalsIgnoreCase, isEmpty, isNotEmpty;
 
 import '../client/booking_repository.dart';
@@ -77,8 +77,8 @@ class BookingCabinsPage implements OnInit {
       bookingDetails = BookingDetails.fromJson(window.sessionStorage[BookingComponent.BOOKING]);
       cabins.registerAddonProvider(products);
 
-	  // While we only have one cruise (2022-2023), hardcode the subcruise
-	  cabins.subCruise = bookingDetails.subCruise = 'A';
+      // While we only have one cruise (2022-2023), hardcode the subcruise
+      cabins.subCruise = bookingDetails.subCruise = 'A';
       //cabins.subCruise = bookingDetails.subCruise;
 
       isNewBooking = true;

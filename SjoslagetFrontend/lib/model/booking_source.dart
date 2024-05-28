@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:frontend_shared/model.dart' show PaymentSummary;
+import 'package:frontend_shared/model/payment_summary.dart';
 
 import 'booking_cabin.dart';
 import 'booking_details.dart';
@@ -14,24 +14,21 @@ class BookingSource extends BookingDetails {
   PaymentSummary payment;
   List<BookingProduct> products;
 
-  BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, String internalNotes,
-      String subCruise, this.discount, this.isLocked, this.cabins, this.products, this.payment)
+  BookingSource(String firstName, String lastName, String phoneNo, String email, String lunch, String reference, String internalNotes, String subCruise,
+      this.discount, this.isLocked, this.cabins, this.products, this.payment)
       : super(firstName, lastName, phoneNo, email, lunch, reference, internalNotes, subCruise);
 
   BookingSource.fromDetails(BookingDetails details, this.cabins, this.products)
-      : super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference, details.internalNotes,
-            details.subCruise);
+      : super(details.firstName, details.lastName, details.phoneNo, details.email, details.lunch, details.reference, details.internalNotes, details.subCruise);
 
   factory BookingSource.fromJson(String jsonStr) {
     final Map<String, dynamic> map = json.decode(jsonStr);
-    final List<BookingCabin> cabins =
-        map[CABINS].map((dynamic value) => BookingCabin.fromMap(value)).cast<BookingCabin>().toList(growable: false);
+    final List<BookingCabin> cabins = map[CABINS].map((dynamic value) => BookingCabin.fromMap(value)).cast<BookingCabin>().toList(growable: false);
 
-    final List<BookingProduct> products =
-        map[PRODUCTS].map((dynamic value) => BookingProduct.fromMap(value)).cast<BookingProduct>().toList(growable: false);
+    final List<BookingProduct> products = map[PRODUCTS].map((dynamic value) => BookingProduct.fromMap(value)).cast<BookingProduct>().toList(growable: false);
 
-    return BookingSource(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[LUNCH], map[REFERENCE], map[INTERNAL_NOTES],
-        map[SUBCRUISE], map[DISCOUNT], map[IS_LOCKED], cabins, products, PaymentSummary.fromMap(map[PAYMENT]));
+    return BookingSource(map[FIRSTNAME], map[LASTNAME], map[PHONE_NO], map[EMAIL], map[LUNCH], map[REFERENCE], map[INTERNAL_NOTES], map[SUBCRUISE],
+        map[DISCOUNT], map[IS_LOCKED], cabins, products, PaymentSummary.fromMap(map[PAYMENT]));
   }
 
   @override

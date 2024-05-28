@@ -6,7 +6,8 @@ import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:decimal/decimal.dart';
 import 'package:frontend_shared/admin/payment_history_component.dart';
-import 'package:frontend_shared/model.dart';
+import 'package:frontend_shared/model/booking_result.dart';
+import 'package:frontend_shared/model/payment_summary.dart';
 import 'package:frontend_shared/util.dart';
 import 'package:frontend_shared/widget/modal_dialog.dart';
 import 'package:quiver/strings.dart' show isNotEmpty;
@@ -73,8 +74,7 @@ class AdminBookingPage implements OnActivate {
   String paymentError;
   String resetPinCodeError;
 
-  AdminBookingPage(
-      this._bookingRepository, this._clientFactory, this._cruiseRepository, this._paymentRepository, this._router, this._userRepository);
+  AdminBookingPage(this._bookingRepository, this._clientFactory, this._cruiseRepository, this._paymentRepository, this._router, this._userRepository);
 
   bool get canDelete => !isSaving;
 
@@ -223,8 +223,8 @@ class AdminBookingPage implements OnActivate {
     bookingError = null;
 
     try {
-      final tuple = await BookingSupportUtils.saveBooking(
-          _clientFactory, _bookingRepository, booking, cabins, products, BookingResult(booking.reference, null));
+      final tuple =
+          await BookingSupportUtils.saveBooking(_clientFactory, _bookingRepository, booking, cabins, products, BookingResult(booking.reference, null));
 
       // item1 is BookingResult
       // item2 is String (bookingError)
