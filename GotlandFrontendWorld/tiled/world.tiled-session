@@ -1,0 +1,67 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map-main.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "main-map.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 502.5,
+                "y": 51.5
+            }
+        },
+        "map-main.tmx": {
+            "scale": 1.108828125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 483.39322201085037,
+                "y": 248.46050870147246
+            }
+        },
+        "tileset-area-marker.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tileset-lca-grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tileset-lpc-grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tileset-lpc-watergrass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "D:/Dev/Git/sjoslaget/GotlandFrontendWorld/assets/assets/images/tiled",
+    "last.externalTilesetPath": "D:/Dev/Git/sjoslaget/GotlandFrontendWorld/artwork",
+    "last.imagePath": "D:/Dev/Git/sjoslaget/GotlandFrontendWorld/tiled",
+    "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "map-main.tmx",
+        "tileset-lpc-grass.tsx",
+        "tileset-lpc-watergrass.tsx",
+        "tileset-area-marker.tsx"
+    ],
+    "project": "world.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "tileset-area-marker.tsx",
+        "tileset-lpc-watergrass.tsx",
+        "tileset-lpc-grass.tsx",
+        "map-main.tmx",
+        "tileset-lca-grass.tsx",
+        "main-map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
