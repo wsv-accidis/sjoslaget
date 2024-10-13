@@ -1,5 +1,6 @@
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
+import 'package:world/game/menu_overlay.dart';
 import 'package:world/game/the_player.dart';
 
 class WorldGame extends StatefulWidget {
@@ -12,10 +13,20 @@ class WorldGame extends StatefulWidget {
 }
 
 class _WorldGameState extends State<WorldGame> {
+  static final _playerSpawnPoint = Vector2(300, 300);
+
   @override
   Widget build(BuildContext context) {
+    final menuKey = GlobalKey<MenuOverlayState>();
+
     return BonfireWidget(
         backgroundColor: const Color.fromRGBO(21, 108, 153, 1.0),
+        initialActiveOverlays: const [MenuOverlay.overlayKey],
+        map: WorldMapByTiled(WorldMapReader.fromAsset('tiled/map-main.json')),
+        overlayBuilderMap: {
+          MenuOverlay.overlayKey: (buildContext, game) => MenuOverlay(key: menuKey),
+        },
+        player: ThePlayer(_playerSpawnPoint, menuKey),
         playerControllers: [
           Keyboard(
               config: KeyboardConfig(
@@ -23,8 +34,6 @@ class _WorldGameState extends State<WorldGame> {
             directionalKeys: [KeyboardDirectionalKeys.arrows()],
           )),
         ],
-        map: WorldMapByTiled(WorldMapReader.fromAsset('tiled/map-main.json')),
-        player: ThePlayer(Vector2(300, 300)),
         showCollisionArea: false);
   }
 }

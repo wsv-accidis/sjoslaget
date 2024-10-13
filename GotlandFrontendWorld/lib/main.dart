@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:world/game/menu_overlay_assets.dart';
+import 'package:world/game/the_player_assets.dart';
 import 'package:world/game/world_game.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Pre-cache assets
+  await MenuOverlayAssets.load();
+  await ThePlayerAssets.load();
+
   runApp(const MyApp());
 }
 
@@ -13,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'World Game',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
       home: const WorldGame(title: 'World Game'),
