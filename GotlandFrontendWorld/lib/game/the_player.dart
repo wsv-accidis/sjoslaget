@@ -35,7 +35,7 @@ class ThePlayer extends SimplePlayer with BlockMovementCollision, PathFinding, T
   void onMove(double speed, Vector2 displacement, Direction direction, double angle) {
     // Show the full menu only when player is inside home area
     final isInHomeArea = _isInHomeArea();
-    menuKey.currentState?.visible = isInHomeArea;
+    menuKey.currentState?.mode = isInHomeArea ? MenuMode.collapsed : MenuMode.homeOnly;
 
     super.onMove(speed, displacement, direction, angle);
   }
@@ -46,7 +46,7 @@ class ThePlayer extends SimplePlayer with BlockMovementCollision, PathFinding, T
   @override
   void onTapDownScreen(GestureEvent event) {
     // Supress taps that hit the menu
-    if ((menuKey.currentState?.visible ?? false) && (menuKey.globalPaintBounds?.containsPoint(event.screenPosition) ?? false)) {
+    if (menuKey.globalPaintBounds?.containsPoint(event.screenPosition) ?? false) {
       return;
     }
 

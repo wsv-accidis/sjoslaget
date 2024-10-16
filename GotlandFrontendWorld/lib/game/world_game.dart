@@ -24,7 +24,7 @@ class _WorldGameState extends State<WorldGame> {
         initialActiveOverlays: const [MenuOverlay.overlayKey],
         map: WorldMapByTiled(WorldMapReader.fromAsset('tiled/map-main.json')),
         overlayBuilderMap: {
-          MenuOverlay.overlayKey: (buildContext, game) => MenuOverlay(key: menuKey),
+          MenuOverlay.overlayKey: (buildContext, game) => MenuOverlay(key: menuKey, game: game),
         },
         player: ThePlayer(_playerSpawnPoint, menuKey),
         playerControllers: [
