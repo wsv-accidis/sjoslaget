@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:world/game/menu_overlay_assets.dart';
-import 'package:world/widget/basic_markdown.dart';
+import 'package:world/widget/terrible_markdown.dart';
 
 enum MenuMode {
   // Only show home button in top left corner
@@ -113,28 +113,18 @@ class MenuOverlayState extends State<MenuOverlay> {
     ];
 
     if (isExpanding) {
-      children.add(const Expanded(child: Padding(padding: EdgeInsets.only(bottom: 8), child: BasicMarkdown(text: """
-# Hello, world!
+      children.add(const Expanded(child: Padding(padding: EdgeInsets.only(bottom: 8), child: TerribleMarkdown(text: """
+Hello, italic: *this is text in italics*.
 
-This is me writing some wicked Markdown.
+Hello, italic: _this is text in italics, too_.
 
-Testing, testing.
+Hello, bold: **this is a bold statement**!
 
-Testing, testing.
+Hello, bold: __this, too, is a bold statement_!
 
-Testing, testing.
+Hello, bold italic: ***we can barely believe this audacity***, ourselves.
 
-Testing, testing.
-
-Testing, testing.
-
-Testing, testing.
-
-Testing, testing.
-
-Testing, testing.
-
-Testing, testing.
+Hello, bold italic: ___we can barely believe this audacity__, ourselves.
 """))));
     }
 
