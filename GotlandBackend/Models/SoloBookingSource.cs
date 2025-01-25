@@ -32,10 +32,14 @@ namespace Accidis.Gotland.WebService.Models
 				throw new BookingException("E-mail must be set.");
 			if(string.IsNullOrWhiteSpace(PhoneNo))
 				throw new BookingException("Phone number must be set.");
-			if(!DateOfBirth.IsValid(Dob))
-				throw new BookingException("Date of birth must be set and a valid date.");
-			if(String.IsNullOrEmpty(Food))
+			if(string.IsNullOrEmpty(Food))
 				throw new BookingException("Food must be set.");
+
+			if(!DateOfBirth.IsValid(Dob))
+			{
+				var logDob = Dob?.Substring(0, DateOfBirth.DateFormat.Length) ?? string.Empty;
+				throw new BookingException($"Date of birth must be set and a valid date. \"{logDob}\" failed to parse as a date.");
+			}
 		}
 	}
 }

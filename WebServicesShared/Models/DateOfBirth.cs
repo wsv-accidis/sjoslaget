@@ -5,7 +5,7 @@ namespace Accidis.WebServices.Models
 {
 	public sealed class DateOfBirth
 	{
-		const string DateFormat = "yyMMdd";
+		public const string DateFormat = "yyMMdd";
 		readonly DateTime _date;
 
 		public DateOfBirth(string s)
@@ -33,7 +33,7 @@ namespace Accidis.WebServices.Models
 		public static bool IsValid(string dob)
 		{
 			DateTime ignored;
-			return !String.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, out ignored);
+			return !string.IsNullOrEmpty(dob) && DateTime.TryParseExact(dob, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AllowTrailingWhite, out ignored);
 		}
 
 		public override string ToString()
