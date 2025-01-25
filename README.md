@@ -12,16 +12,18 @@ Webbplatsen är under aktiv utveckling. Den är i skarp drift på [sjoslaget.se]
 [absolutgotland.se](https://absolutgotland.se) men koden som körs där är inte nödvändigtvis i synk med detta repo.
 
 ## Teknik och tillkännagivanden
-Serversidan utvecklas i [ASP.NET Web API](https://www.asp.net/web-api). Webbplatsen hostas på [IIS](https://www.iis.net/) i Windows-miljö med
+Serversidan utvecklas i [ASP.NET Web API](https://dotnet.microsoft.com/en-us/apps/aspnet/apis). Webbplatsen hostas på [IIS](https://www.iis.net/) i Windows-miljö med
 databas i [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2016). Den använder följande bibliotek och ramverk:
 
 * [Dapper](https://github.com/StackExchange/Dapper)
 * [DryIoC](https://bitbucket.org/dadhi/dryioc)
 * [NLog](http://nlog-project.org/)
+* [MarkDig](https://github.com/xoofx/markdig)
 * [Moq](https://github.com/moq/moq4)
 * [OAuth 2](https://oauth.net/2/)
 * [OWIN](http://owin.org/)
 * [Simplexcel](https://github.com/mstum/Simplexcel)
+* [SkiaSharp](https://github.com/mono/SkiaSharp)
 
 Klientsidan utvecklas i [Dart](https://webdev.dartlang.org/). Den använder följande bibliotek och ramverk:
 
