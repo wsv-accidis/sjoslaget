@@ -86,7 +86,7 @@ namespace Accidis.WebServices.Services
 				using(var source = SKBitmap.Decode(stream))
 				using(var dest = new SKBitmap(destWidth, destHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul))
 				{
-					source.ScalePixels(dest, SKFilterQuality.High);
+					source.ScalePixels(dest, new SKSamplingOptions(SKCubicResampler.Mitchell));
 					using(var destData = dest.Encode(codec.EncodedFormat, ResizedImageQuality))
 					{
 						return destData.ToArray();
