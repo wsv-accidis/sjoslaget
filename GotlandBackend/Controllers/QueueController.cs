@@ -65,6 +65,9 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
+				if(null == candidate)
+					return BadRequest();
+
 				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
@@ -208,7 +211,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				using(var emailSender = new EmailSender()) 
+				using(var emailSender = new EmailSender())
 					await emailSender.SendBookingCreatedMailAsync(evnt.Name, candidate.Email, result.Reference, result.Password);
 			}
 			catch(Exception ex)
