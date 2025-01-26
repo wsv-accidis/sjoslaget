@@ -7,7 +7,6 @@ using Accidis.WebServices.Db;
 using Accidis.WebServices.Exceptions;
 using Accidis.WebServices.Models;
 using Accidis.WebServices.Web;
-using DryIoc;
 using NLog;
 
 namespace Accidis.Gotland.WebService.Controllers
@@ -31,7 +30,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
@@ -41,9 +40,13 @@ namespace Accidis.Gotland.WebService.Controllers
 					return BadRequest();
 				}
 
-				Guid candidateId = ParseGuid(c);
-				int placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
+				var candidateId = ParseGuid(c);
+				var placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
 				return Ok(new { PlaceInQueue = placeInQueue });
+			}
+			catch(FormatException)
+			{
+				return BadRequest();
 			}
 			catch(NotFoundException)
 			{
@@ -62,12 +65,12 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
-				Guid id = await _candidateRepository.CreateAsync(candidate);
-				int queueSize = await _candidateRepository.GetNumberOfActiveAsync();
+				var id = await _candidateRepository.CreateAsync(candidate);
+				var queueSize = await _candidateRepository.GetNumberOfActiveAsync();
 
 				return Ok(new BookingCandidateResponse(id, queueSize, evnt));
 			}
@@ -88,15 +91,15 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
-				Guid candidateId = ParseGuid(c);
+				var candidateId = ParseGuid(c);
 				if(!await _candidateRepository.KeepAliveAsync(candidateId))
 					return NotFound();
 
-				int queueSize = await _candidateRepository.GetNumberOfActiveAsync();
+				var queueSize = await _candidateRepository.GetNumberOfActiveAsync();
 				return Ok(new BookingCandidateResponse(candidateId, queueSize, evnt));
 			}
 			catch(FormatException)
@@ -116,14 +119,14 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
 				if(BookingsController.IsUnauthorized(reference))
 					return BadRequest("Request is unauthorized, or not logged in as the booking it's trying to read.");
 
-				BookingQueueStats bookingQueueStats = await _bookingRepository.GetQueueStatsByReferenceAsync(reference, evnt.Opening);
+				var bookingQueueStats = await _bookingRepository.GetQueueStatsByReferenceAsync(reference, evnt.Opening);
 				if(null == bookingQueueStats)
 					return Ok(new BookingQueueStats());
 
@@ -141,13 +144,13 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 				if(evnt.IsLocked)
 					return BadRequest("The event is locked and can no longer accept bookings.");
 
-				Guid candidateId = ParseGuid(c);
+				var candidateId = ParseGuid(c);
 				BookingCandidate candidate;
 				int placeInQueue;
 
@@ -165,7 +168,7 @@ namespace Accidis.Gotland.WebService.Controllers
 					}
 				}
 
-				BookingResult result = await _bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
+				var result = await _bookingRepository.CreateFromCandidateAsync(evnt, candidate, placeInQueue);
 				_log.Info("Created booking {0} from candidate {1} at position {2}.", result.Reference, candidate.Id,
 					placeInQueue);
 
@@ -195,6 +198,9 @@ namespace Accidis.Gotland.WebService.Controllers
 
 		static Guid ParseGuid(string c)
 		{
+			if(string.IsNullOrEmpty(c))
+				throw new FormatException("Guid can't be an empty or blank string.");
+
 			return Guid.ParseExact(c, "D");
 		}
 
@@ -202,7 +208,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				using(var emailSender = new EmailSender())
+				using(var emailSender = new EmailSender()) 
 					await emailSender.SendBookingCreatedMailAsync(evnt.Name, candidate.Email, result.Reference, result.Password);
 			}
 			catch(Exception ex)
