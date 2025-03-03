@@ -19,18 +19,22 @@ namespace Accidis.Gotland.WebService.Services
 
 			using(var db = DbUtil.Open())
 			{
-				Guid id = await db.ExecuteScalarAsync<Guid>(
+				var id = await db.ExecuteScalarAsync<Guid>(
 					"insert into [BookingCandidate] ([FirstName], [LastName], [Email], [PhoneNo], [TeamName], [TeamSize], [GroupName]) output inserted.[Id] values (@FirstName, @LastName, @Email, @PhoneNo, @TeamName, @TeamSize, @GroupName)",
 					new
 					{
-						FirstName = candidate.FirstName,
-						LastName = candidate.LastName,
-						Email = candidate.Email,
-						PhoneNo = candidate.PhoneNo,
-						TeamName = candidate.TeamName,
-						TeamSize = candidate.TeamSize,
+						candidate.FirstName,
+						candidate.LastName,
+						candidate.Email,
+						candidate.PhoneNo,
+						candidate.TeamName,
+						candidate.TeamSize,
 						GroupName = candidate.GroupName ?? string.Empty
 					});
+
+				await db.ExecuteAsync(
+					"insert into [BookingCandidateChallenge] ([CandidateId], [ChallengeId]) values (@Id, (select top 1 [Id] from [Challenge] order by newid()))",
+					new { Id = id });
 
 				return id;
 			}
@@ -49,10 +53,9 @@ namespace Accidis.Gotland.WebService.Services
 		public async Task<int> EnqueueAsync(Guid candidateId)
 		{
 			using(var db = DbUtil.Open())
-			{
 				try
 				{
-					int no = await FindPlaceInQueueAsync(db, candidateId);
+					var no = await FindPlaceInQueueAsync(db, candidateId);
 					if(no != 0) // shortcut in case the endpoint gets spammed
 						return no;
 
@@ -73,7 +76,14 @@ namespace Accidis.Gotland.WebService.Services
 
 					throw;
 				}
-			}
+		}
+
+		public async Task<ChallengeResponse> FindChallengeByIdAsync(Guid id)
+		{
+			using(var db = DbUtil.Open())
+				return await db.QuerySingleAsync<ChallengeResponse>(
+					"select [Challenge], [Response] from [Challenge] where [Id] = (select top 1 [ChallengeId] from [BookingCandidateChallenge] where [CandidateId] = @CandidateId)",
+					new { CandidateId = id });
 		}
 
 		public async Task<BookingCandidate> FindByIdAsync(Guid id)
@@ -97,10 +107,8 @@ namespace Accidis.Gotland.WebService.Services
 		public async Task<int> GetNumberOfActiveAsync()
 		{
 			using(var db = DbUtil.Open())
-			{
 				return await db.ExecuteScalarAsync<int>("select count(*) from [BookingCandidate] where [KeepAlive] > dateadd(minute, @Treshold, getdate())",
 					new { Treshold = -ActiveTresholdMinutes });
-			}
 		}
 
 		public async Task<QueueDashboardItem[]> GetQueueAsync(DateTime? eventOpening)
@@ -137,7 +145,7 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				int didUpdate = await db.ExecuteScalarAsync<int>("update [BookingCandidate] set [KeepAlive] = sysdatetime() output 1 where [Id] = @Id",
+				var didUpdate = await db.ExecuteScalarAsync<int>("update [BookingCandidate] set [KeepAlive] = sysdatetime() output 1 where [Id] = @Id",
 					new { Id = candidateId });
 				return didUpdate != 0;
 			}

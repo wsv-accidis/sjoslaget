@@ -25,8 +25,38 @@ namespace Accidis.Gotland.WebService.Controllers
 			_eventRepository = eventRepository;
 		}
 
-		[HttpPut]
-		public async Task<IHttpActionResult> Claim(string c)
+		[HttpGet]
+		public async Task<IHttpActionResult> Challenge(string c)
+		{
+			try
+			{
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				if(!evnt.IsOpenAndNotLocked)
+				{
+					_log.Warn("An attempt was made to get a challenge before the event is open.");
+					return BadRequest();
+				}
+
+				var candidateId = ParseGuid(c);
+				var challenge = await _candidateRepository.FindChallengeByIdAsync(candidateId);
+				return Ok(new { challenge.Challenge });
+			}
+			catch(FormatException)
+			{
+				return BadRequest();
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting a challenge.");
+				throw;
+			}
+		}
+
+		[HttpPost]
+		public async Task<IHttpActionResult> Claim(ClaimSource claim)
 		{
 			try
 			{
@@ -40,8 +70,15 @@ namespace Accidis.Gotland.WebService.Controllers
 					return BadRequest();
 				}
 
-				var candidateId = ParseGuid(c);
-				var placeInQueue = await _candidateRepository.EnqueueAsync(candidateId);
+				var challenge = await _candidateRepository.FindChallengeByIdAsync(claim.CandidateId);
+				if(!claim.IsValidResponseTo(challenge))
+				{
+					_log.Warn($"An attempt was made to enqueue a candidate with an invalid challenge. " +
+					          $"\"{claim.ChallengeResponse}\" <> \"{challenge.Response}\".");
+					return Conflict();
+				}
+
+				var placeInQueue = await _candidateRepository.EnqueueAsync(claim.CandidateId);
 				return Ok(new { PlaceInQueue = placeInQueue });
 			}
 			catch(FormatException)
@@ -199,12 +236,12 @@ namespace Accidis.Gotland.WebService.Controllers
 			}
 		}
 
-		static Guid ParseGuid(string c)
+		static Guid ParseGuid(string guidStr)
 		{
-			if(string.IsNullOrEmpty(c))
+			if(string.IsNullOrEmpty(guidStr))
 				throw new FormatException("Guid can't be an empty or blank string.");
 
-			return Guid.ParseExact(c, "D");
+			return Guid.ParseExact(guidStr, "D");
 		}
 
 		async Task SendBookingCreatedMailAsync(Event evnt, BookingCandidate candidate, BookingResult result)

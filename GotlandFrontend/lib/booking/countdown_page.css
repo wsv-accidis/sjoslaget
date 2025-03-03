@@ -1,3 +1,30 @@
+.challenge-button {
+	margin-top: -5px;
+	text-align: center;
+}
+
+.challenge-error {
+	color: red;
+	font-size: 20px;
+}
+
+.challenge-intro {
+	margin-top: 40px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.challenge-text {
+	margin-top: 20px;
+	font-size: 30px;
+	text-align: center;	
+}
+
+.challenge-field {
+	margin-left: 20px;
+	width: 150px;
+}
+
 .countdown-logo {
 	text-align: center;
 }

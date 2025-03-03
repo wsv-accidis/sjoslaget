@@ -7,8 +7,11 @@ import 'package:http/http.dart';
 
 import '../model/booking_details.dart';
 import '../model/candidate_response.dart';
+import '../model/challenge.dart';
+import '../model/claim_source.dart';
 import '../model/queue_response.dart';
 import 'booking_exception.dart';
+import 'challenge_failed_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
 
 @Injectable()
@@ -35,16 +38,38 @@ class QueueRepository {
       throw IOException.fromResponse(response);
   }
 
-  Future<QueueResponse> go(Client client, String candidateId) async {
+  Future<Challenge> challenge(Client client, String candidateId) async {
     Response response;
     try {
-      response = await client.put('$_apiRoot/queue/claim?c=$candidateId');
+      response = await client.get('$_apiRoot/queue/challenge?c=$candidateId');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    if (HttpStatus.OK == response.statusCode)
+      return Challenge.fromJson(response.body);
+    else if (HttpStatus.BAD_REQUEST == response.statusCode)
+      // Countdown not elapsed yet
+      throw BookingException();
+    else
+      throw IOException.fromResponse(response);
+  }
+
+  Future<QueueResponse> claim(Client client, ClaimSource claim) async {
+    final headers = ClientUtil.createJsonHeaders();
+
+    Response response;
+    try {
+      response = await client.post('$_apiRoot/queue/claim', headers: headers, body: claim.toJson());
     } catch (e) {
       throw IOException.fromException(e);
     }
 
     if (HttpStatus.OK == response.statusCode)
       return QueueResponse.fromJson(response.body);
+    else if (HttpStatus.CONFLICT == response.statusCode)
+      // Challenge was incorrect
+      throw ChallengeFailedException();
     else if (HttpStatus.BAD_REQUEST == response.statusCode)
       // Countdown not elapsed yet
       throw BookingException();

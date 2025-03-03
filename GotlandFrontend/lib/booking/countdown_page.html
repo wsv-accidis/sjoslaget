@@ -6,16 +6,35 @@
 		{{ countdownFormatted }}
 	</div>
 	<div class="countdown-button">
-		<material-button [disabled]="shouldDisableButton"
-						 class="control-green"
-						 raised
-						 (trigger)="submitCandidate()">
+		<material-button class="control-green"
+						 [disabled]="true"
+						 raised>
 			{{ buttonText }}
 		</material-button>
 	</div>
 	<div class="countdown-escape">
 		Har du ångrat dig?<br/>
 		<a [routerLink]="ContentRoutes.booking.toUrl()">Klicka här för att lämna nedräkningen.</a>
+	</div>
+</div>
+<div *ngIf="shouldShowChallenge">
+	<div class="challenge-intro">
+		Bokningen är öppen! Svara på en enkel fråga för att fortsätta:
+	</div>
+	<div class="challenge-text">
+		{{ challengeText }} 
+		<material-input [(ngModel)]="challengeResponse"				
+						class="challenge-field"
+						[displayBottomPanel]="false"
+						label="svara här">
+		</material-input>
+	</div>
+	<div class="challenge-button">
+		<material-button class="control-green"
+						 raised
+						 (trigger)="submitCandidate()">
+			Skicka och skapa bokning
+		</material-button>
 	</div>
 </div>
 <div *ngIf="waitingForServer" class="countdown-wait">
@@ -29,5 +48,8 @@
 	Bokningen kan inte laddas just nu på grund av överbelastning, men du behåller din plats i kön!<br />
 	Kolla den angivna mailen, om du har fått ditt bekräftelsemail så kan du <a [routerLink]="ContentRoutes.booking.toUrl()">logga in här</a> för att öppna din bokning.<br />
 	Om inget mail kommer inom några minuter, hör av dig till oss så ska vi hjälpa dig. Ange bokningsreferens <strong>{{ existingBookingRef }}</strong>.
+</div>
+<div *ngIf="hasChallengeError" class="challenge-error">
+	Är du säker på att det är rätt svar? Rätta till det och försök igen!
 </div>
 </p>

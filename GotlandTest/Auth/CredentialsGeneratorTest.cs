@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Auth;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Accidis.Gotland.Test.Auth
@@ -16,7 +17,7 @@ namespace Accidis.Gotland.Test.Auth
 			for(int i = 0; i < 1000; i++)
 			{
 				string pinCode = sut.GeneratePinCode();
-				Assert.AreEqual(CredentialsGenerator.PinCodeLength, pinCode.Length);
+				Assert.AreEqual(AecCredentialsGenerator.PinCodeLength, pinCode.Length);
 				Assert.IsTrue(pinCode.All(char.IsDigit));
 			}
 		}

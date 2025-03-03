@@ -5,35 +5,32 @@ using Dapper;
 
 namespace Accidis.Gotland.Test.Db
 {
-	static class GotlandDbExtensions
+	internal static class GotlandDbExtensions
 	{
-		static Guid _eventId;
-
-		public static Guid EventId => _eventId;
+		public static Guid EventId { get; private set; }
 
 		// Use from [TestInitialize] or [ClassInitialize]
-		public static void InitializeForTest(GotlandDbTestConfig config = null)
+		public static void InitializeForTest()
 		{
 			using(var db = DbUtil.Open())
-				db.InitializeForTest(config);
+				db.InitializeForTest();
 		}
 
 		// Use from [TestInitialize] or [ClassInitialize]
-		public static void InitializeForTest(this SqlConnection db, GotlandDbTestConfig config = null)
+		public static void InitializeForTest(this SqlConnection db)
 		{
-			//if(null == config)
-			//config = GotlandDbTestConfig.Default;
-
 			db.Execute("delete from [BookingQueue]");
 			db.Execute("delete from [BookingCandidate]");
 			db.Execute("delete from [Event]");
 			db.Execute("delete from [CabinClass]");
+			db.Execute("delete from [Challenge]");
 
-			_eventId = db.ExecuteScalar<Guid>("insert into [Event] ([Name], [IsActive]) output inserted.[Id] values ('Test', 1)");
+			EventId = db.ExecuteScalar<Guid>("insert into [Event] ([Name], [IsActive]) output inserted.[Id] values ('Test', 1)");
 
 			db.Execute("insert into [CabinClass] ([No], [Name], [Description]) values (0, 'Camping', ''), (1, 'Logipaket 1', ''), (2, 'Logipaket 2', ''), (3, 'Logipaket 3', '')");
 			db.Execute("insert into [EventCabinClass] ([No], [EventId], [PricePerPax]) values (0, @Id, 1199), (1, @Id, 1349), (2, @Id, 1449), (3, @Id, 1549)",
-				new {Id = _eventId});
+				new { Id = EventId });
+			db.Execute("insert into [Challenge] ([Challenge], [Response]) values ('1 + 1 = ?', '2')");
 		}
 	}
 }

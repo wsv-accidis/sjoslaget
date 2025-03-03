@@ -229,8 +229,10 @@
     <Compile Include="Models\CabinCapacity.cs" />
     <Compile Include="Models\CabinClass.cs" />
     <Compile Include="Models\CabinClassDetail.cs" />
+    <Compile Include="Models\Challenge.cs" />
     <Compile Include="Models\ClaimedCapacity.cs" />
     <Compile Include="Models\CapacityWithPaymentStatus.cs" />
+    <Compile Include="Models\ClaimSource.cs" />
     <Compile Include="Models\DayBooking.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />

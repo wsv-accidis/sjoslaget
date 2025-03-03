@@ -59,9 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db\GotlandDbMaintenance.cs" />
-    <Compile Include="Db\GotlandDbTestConfig.cs" />
     <Compile Include="Db\GotlandDbExtensions.cs" />
     <Compile Include="Db\GotlandDbTest.cs" />
+    <Compile Include="Models\ClaimSourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BookingCandidateRepositoryTest.cs" />
     <Compile Include="Services\BookingRepositoryTest.cs" />
@@ -96,5 +96,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

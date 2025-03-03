@@ -6,6 +6,8 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:frontend_shared/model/booking_result.dart';
+import 'package:gotland/client/challenge_failed_exception.dart';
+import 'package:gotland/model/claim_source.dart';
 import 'package:quiver/strings.dart' show isEmpty;
 
 import '../booking/booking_routes.dart';
@@ -13,6 +15,7 @@ import '../client/booking_exception.dart';
 import '../client/client_factory.dart';
 import '../client/queue_repository.dart';
 import '../content/content_routes.dart';
+import '../model/challenge.dart';
 import '../model/queue_response.dart';
 import '../util/countdown_state.dart';
 import '../util/temp_credentials_store.dart';
@@ -28,15 +31,16 @@ import '../widgets/spinner_widget.dart';
     exports: [ContentRoutes])
 class CountdownPage implements OnInit, OnDestroy {
   static const int BUTTON_CYCLE_INTERVAL = 10000;
-  static const int MAX_SUBMIT_ATTEMPTS = 3;
+  static const int MAX_RETRY_ATTEMPTS = 3;
   static const int PING_INTERVAL = 60000;
-  static const int RANDOM_DELAY_MIN = 5000;
-  static const int RANDOM_DELAY_MAX = 30000;
+  static const int RANDOM_DELAY_MIN = 1000;
+  static const int RANDOM_DELAY_MAX = 10000;
   static const int TICK_INTERVAL = 100;
 
   static const List<String> BUTTON_TEXT = <String>[
-    'Klicka här när nedräkningen når noll',
-    '...så får du en kaka (inte så troligt)',
+    'Snart är det dags, är du taggad?',
+    'Den här knappen kanske blir klickbar någon gång...',
+    '...eller kanske inte? Vem vet?',
     'Nu till lite roliga fakta om Gotland!',
     'Visste du att Gotland inte är Sveriges fårtätaste län?',
     'Det finns nämligen inga får på Gotland.',
@@ -85,7 +89,6 @@ class CountdownPage implements OnInit, OnDestroy {
     'Grädda mitt i ugnen i tio minuter.',
     'WOW! Du har just värpt ett gäng hallongrottor.',
   ];
-  static const String BUTTON_TEXT_FINAL = 'KÖR KÖR KÖR KÖR KÖR KÖR NU NU NU NU!!!11';
 
   final ClientFactory _clientFactory;
   final QueueRepository _queueRepository;
@@ -95,6 +98,7 @@ class CountdownPage implements OnInit, OnDestroy {
   BookingResult _bookingResult;
   int _buttonTextIndex = 0;
   Timer _buttonTimer;
+  Challenge _challenge;
   final _countdown = CountdownState.fromSession();
   Timer _countdownTimer;
   Timer _pingTimer;
@@ -102,19 +106,25 @@ class CountdownPage implements OnInit, OnDestroy {
   final _random = Random();
 
   String buttonText = '';
+  String challengeResponse;
   String countdownFormatted;
   String existingBookingRef = '';
   bool hasBookingError = false;
+  bool hasChallengeError = false;
   bool hasError = false;
   bool waitingForServer = false;
 
+  String get challengeText => hasChallenge ? _challenge.challenge : '';
+
   bool get countdownIsElapsed => _countdown.isElapsed;
+
+  bool get hasChallenge => null != _challenge;
 
   bool get hasCreatedBooking => null != _bookingResult;
 
-  bool get shouldDisableButton => !countdownIsElapsed || waitingForServer;
+  bool get shouldShowCountdown => !countdownIsElapsed && !waitingForServer && !hasCreatedBooking && !hasBookingError;
 
-  bool get shouldShowCountdown => !waitingForServer && !hasCreatedBooking && !hasBookingError;
+  bool get shouldShowChallenge => countdownIsElapsed && !waitingForServer && hasChallenge;
 
   CountdownPage(this._clientFactory, this._queueRepository, this._router, this._tempCredentialsStore);
 
@@ -130,18 +140,18 @@ class CountdownPage implements OnInit, OnDestroy {
       return;
     }
 
-    _updateButton(null);
-    _buttonTimer = Timer.periodic(const Duration(milliseconds: BUTTON_CYCLE_INTERVAL), _updateButton);
-
-    _tick(null);
-    _countdownTimer = Timer.periodic(const Duration(milliseconds: TICK_INTERVAL), _tick);
-
-    await _ping(null);
-    _pingTimer = Timer.periodic(const Duration(milliseconds: PING_INTERVAL), _ping);
-
     if (countdownIsElapsed) {
-      print('Countdown has already elapsed, go directly to booking.');
-      await submitCandidate();
+      print('Countdown has already elapsed.');
+      await _getChallenge();
+    } else {
+      _updateButton(null);
+      _buttonTimer = Timer.periodic(const Duration(milliseconds: BUTTON_CYCLE_INTERVAL), _updateButton);
+
+      await _tick(null);
+      _countdownTimer = Timer.periodic(const Duration(milliseconds: TICK_INTERVAL), _tick);
+
+      await _ping(null);
+      _pingTimer = Timer.periodic(const Duration(milliseconds: PING_INTERVAL), _ping);
     }
   }
 
@@ -189,8 +199,8 @@ class CountdownPage implements OnInit, OnDestroy {
     try {
       int retries = 0;
 
-      while (null == _queueResponse && retries < MAX_SUBMIT_ATTEMPTS) {
-        await trySubmitCandidate();
+      while (null == _queueResponse && retries < MAX_RETRY_ATTEMPTS && !hasChallengeError) {
+        await _trySubmitCandidate();
         retries++;
       }
 
@@ -201,22 +211,11 @@ class CountdownPage implements OnInit, OnDestroy {
         print(
             'Claimed queue position ${_queueResponse.placeInQueue.toString()}, creating booking after ${delay.toString()} ms.');
         await Future<void>.delayed(Duration(milliseconds: delay), createBooking);
-      } else {
+      } else if (!hasChallengeError) {
         hasError = true;
       }
     } finally {
       waitingForServer = false;
-    }
-  }
-
-  Future<void> trySubmitCandidate() async {
-    try {
-      final client = _clientFactory.getClient();
-      _queueResponse = await _queueRepository.go(client, _countdown.candidateId);
-    } on BookingException {
-      print('Failed to submit candidate because countdown had not elapsed!');
-    } catch (e) {
-      print('Failed to submit candidate: ${e.toString()}');
     }
   }
 
@@ -237,7 +236,33 @@ class CountdownPage implements OnInit, OnDestroy {
 
   void _clearErrors() {
     hasBookingError = false;
+    hasChallengeError = false;
     hasError = false;
+  }
+
+  Future<void> _getChallenge() async {
+    _cancelTimers();
+    _clearErrors();
+
+    if (waitingForServer) {
+      return;
+    }
+
+    waitingForServer = true;
+    try {
+      int retries = 0;
+
+      while (null == _challenge && retries < MAX_RETRY_ATTEMPTS) {
+        await _tryGetChallenge();
+        retries++;
+      }
+
+      if (null == _challenge) {
+        hasError = true;
+      }
+    } finally {
+      waitingForServer = false;
+    }
   }
 
   Future<void> _ping(Timer ignored) async {
@@ -254,20 +279,42 @@ class CountdownPage implements OnInit, OnDestroy {
     }
   }
 
-  void _tick(Timer ignored) {
+  Future<void> _tick(Timer ignored) async {
     countdownFormatted = _countdown.toString();
 
-    if (countdownIsElapsed) {
-      buttonText = BUTTON_TEXT_FINAL;
+    if (countdownIsElapsed && !waitingForServer) {
+      await _getChallenge();
+    }
+  }
+
+  Future<void> _tryGetChallenge() async {
+    try {
+      final client = _clientFactory.getClient();
+      _challenge = await _queueRepository.challenge(client, _countdown.candidateId);
+    } on BookingException {
+      print('Failed to get challenge because countdown had not elapsed!');
+    } catch (e) {
+      print('Failed to get challenge: ${e.toString()}');
+    }
+  }
+
+  Future<void> _trySubmitCandidate() async {
+    try {
+      final client = _clientFactory.getClient();
+      final claim = ClaimSource(_countdown.candidateId, challengeResponse);
+      _queueResponse = await _queueRepository.claim(client, claim);
+    } on ChallengeFailedException {
+      print('Failed to submit candidate because the challenge response was not valid.');
+      hasChallengeError = true;
+    } on BookingException {
+      print('Failed to submit candidate because countdown had not elapsed!');
+    } catch (e) {
+      print('Failed to submit candidate: ${e.toString()}');
     }
   }
 
   void _updateButton(Timer ignored) {
-    if (!countdownIsElapsed) {
-      buttonText = BUTTON_TEXT[_buttonTextIndex];
-      _buttonTextIndex = (1 + _buttonTextIndex) % BUTTON_TEXT.length;
-    } else {
-      buttonText = BUTTON_TEXT_FINAL;
-    }
+    buttonText = BUTTON_TEXT[_buttonTextIndex];
+    _buttonTextIndex = (1 + _buttonTextIndex) % BUTTON_TEXT.length;
   }
 }
