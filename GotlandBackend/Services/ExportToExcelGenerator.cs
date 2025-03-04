@@ -69,10 +69,11 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			sheet[0, 0] = CreateHeaderCell("Förnamn");
 			sheet[0, 1] = CreateHeaderCell("Efternamn");
-			sheet[0, 2] = CreateHeaderCell("Födelsed.");
-			sheet[0, 3] = CreateHeaderCell("Betald");
-			sheet[0, 4] = CreateHeaderCell("Typ");
-			sheet[0, 5] = CreateHeaderCell("Kost");
+			sheet[0, 2] = CreateHeaderCell("E-post");
+			sheet[0, 3] = CreateHeaderCell("Födelsed.");
+			sheet[0, 4] = CreateHeaderCell("Betald");
+			sheet[0, 5] = CreateHeaderCell("Typ");
+			sheet[0, 6] = CreateHeaderCell("Kost");
 		}
 
 		Worksheet CreateDayBookingsWorksheet()
@@ -82,10 +83,11 @@ namespace Accidis.Gotland.WebService.Services
 
 			sheet.ColumnWidths[0] = 20;
 			sheet.ColumnWidths[1] = 20;
-			sheet.ColumnWidths[2] = 10;
+			sheet.ColumnWidths[2] = 30;
 			sheet.ColumnWidths[3] = 10;
-			sheet.ColumnWidths[4] = 16;
+			sheet.ColumnWidths[4] = 10;
 			sheet.ColumnWidths[5] = 16;
+			sheet.ColumnWidths[6] = 16;
 			return sheet;
 		}
 
@@ -143,7 +145,7 @@ namespace Accidis.Gotland.WebService.Services
 		async Task FetchAndCreateRowsForDayBookings(SqlConnection db, Event evnt, Worksheet sheet)
 		{
 			var result = await db.QueryAsync<DayBookingDbRow>(
-				"select [FirstName], [LastName], [Dob], [PaymentConfirmed], T.[Title] [Type], [Food] " +
+				"select [FirstName], [LastName], [Email], [Dob], [PaymentConfirmed], T.[Title] [Type], [Food] " +
 				"from [DayBooking] B " +
 				"left join [DayBookingType] T on B.[TypeId] = T.[Id] " +
 				"where [EventId] = @EventId " +
@@ -154,10 +156,11 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				sheet[rowNo, 0] = row.FirstName;
 				sheet[rowNo, 1] = row.LastName;
-				sheet[rowNo, 2] = row.Dob;
-				sheet[rowNo, 3] = GetPaymentConfirmedDisplayName(row.PaymentConfirmed);
-				sheet[rowNo, 4] = row.Type;
-				sheet[rowNo, 5] = GetFoodDisplayName(row.Food);
+				sheet[rowNo, 2] = row.Email;
+				sheet[rowNo, 3] = row.Dob;
+				sheet[rowNo, 4] = GetPaymentConfirmedDisplayName(row.PaymentConfirmed);
+				sheet[rowNo, 5] = row.Type;
+				sheet[rowNo, 6] = GetFoodDisplayName(row.Food);
 				rowNo++;
 			}
 		}
@@ -223,6 +226,7 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			public string FirstName { get; set; }
 			public string LastName { get; set; }
+			public string Email { get; set; }
 			public string Dob { get; set; }
 			public bool PaymentConfirmed { get; set; }
 			public string Type { get; set; }
