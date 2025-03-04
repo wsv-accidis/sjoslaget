@@ -20,6 +20,7 @@ const String DESCRIPTION = 'Description';
 const String DISCOUNT = 'Discount';
 const String DOB = 'Dob';
 const String EMAIL = 'Email';
+const String EVENT_CAPACITY = 'EventCapacity';
 const String FIRSTNAME = 'FirstName';
 const String FOOD = 'Food';
 const String GENDER = 'Gender';

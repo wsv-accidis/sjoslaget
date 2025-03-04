@@ -12,6 +12,7 @@ namespace Accidis.Gotland.WebService.Models
 		public bool IsActive { get; set; }
 		public bool IsLocked { get; set; }
 		public DateTime? Opening { get; set; }
+		public int Capacity { get; set; }
 
 		public bool HasOpened => Opening.HasValue && DateTime.Now > Opening.Value;
 

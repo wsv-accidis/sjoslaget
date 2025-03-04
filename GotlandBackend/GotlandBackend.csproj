@@ -234,6 +234,7 @@
     <Compile Include="Models\CapacityWithPaymentStatus.cs" />
     <Compile Include="Models\ClaimSource.cs" />
     <Compile Include="Models\DayBooking.cs" />
+    <Compile Include="Models\DayBookingCapacity.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\EventCountdown.cs" />
     <Compile Include="Models\DayBookingSource.cs" />

@@ -90,6 +90,7 @@ namespace Accidis.Gotland.WebService.Controllers
 					return NotFound();
 
 				CapacityWithPaymentStatus capacity = await _cabinRepository.GetCapacityWithPaymentStatusByEventAsync(evnt);
+				capacity.EventCapacity = evnt.Capacity; // convenience for the frontend
 				return this.OkNoCache(capacity);
 			}
 			catch (Exception ex)

@@ -2,6 +2,7 @@
 {
 	public class CapacityWithPaymentStatus
 	{
+		public int EventCapacity { get; set; }
 		public int TotalPax { get; set; }
 		public int TotalDayPax { get; set; }
 		public int TotalPaxPaid { get; set; }

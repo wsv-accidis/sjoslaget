@@ -16,16 +16,16 @@ namespace Accidis.Gotland.WebService.Services
 			{
 				await db.ExecuteAsync("update [Event] set [IsActive] = 0");
 
-				Guid id = await db.ExecuteScalarAsync<Guid>("insert into [Event] ([Name], [IsActive]) values (@Name, @IsActive)",
-					new {Name = name, IsActive = true});
+				var id = await db.ExecuteScalarAsync<Guid>("insert into [Event] ([Name], [IsActive]) values (@Name, @IsActive)",
+					new { Name = name, IsActive = true });
 
-				return new Event {Id = id, IsActive = true, Name = name};
+				return new Event { Id = id, IsActive = true, Name = name };
 			}
 		}
 
 		public async Task<Event> FindByIdAsync(SqlConnection db, Guid id)
 		{
-			var result = await db.QueryAsync<Event>("select * from [Event] where [Id] = @Id", new {Id = id});
+			var result = await db.QueryAsync<Event>("select * from [Event] where [Id] = @Id", new { Id = id });
 			return result.FirstOrDefault();
 		}
 
@@ -33,7 +33,7 @@ namespace Accidis.Gotland.WebService.Services
 		{
 			using(var db = DbUtil.Open())
 			{
-				var result = await db.QueryAsync<Event>("select top 1 * from [Event] where [IsActive] = @IsActive", new {IsActive = true});
+				var result = await db.QueryAsync<Event>("select top 1 * from [Event] where [IsActive] = @IsActive", new { IsActive = true });
 				return result.FirstOrDefault();
 			}
 		}
@@ -41,10 +41,8 @@ namespace Accidis.Gotland.WebService.Services
 		public async Task UpdateMetadataAsync(Event evnt)
 		{
 			using(var db = DbUtil.Open())
-			{
-				await db.ExecuteAsync("update [Event] set [IsActive] = @IsActive, [IsLocked] = @IsLocked, [Opening] = @Opening where [Id] = @Id",
-					new {Id = evnt.Id, IsActive = evnt.IsActive, IsLocked = evnt.IsLocked, Opening = evnt.Opening});
-			}
+				await db.ExecuteAsync("update [Event] set [IsActive] = @IsActive, [IsLocked] = @IsLocked, [Opening] = @Opening, [Capacity] = @Capacity where [Id] = @Id",
+					new { evnt.Id, evnt.IsActive, evnt.IsLocked, evnt.Opening, evnt.Capacity });
 		}
 	}
 }

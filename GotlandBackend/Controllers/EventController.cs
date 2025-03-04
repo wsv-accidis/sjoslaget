@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Accidis.Gotland.WebService.Models;
 using Accidis.Gotland.WebService.Services;
 using Accidis.WebServices.Auth;
 using Accidis.WebServices.Web;
@@ -24,7 +23,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
@@ -43,13 +42,13 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
+				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
 
 				evnt.IsLocked = !evnt.IsLocked;
 				await _eventRepository.UpdateMetadataAsync(evnt);
-				return Ok(new {IsLocked = evnt.IsLocked});
+				return Ok(new { evnt.IsLocked });
 			}
 			catch(Exception ex)
 			{

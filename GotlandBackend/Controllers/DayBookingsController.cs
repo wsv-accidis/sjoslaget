@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
@@ -11,18 +12,37 @@ namespace Accidis.Gotland.WebService.Controllers
 {
 	public sealed class DayBookingsController : ApiController
 	{
-		// TODO: Calculate this dynamically
-		// TODO: Also the corresponding constant PaidCapacity.maxCapacity in the frontend
-		const int MaxDayBookings2024 = 302;
-
-		readonly EventRepository _eventRepository;
+		readonly CabinRepository _cabinRepository;
 		readonly DayBookingRepository _dayBookingRepository;
+		readonly EventRepository _eventRepository;
 		readonly Logger _log = LogManager.GetLogger(nameof(DayBookingsController));
 
-		public DayBookingsController(EventRepository eventRepository, DayBookingRepository dayBookingRepository)
+		public DayBookingsController(CabinRepository cabinRepository, DayBookingRepository dayBookingRepository, EventRepository eventRepository)
 		{
-			_eventRepository = eventRepository;
+			_cabinRepository = cabinRepository;
 			_dayBookingRepository = dayBookingRepository;
+			_eventRepository = eventRepository;
+		}
+
+		[HttpGet]
+		public async Task<IHttpActionResult> Capacity()
+		{
+			try
+			{
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
+					return NotFound();
+
+				var capacity = await GetCapacityByEvent(evnt);
+				var count = await _dayBookingRepository.GetCount(evnt);
+
+				return this.OkCacheControl(new DayBookingCapacity { Capacity = capacity, Count = count }, WebConfig.DynamicDataMaxAge);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while getting the day booking capacity.");
+				throw;
+			}
 		}
 
 		[Authorize(Roles = Roles.Admin)]
@@ -58,20 +78,21 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
-				if (null == evnt)
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
 					return NotFound();
 
-				int count = await _dayBookingRepository.GetCount(evnt);
-				if(count >= MaxDayBookings2024)
+				var capacity = await GetCapacityByEvent(evnt);
+				var count = await _dayBookingRepository.GetCount(evnt);
+				if(count >= capacity)
 					return Conflict();
 
-				string reference = await _dayBookingRepository.CreateAsync(evnt, booking);
+				var reference = await _dayBookingRepository.CreateAsync(evnt, booking);
 				_log.Info("Created day booking {0}.", reference);
 
 				return Ok();
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while creating a day booking.");
 				throw;
@@ -85,7 +106,7 @@ namespace Accidis.Gotland.WebService.Controllers
 			try
 			{
 				var booking = await _dayBookingRepository.FindByReferenceAsync(reference);
-				if (null == booking)
+				if(null == booking)
 					return NotFound();
 
 				await _dayBookingRepository.DeleteAsync(booking);
@@ -93,7 +114,7 @@ namespace Accidis.Gotland.WebService.Controllers
 
 				return Ok();
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while deleting the day booking.");
 				throw;
@@ -107,12 +128,12 @@ namespace Accidis.Gotland.WebService.Controllers
 			try
 			{
 				var booking = await _dayBookingRepository.FindByReferenceAsync(reference);
-				if (null == booking)
+				if(null == booking)
 					return NotFound();
 
 				return this.OkNoCache(booking);
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, $"An unexpected exception occurred while getting the day booking with reference {reference}.");
 				throw;
@@ -125,14 +146,14 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
-				if (null == evnt)
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
 					return NotFound();
 
-				DayBooking[] bookings = await _dayBookingRepository.GetListAsync(evnt);
+				var bookings = await _dayBookingRepository.GetListAsync(evnt);
 				return this.OkNoCache(bookings);
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while getting a list of day bookings.");
 				throw;
@@ -144,10 +165,10 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				DayBookingType[] types = await _dayBookingRepository.GetTypesAsync();
+				var types = await _dayBookingRepository.GetTypesAsync();
 				return this.OkCacheControl(types, WebConfig.StaticDataMaxAge);
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while getting day booking types.");
 				throw;
@@ -160,23 +181,30 @@ namespace Accidis.Gotland.WebService.Controllers
 		{
 			try
 			{
-				Event evnt = await _eventRepository.GetActiveAsync();
-				if (null == evnt)
+				var evnt = await _eventRepository.GetActiveAsync();
+				if(null == evnt)
 					return NotFound();
 
 				await _dayBookingRepository.UpdateAsync(evnt, booking);
 				return Ok();
 			}
-			catch (BookingException ex)
+			catch(BookingException ex)
 			{
 				_log.Warn(ex, "A validation error occurred while updating the day booking.");
 				return BadRequest(ex.Message);
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				_log.Error(ex, "An unexpected exception occurred while updating the day booking.");
 				throw;
 			}
+		}
+
+		async Task<int> GetCapacityByEvent(Event evnt)
+		{
+			var capacity = evnt.Capacity - (await _cabinRepository.GetCapacityByEventAsync(evnt)).Sum(c => c.Capacity);
+			// This value could be negative in case of a misconfigured event, make sure we don't return a negative so as not to upset the frontend
+			return capacity > 0 ? capacity : 0;
 		}
 
 		async Task SendDayBookingConfirmedMailAsync(Event evnt, DayBooking booking)
