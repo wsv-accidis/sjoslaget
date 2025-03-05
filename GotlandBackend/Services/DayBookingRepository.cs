@@ -23,32 +23,42 @@ namespace Accidis.Gotland.WebService.Services
 
 			using(var db = DbUtil.Open())
 			{
-				string reference = _credentialsGenerator.GenerateDayBookingReference();
+				var reference = _credentialsGenerator.GenerateDayBookingReference();
 				await db.ExecuteScalarAsync<Guid>("insert into [DayBooking] ([EventId], [Reference], [FirstName], [LastName], [Email], [PhoneNo], [Gender], [Dob], [Food], [TypeId]) " +
 				                                  "values (@EventId, @Reference, @FirstName, @LastName, @Email, @PhoneNo, @Gender, @Dob, @Food, @TypeId)",
 					new
 					{
 						EventId = evnt.Id,
 						Reference = reference,
-						FirstName = booking.FirstName,
-						LastName = booking.LastName,
-						Email = booking.Email,
-						PhoneNo = booking.PhoneNo,
-						Gender = booking.Gender,
-						Dob = booking.Dob,
-						Food = booking.Food,
-						TypeId = booking.TypeId
+						booking.FirstName,
+						booking.LastName,
+						booking.Email,
+						booking.PhoneNo,
+						booking.Gender,
+						booking.Dob,
+						booking.Food,
+						booking.TypeId
 					});
 
 				return reference;
 			}
 		}
 
-
 		public async Task DeleteAsync(DayBooking booking)
 		{
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("delete from [DayBooking] where [Id] = @Id", new { Id = booking.Id });
+				await db.ExecuteAsync("delete from [DayBooking] where [Id] = @Id", new { booking.Id });
+		}
+
+		public async Task<bool> FindDuplicateAsync(Event evnt, DayBookingSource booking)
+		{
+			using(var db = DbUtil.Open())
+			{
+				var exists = await db.ExecuteScalarAsync<int>(
+					"select case when exists(select * from [DayBooking] where [EventId] = @EventId and [FirstName] = @FirstName and [LastName] = @LastName and [Email] = @Email and [Dob] = @Dob) then 1 else 0 end",
+					new { EventId = evnt.Id, booking.FirstName, booking.LastName, booking.Email, booking.Dob });
+				return exists != 0;
+			}
 		}
 
 		public async Task<DayBooking> FindByReferenceAsync(string reference)
@@ -102,16 +112,16 @@ namespace Accidis.Gotland.WebService.Services
 					"update [DayBooking] set [FirstName] = @FirstName, [LastName] = @LastName, [Email] = @Email, [PhoneNo] = @PhoneNo, [Gender] = @Gender, [Dob] = @Dob, [Food] = @Food, [TypeId] = @TypeId, [PaymentConfirmed] = @PaymentConfirmed, [Updated] = sysdatetime() where [Id] = @Id",
 					new
 					{
-						Id = booking.Id,
-						FirstName = source.FirstName,
-						LastName = source.LastName,
-						Email = source.Email,
-						PhoneNo = source.PhoneNo,
-						Gender = source.Gender,
-						Dob = source.Dob,
-						Food = source.Food,
-						TypeId = source.TypeId,
-						PaymentConfirmed = source.PaymentConfirmed
+						booking.Id,
+						source.FirstName,
+						source.LastName,
+						source.Email,
+						source.PhoneNo,
+						source.Gender,
+						source.Dob,
+						source.Food,
+						source.TypeId,
+						source.PaymentConfirmed
 					});
 			}
 		}
@@ -119,7 +129,7 @@ namespace Accidis.Gotland.WebService.Services
 		public async Task UpdateConfirmationSentAsync(DayBooking booking)
 		{
 			using(var db = DbUtil.Open())
-				await db.ExecuteAsync("update [DayBooking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new { Id = booking.Id });
+				await db.ExecuteAsync("update [DayBooking] set [ConfirmationSent] = sysdatetime() where [Id] = @Id", new { booking.Id });
 		}
 	}
 }

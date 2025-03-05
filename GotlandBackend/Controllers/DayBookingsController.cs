@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Accidis.Gotland.WebService.Models;
@@ -36,7 +37,7 @@ namespace Accidis.Gotland.WebService.Controllers
 				var capacity = await GetCapacityByEvent(evnt);
 				var count = await _dayBookingRepository.GetCount(evnt);
 
-				return this.OkCacheControl(new DayBookingCapacity { Capacity = capacity, Count = count }, WebConfig.DynamicDataMaxAge);
+				return this.OkNoCache(new DayBookingCapacity { Capacity = capacity, Count = count });
 			}
 			catch(Exception ex)
 			{
@@ -81,6 +82,9 @@ namespace Accidis.Gotland.WebService.Controllers
 				var evnt = await _eventRepository.GetActiveAsync();
 				if(null == evnt)
 					return NotFound();
+
+				if(await _dayBookingRepository.FindDuplicateAsync(evnt, booking))
+					return StatusCode(HttpStatusCode.ExpectationFailed);
 
 				var capacity = await GetCapacityByEvent(evnt);
 				var count = await _dayBookingRepository.GetCount(evnt);

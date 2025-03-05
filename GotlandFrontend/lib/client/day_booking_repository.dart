@@ -4,11 +4,13 @@ import 'package:angular/angular.dart';
 import 'package:frontend_shared/client.dart';
 import 'package:http/http.dart';
 
+import '../model/day_booking_capacity.dart';
 import '../model/day_booking_list_item.dart';
 import '../model/day_booking_source.dart';
 import '../model/day_booking_type.dart';
 import 'booking_exception.dart';
 import 'client_factory.dart' show GOTLAND_API_ROOT;
+import 'duplicate_booking_exception.dart';
 import 'sold_out_exception.dart';
 
 @Injectable()
@@ -64,6 +66,18 @@ class DayBookingRepository {
     return jsonBody.map((dynamic value) => DayBookingListItem.fromMap(value)).toList();
   }
 
+  Future<DayBookingCapacity> getCapacity(Client client) async {
+    Response response;
+    try {
+      response = await client.get('$_apiRoot/daybookings/capacity');
+    } catch (e) {
+      throw IOException.fromException(e);
+    }
+
+    HttpStatus.throwIfNotSuccessful(response);
+    return DayBookingCapacity.fromJson(response.body);
+  }
+
   Future<List<DayBookingType>> getTypes(Client client) async {
     Response response;
     try {
@@ -93,6 +107,8 @@ class DayBookingRepository {
       throw BookingException();
     else if (HttpStatus.CONFLICT == response.statusCode)
       throw SoldOutException();
+    else if (HttpStatus.EXPECTATION_FAILED == response.statusCode)
+      throw DuplicateBookingException();
     else
       throw IOException.fromResponse(response);
   }

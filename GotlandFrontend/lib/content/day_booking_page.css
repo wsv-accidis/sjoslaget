@@ -1,16 +1,36 @@
+.booking-saved {
+	font-weight: bold;
+	margin-top: 30px;
+}
+
+.capacity-info {
+	margin-top: 30px;
+}
+
+.filler {
+	height: 200px;
+}
+
 .important-margin {
 	margin-top: 20px !important;
 }
+
+.price-info {
+	margin-top: 20px;
+}
+
 img.swish {
 	float: right;
 	margin-left: 30px;
 	border: 0;
 	box-shadow: none;
 }
+
 h3 {
 	margin-bottom: 0;
-	margin-top: 40px;
+	margin-top: 30px;
 }
+
 material-checkbox.rindi-check {
 	margin-left: 0;
 }

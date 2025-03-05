@@ -8,70 +8,96 @@
 </p>
 
 <p>
-	Om du är här för att de ordinarie biljetterna har sålt slut, vet du väl redan om att du kan skriva upp dig på 
-	<a [routerLink]="ContentRoutes.solo.toUrl()">väntelistan för ströplatser</a>?
-</p>
-
-<p>
 	Dagbiljetten gäller under hela AG och det finns inget sista datum att köpa, även om det finns en liten risk att de tar slut. Du hämtar din biljett
 	i stabsstugan mot uppvisande av legitimation och eventuellt bevis på Rindi-medlemskap. Betalning ska ske omedelbart	efter köp.
 </p>
 
-<form #bookingForm="ngForm" (submit)="submit()">
-	<input type="submit" class="hidden-submit"/>
-	<solo-component #booking>
-	</solo-component>
+<spinner-widget *ngIf="isLoading"></spinner-widget>
 
-	<div *ngIf="!isLoading">
-		<img alt="Swish"
-			 class="swish"
-			 src="../gfx/Swish_Dagbiljett.png"
-			 title="Swish"/>
+<div *ngIf="!isLoading">
+	<p *ngIf="!isOpen">
+		Du är tidigt ute - vi har inte öppnat bokningen ännu. Kom igen senare!
+	</p>
 
-		<div>
-			<material-checkbox [(ngModel)]="memberOfRindi"
-							   ngControl="memberOfRindi"
-							   class="rindi-check">
-				Jag är medlem i Gotlands Studentkår Rindi.
-			</material-checkbox>
+	<div *ngIf="isOpen">
+		<p>
+			Om du är här för att de ordinarie biljetterna har sålt slut, vet du väl redan om att du kan skriva upp dig på 
+			<a [routerLink]="ContentRoutes.solo.toUrl()">väntelistan för ströplatser</a>?
+		</p>		
+
+		<div *ngIf="!hasSaved && !hasDuplicateError">
+			<form #bookingForm="ngForm" (submit)="submit()">
+				<input type="submit" class="hidden-submit"/>
+				<solo-component #booking>
+				</solo-component>
+
+				<div>
+					<material-checkbox [(ngModel)]="memberOfRindi"
+									   ngControl="memberOfRindi"
+									   class="rindi-check">
+						Jag är medlem i Gotlands Studentkår Rindi.
+					</material-checkbox>
+				</div>
+				<material-button [disabled]="!canSubmit"
+								 class="control-blue important-margin"
+								 raised
+								 (trigger)="submit()">
+					Skicka bokning
+				</material-button>
+			</form>
 		</div>
 
+		<img alt="Swish" class="swish" src="../gfx/Swish_Dagbiljett.png" title="Swish"/>
+
+		<p class="booking-saved" *ngIf="hasSaved">
+			Bokningen för {{ lastSavedName }} skapades. Välkommen till AG! Betala nu med uppgifterna nedan,
+			obetalade biljetter rensas bort med jämna mellanrum.
+		</p>
+
+		<p class="booking-saved" *ngIf="hasDuplicateError">
+			Det finns redan en bokning under samma namn som den du försöker skapa. Om du inte har betalat den ännu, gör det nu.
+		</p>
+
+		<div *ngIf="hasSaved || hasDuplicateError">
+			<material-button 
+							 class="control-blue important-margin"
+							 raised
+							 (trigger)="resetForm()">
+				Gör en ny bokning
+			</material-button>
+		</div>
+
+		<div class="important-margin">
+			<spinner-widget *ngIf="isSaving"></spinner-widget>
+
+			<p class="super-important" *ngIf="hasSoldOutError">
+				Det gick inte att skapa en bokning eftersom dagbiljetterna är slut för tillfället.
+			</p>
+
+			<p class="super-important" *ngIf="hasError">
+				Någonting gick fel när bokningen skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta oss.
+			</p>
+		</div>
+
+		<div class="capacity-info">
+			Det finns just nu <strong>{{ remainingCapacity }}</strong> dagbiljett<span *ngIf="remainingCapacity != 1">er</span> kvar. 
+			<span *ngIf="remainingCapacity == 0">Vi plockar regelbundet bort obetalda biljetter, så försök gärna boka igen lite senare!</span>
+		</div>
+		
 		<p class="price-info">
 			Biljettens pris är <strong>{{ priceFormatted }}</strong>. Betalning kan ske med via Swish till <strong>123-316 56 02</strong> 
 			eller via Bankgiro till <strong>299-5272</strong> (HZ Event & Consulting AB). Skriv ditt namn i meddelandefältet för säkerhets skull.
 		</p>
 
-		<material-button [disabled]="!canSubmit"
-						 class="control-blue important-margin"
-						 raised
-						 (trigger)="submit()">
-			Skicka bokning
-		</material-button>
+		<h3>
+			Information om kostalternativ
+		</h3>
+		
+		<p>
+			Du kan välja <strong>Kost</strong> i form av kött eller vegansk kost. Båda alternativen är fria från gluten, laktos, nötter och fläskkött.
+			Om du har ytterligare medicinska behov av specialkost, <a href="mailto:info@absolutgotland.se">skicka e-post</a> till oss.
+		</p>
 	</div>
-</form>
 
-<div class="important-margin">
-	<spinner-widget *ngIf="isSaving || isLoading">
-	</spinner-widget>
-
-	<p *ngIf="hasSaved">
-		Bokningen för <strong>{{ lastSavedName }}</strong> skapades. Välkommen till AG!
-	</p>
-
-	<p class="super-important" *ngIf="hasSoldOutError">
-		Tyvärr är dagbiljetterna slutsålda för i år. Kontakta oss gärna om du har frågor.
-	</p>
-
-	<p class="super-important" *ngIf="hasError">
-		Någonting gick fel när bokningen skulle sparas. Kontrollera uppgifterna och försök igen. Om felet kvarstår, kontakta oss.
-	</p>
+	<div class="filler"></div>
 </div>
-
-<h3>
-	Information om kostalternativ
-</h3>
-
-<p>
-	Du kan välja <strong>Kost</strong> i form av kött eller vegansk kost. Båda alternativen är fria från gluten, laktos, nötter och fläskkött.
-	Om du har ytterligare medicinska behov av specialkost, <a href="mailto:info@absolutgotland.se">skicka e-post</a> till oss.
-</p>
