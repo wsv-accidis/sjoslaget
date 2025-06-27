@@ -34,5 +34,9 @@ Klientsidan utvecklas i [Dart](https://webdev.dartlang.org/). Den använder föl
 * [Material Design components for AngularDart](https://github.com/dart-lang/angular_components)
 * [Quiver](https://github.com/google/quiver-dart)
 
+## Äldre version av Dart
+
+Klientsidan använder en äldre version av Dart som inte längre stöds. En ny sajt är under utveckling. För att arbeta med de gamla sidorna, använd Dart v2.13 och Dart-plugin till VSCode v3.98.1.
+
 ## Licensiering
 Koden distribueras i enlighet med licensvillkoren i **Apache License version 2.0**.
