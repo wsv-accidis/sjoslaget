@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gotland_frontend/service_locator.dart';
 
 import '../../data/article/article_repository.dart';
@@ -13,11 +16,10 @@ class ArticleWidget extends StatefulWidget {
   State<StatefulWidget> createState() => ArticleWidgetState();
 }
 
-final staticAnchorKey = GlobalKey();
-
 class ArticleWidgetState extends State<ArticleWidget> {
   @override
   Widget build(BuildContext context) {
+    log('Loading article: ${widget.articleId}');
     return FutureBuilder<String>(
       future: _loadHtml(context, widget.articleId),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -34,7 +36,12 @@ class ArticleWidgetState extends State<ArticleWidget> {
     // See: https://pub.dev/packages/flutter_html
     return SingleChildScrollView(
       child: SelectionArea(
-        child: Html(anchorKey: staticAnchorKey, data: htmlData),
+        child: Html(
+          data: htmlData,
+          onLinkTap: (url, _, _) {
+            _navigateTo(context, url!);
+          },
+        ),
       ),
     );
   }
@@ -42,5 +49,9 @@ class ArticleWidgetState extends State<ArticleWidget> {
   Future<String> _loadHtml(BuildContext context, String id) {
     final articleRepository = serviceLocator<ArticleRepository>();
     return articleRepository.loadAssetById(id, DefaultAssetBundle.of(context));
+  }
+
+  void _navigateTo(BuildContext context, String url) {
+    context.go('/article/$url');
   }
 }
