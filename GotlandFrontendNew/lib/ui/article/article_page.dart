@@ -9,8 +9,6 @@ class ArticlePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Check if article exists and handle error
-    return Scaffold(
-      body: Center(child: ArticleWidget(articleId: articleId)),
-    );
+    return Center(child: ArticleWidget(articleId: articleId));
   }
 }

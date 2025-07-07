@@ -12,7 +12,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   flutter_html: ^3.0.0
-  go_router: ^15.1.3 # TODO: ^16.0.0
+  go_router: ^16.0.0
   get_it: ^8.0.3
 
 dev_dependencies:
