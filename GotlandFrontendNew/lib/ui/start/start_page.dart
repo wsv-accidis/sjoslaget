@@ -5,6 +5,6 @@ class StartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text('One Screen!')));
+    return Center(child: Text('One Screen!'));
   }
 }
