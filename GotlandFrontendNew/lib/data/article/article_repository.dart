@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-
-import '../../model/article.dart';
+import 'package:gotland_frontend/model/article.dart';
 
 const ARTICLE_BOOKING = 'booking';
 const ARTICLE_RULES = 'rules';
@@ -13,10 +12,12 @@ class ArticleRepository {
     Article(id: ARTICLE_RULES, title: 'Regler på AG', asset: 'rules.html'),
   ];
 
-  Article getArticleById(String id) => _articles.firstWhere((article) => article.id == id);
+  bool existsById(String id) => _articles.any((article) => article.id == id);
+
+  Article getById(String id) => _articles.firstWhere((article) => article.id == id);
 
   Future<String> loadAssetById(String id, AssetBundle assets) async {
-    final article = getArticleById(id);
+    final article = getById(id);
     return await assets.loadString('articles/${article.asset}');
   }
 }
