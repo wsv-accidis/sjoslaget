@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gotland_frontend/ui/app_scaffold.dart';
-
-import 'ui/article/article_page.dart';
-import 'ui/start/start_page.dart';
+import 'package:gotland_frontend/ui/article/article_page.dart';
+import 'package:gotland_frontend/ui/start/start_page.dart';
 
 final _routerKey = GlobalKey<NavigatorState>();
 

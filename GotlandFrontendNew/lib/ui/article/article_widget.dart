@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gotland_frontend/data/article/article_repository.dart';
 import 'package:gotland_frontend/service_locator.dart';
-
-import '../../data/article/article_repository.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ArticleWidget extends StatefulWidget {
   const ArticleWidget({super.key, required this.articleId});
@@ -38,20 +38,35 @@ class ArticleWidgetState extends State<ArticleWidget> {
       child: SelectionArea(
         child: Html(
           data: htmlData,
-          onLinkTap: (url, _, _) {
-            _navigateTo(context, url!);
+          onLinkTap: (url, _, _) async {
+            if (_isExternalUrl(url!)) {
+              await _navigateToExternal(url);
+            } else {
+              _navigateToLocal(context, url);
+            }
           },
         ),
       ),
     );
   }
 
+  bool _isExternalUrl(String url) =>
+      url.startsWith('mailto:') || url.startsWith('http://') || url.startsWith('https://');
+
   Future<String> _loadHtml(BuildContext context, String id) {
     final articleRepository = serviceLocator<ArticleRepository>();
     return articleRepository.loadAssetById(id, DefaultAssetBundle.of(context));
   }
 
-  void _navigateTo(BuildContext context, String url) {
+  Future<void> _navigateToExternal(String url) async {
+    try {
+      await launchUrlString(url);
+    } catch (e) {
+      log('Failed to launch external URL: $url', error: e);
+    }
+  }
+
+  void _navigateToLocal(BuildContext context, String url) {
     context.go('/article/$url');
   }
 }

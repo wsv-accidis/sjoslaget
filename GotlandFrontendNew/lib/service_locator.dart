@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart' show GetIt;
-
-import 'data/article/article_repository.dart';
+import 'package:gotland_frontend/data/article/article_repository.dart';
 
 final serviceLocator = GetIt.instance;
 

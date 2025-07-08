@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-
-import 'router.dart';
-import 'service_locator.dart';
+import 'package:gotland_frontend/router.dart';
+import 'package:gotland_frontend/service_locator.dart';
+import 'package:gotland_frontend/ui/gotland_theme.dart';
 
 void main() {
   initServiceLocator();
@@ -16,6 +16,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(routerConfig: router, theme: GotlandTheme.lightThemeData(context));
   }
 }
