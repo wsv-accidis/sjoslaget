@@ -38,12 +38,27 @@ class ArticleWidgetState extends State<ArticleWidget> {
       child: SelectionArea(
         child: Html(
           data: htmlData,
+          extensions: [
+            OnImageTapExtension(
+              onImageTap: (url, _, _) async {
+                final relativeUrl = url!.replaceFirst('asset:articles/', 'assets/articles/');
+                log('Opening image in new tab: $relativeUrl');
+                await _navigateToExternal(relativeUrl);
+              },
+            ),
+          ],
           onLinkTap: (url, _, _) async {
             if (_isExternalUrl(url!)) {
               await _navigateToExternal(url);
             } else {
               _navigateToLocal(context, url);
             }
+          },
+          style: {
+            'img': Style(
+              border: Border.all(color: Colors.black87),
+              margin: Margins.only(right: 20.0)
+            )
           },
         ),
       ),
