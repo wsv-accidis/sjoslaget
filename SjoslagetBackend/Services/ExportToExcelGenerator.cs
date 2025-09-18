@@ -50,11 +50,11 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 			using(var db = DbUtil.Open())
 			{
-				Worksheet cabinsSheet = CreateCabinsWorksheet();
+				var cabinsSheet = CreateCabinsWorksheet();
 				CreateCabinsHeaderRow(cabinsSheet);
 				await FetchAndCreateRowsForBookings(db, cabinsSheet);
 
-				Worksheet productsSheet = CreateProductsWorksheet();
+				var productsSheet = CreateProductsWorksheet();
 				CreateProductsHeaderRow(productsSheet);
 				await FetchAndCreateRowsForProducts(db, productsSheet);
 
@@ -99,11 +99,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 		static Cell CreateHeaderCell(string text)
 		{
-			return new Cell(CellType.Text)
+			return new Cell(CellType.Text, text, BuiltInCellFormat.Text)
 			{
 				Bold = true,
-				Border = CellBorder.Bottom,
-				Value = text
+				Border = CellBorder.Bottom
 			};
 		}
 
@@ -154,7 +153,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 
 			if(_updatedSince.HasValue && (isCreated || changes.Any(c => IsExportedField(c) || IsAddedPax(c))))
 			{
-				bool isNew = isCreated || changes.Any(IsAddedPax);
+				var isNew = isCreated || changes.Any(IsAddedPax);
 				SetCell(sheet, row, 9, isNew ? "Ny" : "Ändrad", null, true, null);
 			}
 		}
@@ -179,16 +178,16 @@ namespace Accidis.Sjoslaget.WebService.Services
 			Dictionary<Guid, CabinType> cabinTypes, ChangeDbRow[] changes)
 		{
 			var cabins = paxInBooking.GroupBy(g => g.CabinIndex).OrderBy(g => g.Key);
-			foreach(IGrouping<int, PaxDbRow> cabin in cabins)
+			foreach(var cabin in cabins)
 			{
 				_rowNo++; // insert a blank row
 				_cabinNo++; // holds the cabin index within the whole sheet
 
-				CabinType cabinType = cabinTypes[cabin.First().CabinTypeId];
+				var cabinType = cabinTypes[cabin.First().CabinTypeId];
 
-				foreach(PaxDbRow pax in cabin.OrderBy(g => g.PaxIndex))
+				foreach(var pax in cabin.OrderBy(g => g.PaxIndex))
 				{
-					string[] changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == pax.PaxIndex).Select(c => c.FieldName).ToArray();
+					var changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == pax.PaxIndex).Select(c => c.FieldName).ToArray();
 
 					CreateRow(
 						sheet,
@@ -208,9 +207,9 @@ namespace Accidis.Sjoslaget.WebService.Services
 				}
 
 				// Add empty highlighted rows for pax who were removed (but not if they were also added in the same timespan)
-				for(int emptyPaxIdx = cabin.Count(); emptyPaxIdx < cabinType.Capacity; emptyPaxIdx++)
+				for(var emptyPaxIdx = cabin.Count(); emptyPaxIdx < cabinType.Capacity; emptyPaxIdx++)
 				{
-					string[] changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == emptyPaxIdx).Select(c => c.FieldName).ToArray();
+					var changesInThisRow = changes.Where(c => c.CabinIndex == cabin.Key && c.PaxIndex == emptyPaxIdx).Select(c => c.FieldName).ToArray();
 					if(changesInThisRow.Contains(BookingChange.Removed, StringComparer.Ordinal) &&
 					   !changesInThisRow.Contains(BookingChange.Added, StringComparer.Ordinal))
 						CreateRowForRemovedPax(sheet, _rowNo++, _cabinNo, cabinType.Name, booking.Reference);
@@ -221,7 +220,7 @@ namespace Accidis.Sjoslaget.WebService.Services
 		static Workbook CreateWorkbook(params Worksheet[] sheets)
 		{
 			var workbook = new Workbook();
-			foreach(Worksheet sheet in sheets)
+			foreach(var sheet in sheets)
 				workbook.Add(sheet);
 			return workbook;
 		}
@@ -232,10 +231,10 @@ namespace Accidis.Sjoslaget.WebService.Services
 			_rowNo = 0;
 
 			var bookingsResult = await db.QueryAsync<BookingDbRow>("select [Id], [Reference], [TotalPrice], " +
-																   "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid, " +
-																   "iif([Created] > @UpdatedSince, 1, 0) IsCreated " +
-																   "from [Booking] B where [CruiseId] = @CruiseId AND [SubCruise] = @SubCruise " +
-																   "order by [Reference]",
+			                                                       "(select sum([Amount]) from [BookingPayment] BP where BP.[BookingId] = B.[Id] group by [BookingId]) as AmountPaid, " +
+			                                                       "iif([Created] > @UpdatedSince, 1, 0) IsCreated " +
+			                                                       "from [Booking] B where [CruiseId] = @CruiseId AND [SubCruise] = @SubCruise " +
+			                                                       "order by [Reference]",
 				new
 				{
 					CruiseId = _cruise.Id,
@@ -243,12 +242,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 					UpdatedSince = _updatedSince
 				});
 
-			BookingDbRow[] allBookings = _onlyFullyPaid
+			var allBookings = _onlyFullyPaid
 				? bookingsResult.Where(b => b.IsFullyPaid).ToArray()
 				: bookingsResult.ToArray();
 
-			Dictionary<Guid, CabinType> cabinTypes = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
-			foreach(BookingDbRow booking in allBookings)
+			var cabinTypes = (await _cabinRepository.GetAllAsync(db)).ToDictionary(c => c.Id, c => c);
+			foreach(var booking in allBookings)
 			{
 				var paxResult = await db.QueryAsync<PaxDbRow>(
 					"select BC.[Order] [CabinIndex], BP.[Order] [PaxIndex], BP.[FirstName], BP.[LastName], BP.[Gender], BP.[Dob], BP.[Nationality], BP.[Group], BP.[Years], BC.[Id] CabinId, BC.[CabinTypeId] " +
@@ -256,13 +255,13 @@ namespace Accidis.Sjoslaget.WebService.Services
 					"left join [BookingCabin] BC on BP.[BookingCabinId] = BC.[Id] " +
 					"where BC.[BookingId] = @BookingId " +
 					"order by BC.[Order], BP.[Order]",
-					new {BookingId = booking.Id});
+					new { BookingId = booking.Id });
 
 				ChangeDbRow[] bookingChanges;
 				if(_updatedSince.HasValue)
 				{
 					var bookingChangesResult = await db.QueryAsync<ChangeDbRow>("select [CabinIndex], [PaxIndex], [FieldName] from [BookingChange] " +
-																				"where [BookingId] = @BookingId and [Updated] > @UpdatedSince",
+					                                                            "where [BookingId] = @BookingId and [Updated] > @UpdatedSince",
 						new
 						{
 							BookingId = booking.Id,
@@ -281,12 +280,12 @@ namespace Accidis.Sjoslaget.WebService.Services
 		{
 			_rowNo = 1;
 
-			CruiseProductWithType[] productTypes = await _productRepository.GetActiveAsync(db, _cruise);
-			ProductCount[] productCounts = await _productRepository.GetSumOfOrdersByProductAsync(db, _cruise, _onlyFullyPaid);
+			var productTypes = await _productRepository.GetActiveAsync(db, _cruise);
+			var productCounts = await _productRepository.GetSumOfOrdersByProductAsync(db, _cruise, _onlyFullyPaid);
 
-			foreach(CruiseProductWithType type in productTypes)
+			foreach(var type in productTypes)
 			{
-				int row = _rowNo++;
+				var row = _rowNo++;
 				sheet[row, 0] = type.Name;
 				sheet[row, 1] = productCounts.FirstOrDefault(c => c.TypeId == type.Id)?.Count ?? 0;
 				sheet[row, 2] = type.Description;
