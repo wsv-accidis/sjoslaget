@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:fwfh_url_launcher/fwfh_url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gotland_frontend/data/article/article_repository.dart';
 import 'package:gotland_frontend/service_locator.dart';
@@ -33,39 +34,23 @@ class ArticleWidgetState extends State<ArticleWidget> {
   }
 
   Widget _buildContentView(BuildContext context, String htmlData) {
-    // See: https://pub.dev/packages/flutter_html
-    // This is VERY poorly supported - can we use https://github.com/daohoangson/flutter_widget_from_html ?
+    // See: https://github.com/daohoangson/flutter_widget_from_html/tree/master/packages/core
     return SingleChildScrollView(
+      padding: EdgeInsetsDirectional.only(start: 20.0, end: 20.0, bottom: 20.0),
       child: SelectionArea(
-        child: Html(
-          data: htmlData,
-          extensions: [
-            OnImageTapExtension(
-              onImageTap: (url, _, _) async {
-                final relativeUrl = url!.replaceFirst('asset:articles/', 'assets/articles/');
-                log('Opening image in new tab: $relativeUrl');
-                await _navigateToExternal(relativeUrl);
-              },
-            ),
-            TagWrapExtension(
-              tagsToWrap: {'a'},
-              builder: (child) {
-                return InkWell(onTap: () {}, mouseCursor: WidgetStateMouseCursor.clickable, child: child);
-              },
-            ),
-          ],
-          onLinkTap: (url, _, _) async {
-            if (_isExternalUrl(url!)) {
-              await _navigateToExternal(url);
-            } else {
-              _navigateToLocal(context, url);
-            }
+        child: HtmlWidget(
+          htmlData,          
+          factoryBuilder: () => ArticleWidgetFactory(),
+          onTapImage: (imageMetadata) async {
+            final fullUrl = imageMetadata.sources.first.url;
+            final relativeUrl = fullUrl.replaceFirst('asset:img/', 'assets/img/');
+            log('Opening image in new tab: $relativeUrl');
+            await _navigateToExternal(relativeUrl);
           },
-          style: {
-            'img': Style(
-              border: Border.all(color: Colors.black87),
-              margin: Margins.only(right: 20.0),
-            ),
+          onTapUrl: (url) {
+            final shouldHandle = !_isExternalUrl(url);
+            if (shouldHandle) _navigateToLocal(context, url);
+            return shouldHandle;
           },
         ),
       ),
@@ -92,3 +77,5 @@ class ArticleWidgetState extends State<ArticleWidget> {
     context.go('/article/$url');
   }
 }
+
+class ArticleWidgetFactory extends WidgetFactory with UrlLauncherFactory {}
