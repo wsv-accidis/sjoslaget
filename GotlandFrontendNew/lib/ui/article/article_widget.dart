@@ -34,6 +34,7 @@ class ArticleWidgetState extends State<ArticleWidget> {
 
   Widget _buildContentView(BuildContext context, String htmlData) {
     // See: https://pub.dev/packages/flutter_html
+    // This is VERY poorly supported - can we use https://github.com/daohoangson/flutter_widget_from_html ?
     return SingleChildScrollView(
       child: SelectionArea(
         child: Html(
@@ -44,6 +45,12 @@ class ArticleWidgetState extends State<ArticleWidget> {
                 final relativeUrl = url!.replaceFirst('asset:articles/', 'assets/articles/');
                 log('Opening image in new tab: $relativeUrl');
                 await _navigateToExternal(relativeUrl);
+              },
+            ),
+            TagWrapExtension(
+              tagsToWrap: {'a'},
+              builder: (child) {
+                return InkWell(onTap: () {}, mouseCursor: WidgetStateMouseCursor.clickable, child: child);
               },
             ),
           ],
@@ -57,8 +64,8 @@ class ArticleWidgetState extends State<ArticleWidget> {
           style: {
             'img': Style(
               border: Border.all(color: Colors.black87),
-              margin: Margins.only(right: 20.0)
-            )
+              margin: Margins.only(right: 20.0),
+            ),
           },
         ),
       ),
