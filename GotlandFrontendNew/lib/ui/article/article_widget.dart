@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' show log;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -36,10 +36,10 @@ class ArticleWidgetState extends State<ArticleWidget> {
   Widget _buildContentView(BuildContext context, String htmlData) {
     // See: https://github.com/daohoangson/flutter_widget_from_html/tree/master/packages/core
     return SingleChildScrollView(
-      padding: EdgeInsetsDirectional.only(start: 20.0, end: 20.0, bottom: 20.0),
+      padding: const EdgeInsetsDirectional.only(start: 20.0, end: 20.0, bottom: 20.0),
       child: SelectionArea(
         child: HtmlWidget(
-          htmlData,          
+          htmlData,
           factoryBuilder: () => ArticleWidgetFactory(),
           onTapImage: (imageMetadata) async {
             final fullUrl = imageMetadata.sources.first.url;

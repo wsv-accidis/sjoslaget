@@ -14,6 +14,8 @@ class ArticleRepository {
 
   bool existsById(String id) => _articles.any((article) => article.id == id);
 
+  Iterable<Article> getAll() => _articles;
+
   Article getById(String id) => _articles.firstWhere((article) => article.id == id);
 
   Future<String> loadAssetById(String id, AssetBundle assets) async {
