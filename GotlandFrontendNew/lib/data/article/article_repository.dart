@@ -6,6 +6,7 @@ import 'package:gotland_frontend/model/article.dart';
 const ARTICLE_BOOKING = 'booking';
 const ARTICLE_RULES = 'rules';
 
+/// Holds the set of available articles and can load their assets.
 class ArticleRepository {
   final _articles = [
     Article(id: ARTICLE_BOOKING, title: 'Hur man bokar', asset: 'booking.html'),

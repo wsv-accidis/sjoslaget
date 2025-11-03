@@ -8,9 +8,13 @@ import 'package:gotland_frontend/model/article.dart';
 import 'package:gotland_frontend/model/search_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const SEARCH_INDEX = 'searchIndex';
+const SEARCH_INDEX_KEY = 'searchIndex';
+const SEARCH_INDEX_CREATED_KEY = 'searchIndexCreated';
+const SEARCH_INDEX_MAX_AGE_MS = 1000 * 3600 * 24; // 24 hours
 const SEARCH_EXTRACT_OFFSET = 60;
 
+/// Finds articles matching a query string and returns search results.
+/// Will build a simple search index and cache it in local storage on first call.
 class SearchService {
   const SearchService(this._articleRepository, this._sharedPreferences);
 
@@ -41,20 +45,26 @@ class SearchService {
   }
 
   Future<Map<String, String>> _getOrBuildIndex(AssetBundle assets) async {
-    if (_sharedPreferences.containsKey(SEARCH_INDEX)) {
-      try {
-        final indexJson = jsonDecode(_sharedPreferences.getString(SEARCH_INDEX) ?? '') as Map<String, dynamic>?;
-        if (null != indexJson && indexJson.isNotEmpty) {
-          return Map.castFrom(indexJson);
+    if (_sharedPreferences.containsKey(SEARCH_INDEX_CREATED_KEY) && _sharedPreferences.containsKey(SEARCH_INDEX_KEY)) {
+      final indexCreated = _sharedPreferences.getInt(SEARCH_INDEX_CREATED_KEY) ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (now - indexCreated < SEARCH_INDEX_MAX_AGE_MS) {
+        // Index exists and is not stale, let's try to decode it        
+        try {
+          final indexJson = jsonDecode(_sharedPreferences.getString(SEARCH_INDEX_KEY) ?? '') as Map<String, dynamic>?;
+          if (null != indexJson && indexJson.isNotEmpty) {
+            return Map.castFrom(indexJson);
+          }
+        } on FormatException {
+          /* ignore */
         }
-      } on FormatException {
-        /* ignore */
       }
     }
 
-    log('Search index is missing or corrupt, rebuilding.');
+    await _removeIndex();
+    log('Search index needs rebuilding.');
     final Map<String, String> index = await _rebuildIndex(assets);
-    _storeIndex(index);
+    await _storeIndex(index);
     return index;
   }
 
@@ -63,9 +73,15 @@ class SearchService {
     return {for (var record in await Future.wait(searchIndexFutures)) record.$1: record.$2};
   }
 
-  void _storeIndex(Map<String, String> index) {
+  Future<void> _removeIndex() async {
+    await _sharedPreferences.remove(SEARCH_INDEX_KEY);
+    await _sharedPreferences.remove(SEARCH_INDEX_CREATED_KEY);
+  }
+
+  Future<void> _storeIndex(Map<String, String> index) async {
     final indexJson = jsonEncode(index);
-    _sharedPreferences.setString(SEARCH_INDEX, indexJson);
+    await _sharedPreferences.setString(SEARCH_INDEX_KEY, indexJson);
+    await _sharedPreferences.setInt(SEARCH_INDEX_CREATED_KEY, DateTime.now().millisecondsSinceEpoch);
   }
 
   Iterable<SearchResult> _toSearchResultMaybe(String query, String articleId, String text) {

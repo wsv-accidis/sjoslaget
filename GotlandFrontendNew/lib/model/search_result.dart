@@ -1,3 +1,4 @@
+/// The result returned by the SearchService.
 class SearchResult {
   const SearchResult({
     required this.articleId,
