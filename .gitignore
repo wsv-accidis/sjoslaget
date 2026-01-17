@@ -18,3 +18,6 @@ Auth.config
 Db.config
 DbTest.config
 Email.config
+
+# Temporary - avoid conflict with Flutter branch
+GotlandFrontendNew/
