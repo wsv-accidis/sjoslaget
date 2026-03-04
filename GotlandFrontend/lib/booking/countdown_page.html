@@ -21,21 +21,23 @@
 	<div class="challenge-intro">
 		Bokningen är öppen! Svara på en enkel fråga för att fortsätta:
 	</div>
-	<div class="challenge-text">
-		{{ challengeText }} 
-		<material-input [(ngModel)]="challengeResponse"				
-						class="challenge-field"
-						[displayBottomPanel]="false"
-						label="svara här">
-		</material-input>
-	</div>
-	<div class="challenge-button">
-		<material-button class="control-green"
-						 raised
-						 (trigger)="submitCandidate()">
-			Skicka och skapa bokning
-		</material-button>
-	</div>
+	<form #challengeForm="ngForm" (submit)="submitCandidate()">
+		<div class="challenge-text">
+			{{ challengeText }} 
+			<material-input [(ngModel)]="challengeResponse"				
+							class="challenge-field"
+							[displayBottomPanel]="false"
+							label="svara här">
+			</material-input>
+		</div>
+		<div class="challenge-button">
+			<material-button class="control-green"
+							raised
+							(trigger)="submitCandidate()">
+				Skicka och skapa bokning
+			</material-button>
+		</div>
+	</form>
 </div>
 <div *ngIf="waitingForServer" class="countdown-wait">
 	<spinner-widget></spinner-widget>
