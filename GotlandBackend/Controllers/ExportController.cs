@@ -1,14 +1,15 @@
-using System.IO;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Net;
+using Accidis.Gotland.WebService.Services;
+using Accidis.WebServices.Auth;
+using NLog;
+using Simplexcel;
 using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
-using Accidis.Gotland.WebService.Services;
-using Simplexcel;
-using System.Threading.Tasks;
-using Accidis.WebServices.Auth;
 
 namespace Accidis.Gotland.WebService.Controllers
 {
@@ -18,6 +19,7 @@ namespace Accidis.Gotland.WebService.Controllers
 		const string DayBookingsFilenameFormat = "AbsolutGotland_Dagbiljetter_{0:yyyyMMdd_HHmmss}.xlsx";
 
 		readonly EventRepository _eventRepository;
+		readonly Logger _log = LogManager.GetLogger(nameof(ExportController));
 
 		public ExportController(EventRepository eventRepository)
 		{
@@ -31,10 +33,18 @@ namespace Accidis.Gotland.WebService.Controllers
 			var evnt = await _eventRepository.GetActiveAsync();
 			if(null == evnt) return NotFound();
 
-			var exportToExcel = new ExportToExcelGenerator();
-			var workbook = await exportToExcel.ExportBookingsToWorkbookAsync(evnt);
+			try
+			{
+				var exportToExcel = new ExportToExcelGenerator();
+				var workbook = await exportToExcel.ExportBookingsToWorkbookAsync(evnt);
 
-			return CreateHttpResponseMessage(workbook, BookingsFilenameFormat);
+				return CreateHttpResponseMessage(workbook, BookingsFilenameFormat);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while exporting bookings.");
+				throw;
+			}
 		}
 
 		[Authorize(Roles = Roles.Admin)]
@@ -44,10 +54,18 @@ namespace Accidis.Gotland.WebService.Controllers
 			var evnt = await _eventRepository.GetActiveAsync();
 			if(null == evnt) return NotFound();
 
-			var exportToExcel = new ExportToExcelGenerator();
-			var workbook = await exportToExcel.ExportDayBookingsToWorkbookAsync(evnt);
+			try
+			{
+				var exportToExcel = new ExportToExcelGenerator();
+				var workbook = await exportToExcel.ExportDayBookingsToWorkbookAsync(evnt);
 
-			return CreateHttpResponseMessage(workbook, DayBookingsFilenameFormat);
+				return CreateHttpResponseMessage(workbook, DayBookingsFilenameFormat);
+			}
+			catch(Exception ex)
+			{
+				_log.Error(ex, "An unexpected exception occurred while exporting day bookings.");
+				throw;
+			}
 		}
 
 		ResponseMessageResult CreateHttpResponseMessage(Workbook workbook, string filenameFormat)

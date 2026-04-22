@@ -93,11 +93,10 @@ namespace Accidis.Gotland.WebService.Services
 
 		static Cell CreateHeaderCell(string text)
 		{
-			return new Cell(CellType.Text)
+			return new Cell(CellType.Text, text, BuiltInCellFormat.Text)
 			{
 				Bold = true,
-				Border = CellBorder.Bottom,
-				Value = text
+				Border = CellBorder.Bottom
 			};
 		}
 
